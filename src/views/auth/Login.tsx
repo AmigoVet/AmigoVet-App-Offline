@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { GlobalStyles } from '../../assets/styles/styles';
-import CustomInput from '../../assets/components/CustomInput';
-import { colors } from '../../assets/styles/colors';
-import CustomButton from '../../assets/components/CustomButton';
-import LogoContainer from '../../assets/components/LogoContainer';
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+
+
 import { RootStackParamList } from '../Welcome';
 
+import { CustomButton, CustomInput, LogoContainer } from '../../assets/components';
+import { colors, GlobalStyles } from '../../assets/styles';
+
+import appFirebase from '../../credenciales';
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+const auth = getAuth(appFirebase);
+
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const handleLogin = () => {
-    console.log('Usuario:', username);
-    console.log('Contraseña:', password);
+  const handleLogin = async() => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      Alert.alert('Iniciado sesión', 'Accediendo...');
+      navigate('Home');
+    } catch (error) {
+      console.log(error);
+    }
   };
+  
 
 
   return (
@@ -25,10 +35,10 @@ const Login = () => {
       <Text style={[GlobalStyles.title, {fontSize: 35}]}>Ingresa tu usuario</Text>
       <View style={styles.formContainer}>
         <CustomInput
-          label="Usuario"
-          placeholder="Usuario"
-          value={username}
-          onChangeText={setUsername} 
+          label="Gmail"
+          placeholder="Correo electronico"
+          value={email}
+          onChangeText={setEmail} 
         />
         <CustomInput
           label="Contraseña"
