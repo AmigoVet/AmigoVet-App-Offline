@@ -5,9 +5,10 @@ import { colors } from '../styles/colors';
 interface CustomButtonProps {
   text: string;
   onPress: () => void;
+  disabled?: boolean;
 }
 
-const CustomButton = ({ text, onPress }: CustomButtonProps) => {
+const CustomButton = ({ text, onPress, disabled }: CustomButtonProps) => {
   return (
     <Pressable
       style={({ pressed }) => [
@@ -15,6 +16,7 @@ const CustomButton = ({ text, onPress }: CustomButtonProps) => {
         pressed && styles.pressedContainer,
       ]}
       onPress={onPress}
+      disabled={disabled}
     >
       <Text style={styles.text}>{text}</Text>
     </Pressable>
