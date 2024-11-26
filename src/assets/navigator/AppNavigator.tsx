@@ -12,6 +12,8 @@ import Register from '../../views/auth/Register';
 import Home from '../../views/user/Home';
 import New from '../../views/user/New';
 import Profile from '../../views/user/Profile';
+import { colors } from '../styles';
+import { View } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,26 +22,50 @@ const Tab = createBottomTabNavigator();
 const BottomTabsNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ color, size }) => {
-          let iconName: string; // Aseguramos que iconName sea siempre string
-      
-          if (route.name === 'Home') {
-            iconName = 'home-outline';
-          } else if (route.name === 'Profile') {
-            iconName = 'person-outline';
-          } else if (route.name === 'New') {
-            iconName = 'add-circle-outline';
-          } else {
-            iconName = 'alert-circle-outline'; // Valor por defecto para evitar undefined
-          }
-      
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: 'gray',
-      })}
+    screenOptions={({ route }) => ({
+      headerShown: false,
+      tabBarIcon: ({ color, size, focused }) => {
+        let iconName: string;
+    
+        if (route.name === 'Home') {
+          iconName = 'home-outline';
+        } else if (route.name === 'Profile') {
+          iconName = 'person-outline';
+        } else if (route.name === 'New') {
+          iconName = 'add-circle-outline';
+        } else {
+          iconName = 'alert-circle-outline';
+        }
+    
+        return (
+          <View style={{ alignItems: 'center' }}>
+            <Ionicons name={iconName} size={size} color={color} />
+            {focused && (
+              <View
+                style={{
+                  width: '60%', // Ajusta el ancho del borde
+                  height: 3,
+                  backgroundColor: colors.naranja,
+                  borderRadius: 2,
+                  marginTop: 5,
+                }}
+              />
+            )}
+          </View>
+        );
+      },
+      tabBarActiveTintColor: colors.naranja,
+      tabBarInactiveTintColor: colors.blanco,
+      tabBarStyle: {
+        backgroundColor: colors.fondoDark,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        marginTop: -20,
+        height: 60,
+        borderTopWidth: 0,
+      },
+    })}
+    
     
     >
       <Tab.Screen name="Home" component={Home} />

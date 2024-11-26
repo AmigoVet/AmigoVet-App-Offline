@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import useAuthStore from '../../assets/store/authStore';
+import { GlobalStyles } from '../../assets/styles';
+import Header from '../../assets/components/Header';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user); // Obtiene el usuario desde el estado global
@@ -12,24 +14,21 @@ const Home = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {user ? (
-        <>
-          <Text style={styles.welcomeText}>Bienvenido, {user.nombre}</Text>
-          <Text style={styles.detailText}>Correo: {user.correo}</Text>
-          <Text style={styles.detailText}>Teléfono: {user.telefono}</Text>
-          <Button title="Cerrar sesión" onPress={handleLogout} />
-        </>
-      ) : (
-        <Text style={styles.noUserText}>No hay usuario autenticado</Text>
-      )}
+    <>
+    <Header />
+    <View style={GlobalStyles.container}>
+      <View style={styles.HomeContainer}>
+
+      </View>
     </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  HomeContainer: {
     flex: 1,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f8f9fa',
