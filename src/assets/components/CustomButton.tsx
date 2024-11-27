@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 50,
   },
   pressedContainer: {
     backgroundColor: colors.naranjaDark, 

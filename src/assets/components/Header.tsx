@@ -32,10 +32,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     zIndex: 10,
     paddingHorizontal: 20,
-  },
-  text:{
-    fontSize: 20,
-    color: 'white',
   }
 })
 

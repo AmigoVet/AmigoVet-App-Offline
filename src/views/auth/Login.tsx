@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
@@ -11,6 +11,7 @@ import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../credenciales'; // Importa Firestore desde tu archivo de configuración
 import useAuthStore from '../../assets/store/authStore';
+import { createTableRegisters, createTableAnimals } from '../../../SQLiteConfig';
 
 type User = {
   nombre: string;
@@ -26,6 +27,11 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
   const setUser = useAuthStore((state) => state.setUser); // Obtén la función para actualizar el usuario
+
+  useEffect(() => {
+    createTableRegisters();
+    createTableAnimals();
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
