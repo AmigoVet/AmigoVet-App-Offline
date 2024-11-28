@@ -13,7 +13,7 @@ const Home = () => {
 
     const loadAnimal = async () => {
         const animales = await loadData();
-        console.log('Animales cargados:', animales);
+        // console.log('Animales cargados:', animales);
         
         // Validar y verificar existencia de imágenes
         const validatedAnimals = await Promise.all(animales.map(async (animal: Animal) => {
@@ -21,7 +21,7 @@ const Home = () => {
                 try {
                     // Verificar si el archivo existe
                     const fileExists = await RNFS.exists(animal.image);
-                    console.log(`Imagen para ${animal.name} existe:`, fileExists);
+                    // console.log(`Imagen para ${animal.name} existe:`, fileExists);
                     
                     // Si el archivo no existe, establece la imagen como cadena vacía
                     if (!fileExists) {

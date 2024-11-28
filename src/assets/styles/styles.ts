@@ -20,6 +20,12 @@ export const GlobalStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.naranja,
+  },
+  label:{
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 5,
+    color: colors.naranja,
   }
 })
 

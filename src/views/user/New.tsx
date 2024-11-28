@@ -9,7 +9,7 @@ import {
   TouchableOpacity 
 } from 'react-native';
 import RNFS from 'react-native-fs';
-import { colors } from '../../assets/styles';
+import { colors, GlobalStyles } from '../../assets/styles';
 import { 
   launchCamera, 
   launchImageLibrary, 
@@ -19,7 +19,8 @@ import {
 
 // Importa tus utilidades para guardar datos
 import { saveData } from '../../assets/utils/asyncStorage';
-import { CustomInput, CustomButton } from '../../assets/components';
+import { CustomInput, CustomButton, CustomImage } from '../../assets/components';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const New: React.FC = () => {
   // Estados para los campos del formulario
@@ -128,13 +129,11 @@ const New: React.FC = () => {
 
   // Manejar el envío del formulario
   const handleSubmit = () => {
-    // Validar campos obligatorios
     if (!name || !species || !breed || !age || !weight || !description || !purpose) {
       Alert.alert('Error', 'Por favor, completa todos los campos obligatorios');
       return;
     }
 
-    // Crear objeto de animal
     const animal = {
       id: generateId(),
       name,
@@ -152,17 +151,17 @@ const New: React.FC = () => {
       updated_at: new Date().toISOString(),
     };
 
-    // Guardar datos
     saveData(animal);
 
     // Mostrar mensaje de éxito
+    // Encuntrar mejor manera de mostrar alerta
     Alert.alert('Éxito', 'Animal registrado correctamente');
 
     // Limpiar formulario
     resetForm();
+
   };
 
-  // Resetear formulario
   const resetForm = () => {
     setName('');
     setSpecies('');
@@ -185,12 +184,11 @@ const New: React.FC = () => {
       <Text style={styles.title}>Registrar Animal</Text>
 
       {/* Sección de imagen */}
+    <Text style={GlobalStyles.label}>Selecciona o toma una foto</Text>
       <View style={styles.imageContainer}>
         {image && (
-          <Image 
-            source={{ uri: `file://${image}` }} 
-            style={styles.image} 
-            resizeMode="cover" 
+          <CustomImage 
+            source={image} 
           />
         )}
         <View style={styles.imageButtonContainer}>
@@ -198,13 +196,17 @@ const New: React.FC = () => {
             style={styles.imageButton} 
             onPress={pickImageFromGallery}
           >
-            <Text style={styles.imageButtonText}>Galería</Text>
+            <Text>
+              <Ionicons name="image-outline" size={40} color={colors.blanco} />
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.imageButton} 
             onPress={takePhoto}
           >
-            <Text style={styles.imageButtonText}>Cámara</Text>
+            <Text style={styles.imageButtonText}>
+              <Ionicons name="camera-outline" size={40} color={colors.blanco} />
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -297,22 +299,18 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: 'center',
     marginBottom: 20,
-  },
-  image: {
-    width: 200,
-    height: 200,
+    borderColor: colors.naranja,
+    borderWidth: 1,
     borderRadius: 10,
-    marginBottom: 10,
+    paddingHorizontal: 5,
+    paddingVertical: 15,
   },
   imageButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
   imageButton: {
-    backgroundColor: colors.blanco,
-    padding: 10,
-    borderRadius: 5,
-    marginHorizontal: 10,
+    marginHorizontal: 20,
   },
   imageButtonText: {
     color: 'white',
