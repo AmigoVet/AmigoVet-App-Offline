@@ -14,6 +14,7 @@ import New from '../../views/user/New';
 import Profile from '../../views/user/Profile';
 import { colors } from '../styles';
 import { View } from 'react-native';
+import AnimalView from '../../views/user/AnimalView';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -105,8 +106,10 @@ const AppNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {user ? (
-        // Muestra las tabs si el usuario está autenticado
-        <Stack.Screen name="BottomTabs" component={BottomTabsNavigator} />
+        <>
+          <Stack.Screen name="BottomTabs" component={BottomTabsNavigator} />
+          <Stack.Screen name="AnimalView" component={AnimalView} />
+          </>
       ) : (
         // Muestra las pantallas de autenticación si no está autenticado
         <>

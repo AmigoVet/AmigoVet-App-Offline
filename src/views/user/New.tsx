@@ -25,6 +25,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const New: React.FC = () => {
   // Estados para los campos del formulario
   const [name, setName] = useState<string>('');
+  const [identifier, setIdentifier] = useState<string>('');
   const [species, setSpecies] = useState<string>('');
   const [breed, setBreed] = useState<string>('');
   const [age, setAge] = useState<string>('');
@@ -133,9 +134,14 @@ const New: React.FC = () => {
       Alert.alert('Error', 'Por favor, completa todos los campos obligatorios');
       return;
     }
+    if (!image) {
+      Alert.alert('Error', 'Por favor, selecciona una imagen');
+      return;
+    }
 
     const animal = {
       id: generateId(),
+      identifier,
       name,
       species,
       breed,
@@ -217,6 +223,12 @@ const New: React.FC = () => {
         value={name}
         onChangeText={setName}
         placeholder="Nombre del animal"
+      />
+      <CustomInput
+        label="Identificador"
+        value={identifier}
+        onChangeText={setIdentifier}
+        placeholder="Identificador del animal"
       />
       <CustomInput
         label="Especie"

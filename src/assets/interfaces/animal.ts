@@ -2,6 +2,7 @@
 
 export interface Animal {
     id: string;
+    identifier: string;
     name: string;
     species: string;
     breed: string;

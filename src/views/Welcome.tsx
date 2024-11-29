@@ -5,12 +5,14 @@ import { GlobalStyles } from '../assets/styles/styles';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import FromDevora from '../assets/components/FromDevora';
 import Register from './auth/Register';
+import { Animal } from '../assets/interfaces/animal';
 
 export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;   
   Register: undefined;
   Home: undefined;
+  AnimalView: {id: string};
 };
 
 const Welcome = () => {

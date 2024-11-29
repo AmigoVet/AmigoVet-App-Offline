@@ -24,5 +24,20 @@ const loadData = async () => {
     }
 };
 
-export { saveData, loadData };
+const getAnimalById = async (id: string): Promise<Animal | null> => {
+    try {
+      const animalsJson = await AsyncStorage.getItem('animals');
+      if (animalsJson) {
+        const animals: Animal[] = JSON.parse(animalsJson);
+        return animals.find(animal => animal.id === id) || null;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error recuperando animal', error);
+      return null;
+    }
+  };
+
+
+export { saveData, loadData, getAnimalById };
 

@@ -3,15 +3,16 @@ import React from 'react'
 
 interface CustomImageProps {
     source: string;
+    full?: boolean;
 }
 
 
-const CustomImage = ({ source }: CustomImageProps) => {
+const CustomImage = ({ source, full }: CustomImageProps) => {
   return (
     <Image 
         source={{ uri: `file://${source}` }} 
         style={{ 
-            width: '100%', 
+            width: full ? '100%' : '110%',
             height: 200, 
             borderRadius: 10, 
             marginBottom: 10 
