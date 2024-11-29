@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, Dimensions } from 'react-native'
 import React from 'react'
 
 interface CustomImageProps {
@@ -8,12 +8,16 @@ interface CustomImageProps {
 
 
 const CustomImage = ({ source, full }: CustomImageProps) => {
+
+  const windowWidth = Dimensions.get('window').width;
+
+
   return (
     <Image 
         source={{ uri: `file://${source}` }} 
         style={{ 
-            width: full ? '100%' : '110%',
-            height: 200, 
+            width: full ? windowWidth : '100%',
+            height: full ? 250 : 200, 
             borderRadius: 10, 
             marginBottom: 10 
         }} 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, KeyboardTypeOptions } from 'react-native';
 import { colors } from '../styles/colors';
 
 interface CustomInputProps {
@@ -7,20 +7,47 @@ interface CustomInputProps {
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
+  type?: 'text' | 'password' | 'number';
   secureTextEntry?: boolean;
+  multiline?: boolean;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ label, placeholder, value, onChangeText, secureTextEntry }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ 
+  label, 
+  placeholder, 
+  value, 
+  onChangeText, 
+  secureTextEntry, 
+  type = 'text', 
+  multiline = false 
+}) => {
+  const getKeyboardType = (): KeyboardTypeOptions => {
+    switch (type) {
+      case 'number':
+        return 'numeric'; // Teclado numérico
+      case 'password':
+        return 'default'; // `secureTextEntry`
+      case 'text':
+      default:
+        return 'default'; // Teclado general
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input, 
+          multiline && styles.multilineInput 
+        ]}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
         placeholderTextColor="#888"
         secureTextEntry={secureTextEntry}
+        multiline={multiline}
+        keyboardType={getKeyboardType()}
       />
     </View>
   );
@@ -44,7 +71,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     fontSize: 14,
-    color: colors.blancoLight
+    color: colors.blancoLight,
+  },
+  multilineInput: {
+    height: 100, 
+    textAlignVertical: 'top', 
   },
 });
 

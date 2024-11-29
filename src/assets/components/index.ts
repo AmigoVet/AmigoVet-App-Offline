@@ -1,4 +1,5 @@
 import CustomImage from './CustomImage';
+import AnimalTable from './AnimalTable';
 export { default as CustomButton } from './CustomButton';
 export { default as CustomInput } from './CustomInput';
 export { default as FromDevora } from './FromDevora';
@@ -6,3 +7,4 @@ export { default as LogoContainer } from './LogoContainer';
 export { default as Header } from './Header';
 export { default as CustomImage } from './CustomImage';
 export { default as AnimalCard } from './AnimalCard';
+export {default as AnimalTable} from './AnimalTable';

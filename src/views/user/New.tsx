@@ -247,12 +247,14 @@ const New: React.FC = () => {
         value={age}
         onChangeText={setAge}
         placeholder="Edad en años"
+        type='number'
       />
       <CustomInput
         label="Peso"
         value={weight}
         onChangeText={setWeight}
         placeholder="Peso en kg"
+        type='number'
       />
       <CustomInput
         label="Género"
@@ -267,12 +269,6 @@ const New: React.FC = () => {
         placeholder="Color del animal"
       />
       <CustomInput
-        label="Descripción"
-        value={description}
-        onChangeText={setDescription}
-        placeholder="Descripción adicional"
-      />
-      <CustomInput
         label="Propósito"
         value={purpose}
         onChangeText={setPurpose}
@@ -283,6 +279,13 @@ const New: React.FC = () => {
         value={ubicacion}
         onChangeText={setUbicacion}
         placeholder="Ubicación del animal"
+      />
+      <CustomInput
+        label="Descripción"
+        value={description}
+        onChangeText={setDescription}
+        placeholder="Descripción adicional"
+        multiline
       />
 
       {/* Botón de guardar */}

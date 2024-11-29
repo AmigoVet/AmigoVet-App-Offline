@@ -21,11 +21,28 @@ export const GlobalStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.naranja,
   },
+  miniText:{
+    fontSize: 12,
+    fontWeight: 'medium',
+    color: colors.blanco,
+  },
   label:{
     fontSize: 16,
     fontWeight: '500',
     marginBottom: 5,
     color: colors.naranja,
-  }
+  },
+  errorContainer:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.fondo,
+  },
+  loadingContainer:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.fondo,
+  },
 })
 

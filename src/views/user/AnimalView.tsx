@@ -1,63 +1,66 @@
-import { View, Text, ScrollView, Image, StyleSheet, ActivityIndicator } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { colors, GlobalStyles } from '../../assets/styles';
-import { Animal } from '../../assets/interfaces/animal';
+import React from 'react';
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
+import { GlobalStyles } from '../../assets/styles';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import useAnimals from '../../assets/hooks/useAnimals';
 import { RootStackParamList } from '../Welcome';
-import { getAnimalById } from '../../assets/utils/asyncStorage';
-import { CustomImage } from '../../assets/components';
+import { AnimalTable, CustomImage, CustomInput } from '../../assets/components';
 
 const AnimalView = () => {
-  // Obtener los parámetros de la ruta
   const route = useRoute<RouteProp<RootStackParamList, 'AnimalView'>>();
-  const { id } = route.params; 
-  const [animal, setAnimal] = useState<Animal | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true); 
+  const { id } = route.params;
+  const { animal, isLoading, error } = useAnimals(id);
 
-  useEffect(() => {
-    const fetchAnimal = async () => {
-      try {
-        setIsLoading(true);
-        const fetchedAnimal = await getAnimalById(id);
-        setAnimal(fetchedAnimal);
-        // console.log('Animal obtenido:', fetchedAnimal);
-      } catch (error) {
-        console.error('Error al obtener el animal:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
-    fetchAnimal();
-  }, [id]);
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={GlobalStyles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
         <Text>Cargando información del animal...</Text>
       </View>
     );
   }
-
-  if (!animal) {
+  if (error) {
     return (
-      <View style={styles.errorContainer}>
-        <Text>No se encontró información para el animal con ID {id}</Text>
+      <View style={GlobalStyles.errorContainer}>
+        <Text>{error}</Text>
       </View>
     );
   }
-
   return (
-    <ScrollView contentContainerStyle={GlobalStyles.container}>
-        <CustomImage 
-            source={animal.image}
-            full={true}
-        />
+    <ScrollView contentContainerStyle={[GlobalStyles.container, {paddingTop: 0}]}>
+      <CustomImage 
+          source={animal!.image}
+          full
+      />
       
-      <Text style={styles.title}>{animal.name}</Text>
-      <Text style={styles.text}>Identificador: {animal.identifier}</Text>
-      <Text style={styles.text}>Detalles adicionales...</Text>
+      <View style={styles.titleContainer}>
+        <Text style={[GlobalStyles.title]}>{animal?.name}<Text style={[GlobalStyles.miniText]}>({animal?.id})</Text></Text>
+        <Text style={[GlobalStyles.subTitle]}>{animal?.species}</Text>
+      </View>
+
+      <CustomInput 
+        label="Descripción"
+        placeholder='Escribe una descripción'
+        value={animal!.description}
+        onChangeText={() => {}}
+        multiline
+      />
+
+      <AnimalTable 
+        peso={animal!.weight}
+        genero={animal!.gender}
+        proposito={animal!.purpose}
+        edad={animal!.age}
+      />
+      
+      <View style={styles.ubicationContainer}>
+        <Text style={[GlobalStyles.subTitle]}>Ubicación actual:</Text>
+        <Text style={[GlobalStyles.miniText]}>{animal?.ubicacion}</Text>
+      </View>
+
+
     </ScrollView>
   );
 };
@@ -68,33 +71,22 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
   },
-  image: {
+  titleContainer: {
     width: '100%',
-    height: 200,
-    resizeMode: 'contain',
-    marginBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    marginBottom: 10, 
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.blanco,
-    marginBottom: 8,
+  ubicationContainer: {
+    marginVertical: 10,
+    width: '100%',
+    alignItems: 'flex-start', 
+    marginBottom: 10, 
   },
-  text: {
-    fontSize: 16,
-    color: colors.naranja,
-    marginBottom: 4,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
+  
+
 });
 
 export default AnimalView;
