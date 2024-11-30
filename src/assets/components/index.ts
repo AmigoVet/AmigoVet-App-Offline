@@ -8,3 +8,4 @@ export { default as Header } from './Header';
 export { default as CustomImage } from './CustomImage';
 export { default as AnimalCard } from './AnimalCard';
 export {default as AnimalTable} from './AnimalTable';
+export { default as EditTableText } from './EditTableText';

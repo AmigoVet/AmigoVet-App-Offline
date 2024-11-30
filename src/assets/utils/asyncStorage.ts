@@ -38,6 +38,19 @@ const getAnimalById = async (id: string): Promise<Animal | null> => {
     }
   };
 
+const deleteAnimalById = async (id: string) => {
+    try {
+        const animalsJson = await AsyncStorage.getItem('animals');
+        if (animalsJson) {
+            const animals: Animal[] = JSON.parse(animalsJson);
+            const newAnimals = animals.filter(animal => animal.id !== id);
+            await AsyncStorage.setItem('animals', JSON.stringify(newAnimals));
+        }
+    } catch (error) {
+        console.error('Error al eliminar animal', error);
+    }
+};
 
-export { saveData, loadData, getAnimalById };
+
+export { saveData, loadData, getAnimalById, deleteAnimalById };
 

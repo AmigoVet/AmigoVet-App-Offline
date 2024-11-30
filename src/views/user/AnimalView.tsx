@@ -1,16 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import { GlobalStyles } from '../../assets/styles';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import useAnimals from '../../assets/hooks/useAnimals';
 import { RootStackParamList } from '../Welcome';
-import { AnimalTable, CustomImage, CustomInput } from '../../assets/components';
+import { AnimalTable, CustomButton, CustomImage, CustomInput, EditTableText } from '../../assets/components';
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'AnimalView'>>();
   const { id } = route.params;
   const { animal, isLoading, error } = useAnimals(id);
 
+
+  const [name, setName] = useState(animal?.name)
+  const [identifier, setIdentifier] = useState(animal?.identifier)
+  const [raza, setRaza] = useState(animal?.breed)
+  const [species, setSpecies] = useState(animal?.species)
+  const [description, setDescription] = useState(animal?.description)
+  const [age, setAge] = useState(animal?.age)
+  const [purpose, setPurpose] = useState(animal?.purpose)
+  const [ubication, setUbication] = useState(animal?.ubicacion)
+
+  const handleSave = () => {
+    console.log('Guardando datos');
+    console.log(name);
+    console.log(species);
+    console.log(description);
+    console.log(age);
+    console.log(purpose);
+    console.log(ubication);
+  }
 
 
   if (isLoading) {
@@ -34,6 +53,44 @@ const AnimalView = () => {
           source={animal!.image}
           full
       />
+
+      <View style={styles.titleContainer}>
+        <EditTableText 
+          placeholder='Nombre'
+          value={animal!.name}
+          onChangeText={(text) => setName(text)}
+          type='text'
+          style={GlobalStyles.title}
+        />
+        <EditTableText 
+          placeholder='Especie'
+          value={animal!.species}
+          onChangeText={(text) => setSpecies(text)}
+          type='text'
+        />
+        <EditTableText 
+          placeholder='Indentificación'
+          value={animal!.identifier}
+          onChangeText={(text) => setIdentifier(text)}
+          type='text'
+        />
+      </View>
+      <View style={styles.titleContainer}>
+        <EditTableText 
+          label='Especie'
+          placeholder='Especie'
+          value={animal!.species}
+          onChangeText={(text) => setSpecies(text)}
+          type='text'
+          style={GlobalStyles.subTitle}
+        />
+        <EditTableText 
+          placeholder='Especie'
+          value={animal!.species}
+          onChangeText={(text) => setSpecies(text)}
+          type='text'
+        />
+      </View>
       
       <View style={styles.titleContainer}>
         <Text style={[GlobalStyles.title]}>{animal?.name}<Text style={[GlobalStyles.miniText]}>({animal?.id})</Text></Text>
@@ -57,9 +114,22 @@ const AnimalView = () => {
       
       <View style={styles.ubicationContainer}>
         <Text style={[GlobalStyles.subTitle]}>Ubicación actual:</Text>
-        <Text style={[GlobalStyles.miniText]}>{animal?.ubicacion}</Text>
+        <Text style={[GlobalStyles.miniText, {fontSize:20}]}>{animal?.ubicacion}</Text>
       </View>
 
+      <CustomButton 
+        text='Guardar Cambios'
+        onPress={() => {handleSave()}}
+      />
+
+      <CustomButton 
+        text='Nuevo Registro'
+        onPress={() => {}}
+      />
+
+      <View>
+        <Text style={GlobalStyles.title}>Registros</Text> 
+      </View>
 
     </ScrollView>
   );
@@ -69,7 +139,6 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 16,
-    backgroundColor: '#fff',
   },
   titleContainer: {
     width: '100%',
