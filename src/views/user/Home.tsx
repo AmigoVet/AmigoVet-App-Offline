@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import useAuthStore from '../../assets/store/authStore';
 import { colors, GlobalStyles } from '../../assets/styles';
@@ -14,6 +14,7 @@ const Home = () => {
     const user = useAuthStore((state) => state.user);
     const [animals, setAnimals] = useState<Animal[]>([]);
     const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
+    const [refreshing, setRefreshing] = useState(false); // Estado para el indicador de recarga
     const modalRef = useRef<Modalize>(null);
 
     const loadAnimal = async () => {
@@ -56,6 +57,13 @@ const Home = () => {
         }
     };
 
+    // Función para manejar la recarga
+    const handleRefresh = async () => {
+        setRefreshing(true); // Activar el indicador de recarga
+        await loadAnimal(); // Recargar los datos
+        setRefreshing(false); // Desactivar el indicador de recarga
+    };
+
     const renderItem = ({ item }: { item: Animal }) => (
         <View style={styles.rowFront}>
             <AnimalCard animal={item} />
@@ -66,7 +74,7 @@ const Home = () => {
         <View style={styles.rowBack}>
             <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => openModal(item)} // Asegúrate de no pasar eventos aquí
+                onPress={() => openModal(item)}
             >
                 <Text style={styles.hiddenText}>Eliminar</Text>
             </TouchableOpacity>
@@ -85,6 +93,8 @@ const Home = () => {
                         keyExtractor={(item) => item.id}
                         leftOpenValue={75}
                         rightOpenValue={-75}
+                        refreshing={refreshing} // Indicador de recarga
+                        onRefresh={handleRefresh} // Función de recarga
                     />
                 ) : (
                     <Text style={GlobalStyles.error}>No hay animales registrados</Text>
@@ -94,7 +104,7 @@ const Home = () => {
             <Modalize
                 ref={modalRef}
                 modalHeight={200}
-                modalStyle={{ backgroundColor: colors.fondo }} // Cambio del color del fondo
+                modalStyle={{ backgroundColor: colors.fondo }}
             >
                 <View style={styles.modalContent}>
                     <Text style={styles.modalTitle}>
