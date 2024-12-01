@@ -9,9 +9,8 @@ import { colors, GlobalStyles } from '../../assets/styles';
 import { appFirebase } from '../../credenciales';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../credenciales'; // Importa Firestore desde tu archivo de configuración
+import { db } from '../../credenciales'; 
 import useAuthStore from '../../assets/store/authStore';
-import { createTableRegisters, createTableAnimals } from '../../../SQLiteConfig';
 
 type User = {
   nombre: string;
@@ -26,12 +25,8 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
-  const setUser = useAuthStore((state) => state.setUser); // Obtén la función para actualizar el usuario
+  const setUser = useAuthStore((state) => state.setUser); 
 
-  useEffect(() => {
-    createTableRegisters();
-    createTableAnimals();
-  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -52,7 +47,6 @@ const Login = () => {
         const userData = userDoc.data() as User; // Cast explícito a `User`
         setUser(userData); // Guarda los datos del usuario en el estado global
         Alert.alert('Iniciado sesión', `Bienvenido, ${userData.nombre}`);
-        // navigate('Home'); // Redirige a la pantalla principal
       } else {
         Alert.alert('Error', 'No se encontraron datos del usuario en Firestore.');
       }

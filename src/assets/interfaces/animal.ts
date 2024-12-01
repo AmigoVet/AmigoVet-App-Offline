@@ -1,4 +1,5 @@
 export interface Animal {
+    ownerId: string;
     id: string;
     identificador: string;
     nombre: string;

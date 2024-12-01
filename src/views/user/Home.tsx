@@ -17,7 +17,7 @@ const Home = () => {
     const modalRef = useRef<Modalize>(null);
 
     const loadAnimal = async () => {
-        const animales = await loadData();
+        const animales = await loadData(String(user?.userId));
 
         const validatedAnimals = await Promise.all(
             animales.map(async (animal: Animal) => {
