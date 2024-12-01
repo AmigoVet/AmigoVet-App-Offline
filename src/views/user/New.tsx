@@ -1,96 +1,56 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  Alert, 
-  ScrollView, 
-  Image, 
-  TouchableOpacity 
-} from 'react-native';
-import RNFS from 'react-native-fs';
-import { colors, GlobalStyles } from '../../assets/styles';
-import { 
-  launchCamera, 
-  launchImageLibrary, 
-  ImageLibraryOptions, 
-  CameraOptions 
-} from 'react-native-image-picker';
-
-// Importa tus utilidades para guardar datos
-import { saveData } from '../../assets/utils/asyncStorage';
-import { CustomInput, CustomButton, CustomImage } from '../../assets/components';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, { useState } from "react";
+import { ScrollView, StyleSheet, Text, Alert, TouchableOpacity, View } from "react-native";
+import { colors, GlobalStyles } from "../../assets/styles";
+import {
+  CustomButton,
+  CustomInput,
+  CustomSelect,
+  CustomImage,
+} from "../../assets/components";
+import { especiesRazasMap, generos, Especie } from "../../assets/interfaces/animal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  launchCamera,
+  launchImageLibrary,
+  CameraOptions,
+  ImageLibraryOptions,
+} from "react-native-image-picker";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const New: React.FC = () => {
-  // Estados para los campos del formulario
-  const [nombre, setNombre] = useState<string>('');
-  const [identificador, setIdentificador] = useState<string>('');
-  const [especie, setEspecie] = useState<string>('');
-  const [raza, setRaza] = useState<string>('');
-  const [edad, setEdad] = useState<string>('');
-  const [genero, setGenero] = useState<string>('');
-  const [peso, setPeso] = useState<string>('');
-  const [color, setColor] = useState<string>('');
+  const [nombre, setNombre] = useState<string>("");
+  const [identificador, setIdentificador] = useState<string>("");
+  const [especie, setEspecie] = useState<Especie | "">("");
+  const [raza, setRaza] = useState<string>("");
+  const [genero, setGenero] = useState<string>("");
+  const [peso, setPeso] = useState<string>("");
+  const [edad, setEdad] = useState<string>("");
+  const [color, setColor] = useState<string>("");
+  const [proposito, setProposito] = useState<string>("");
+  const [ubicacion, setUbicacion] = useState<string>("");
+  const [descripcion, setDescripcion] = useState<string>("");
   const [image, setImage] = useState<string | null>(null);
-  const [descripcion, setDescripcion] = useState<string>('');
-  const [proposito, setProposito] = useState<string>('');
-  const [ubicacion, setUbicacion] = useState<string>('');
 
-  // Función para guardar imagen localmente
-  const saveImageLocally = async (uri: string): Promise<string> => {
-    try {
-      // Generar un nombre de archivo único
-      const fileName = `animal_${Date.now()}.jpg`;
-      
-      // Ruta de destino en el almacenamiento de la aplicación
-      const destPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-      
-      // Verificar si el archivo de origen existe
-      const fileExists = await RNFS.exists(uri);
-      console.log('Archivo de origen existe:', fileExists);
-      
-      // Copiar el archivo desde la URI temporal a la ruta de destino
-      await RNFS.copyFile(uri, destPath);
-      
-      // Verificar si el archivo de destino se creó
-      const destExists = await RNFS.exists(destPath);
-      console.log('Archivo de destino creado:', destExists);
-      console.log('Ruta de destino:', destPath);
-      
-      return destPath;
-    } catch (error) {
-      console.error('Error guardando imagen:', error);
-      Alert.alert('Error', 'No se pudo guardar la imagen');
-      return '';
-    }
-  };
+  const razasDisponibles = especie ? especiesRazasMap[especie] : [];
 
   // Seleccionar imagen desde la galería
   const pickImageFromGallery = async () => {
     const options: ImageLibraryOptions = {
-      mediaType: 'photo',
+      mediaType: "photo",
       selectionLimit: 1,
       includeBase64: false,
       maxHeight: 2000,
       maxWidth: 2000,
     };
 
-    launchImageLibrary(options, async (response) => {
-      console.log('Respuesta de la galería:', response);
+    launchImageLibrary(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        console.log("Usuario canceló la selección de imagen");
       } else if (response.errorCode) {
-        console.log('ImagePicker Error: ', response.errorMessage);
-        Alert.alert('Error', 'No se pudo seleccionar la imagen');
-      } else if (response.assets && response.assets.length > 0) {
-        const uri = response.assets[0].uri;
-        console.log('URI de la imagen:', uri);
-        if (uri) {
-          const localPath = await saveImageLocally(uri);
-          console.log('Ruta local de la imagen:', localPath);
-          setImage(localPath);
-        }
+        console.log("Error al seleccionar imagen:", response.errorMessage);
+        Alert.alert("Error", "No se pudo seleccionar la imagen");
+      } else if (response.assets && response.assets[0].uri) {
+        setImage(response.assets[0].uri);
       }
     });
   };
@@ -98,121 +58,102 @@ const New: React.FC = () => {
   // Tomar foto con la cámara
   const takePhoto = async () => {
     const options: CameraOptions = {
-      mediaType: 'photo',
-      cameraType: 'back',
+      mediaType: "photo",
+      cameraType: "back",
       saveToPhotos: true,
       includeBase64: false,
       maxHeight: 2000,
       maxWidth: 2000,
     };
 
-    launchCamera(options, async (response) => {
-      console.log('Respuesta de la cámara:', response);
+    launchCamera(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled camera');
+        console.log("Usuario canceló la cámara");
       } else if (response.errorCode) {
-        console.log('Camera Error: ', response.errorMessage);
-        Alert.alert('Error', 'No se pudo tomar la foto');
-      } else if (response.assets && response.assets.length > 0) {
-        const uri = response.assets[0].uri;
-        console.log('URI de la imagen:', uri);
-        if (uri) {
-          const localPath = await saveImageLocally(uri);
-          console.log('Ruta local de la imagen:', localPath);
-          setImage(localPath);
-        }
+        console.log("Error al tomar foto:", response.errorMessage);
+        Alert.alert("Error", "No se pudo tomar la foto");
+      } else if (response.assets && response.assets[0].uri) {
+        setImage(response.assets[0].uri);
       }
     });
   };
 
-  // Generar ID único
-  const generateId = () => Math.random().toString(36).substr(2, 9);
+  // Guardar datos en AsyncStorage
+  const saveAnimalData = async (animal: any) => {
+    try {
+      const existingData = await AsyncStorage.getItem("animals");
+      const parsedData = existingData ? JSON.parse(existingData) : [];
+      parsedData.push(animal);
+      await AsyncStorage.setItem("animals", JSON.stringify(parsedData));
+      console.log("Animal guardado en AsyncStorage");
+    } catch (error) {
+      console.error("Error al guardar los datos:", error);
+    }
+  };
 
-  // Manejar el envío del formulario
   const handleSubmit = () => {
-    if (!nombre || !especie || !raza || !edad || !peso || !descripcion || !proposito) {
-      Alert.alert('Error', 'Por favor, completa todos los campos obligatorios');
+    if (!nombre || !especie || !raza || !genero || !peso || !descripcion) {
+      Alert.alert("Error", "Por favor, completa todos los campos obligatorios");
       return;
     }
     if (!image) {
-      Alert.alert('Error', 'Por favor, selecciona una imagen');
+      Alert.alert("Error", "Por favor, selecciona una imagen");
       return;
     }
 
     const animal = {
-      id: generateId(),
-      identificador,
+      id: Math.random().toString(36).substr(2, 9),
       nombre,
+      identificador,
       especie,
       raza,
       edad,
       genero,
       peso,
       color,
-      image: image || '',
-      descripcion,
       proposito,
       ubicacion,
+      descripcion,
+      image,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
 
-    saveData(animal);
+    saveAnimalData(animal);
 
-    // Mostrar mensaje de éxito
-    // Encuntrar mejor manera de mostrar alerta
-    Alert.alert('Éxito', 'Animal registrado correctamente');
-
-    // Limpiar formulario
+    Alert.alert("Éxito", "Animal registrado correctamente");
     resetForm();
-
   };
 
   const resetForm = () => {
-    setNombre('');
-    setEspecie('');
-    setRaza('');
-    setEdad('');
-    setGenero('');
-    setPeso('');
-    setColor('');
+    setNombre("");
+    setIdentificador("");
+    setEspecie("");
+    setRaza("");
+    setGenero("");
+    setPeso("");
+    setEdad("");
+    setColor("");
+    setProposito("");
+    setUbicacion("");
+    setDescripcion("");
     setImage(null);
-    setDescripcion('');
-    setProposito('');
-    setUbicacion('');
   };
 
   return (
-    <ScrollView 
-      style={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Registrar Animal</Text>
 
-      {/* Sección de imagen */}
-    <Text style={GlobalStyles.label}>Selecciona o toma una foto</Text>
+      {/* Selección de imagen */}
+      <Text style={GlobalStyles.label}>Selecciona o toma una foto</Text>
       <View style={styles.imageContainer}>
-        {image && (
-          <CustomImage 
-            source={image} 
-          />
-        )}
+        {image && <CustomImage source={image} />}
         <View style={styles.imageButtonContainer}>
-          <TouchableOpacity 
-            style={styles.imageButton} 
-            onPress={pickImageFromGallery}
-          >
-            <Text>
-              <Ionicons name="image-outline" size={40} color={colors.blanco} />
-            </Text>
+          <TouchableOpacity style={styles.imageButton} onPress={pickImageFromGallery}>
+            <Ionicons name="image-outline" size={40} color={colors.blanco} />
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.imageButton} 
-            onPress={takePhoto}
-          >
-            <Text style={styles.imageButtonText}>
-              <Ionicons name="camera-outline" size={40} color={colors.blanco} />
-            </Text>
+          <TouchableOpacity style={styles.imageButton} onPress={takePhoto}>
+            <Ionicons name="camera-outline" size={40} color={colors.blanco} />
           </TouchableOpacity>
         </View>
       </View>
@@ -224,62 +165,75 @@ const New: React.FC = () => {
         onChangeText={setNombre}
         placeholder="Nombre del animal"
       />
+
       <CustomInput
         label="Identificador"
         value={identificador}
         onChangeText={setIdentificador}
-        placeholder="Identificador del animal"
+        placeholder="Identificador único del animal"
       />
-      <CustomInput
+
+      <CustomSelect
         label="Especie"
         value={especie}
-        onChangeText={setEspecie}
-        placeholder="Especie (e.g., Vaca, Caballo)"
+        options={Object.keys(especiesRazasMap)}
+        onValueChange={(value) => {
+          setEspecie(value as Especie);
+          setRaza("");
+        }}
       />
-      <CustomInput
+
+      <CustomSelect
         label="Raza"
         value={raza}
-        onChangeText={setRaza}
-        placeholder="Raza del animal"
+        options={razasDisponibles}
+        onValueChange={setRaza}
       />
-      <CustomInput
-        label="Edad"
-        value={edad}
-        onChangeText={setEdad}
-        placeholder="Edad en años"
-        type='number'
-      />
-      <CustomInput
-        label="Peso"
-        value={peso}
-        onChangeText={setPeso}
-        placeholder="Peso en kg"
-        type='number'
-      />
-      <CustomInput
+
+      <CustomSelect
         label="Género"
         value={genero}
-        onChangeText={setGenero}
-        placeholder="Género"
+        options={generos}
+        onValueChange={setGenero}
       />
+
       <CustomInput
         label="Color"
         value={color}
         onChangeText={setColor}
         placeholder="Color del animal"
       />
+
       <CustomInput
-        label="Propósito"
+        label="Peso"
+        value={peso}
+        onChangeText={setPeso}
+        placeholder="Peso en kg"
+        type="number"
+      />
+
+      <CustomInput
+        label="Proposito"
         value={proposito}
         onChangeText={setProposito}
-        placeholder="Propósito (e.g., Leche, Reproducción)"
+        placeholder="Proposito del animal(Leche, Carne, etc.)"
       />
+
       <CustomInput
         label="Ubicación"
         value={ubicacion}
         onChangeText={setUbicacion}
         placeholder="Ubicación del animal"
       />
+
+      <CustomInput
+        label="Edad"
+        value={edad}
+        onChangeText={setEdad}
+        placeholder="Edad del animal en años"
+        type="number"
+      />
+
       <CustomInput
         label="Descripción"
         value={descripcion}
@@ -289,10 +243,7 @@ const New: React.FC = () => {
       />
 
       {/* Botón de guardar */}
-      <CustomButton 
-        text="Guardar" 
-        onPress={handleSubmit}
-      />
+      <CustomButton text="Guardar" onPress={handleSubmit} />
     </ScrollView>
   );
 };
@@ -302,17 +253,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.fondo,
     padding: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
-    color: colors.blancoLight
+    textAlign: "center",
+    color: colors.blancoLight,
   },
   imageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
     borderColor: colors.naranja,
     borderWidth: 1,
@@ -321,15 +272,13 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   imageButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
   },
   imageButton: {
     marginHorizontal: 20,
-  },
-  imageButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    padding: 10,
+    borderRadius: 5,
   },
 });
 

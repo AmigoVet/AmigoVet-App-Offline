@@ -13,3 +13,4 @@ export { default as DataViewAnimal } from './DataViewAnimal';
 export { default as ModalButton } from './ModalButton';
 export { default as RowRegister } from './RowRegister';
 export { default as HeaderRegisterTable } from './HeaderRegisterTable';
+export { default as CustomSelect } from './CustomSelect';

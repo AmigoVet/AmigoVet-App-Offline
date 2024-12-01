@@ -1,13 +1,11 @@
-
-
 export interface Animal {
     id: string;
     identificador: string;
     nombre: string;
-    especie: string;
-    raza: string;
+    especie: Especie; // Especie seleccionada
+    raza: Raza; // Raza asociada a la especie
     edad: string;
-    genero: string;
+    genero: Genero;
     peso: string;
     color: string;
     descripcion: string;
@@ -16,4 +14,104 @@ export interface Animal {
     ubicacion: string;
     created_at: string;
     updated_at: string;
-}
+  }
+  
+export const generos: Genero[] = ["Macho", "Hembra"];
+
+export type Genero = "Macho" | "Hembra";
+  
+export type Especie =
+  | "Bovino"
+  | "Canino"
+  | "Aviar"
+  | "Equino"
+  | "Caprino"
+  | "Ovino"
+  | "Porcino"
+  | "Felino";
+
+export type Raza =
+  | "Holstein"
+  | "Jersey"
+  | "Angus"
+  | "Hereford"
+  | "Brahman"
+  | "Labrador Retriever"
+  | "Pastor Alemán"
+  | "Golden Retriever"
+  | "Chihuahua"
+  | "Beagle"
+  | "Gallina Leghorn"
+  | "Rhode Island Red"
+  | "Plymouth Rock"
+  | "Sussex"
+  | "Árabe"
+  | "Percherón"
+  | "Mustang"
+  | "Cuarto de Milla"
+  | "Appaloosa"
+  | "Boer"
+  | "Nubian"
+  | "Saanen"
+  | "Toggenburg"
+  | "Merino"
+  | "Suffolk"
+  | "Dorper"
+  | "Rambouillet"
+  | "Yorkshire"
+  | "Landrace"
+  | "Duroc"
+  | "Hampshire"
+  | "Persa"
+  | "Siamés"
+  | "Maine Coon"
+  | "Bengalí"
+  | "Angora";
+
+export const especiesRazasMap: Record<Especie, Raza[]> = {
+  Bovino: [
+    "Holstein", 
+    "Jersey", 
+    "Angus", 
+    "Hereford", 
+    "Brahman"],
+  Canino: [
+    "Labrador Retriever",
+    "Pastor Alemán",
+    "Golden Retriever",
+    "Chihuahua",
+    "Beagle",
+  ],
+  Aviar: [
+    "Gallina Leghorn", 
+    "Rhode Island Red", 
+    "Plymouth Rock", 
+    "Sussex"],
+  Equino: [
+    "Árabe", 
+    "Percherón", 
+    "Mustang", 
+    "Cuarto de Milla", 
+    "Appaloosa"],
+  Caprino: [
+    "Boer", 
+    "Nubian", 
+    "Saanen", 
+    "Toggenburg"],
+  Ovino: [
+    "Merino", 
+    "Suffolk", 
+    "Dorper", 
+    "Rambouillet"],
+  Porcino: [
+    "Yorkshire", 
+    "Landrace", 
+    "Duroc", 
+    "Hampshire"],
+  Felino: [
+    "Persa", 
+    "Siamés", 
+    "Maine Coon", 
+    "Bengalí", 
+    "Angora"],
+};
