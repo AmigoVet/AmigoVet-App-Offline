@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: colors.blancoLight,
+    fontWeight: "500",
+    color: colors.naranja,
     marginBottom: 5,
   },
   pickerContainer: {
@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     width: "100%",
+    color: colors.blanco,
   },
 });
 

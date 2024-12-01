@@ -27,7 +27,7 @@ const AnimalCard: React.FC<AnimalCardProps> = ({ animal }) => {
             onPress={() => handleView()}
         >
             <View style={styles.textContainer}>
-                <Text style={styles.nombre}>{animal.nombre}({animal.id})</Text>
+                <Text style={styles.nombre}>{animal.nombre}<Text style={GlobalStyles.miniText}>({animal.id})</Text></Text>
                 <Text style={GlobalStyles.label}>{animal.identificador}</Text>
             </View>
             <CustomImage 
