@@ -1,3 +1,5 @@
+import { Register } from "./registers";
+
 export interface Animal {
     ownerId: string;
     id: string;
@@ -116,3 +118,17 @@ export const especiesRazasMap: Record<Especie, Raza[]> = {
     "Bengalí", 
     "Angora"],
 };
+
+
+
+export interface PregnancyRegister extends Register {
+  fechaPartoEstimada?: string; // Fecha estimada de parto
+}
+
+export interface TreatmentRegister extends Register {
+  tipoTratamiento?: string; // Tipo de tratamiento
+}
+
+export interface InseminationRegister extends Register {
+  semenProveedor?: string; // Proveedor del semen
+}

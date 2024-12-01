@@ -8,6 +8,7 @@ import useAnimals from "../../assets/hooks/useAnimals";
 import {
   CustomButton,
   CustomImage,
+  CustomInput,
   DataViewAnimal,
   HeaderRegisterTable,
   ModalButton,
@@ -17,6 +18,7 @@ import { saveRegister, updateAnimalData } from "../../assets/utils/asyncStorage"
 import { useRegisters } from "../../assets/hooks/useRegisters";
 import { Register } from "../../assets/interfaces/registers";
 import { RootStackParamList } from "../Welcome";
+import { InseminationRegister, PregnancyRegister, TreatmentRegister } from "../../assets/interfaces/animal";
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, "AnimalView">>();
@@ -25,6 +27,7 @@ const AnimalView = () => {
   const modalRef = useRef<Modalize>(null);
   const editModalRef = useRef<Modalize>(null);
   const confirmDeleteModalRef = useRef<Modalize>(null);
+  const modalCreateRegister = useRef<Modalize>(null);
 
   const [currentField, setCurrentField] = useState("");
   const [fieldValue, setFieldValue] = useState("");
@@ -53,6 +56,12 @@ const AnimalView = () => {
     editModalRef.current?.open();
   };
 
+  const handleCreateRegisterModal = (field: string) => {
+    setCurrentField(field);
+    modalRef.current?.close();
+    modalCreateRegister.current?.open();
+  };
+
   // Guarda el valor actualizado y crea un registro
   const handleSave = async () => {
     if (currentField) {
@@ -79,6 +88,51 @@ const AnimalView = () => {
       setFieldValue("");
     }
   };
+
+  const handleCreateRegister = async () => {
+    if (currentField) {
+        const generateId = () => Math.random().toString(36).substr(2, 9);
+
+        const baseRegister: Register = {
+            id: generateId(),
+            animalId: id,
+            comentario: fieldValue,
+            accion: currentField,
+            fecha: new Date().toISOString(),
+        };
+
+        let specificRegister: Register | PregnancyRegister | TreatmentRegister | InseminationRegister;
+
+        if (currentField === "Registrar Embarazo") {
+            specificRegister = {
+                ...baseRegister,
+                fechaPartoEstimada: fieldValue,
+            };
+        } else if (currentField === "Registrar Tratamiento") {
+            specificRegister = {
+                ...baseRegister,
+                tipoTratamiento: fieldValue,
+            };
+        } else if (currentField === "Registrar Inseminacion") {
+            specificRegister = {
+                ...baseRegister,
+                semenProveedor: fieldValue,
+            };
+        } else {
+            specificRegister = baseRegister;
+        }
+
+        await saveRegister(specificRegister);
+
+        // Actualizar lista de registros
+        setRegisters((prev) => [...prev, specificRegister]);
+
+        modalCreateRegister.current?.close();
+        setCurrentField("");
+        setFieldValue("");
+    }
+};
+
 
   // Mostrar modal de confirmación para eliminar registro
   const handleDeletePrompt = (item: Register) => {
@@ -224,13 +278,27 @@ const AnimalView = () => {
             actualData={animal!.descripcion}
             onPress={() => handleEditField("descripcion", animal!.descripcion)}
           />
-          
+
+          <View style={{ width: '100%', height: 0.5, backgroundColor: colors.blanco }} />
+
+          <ModalButton
+            text="Registrar Embarazo"
+            onPress={() => handleCreateRegisterModal("Registrar Embarazo")}
+          />
+          <ModalButton
+            text="Registrar Tratamiento"
+            onPress={() => handleCreateRegisterModal("Registrar Tratamiento")}
+          />
+          <ModalButton
+            text="Registrar Inseminación"
+            onPress={() => handleCreateRegisterModal("Registrar Inseminacion")}
+          />
 
         </View>
       </Modalize>
 
       {/* Modal para editar el valor */}
-      <Modalize ref={editModalRef} modalHeight={300} modalStyle={{ backgroundColor: colors.fondo }}>
+      <Modalize ref={editModalRef} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Editar {currentField}</Text>
           <TextInput
@@ -246,9 +314,55 @@ const AnimalView = () => {
               setCurrentField("");
               setFieldValue("");
             }}
+            red
           />
         </View>
       </Modalize>
+
+      {/* Modal para registrar datos adicionales */}
+      <Modalize ref={modalCreateRegister} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
+          <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>{currentField}</Text>
+              {currentField === "Registrar Embarazo" && (
+                  <>
+                      <CustomInput
+                          label='Comentario'
+                          placeholder="Comentario"
+                          value={fieldValue}
+                          onChangeText={setFieldValue}
+                      />
+                  </>
+              )}
+              {currentField === "Registrar Tratamiento" && (
+                  <CustomInput
+                      label='Comentario del tratamiento'
+                      placeholder="Tipo de tratamiento"
+                      value={fieldValue}
+                      onChangeText={setFieldValue}
+                  />
+              )}
+              {currentField === "Registrar Inseminacion" && (
+                  <CustomInput
+                      label='Comentario del inseminacion'
+                      placeholder="Proveedor del semen"
+                      value={fieldValue}
+                      onChangeText={setFieldValue}
+                  />
+              )}
+              <CustomButton text="Guardar" onPress={handleCreateRegister} />
+              <CustomButton
+                  text="Cancelar"
+                  onPress={() => {
+                      modalCreateRegister.current?.close();
+                      setCurrentField("");
+                      setFieldValue("");
+                  }}
+                  red
+              />
+          </View>
+      </Modalize>
+
+
     </>
   );
 };

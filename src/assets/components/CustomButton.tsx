@@ -6,13 +6,15 @@ interface CustomButtonProps {
   text: string;
   onPress: () => void;
   disabled?: boolean;
+  red?: boolean;
 }
 
-const CustomButton = ({ text, onPress, disabled }: CustomButtonProps) => {
+const CustomButton = ({ text, onPress, disabled, red }: CustomButtonProps) => {
   return (
     <Pressable
       style={({ pressed }) => [
         styles.container,
+        { backgroundColor: red ? colors.rojo : colors.naranja },
         pressed && styles.pressedContainer,
       ]}
       onPress={onPress}
@@ -25,7 +27,6 @@ const CustomButton = ({ text, onPress, disabled }: CustomButtonProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.naranja,
     paddingVertical: 10,
     paddingHorizontal: 20,
     width: '80%',
