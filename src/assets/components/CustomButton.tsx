@@ -9,18 +9,28 @@ interface CustomButtonProps {
   red?: boolean;
 }
 
-const CustomButton = ({ text, onPress, disabled, red }: CustomButtonProps) => {
+const CustomButton = ({ text, onPress, disabled = false, red = false }: CustomButtonProps) => {
+  const backgroundColor = disabled
+    ? colors.blanco 
+    : red
+    ? colors.rojo
+    : colors.naranja;
+
+  const pressedStyle = disabled ? null : styles.pressedContainer;
+
   return (
     <Pressable
       style={({ pressed }) => [
         styles.container,
-        { backgroundColor: red ? colors.rojo : colors.naranja },
-        pressed && styles.pressedContainer,
+        { backgroundColor },
+        pressed && pressedStyle,
       ]}
-      onPress={onPress}
+      onPress={() => {
+        if (!disabled) onPress();
+      }}
       disabled={disabled}
     >
-      <Text style={styles.text}>{text}</Text>
+      <Text style={[styles.text, disabled && styles.disabledText]}>{text}</Text>
     </Pressable>
   );
 };
@@ -36,12 +46,15 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   pressedContainer: {
-    backgroundColor: colors.naranjaDark, 
+    backgroundColor: colors.naranjaDark,
   },
   text: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  disabledText: {
+    color: colors.fondo, 
   },
 });
 

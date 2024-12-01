@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, StyleProp } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { colors, GlobalStyles } from "../../assets/styles";
 import { useRoute, RouteProp } from "@react-navigation/native";
@@ -91,48 +91,47 @@ const AnimalView = () => {
 
   const handleCreateRegister = async () => {
     if (currentField) {
-        const generateId = () => Math.random().toString(36).substr(2, 9);
+      const generateId = () => Math.random().toString(36).substr(2, 9);
 
-        const baseRegister: Register = {
-            id: generateId(),
-            animalId: id,
-            comentario: fieldValue,
-            accion: currentField,
-            fecha: new Date().toISOString(),
+      const baseRegister: Register = {
+        id: generateId(),
+        animalId: id,
+        comentario: fieldValue,
+        accion: currentField,
+        fecha: new Date().toISOString(),
+      };
+
+      let specificRegister: Register | PregnancyRegister | TreatmentRegister | InseminationRegister;
+
+      if (currentField === "Registrar Embarazo") {
+        specificRegister = {
+          ...baseRegister,
+          fechaPartoEstimada: fieldValue,
         };
+      } else if (currentField === "Registrar Tratamiento") {
+        specificRegister = {
+          ...baseRegister,
+          tipoTratamiento: fieldValue,
+        };
+      } else if (currentField === "Registrar Inseminacion") {
+        specificRegister = {
+          ...baseRegister,
+          semenProveedor: fieldValue,
+        };
+      } else {
+        specificRegister = baseRegister;
+      }
 
-        let specificRegister: Register | PregnancyRegister | TreatmentRegister | InseminationRegister;
+      await saveRegister(specificRegister);
 
-        if (currentField === "Registrar Embarazo") {
-            specificRegister = {
-                ...baseRegister,
-                fechaPartoEstimada: fieldValue,
-            };
-        } else if (currentField === "Registrar Tratamiento") {
-            specificRegister = {
-                ...baseRegister,
-                tipoTratamiento: fieldValue,
-            };
-        } else if (currentField === "Registrar Inseminacion") {
-            specificRegister = {
-                ...baseRegister,
-                semenProveedor: fieldValue,
-            };
-        } else {
-            specificRegister = baseRegister;
-        }
+      // Actualizar lista de registros
+      setRegisters((prev) => [...prev, specificRegister]);
 
-        await saveRegister(specificRegister);
-
-        // Actualizar lista de registros
-        setRegisters((prev) => [...prev, specificRegister]);
-
-        modalCreateRegister.current?.close();
-        setCurrentField("");
-        setFieldValue("");
+      modalCreateRegister.current?.close();
+      setCurrentField("");
+      setFieldValue("");
     }
-};
-
+  };
 
   // Mostrar modal de confirmación para eliminar registro
   const handleDeletePrompt = (item: Register) => {
@@ -169,16 +168,16 @@ const AnimalView = () => {
   return (
     <>
       <SwipeListView
-        style={styles.swipeListContainer} // Estilo general del SwipeListView
+        style={styles.swipeListContainer}
         ListHeaderComponent={
           <View style={styles.headerContainer}>
-            <CustomImage 
-                source={animal!.image}
-                full
-                style={{
-                  marginTop: -16,
-                  marginHorizontal: -16,
-                }}
+            <CustomImage
+              source={animal!.image}
+              full
+              style={{
+                marginTop: -16,
+                marginHorizontal: -16,
+              }}
             />
             <DataViewAnimal animal={animal!} />
             <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
@@ -213,99 +212,43 @@ const AnimalView = () => {
             </TouchableOpacity>
           </View>
         )}
-        
         leftOpenValue={0}
         rightOpenValue={-75}
       />
 
-
-      {/* Modal para confirmación de eliminación */}
       <Modalize ref={confirmDeleteModalRef} modalHeight={200} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>¿Estás seguro de eliminar este registro?</Text>
           <View style={styles.modalActions}>
-            <ModalButton 
-              text="Cancelar" 
-              onPress={() => confirmDeleteModalRef.current?.close()} 
-              actualData=""
-            />
-            <ModalButton 
-              text="Eliminar" 
-              onPress={handleConfirmDelete} 
-              actualData=""
-              red
-            />
+            <ModalButton text="Cancelar" onPress={() => confirmDeleteModalRef.current?.close()} />
+            <ModalButton text="Eliminar" onPress={handleConfirmDelete} red />
           </View>
         </View>
       </Modalize>
 
-      {/* Modal con opciones */}
       <Modalize ref={modalRef} modalHeight={650} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>¿Qué registro deseas realizar?</Text>
-          <ModalButton
-            text="Editar Nombre"
-            actualData={animal!.nombre}
-            onPress={() => handleEditField("nombre", animal!.nombre)}
-          />
-          <ModalButton
-            text="Editar Identificador"
-            actualData={animal!.identificador}
-            onPress={() => handleEditField("identificador", animal!.identificador)}
-          />
-          <ModalButton 
-            text="Editar Peso"
-            actualData={animal!.peso}
-            onPress={() => handleEditField("peso", animal!.peso)}
-          />
-          <ModalButton 
-            text="Editar Proposito"
-            actualData={animal!.proposito}
-            onPress={() => handleEditField("proposito", animal!.proposito)}
-          />
-          <ModalButton 
-            text="Editar Edad"
-            actualData={animal!.edad}
-            onPress={() => handleEditField("edad", animal!.edad)}
-          />
-          <ModalButton
-            text="Editar Ubicación"
-            actualData={animal!.ubicacion}
-            onPress={() => handleEditField("ubicacion", animal!.ubicacion)}
-          />
-          <ModalButton
-            text="Editar Descripción"
-            actualData={animal!.descripcion}
-            onPress={() => handleEditField("descripcion", animal!.descripcion)}
-          />
+          <ModalButton text="Editar Nombre" actualData={animal!.nombre} onPress={() => handleEditField("nombre", animal!.nombre)} />
+          <ModalButton text="Editar Identificador" actualData={animal!.identificador} onPress={() => handleEditField("identificador", animal!.identificador)} />
+          <ModalButton text="Editar Peso" actualData={animal!.peso} onPress={() => handleEditField("peso", animal!.peso)} />
+          <ModalButton text="Editar Propósito" actualData={animal!.proposito} onPress={() => handleEditField("proposito", animal!.proposito)} />
+          <ModalButton text="Editar Edad" actualData={animal!.edad} onPress={() => handleEditField("edad", animal!.edad)} />
+          <ModalButton text="Editar Ubicación" actualData={animal!.ubicacion} onPress={() => handleEditField("ubicacion", animal!.ubicacion)} />
+          <ModalButton text="Editar Descripción" actualData={animal!.descripcion} onPress={() => handleEditField("descripcion", animal!.descripcion)} />
 
-          <View style={{ width: '100%', height: 0.5, backgroundColor: colors.blanco }} />
+          <View style={{ width: "100%", height: 0.5, backgroundColor: colors.blanco }} />
 
-          <ModalButton
-            text="Registrar Embarazo"
-            onPress={() => handleCreateRegisterModal("Registrar Embarazo")}
-          />
-          <ModalButton
-            text="Registrar Tratamiento"
-            onPress={() => handleCreateRegisterModal("Registrar Tratamiento")}
-          />
-          <ModalButton
-            text="Registrar Inseminación"
-            onPress={() => handleCreateRegisterModal("Registrar Inseminacion")}
-          />
-
+          <ModalButton text="Registrar Embarazo" onPress={() => handleCreateRegisterModal("Registrar Embarazo")} />
+          <ModalButton text="Registrar Tratamiento" onPress={() => handleCreateRegisterModal("Registrar Tratamiento")} />
+          <ModalButton text="Registrar Inseminación" onPress={() => handleCreateRegisterModal("Registrar Inseminacion")} />
         </View>
       </Modalize>
 
-      {/* Modal para editar el valor */}
       <Modalize ref={editModalRef} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Editar {currentField}</Text>
-          <TextInput
-            style={styles.input}
-            value={fieldValue}
-            onChangeText={setFieldValue}
-          />
+          <TextInput style={styles.input} value={fieldValue} onChangeText={setFieldValue} />
           <CustomButton text="Guardar" onPress={handleSave} />
           <CustomButton
             text="Cancelar"
@@ -319,50 +262,30 @@ const AnimalView = () => {
         </View>
       </Modalize>
 
-      {/* Modal para registrar datos adicionales */}
       <Modalize ref={modalCreateRegister} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
-          <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>{currentField}</Text>
-              {currentField === "Registrar Embarazo" && (
-                  <>
-                      <CustomInput
-                          label='Comentario'
-                          placeholder="Comentario"
-                          value={fieldValue}
-                          onChangeText={setFieldValue}
-                      />
-                  </>
-              )}
-              {currentField === "Registrar Tratamiento" && (
-                  <CustomInput
-                      label='Comentario del tratamiento'
-                      placeholder="Tipo de tratamiento"
-                      value={fieldValue}
-                      onChangeText={setFieldValue}
-                  />
-              )}
-              {currentField === "Registrar Inseminacion" && (
-                  <CustomInput
-                      label='Comentario del inseminacion'
-                      placeholder="Proveedor del semen"
-                      value={fieldValue}
-                      onChangeText={setFieldValue}
-                  />
-              )}
-              <CustomButton text="Guardar" onPress={handleCreateRegister} />
-              <CustomButton
-                  text="Cancelar"
-                  onPress={() => {
-                      modalCreateRegister.current?.close();
-                      setCurrentField("");
-                      setFieldValue("");
-                  }}
-                  red
-              />
-          </View>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>{currentField}</Text>
+          {currentField === "Registrar Embarazo" && (
+            <CustomInput label="Comentario" placeholder="Comentario" value={fieldValue} onChangeText={setFieldValue} />
+          )}
+          {currentField === "Registrar Tratamiento" && (
+            <CustomInput label="Comentario del tratamiento" placeholder="Tipo de tratamiento" value={fieldValue} onChangeText={setFieldValue} />
+          )}
+          {currentField === "Registrar Inseminacion" && (
+            <CustomInput label="Comentario de inseminación" placeholder="Proveedor del semen" value={fieldValue} onChangeText={setFieldValue} />
+          )}
+          <CustomButton text="Guardar" onPress={handleCreateRegister} />
+          <CustomButton
+            text="Cancelar"
+            onPress={() => {
+              modalCreateRegister.current?.close();
+              setCurrentField("");
+              setFieldValue("");
+            }}
+            red
+          />
+        </View>
       </Modalize>
-
-
     </>
   );
 };
@@ -432,6 +355,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
 
 export default AnimalView;
