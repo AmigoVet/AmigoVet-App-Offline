@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface AnimaliaOfflineTests : XCTestCase
+@interface AnimaliaTests : XCTestCase
 
 @end
 
-@implementation AnimaliaOfflineTests
+@implementation AnimaliaTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {
