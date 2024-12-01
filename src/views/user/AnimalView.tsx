@@ -1,12 +1,15 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TextInput, FlatList } from 'react-native';
 import { colors, GlobalStyles } from '../../assets/styles';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Modalize } from 'react-native-modalize';
 import useAnimals from '../../assets/hooks/useAnimals';
 import { RootStackParamList } from '../Welcome';
-import { CustomButton, DataViewAnimal, ModalButton } from '../../assets/components';
-import { updateAnimalData } from '../../assets/utils/asyncStorage';
+import { CustomButton, DataViewAnimal, ModalButton, RowRegister } from '../../assets/components';
+import { saveRegister } from '../../assets/utils/asyncStorage';
+import { useRegisters } from '../../assets/hooks/useRegisters';
+import { Register } from '../../assets/interfaces/registers'; 
+import Header from '../../assets/components/Header';
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'AnimalView'>>();
@@ -17,6 +20,16 @@ const AnimalView = () => {
 
   const [currentField, setCurrentField] = useState('');
   const [fieldValue, setFieldValue] = useState('');
+  const [registers, setRegisters] = useState<Register[]>([]); 
+
+  // Cargar registros del animal al montar el componente
+  useEffect(() => {
+    const fetchRegisters = async () => {
+      const loadedRegisters = await useRegisters(id);
+      setRegisters(loadedRegisters);
+    };
+    fetchRegisters();
+  }, [id]);
 
   // Abre el modal con las opciones
   const handleOpenModal = () => {
@@ -31,10 +44,24 @@ const AnimalView = () => {
     editModalRef.current?.open();
   };
 
-  // Guarda el valor actualizado en AsyncStorage
+  // Guarda el valor actualizado y crea un registro
   const handleSave = async () => {
     if (currentField) {
-      await updateAnimalData(id, currentField, fieldValue);
+      const generateId = () => Math.random().toString(36).substr(2, 9);
+
+      const register: Register = {
+        id: generateId(),
+        animalId: id,
+        comentario: fieldValue,
+        accion: `Cambio de ${currentField}`,
+        fecha: new Date().toISOString(),
+      };
+
+      await saveRegister(register);
+
+      // Actualizar registros en el estado
+      setRegisters((prev) => [...prev, register]);
+
       editModalRef.current?.close();
       setCurrentField('');
       setFieldValue('');
@@ -59,14 +86,28 @@ const AnimalView = () => {
 
   return (
     <>
-      <DataViewAnimal animal={animal!} />
+      
 
-      <View style={styles.container}>
-        <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
-        <View>
+        
+          
+      <FlatList
+        ListHeaderComponent={
+        <>
+          <DataViewAnimal animal={animal!} />
+          <View style={styles.container}>
+          <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
           <Text style={GlobalStyles.title}>Registros</Text>
-        </View>
-      </View>
+          </View>
+        </>}
+        data={registers}
+        keyExtractor={(item) => item.id}
+
+        renderItem={({ item }) => (
+          <RowRegister 
+            register={item}
+          />
+        )}
+      />
 
       {/* Modal con opciones */}
       <Modalize
@@ -78,33 +119,33 @@ const AnimalView = () => {
           <Text style={styles.modalTitle}>¿Qué registro deseas realizar?</Text>
           <ModalButton
             text="Editar Nombre"
-            actualData={animal!.name}
-            onPress={() => handleEditField('name', animal!.name)}
+            actualData={animal!.nombre}
+            onPress={() => handleEditField('nombre', animal!.nombre)}
           />
           <ModalButton
             text="Editar Identificador"
-            actualData={animal!.identifier}
-            onPress={() => handleEditField('identifier', animal!.identifier)}
+            actualData={animal!.identificador}
+            onPress={() => handleEditField('identificador', animal!.identificador)}
           />
           <ModalButton
             text="Editar Edad"
-            actualData={animal!.age}
-            onPress={() => handleEditField('age', animal!.age)}
+            actualData={animal!.edad}
+            onPress={() => handleEditField('edad', animal!.edad)}
           />
           <ModalButton
             text="Editar Peso"
-            actualData={animal!.weight}
-            onPress={() => handleEditField('weight', animal!.weight)}
+            actualData={animal!.peso}
+            onPress={() => handleEditField('peso', animal!.peso)}
           />
           <ModalButton
             text="Editar Descripción"
-            actualData={animal!.description}
-            onPress={() => handleEditField('description', animal!.description)}
+            actualData={animal!.descripcion}
+            onPress={() => handleEditField('descripcion', animal!.descripcion)}
           />
           <ModalButton
             text="Editar Propósito"
-            actualData={animal!.purpose}
-            onPress={() => handleEditField('purpose', animal!.purpose)}
+            actualData={animal!.proposito}
+            onPress={() => handleEditField('proposito', animal!.proposito)}
           />
           <ModalButton
             text="Editar Ubicación"
@@ -168,6 +209,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 8,
     backgroundColor: '#fff',
+  },
+  registerItem: {
+    marginVertical: 4,
+    padding: 8,
+    borderRadius: 4,
+    backgroundColor: colors.naranja,
+  },
+  registerText: {
+    color: colors.blancoLight,
   },
 });
 

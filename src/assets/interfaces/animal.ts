@@ -2,17 +2,17 @@
 
 export interface Animal {
     id: string;
-    identifier: string;
-    name: string;
-    species: string;
-    breed: string;
-    age: string;
-    gender: string;
-    weight: string;
+    identificador: string;
+    nombre: string;
+    especie: string;
+    raza: string;
+    edad: string;
+    genero: string;
+    peso: string;
     color: string;
-    description: string;
+    descripcion: string;
     image: string;
-    purpose: string;
+    proposito: string;
     ubicacion: string;
     created_at: string;
     updated_at: string;

@@ -24,17 +24,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const New: React.FC = () => {
   // Estados para los campos del formulario
-  const [name, setName] = useState<string>('');
-  const [identifier, setIdentifier] = useState<string>('');
-  const [species, setSpecies] = useState<string>('');
-  const [breed, setBreed] = useState<string>('');
-  const [age, setAge] = useState<string>('');
-  const [gender, setGender] = useState<string>('');
-  const [weight, setWeight] = useState<string>('');
+  const [nombre, setNombre] = useState<string>('');
+  const [identificador, setIdentificador] = useState<string>('');
+  const [especie, setEspecie] = useState<string>('');
+  const [raza, setRaza] = useState<string>('');
+  const [edad, setEdad] = useState<string>('');
+  const [genero, setGenero] = useState<string>('');
+  const [peso, setPeso] = useState<string>('');
   const [color, setColor] = useState<string>('');
   const [image, setImage] = useState<string | null>(null);
-  const [description, setDescription] = useState<string>('');
-  const [purpose, setPurpose] = useState<string>('');
+  const [descripcion, setDescripcion] = useState<string>('');
+  const [proposito, setProposito] = useState<string>('');
   const [ubicacion, setUbicacion] = useState<string>('');
 
   // Función para guardar imagen localmente
@@ -130,7 +130,7 @@ const New: React.FC = () => {
 
   // Manejar el envío del formulario
   const handleSubmit = () => {
-    if (!name || !species || !breed || !age || !weight || !description || !purpose) {
+    if (!nombre || !especie || !raza || !edad || !peso || !descripcion || !proposito) {
       Alert.alert('Error', 'Por favor, completa todos los campos obligatorios');
       return;
     }
@@ -141,17 +141,17 @@ const New: React.FC = () => {
 
     const animal = {
       id: generateId(),
-      identifier,
-      name,
-      species,
-      breed,
-      age,
-      gender,
-      weight,
+      identificador,
+      nombre,
+      especie,
+      raza,
+      edad,
+      genero,
+      peso,
       color,
       image: image || '',
-      description,
-      purpose,
+      descripcion,
+      proposito,
       ubicacion,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -169,16 +169,16 @@ const New: React.FC = () => {
   };
 
   const resetForm = () => {
-    setName('');
-    setSpecies('');
-    setBreed('');
-    setAge('');
-    setGender('');
-    setWeight('');
+    setNombre('');
+    setEspecie('');
+    setRaza('');
+    setEdad('');
+    setGenero('');
+    setPeso('');
     setColor('');
     setImage(null);
-    setDescription('');
-    setPurpose('');
+    setDescripcion('');
+    setProposito('');
     setUbicacion('');
   };
 
@@ -220,46 +220,46 @@ const New: React.FC = () => {
       {/* Campos de formulario */}
       <CustomInput
         label="Nombre"
-        value={name}
-        onChangeText={setName}
+        value={nombre}
+        onChangeText={setNombre}
         placeholder="Nombre del animal"
       />
       <CustomInput
         label="Identificador"
-        value={identifier}
-        onChangeText={setIdentifier}
+        value={identificador}
+        onChangeText={setIdentificador}
         placeholder="Identificador del animal"
       />
       <CustomInput
         label="Especie"
-        value={species}
-        onChangeText={setSpecies}
+        value={especie}
+        onChangeText={setEspecie}
         placeholder="Especie (e.g., Vaca, Caballo)"
       />
       <CustomInput
         label="Raza"
-        value={breed}
-        onChangeText={setBreed}
+        value={raza}
+        onChangeText={setRaza}
         placeholder="Raza del animal"
       />
       <CustomInput
         label="Edad"
-        value={age}
-        onChangeText={setAge}
+        value={edad}
+        onChangeText={setEdad}
         placeholder="Edad en años"
         type='number'
       />
       <CustomInput
         label="Peso"
-        value={weight}
-        onChangeText={setWeight}
+        value={peso}
+        onChangeText={setPeso}
         placeholder="Peso en kg"
         type='number'
       />
       <CustomInput
         label="Género"
-        value={gender}
-        onChangeText={setGender}
+        value={genero}
+        onChangeText={setGenero}
         placeholder="Género"
       />
       <CustomInput
@@ -270,8 +270,8 @@ const New: React.FC = () => {
       />
       <CustomInput
         label="Propósito"
-        value={purpose}
-        onChangeText={setPurpose}
+        value={proposito}
+        onChangeText={setProposito}
         placeholder="Propósito (e.g., Leche, Reproducción)"
       />
       <CustomInput
@@ -282,8 +282,8 @@ const New: React.FC = () => {
       />
       <CustomInput
         label="Descripción"
-        value={description}
-        onChangeText={setDescription}
+        value={descripcion}
+        onChangeText={setDescripcion}
         placeholder="Descripción adicional"
         multiline
       />

@@ -21,30 +21,30 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
       />
       
       <View style={styles.titleContainer}>
-        <Text style={[GlobalStyles.title]}>{animal?.name}<Text style={[GlobalStyles.miniText]}>({animal?.id})</Text></Text>
-        <Text style={[GlobalStyles.subTitle]}>{animal?.species}</Text>
+        <Text style={[GlobalStyles.title]}>{animal?.nombre}<Text style={[GlobalStyles.miniText]}>({animal?.id})</Text></Text>
+        <Text style={[GlobalStyles.subTitle]}>{animal?.identificador}</Text>
       </View>
 
       <View style={styles.dataContainer}>
-        <Text style={GlobalStyles.textWhite}>Especie: <Text style={[GlobalStyles.textOrange]}>{animal?.species}</Text></Text>
-        <Text style={GlobalStyles.textWhite}>Raza: <Text style={[GlobalStyles.textOrange]}>{animal?.breed}</Text></Text>
+        <Text style={GlobalStyles.textWhite}>Especie: <Text style={[GlobalStyles.textOrange]}>{animal?.especie}</Text></Text>
+        <Text style={GlobalStyles.textWhite}>Raza: <Text style={[GlobalStyles.textOrange]}>{animal?.raza}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Color: <Text style={[GlobalStyles.textOrange]}>{animal?.color}</Text></Text>
       </View>
 
       <CustomInput 
         label="Descripción"
         placeholder='Escribe una descripción'
-        value={animal!.description}
+        value={animal!.descripcion}
         onChangeText={() => {}}
         multiline
         editable={false}
       />
 
       <AnimalTable 
-        peso={animal!.weight}
-        genero={animal!.gender}
-        proposito={animal!.purpose}
-        edad={animal!.age}
+        peso={animal!.peso}
+        genero={animal!.genero}
+        proposito={animal!.proposito}
+        edad={animal!.edad}
       />
       
       <View style={styles.dataContainer}>

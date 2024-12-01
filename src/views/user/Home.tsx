@@ -28,7 +28,7 @@ const Home = () => {
                             animal.image = '';
                         }
                     } catch (error) {
-                        console.error(`Error verificando imagen para ${animal.name}:`, error);
+                        console.error(`Error verificando imagen para ${animal.nombre}:`, error);
                         animal.image = '';
                     }
                 }
