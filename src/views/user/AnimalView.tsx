@@ -65,9 +65,11 @@ const AnimalView = () => {
         accion: `Cambio de ${currentField}`,
         fecha: new Date().toISOString(),
       };
-      updateAnimalData(id, "updatedAt", new Date().toISOString());
 
+      await updateAnimalData(id, currentField, fieldValue);
       await saveRegister(register);
+
+      await updateAnimalData(id, "updatedAt", new Date().toISOString());
 
       // Actualizar registros en el estado
       setRegisters((prev) => [...prev, register]);
@@ -193,7 +195,38 @@ const AnimalView = () => {
             actualData={animal!.nombre}
             onPress={() => handleEditField("nombre", animal!.nombre)}
           />
-          {/* Otros botones */}
+          <ModalButton
+            text="Editar Identificador"
+            actualData={animal!.identificador}
+            onPress={() => handleEditField("identificador", animal!.identificador)}
+          />
+          <ModalButton 
+            text="Editar Peso"
+            actualData={animal!.peso}
+            onPress={() => handleEditField("peso", animal!.peso)}
+          />
+          <ModalButton 
+            text="Editar Proposito"
+            actualData={animal!.proposito}
+            onPress={() => handleEditField("proposito", animal!.proposito)}
+          />
+          <ModalButton 
+            text="Editar Edad"
+            actualData={animal!.edad}
+            onPress={() => handleEditField("edad", animal!.edad)}
+          />
+          <ModalButton
+            text="Editar Ubicación"
+            actualData={animal!.ubicacion}
+            onPress={() => handleEditField("ubicacion", animal!.ubicacion)}
+          />
+          <ModalButton
+            text="Editar Descripción"
+            actualData={animal!.descripcion}
+            onPress={() => handleEditField("descripcion", animal!.descripcion)}
+          />
+          
+
         </View>
       </Modalize>
 
