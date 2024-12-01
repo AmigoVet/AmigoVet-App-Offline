@@ -24,7 +24,6 @@ const RowRegister = ({ register, isLast = false, bgColor = colors.rowBgDark }: R
       paddingHorizontal: 8,
       borderBottomRightRadius: isLast ? 10 : 0,
       borderBottomLeftRadius: isLast ? 10 : 0,
-      marginBottom: isLast ? 40 : 0,
       paddingVertical: 8, 
     },
     column: {
@@ -38,12 +37,6 @@ const RowRegister = ({ register, isLast = false, bgColor = colors.rowBgDark }: R
   });
 
   return (
-    <View style={{
-        backgroundColor: colors.fondo,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }}>
-
     <View style={styles.container}>
       <View style={styles.column}>
         <Text style={styles.text}>{format(new Date(register.fecha), 'yyyy-MM-dd')}</Text>
@@ -54,9 +47,6 @@ const RowRegister = ({ register, isLast = false, bgColor = colors.rowBgDark }: R
       <View style={styles.column}>
         <Text style={styles.text}>{register.comentario}</Text>
       </View>
-    </View>
-
-
     </View>
 
   );

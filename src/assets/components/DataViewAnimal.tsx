@@ -14,11 +14,8 @@ interface DataViewAnimalProps {
 
 const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
   return (
-<ScrollView contentContainerStyle={[GlobalStyles.container, {paddingTop: 0, flex: 1}]}>
-      <CustomImage 
-          source={animal!.image}
-          full
-      />
+<ScrollView contentContainerStyle={{}}>
+
       
       <View style={styles.titleContainer}>
         <Text style={[GlobalStyles.title]}>{animal?.nombre}<Text style={[GlobalStyles.miniText]}>({animal?.id})</Text></Text>

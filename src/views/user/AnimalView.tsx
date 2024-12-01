@@ -1,26 +1,35 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList } from 'react-native';
-import { colors, GlobalStyles } from '../../assets/styles';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { Modalize } from 'react-native-modalize';
-import useAnimals from '../../assets/hooks/useAnimals';
-import { RootStackParamList } from '../Welcome';
-import { CustomButton, DataViewAnimal, HeaderRegisterTable, ModalButton, RowRegister } from '../../assets/components';
-import { saveRegister, updateAnimalData } from '../../assets/utils/asyncStorage';
-import { useRegisters } from '../../assets/hooks/useRegisters';
-import { Register } from '../../assets/interfaces/registers'; 
-import Header from '../../assets/components/Header';
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, StyleProp } from 'react-native';
+import { SwipeListView } from "react-native-swipe-list-view";
+import { colors, GlobalStyles } from "../../assets/styles";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import { Modalize } from "react-native-modalize";
+import useAnimals from "../../assets/hooks/useAnimals";
+import {
+  CustomButton,
+  CustomImage,
+  DataViewAnimal,
+  HeaderRegisterTable,
+  ModalButton,
+  RowRegister,
+} from "../../assets/components";
+import { saveRegister, updateAnimalData } from "../../assets/utils/asyncStorage";
+import { useRegisters } from "../../assets/hooks/useRegisters";
+import { Register } from "../../assets/interfaces/registers";
+import { RootStackParamList } from "../Welcome";
 
 const AnimalView = () => {
-  const route = useRoute<RouteProp<RootStackParamList, 'AnimalView'>>();
+  const route = useRoute<RouteProp<RootStackParamList, "AnimalView">>();
   const { id } = route.params;
   const { animal, isLoading, error } = useAnimals(id);
   const modalRef = useRef<Modalize>(null);
   const editModalRef = useRef<Modalize>(null);
+  const confirmDeleteModalRef = useRef<Modalize>(null);
 
-  const [currentField, setCurrentField] = useState('');
-  const [fieldValue, setFieldValue] = useState('');
-  const [registers, setRegisters] = useState<Register[]>([]); 
+  const [currentField, setCurrentField] = useState("");
+  const [fieldValue, setFieldValue] = useState("");
+  const [registers, setRegisters] = useState<Register[]>([]);
+  const [registerToDelete, setRegisterToDelete] = useState<Register | null>(null);
 
   // Cargar registros del animal al montar el componente
   useEffect(() => {
@@ -64,8 +73,25 @@ const AnimalView = () => {
       setRegisters((prev) => [...prev, register]);
 
       editModalRef.current?.close();
-      setCurrentField('');
-      setFieldValue('');
+      setCurrentField("");
+      setFieldValue("");
+    }
+  };
+
+  // Mostrar modal de confirmación para eliminar registro
+  const handleDeletePrompt = (item: Register) => {
+    setRegisterToDelete(item);
+    confirmDeleteModalRef.current?.open();
+  };
+
+  // Confirmar eliminación del registro
+  const handleConfirmDelete = () => {
+    if (registerToDelete) {
+      const newRegisters = registers.filter((item) => item.id !== registerToDelete.id);
+      setRegisters(newRegisters);
+      Alert.alert("Registro eliminado", "El registro fue eliminado correctamente.");
+      setRegisterToDelete(null);
+      confirmDeleteModalRef.current?.close();
     }
   };
 
@@ -86,89 +112,92 @@ const AnimalView = () => {
 
   return (
     <>
-      
-      <FlatList
-  ListHeaderComponent={
-    <>
-      <DataViewAnimal animal={animal!} />
-      <View style={styles.container}>
-        <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
-      </View>
-    </>
-  }
-  data={registers}
-  keyExtractor={(item) => item.id}
-  ListEmptyComponent={
-    <View style={GlobalStyles.container}>
-      <Text style={GlobalStyles.error}>No hay registros para mostrar</Text> 
-    </View>
-  }
-  renderItem={({ item, index }) => (
-    <>
-      {index === 0 && <HeaderRegisterTable />}
-      <RowRegister
-        register={item}
-        bgColor={index % 2 === 0 ? colors.rowBgDark : colors.rowBgLight}
-        isLast={index === registers.length - 1}
+      <SwipeListView
+        style={styles.swipeListContainer} // Estilo general del SwipeListView
+        ListHeaderComponent={
+          <View style={styles.headerContainer}>
+            <CustomImage 
+                source={animal!.image}
+                full
+                style={{
+                  marginTop: -16,
+                  marginHorizontal: -16,
+                }}
+            />
+            <DataViewAnimal animal={animal!} />
+            <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
+            {registers.length > 0 && <HeaderRegisterTable />}
+          </View>
+        }
+        ListFooterComponent={<View style={{ height: 100 }} />}
+        data={registers}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item, index }) => (
+          <RowRegister
+            register={item}
+            bgColor={index % 2 === 0 ? colors.rowBgDark : colors.rowBgLight}
+            isLast={index === registers.length - 1}
+          />
+        )}
+        renderHiddenItem={({ item, index }) => (
+          <View
+            style={[
+              styles.hiddenContainer,
+              index === registers.length - 1 && styles.lastHiddenContainer,
+            ]}
+          >
+            <TouchableOpacity
+              style={[
+                styles.deleteButton,
+                index === registers.length - 1 && styles.lastDeleteButton,
+              ]}
+              onPress={() => handleDeletePrompt(item)}
+            >
+              <Text style={styles.deleteText}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        
+        leftOpenValue={0}
+        rightOpenValue={-75}
       />
-    </>
-  )}
-/>
 
 
+      {/* Modal para confirmación de eliminación */}
+      <Modalize ref={confirmDeleteModalRef} modalHeight={200} modalStyle={{ backgroundColor: colors.fondo }}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>¿Estás seguro de eliminar este registro?</Text>
+          <View style={styles.modalActions}>
+            <ModalButton 
+              text="Cancelar" 
+              onPress={() => confirmDeleteModalRef.current?.close()} 
+              actualData=""
+            />
+            <ModalButton 
+              text="Eliminar" 
+              onPress={handleConfirmDelete} 
+              actualData=""
+              red
+            />
+          </View>
+        </View>
+      </Modalize>
 
       {/* Modal con opciones */}
-      <Modalize
-        ref={modalRef}
-        modalHeight={650}
-        modalStyle={{ backgroundColor: colors.fondo }}
-      >
+      <Modalize ref={modalRef} modalHeight={650} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>¿Qué registro deseas realizar?</Text>
           <ModalButton
             text="Editar Nombre"
             actualData={animal!.nombre}
-            onPress={() => handleEditField('nombre', animal!.nombre)}
+            onPress={() => handleEditField("nombre", animal!.nombre)}
           />
-          <ModalButton
-            text="Editar Identificador"
-            actualData={animal!.identificador}
-            onPress={() => handleEditField('identificador', animal!.identificador)}
-          />
-          <ModalButton
-            text="Editar Edad"
-            actualData={animal!.edad}
-            onPress={() => handleEditField('edad', animal!.edad)}
-          />
-          <ModalButton
-            text="Editar Peso"
-            actualData={animal!.peso}
-            onPress={() => handleEditField('peso', animal!.peso)}
-          />
-          <ModalButton
-            text="Editar Descripción"
-            actualData={animal!.descripcion}
-            onPress={() => handleEditField('descripcion', animal!.descripcion)}
-          />
-          <ModalButton
-            text="Editar Propósito"
-            actualData={animal!.proposito}
-            onPress={() => handleEditField('proposito', animal!.proposito)}
-          />
-          <ModalButton
-            text="Editar Ubicación"
-            actualData={animal!.ubicacion}
-            onPress={() => handleEditField('ubicacion', animal!.ubicacion)}
-          />
+          {/* Otros botones */}
         </View>
       </Modalize>
 
       {/* Modal para editar el valor */}
-      <Modalize
-        ref={editModalRef}
-        modalHeight={300}
-        modalStyle={{ backgroundColor: colors.fondo }}
-      >
+      <Modalize ref={editModalRef} modalHeight={300} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Editar {currentField}</Text>
           <TextInput
@@ -181,8 +210,8 @@ const AnimalView = () => {
             text="Cancelar"
             onPress={() => {
               editModalRef.current?.close();
-              setCurrentField('');
-              setFieldValue('');
+              setCurrentField("");
+              setFieldValue("");
             }}
           />
         </View>
@@ -192,41 +221,70 @@ const AnimalView = () => {
 };
 
 const styles = StyleSheet.create({
+  swipeListContainer: {
+    flex: 1,
+    backgroundColor: colors.fondo,
+    padding: 16,
+  },
+  headerContainer: {},
   container: {
     padding: 16,
     backgroundColor: colors.fondo,
   },
   modalContent: {
     padding: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
     color: colors.naranja,
-    textAlign: 'center',
+    textAlign: "center",
+  },
+  modalActions: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
   },
   input: {
-    width: '90%',
+    width: "90%",
     height: 40,
     borderColor: colors.naranja,
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 16,
     paddingHorizontal: 8,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
-  registerItem: {
-    marginVertical: 4,
-    padding: 8,
-    borderRadius: 4,
-    backgroundColor: colors.naranja,
+  hiddenContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "flex-end",
+    backgroundColor: colors.rojo,
   },
-  registerText: {
+  lastHiddenContainer: {
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  deleteButton: {
+    width: 75,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.rojo,
+  },
+  lastDeleteButton: {
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  deleteText: {
     color: colors.blancoLight,
+    fontWeight: "bold",
   },
 });
+
 
 export default AnimalView;

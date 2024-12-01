@@ -4,28 +4,20 @@ import { colors } from '../styles';
 
 interface ModalButtonProps {
     text: string;
-    actualData: string;
+    actualData?: string;
     onPress: () => void;
+    red?: boolean;
 }
 
-const ModalButton = ({ text, onPress, actualData }: ModalButtonProps) => {
+const ModalButton = ({ text, onPress, actualData, red }: ModalButtonProps) => {
 
-
-
-  return (
-    <TouchableOpacity style={styles.modalOption} onPress={() => onPress()}>
-        <Text style={styles.modalOptionText}>{text}({actualData})</Text>
-    </TouchableOpacity>
-  )
-}
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
     modalOption: {
         paddingVertical: 5,
         paddingHorizontal: 10,
         marginVertical: 8,
         width: '70%',
-        backgroundColor: colors.naranja,
+        backgroundColor: red ? colors.rojo : colors.naranja,
         borderRadius: 8,
       },
       modalOptionText: {
@@ -34,6 +26,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
       },
 })
+
+  return (
+    <TouchableOpacity style={styles.modalOption} onPress={() => onPress()}>
+        <Text style={styles.modalOptionText}>{text}{actualData ? `: ${actualData}` : ''}</Text>
+    </TouchableOpacity>
+  )
+}
+
+
 
 
 export default ModalButton
