@@ -5,8 +5,8 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { Modalize } from 'react-native-modalize';
 import useAnimals from '../../assets/hooks/useAnimals';
 import { RootStackParamList } from '../Welcome';
-import { CustomButton, DataViewAnimal, ModalButton, RowRegister } from '../../assets/components';
-import { saveRegister } from '../../assets/utils/asyncStorage';
+import { CustomButton, DataViewAnimal, HeaderRegisterTable, ModalButton, RowRegister } from '../../assets/components';
+import { saveRegister, updateAnimalData } from '../../assets/utils/asyncStorage';
 import { useRegisters } from '../../assets/hooks/useRegisters';
 import { Register } from '../../assets/interfaces/registers'; 
 import Header from '../../assets/components/Header';
@@ -56,6 +56,7 @@ const AnimalView = () => {
         accion: `Cambio de ${currentField}`,
         fecha: new Date().toISOString(),
       };
+      updateAnimalData(id, "updatedAt", new Date().toISOString());
 
       await saveRegister(register);
 
@@ -75,7 +76,6 @@ const AnimalView = () => {
       </View>
     );
   }
-
   if (error) {
     return (
       <View style={GlobalStyles.errorContainer}>
@@ -87,27 +87,35 @@ const AnimalView = () => {
   return (
     <>
       
-
-        
-          
       <FlatList
-        ListHeaderComponent={
-        <>
-          <DataViewAnimal animal={animal!} />
-          <View style={styles.container}>
-          <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
-          <Text style={GlobalStyles.title}>Registros</Text>
-          </View>
-        </>}
-        data={registers}
-        keyExtractor={(item) => item.id}
-
-        renderItem={({ item }) => (
-          <RowRegister 
-            register={item}
-          />
-        )}
+  ListHeaderComponent={
+    <>
+      <DataViewAnimal animal={animal!} />
+      <View style={styles.container}>
+        <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
+      </View>
+    </>
+  }
+  data={registers}
+  keyExtractor={(item) => item.id}
+  ListEmptyComponent={
+    <View style={GlobalStyles.container}>
+      <Text style={GlobalStyles.error}>No hay registros para mostrar</Text> 
+    </View>
+  }
+  renderItem={({ item, index }) => (
+    <>
+      {index === 0 && <HeaderRegisterTable />}
+      <RowRegister
+        register={item}
+        bgColor={index % 2 === 0 ? colors.rowBgDark : colors.rowBgLight}
+        isLast={index === registers.length - 1}
       />
+    </>
+  )}
+/>
+
+
 
       {/* Modal con opciones */}
       <Modalize

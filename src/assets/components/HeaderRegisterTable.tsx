@@ -1,30 +1,21 @@
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import React from 'react';
-import { Register } from '../interfaces/registers';
 import { colors, GlobalStyles } from '../styles';
-import { format } from 'date-fns';
 
-interface RowRegisterProps {
-  register: Register;
-  isLast?: boolean;
-  bgColor?: string;
-}
-
-const RowRegister = ({ register, isLast = false, bgColor = colors.rowBgDark }: RowRegisterProps) => {
-
-    const windowWidth = Dimensions.get('window').width;
+const HeaderRegisterTable = () => {
+  const windowWidth = Dimensions.get('window').width; 
 
   const styles = StyleSheet.create({
     container: {
       width: windowWidth - 32,
+      height: 40,
       flexDirection: 'row',
-      backgroundColor: bgColor,
+      backgroundColor: colors.naranja,
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: 8,
-      borderBottomRightRadius: isLast ? 10 : 0,
-      borderBottomLeftRadius: isLast ? 10 : 0,
-      marginBottom: isLast ? 40 : 0,
+      borderTopRightRadius: 10 ,
+      borderTopLeftRadius: 10,
       paddingVertical: 8, 
     },
     column: {
@@ -43,23 +34,23 @@ const RowRegister = ({ register, isLast = false, bgColor = colors.rowBgDark }: R
         justifyContent: 'center',
         alignItems: 'center',
     }}>
+    <Text style={[GlobalStyles.title, {textAlign: 'center'}]}>Registros</Text>
 
     <View style={styles.container}>
       <View style={styles.column}>
-        <Text style={styles.text}>{format(new Date(register.fecha), 'yyyy-MM-dd')}</Text>
+        <Text style={styles.text}>Fecha</Text>
       </View>
       <View style={styles.column}>
-        <Text style={styles.text}>{register.accion}</Text>
+        <Text style={styles.text}>Acción</Text>
       </View>
       <View style={styles.column}>
-        <Text style={styles.text}>{register.comentario}</Text>
+        <Text style={styles.text}>Comentario</Text>
       </View>
     </View>
-
 
     </View>
 
   );
 };
 
-export default RowRegister;
+export default HeaderRegisterTable;

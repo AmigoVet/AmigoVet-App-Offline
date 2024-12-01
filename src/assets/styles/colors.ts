@@ -8,4 +8,6 @@ export const colors = {
   naranjaDark: '#c35a00',
   rojo: '#8a0015',
   rojoLight: '#d42a35',
+  rowBgLight: '#888b8d',
+  rowBgDark: '#625b5b',
 }

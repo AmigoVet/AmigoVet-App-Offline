@@ -12,3 +12,4 @@ export { default as EditTableText } from './EditTableText';
 export { default as DataViewAnimal } from './DataViewAnimal';
 export { default as ModalButton } from './ModalButton';
 export { default as RowRegister } from './RowRegister';
+export { default as HeaderRegisterTable } from './HeaderRegisterTable';
