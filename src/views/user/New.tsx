@@ -16,6 +16,7 @@ import {
   ImageLibraryOptions,
 } from "react-native-image-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import useAuthStore from "../../assets/store/authStore";
 
 const New: React.FC = () => {
   const [nombre, setNombre] = useState<string>("");
@@ -30,6 +31,8 @@ const New: React.FC = () => {
   const [ubicacion, setUbicacion] = useState<string>("");
   const [descripcion, setDescripcion] = useState<string>("");
   const [image, setImage] = useState<string | null>(null);
+
+  const user = useAuthStore((state) => state.user);
 
   const razasDisponibles = especie ? especiesRazasMap[especie] : [];
 
@@ -102,6 +105,7 @@ const New: React.FC = () => {
     }
 
     const animal = {
+      ownerId: user?.userId,
       id: Math.random().toString(36).substr(2, 9),
       nombre,
       identificador,

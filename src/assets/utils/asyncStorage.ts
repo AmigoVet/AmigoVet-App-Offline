@@ -15,15 +15,18 @@ const saveData = async (animal: Animal) => {
     }
 };
 
-const loadData = async () => {
-    try {
-        const data = await AsyncStorage.getItem('animals');
-        return data ? JSON.parse(data) : [];
-    } catch (error) {
-        console.error('Error al cargar datos:', error);
-        return [];
-    }
+const loadData = async (ownerId: string) => {
+  try {
+      const data = await AsyncStorage.getItem('animals');
+      const animals: Animal[] = data ? JSON.parse(data) : [];
+      // Filtrar por ownerId
+      return animals.filter(animal => animal.ownerId === ownerId);
+  } catch (error) {
+      console.error('Error al cargar datos:', error);
+      return [];
+  }
 };
+
 
 const getAnimalById = async (id: string): Promise<Animal | null> => {
     try {
