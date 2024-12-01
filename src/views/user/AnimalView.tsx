@@ -13,7 +13,7 @@ import {
   ModalButton,
   RowRegister,
 } from "../../assets/components";
-import { saveRegister, updateAnimalData } from "../../assets/utils/asyncStorage";
+import { deleteRegisterById, saveRegister, updateAnimalData } from "../../assets/utils/asyncStorage";
 import { useRegisters } from "../../assets/hooks/useRegisters";
 import { Register } from "../../assets/interfaces/registers";
 import { RootStackParamList } from "../Welcome";
@@ -81,6 +81,7 @@ const AnimalView = () => {
   // Mostrar modal de confirmación para eliminar registro
   const handleDeletePrompt = (item: Register) => {
     setRegisterToDelete(item);
+    deleteRegisterById(item.id);
     confirmDeleteModalRef.current?.open();
   };
 
