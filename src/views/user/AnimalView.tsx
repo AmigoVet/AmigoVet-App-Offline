@@ -1,45 +1,54 @@
-import React, { useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
-import { GlobalStyles } from '../../assets/styles';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { colors, GlobalStyles } from '../../assets/styles';
 import { useRoute, RouteProp } from '@react-navigation/native';
+import { Modalize } from 'react-native-modalize';
 import useAnimals from '../../assets/hooks/useAnimals';
 import { RootStackParamList } from '../Welcome';
-import { AnimalTable, CustomButton, CustomImage, CustomInput, EditTableText } from '../../assets/components';
+import { CustomButton, DataViewAnimal, ModalButton } from '../../assets/components';
+import { updateAnimalData } from '../../assets/utils/asyncStorage';
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'AnimalView'>>();
   const { id } = route.params;
   const { animal, isLoading, error } = useAnimals(id);
+  const modalRef = useRef<Modalize>(null);
+  const editModalRef = useRef<Modalize>(null);
 
+  const [currentField, setCurrentField] = useState('');
+  const [fieldValue, setFieldValue] = useState('');
 
-  const [name, setName] = useState(animal?.name)
-  const [identifier, setIdentifier] = useState(animal?.identifier)
-  const [raza, setRaza] = useState(animal?.breed)
-  const [species, setSpecies] = useState(animal?.species)
-  const [description, setDescription] = useState(animal?.description)
-  const [age, setAge] = useState(animal?.age)
-  const [purpose, setPurpose] = useState(animal?.purpose)
-  const [ubication, setUbication] = useState(animal?.ubicacion)
+  // Abre el modal con las opciones
+  const handleOpenModal = () => {
+    modalRef.current?.open();
+  };
 
-  const handleSave = () => {
-    console.log('Guardando datos');
-    console.log(name);
-    console.log(species);
-    console.log(description);
-    console.log(age);
-    console.log(purpose);
-    console.log(ubication);
-  }
+  // Abre el segundo modal para editar un campo
+  const handleEditField = (field: string, value: string) => {
+    setCurrentField(field);
+    setFieldValue(value);
+    modalRef.current?.close();
+    editModalRef.current?.open();
+  };
 
+  // Guarda el valor actualizado en AsyncStorage
+  const handleSave = async () => {
+    if (currentField) {
+      await updateAnimalData(id, currentField, fieldValue);
+      editModalRef.current?.close();
+      setCurrentField('');
+      setFieldValue('');
+    }
+  };
 
   if (isLoading) {
     return (
       <View style={GlobalStyles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
         <Text>Cargando información del animal...</Text>
       </View>
     );
   }
+
   if (error) {
     return (
       <View style={GlobalStyles.errorContainer}>
@@ -47,115 +56,119 @@ const AnimalView = () => {
       </View>
     );
   }
+
   return (
-    <ScrollView contentContainerStyle={[GlobalStyles.container, {paddingTop: 0}]}>
-      <CustomImage 
-          source={animal!.image}
-          full
-      />
+    <>
+      <DataViewAnimal animal={animal!} />
 
-      <View style={styles.titleContainer}>
-        <EditTableText 
-          placeholder='Nombre'
-          value={animal!.name}
-          onChangeText={(text) => setName(text)}
-          type='text'
-          style={GlobalStyles.title}
-        />
-        <EditTableText 
-          placeholder='Especie'
-          value={animal!.species}
-          onChangeText={(text) => setSpecies(text)}
-          type='text'
-        />
-        <EditTableText 
-          placeholder='Indentificación'
-          value={animal!.identifier}
-          onChangeText={(text) => setIdentifier(text)}
-          type='text'
-        />
-      </View>
-      <View style={styles.titleContainer}>
-        <EditTableText 
-          label='Especie'
-          placeholder='Especie'
-          value={animal!.species}
-          onChangeText={(text) => setSpecies(text)}
-          type='text'
-          style={GlobalStyles.subTitle}
-        />
-        <EditTableText 
-          placeholder='Especie'
-          value={animal!.species}
-          onChangeText={(text) => setSpecies(text)}
-          type='text'
-        />
-      </View>
-      
-      <View style={styles.titleContainer}>
-        <Text style={[GlobalStyles.title]}>{animal?.name}<Text style={[GlobalStyles.miniText]}>({animal?.id})</Text></Text>
-        <Text style={[GlobalStyles.subTitle]}>{animal?.species}</Text>
+      <View style={styles.container}>
+        <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
+        <View>
+          <Text style={GlobalStyles.title}>Registros</Text>
+        </View>
       </View>
 
-      <CustomInput 
-        label="Descripción"
-        placeholder='Escribe una descripción'
-        value={animal!.description}
-        onChangeText={() => {}}
-        multiline
-      />
+      {/* Modal con opciones */}
+      <Modalize
+        ref={modalRef}
+        modalHeight={650}
+        modalStyle={{ backgroundColor: colors.fondo }}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>¿Qué registro deseas realizar?</Text>
+          <ModalButton
+            text="Editar Nombre"
+            actualData={animal!.name}
+            onPress={() => handleEditField('name', animal!.name)}
+          />
+          <ModalButton
+            text="Editar Identificador"
+            actualData={animal!.identifier}
+            onPress={() => handleEditField('identifier', animal!.identifier)}
+          />
+          <ModalButton
+            text="Editar Edad"
+            actualData={animal!.age}
+            onPress={() => handleEditField('age', animal!.age)}
+          />
+          <ModalButton
+            text="Editar Peso"
+            actualData={animal!.weight}
+            onPress={() => handleEditField('weight', animal!.weight)}
+          />
+          <ModalButton
+            text="Editar Descripción"
+            actualData={animal!.description}
+            onPress={() => handleEditField('description', animal!.description)}
+          />
+          <ModalButton
+            text="Editar Propósito"
+            actualData={animal!.purpose}
+            onPress={() => handleEditField('purpose', animal!.purpose)}
+          />
+          <ModalButton
+            text="Editar Ubicación"
+            actualData={animal!.ubicacion}
+            onPress={() => handleEditField('ubicacion', animal!.ubicacion)}
+          />
+        </View>
+      </Modalize>
 
-      <AnimalTable 
-        peso={animal!.weight}
-        genero={animal!.gender}
-        proposito={animal!.purpose}
-        edad={animal!.age}
-      />
-      
-      <View style={styles.ubicationContainer}>
-        <Text style={[GlobalStyles.subTitle]}>Ubicación actual:</Text>
-        <Text style={[GlobalStyles.miniText, {fontSize:20}]}>{animal?.ubicacion}</Text>
-      </View>
-
-      <CustomButton 
-        text='Guardar Cambios'
-        onPress={() => {handleSave()}}
-      />
-
-      <CustomButton 
-        text='Nuevo Registro'
-        onPress={() => {}}
-      />
-
-      <View>
-        <Text style={GlobalStyles.title}>Registros</Text> 
-      </View>
-
-    </ScrollView>
+      {/* Modal para editar el valor */}
+      <Modalize
+        ref={editModalRef}
+        modalHeight={300}
+        modalStyle={{ backgroundColor: colors.fondo }}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Editar {currentField}</Text>
+          <TextInput
+            style={styles.input}
+            value={fieldValue}
+            onChangeText={setFieldValue}
+          />
+          <CustomButton text="Guardar" onPress={handleSave} />
+          <CustomButton
+            text="Cancelar"
+            onPress={() => {
+              editModalRef.current?.close();
+              setCurrentField('');
+              setFieldValue('');
+            }}
+          />
+        </View>
+      </Modalize>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
     padding: 16,
+    backgroundColor: colors.fondo,
   },
-  titleContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between', 
-    alignItems: 'center', 
-    marginBottom: 10, 
+  modalContent: {
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  ubicationContainer: {
-    marginVertical: 10,
-    width: '100%',
-    alignItems: 'flex-start', 
-    marginBottom: 10, 
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: colors.naranja,
+    textAlign: 'center',
   },
-
-  
-
+  input: {
+    width: '90%',
+    height: 40,
+    borderColor: colors.naranja,
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 16,
+    paddingHorizontal: 8,
+    backgroundColor: '#fff',
+  },
 });
 
 export default AnimalView;

@@ -21,6 +21,16 @@ export const GlobalStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.naranja,
   },
+  textOrange:{
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.naranja,
+  },
+  textWhite:{
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.blanco,
+  },
   miniText:{
     fontSize: 12,
     fontWeight: 'medium',
@@ -44,5 +54,11 @@ export const GlobalStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.fondo,
   },
+  error:{
+    fontSize: 25,
+    color: colors.rojoLight,
+    fontWeight: 'bold',
+    marginTop: 50,
+  }
 })
 

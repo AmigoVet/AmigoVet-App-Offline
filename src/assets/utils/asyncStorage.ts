@@ -51,6 +51,25 @@ const deleteAnimalById = async (id: string) => {
     }
 };
 
+const updateAnimalData = async (id: string, field: string, value: string) => {
+    try {
+      const animalsJson = await AsyncStorage.getItem('animals');
+      if (animalsJson) {
+        const animals = JSON.parse(animalsJson);
+        const updatedAnimals = animals.map((animal: any) => {
+          if (animal.id === id) {
+            return { ...animal, [field]: value }; // Actualiza el campo específico
+          }
+          return animal;
+        });
+        await AsyncStorage.setItem('animals', JSON.stringify(updatedAnimals));
+        console.log(`Animal actualizado: ${field} = ${value}`);
+      }
+    } catch (error) {
+      console.error('Error al actualizar animal:', error);
+    }
+  };
 
-export { saveData, loadData, getAnimalById, deleteAnimalById };
+
+export { saveData, loadData, getAnimalById, deleteAnimalById, updateAnimalData };
 

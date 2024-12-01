@@ -36,24 +36,28 @@ const AnimalTable = ({ peso, genero, proposito, edad }: AnimalTableProps) => {
           value={pesoEdit}
           onChangeText={(text) => setpeso(text)}
           type="number"
+          editable={false}
         />
         <EditTableText
           placeholder="Genero"
           value={generoEdit}
           onChangeText={(text) => setGenero(text)}
           type="text"
+          editable={false}
         />
         <EditTableText
           placeholder="Proposito"
           value={propositoEdit}
           onChangeText={(text) => setProposito(text)}
           type="text"
+          editable={false}
         />
         <EditTableText
           placeholder="Edad"
           value={edadEdit}
           onChangeText={(text) => setEdad(text)}
           type="number"
+          editable={false}
         />
       </View>
     </View>

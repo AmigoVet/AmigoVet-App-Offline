@@ -40,7 +40,6 @@ const AnimalCard: React.FC<AnimalCardProps> = ({ animal }) => {
 const styles = StyleSheet.create({
     container: {
         width: 340,
-        marginVertical: 15,
     },
     name: {
         fontSize: 18,

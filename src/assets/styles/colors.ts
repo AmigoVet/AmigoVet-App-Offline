@@ -6,5 +6,6 @@ export const colors = {
   blancoLight: '#f8f9fa',
   naranja: '#ee7f27',
   naranjaDark: '#c35a00',
-  rojo: '#8a0015'
+  rojo: '#8a0015',
+  rojoLight: '#d42a35',
 }

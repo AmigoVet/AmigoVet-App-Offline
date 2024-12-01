@@ -87,7 +87,7 @@ const Home = () => {
                         rightOpenValue={-75}
                     />
                 ) : (
-                    <Text>No se encontraron animales.</Text>
+                    <Text style={GlobalStyles.error}>No hay animales registrados</Text>
                 )}
             </View>
 
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     },
     rowBack: {
         paddingTop: 20,
-        paddingBottom: 35,
+        paddingBottom: 5,
         alignItems: 'center',
         flex: 1,
         flexDirection: 'row',
