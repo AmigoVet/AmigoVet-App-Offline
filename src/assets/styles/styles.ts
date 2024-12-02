@@ -59,6 +59,12 @@ export const GlobalStyles = StyleSheet.create({
     color: colors.rojoLight,
     fontWeight: 'bold',
     marginTop: 50,
+  },
+  note:{
+    fontSize: 13,
+    fontWeight: '400',
+    color: colors.naranja,
+
   }
 })
 

@@ -30,8 +30,8 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
       {animal.notas && animal.notas.length > 0 && (
         <View style={styles.dataContainer}>
           {animal.notas.map((nota, index) => (
-            <Text key={index} style={GlobalStyles.miniText}>
-              {nota.nota}
+            <Text key={index} style={GlobalStyles.note}>
+              ● {nota.nota}
             </Text>
           ))}
         </View>
