@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Animal } from '../interfaces/animal';
+import { Animal, Notes } from '../interfaces/animal';
 import { Register } from '../interfaces/registers';
 
 
@@ -17,15 +17,74 @@ const saveData = async (animal: Animal) => {
 
 const loadData = async (ownerId: string) => {
   try {
-      const data = await AsyncStorage.getItem('animals');
-      const animals: Animal[] = data ? JSON.parse(data) : [];
-      // Filtrar por ownerId
-      return animals.filter(animal => animal.ownerId === ownerId);
+    const data = await AsyncStorage.getItem('animals');
+    const animals: Animal[] = data ? JSON.parse(data) : [];
+
+    const currentDate = new Date();
+
+    const updatedAnimals = animals.map(animal => {
+      if (animal.ownerId === ownerId && animal.notas) {
+        // Filtrar notas vencidas
+        const filteredNotes = animal.notas.filter(note => {
+          if (note.nota.startsWith("Posible fecha de parto:")) {
+            const noteDateStr = note.nota.split(":")[1].trim(); // Extraer fecha
+            const noteDate = new Date(noteDateStr);
+
+            // Comparar si la fecha de parto ya pasó (más de un día después)
+            if (currentDate > noteDate) {
+              console.log(`Nota eliminada para el animal ${animal.id}: ${note.nota}`);
+              return false; // Eliminar la nota
+            }
+          }
+          return true; // Conservar otras notas
+        });
+
+        return { ...animal, notas: filteredNotes };
+      }
+      return animal;
+    });
+
+    // Guardar animales actualizados
+    await AsyncStorage.setItem('animals', JSON.stringify(updatedAnimals));
+
+    // Filtrar solo animales del propietario
+    return updatedAnimals.filter(animal => animal.ownerId === ownerId);
   } catch (error) {
-      console.error('Error al cargar datos:', error);
-      return [];
+    console.error('Error al cargar datos:', error);
+    return [];
   }
 };
+
+
+const saveNoteAnimal = async (animalId: string, newNote: Notes) => {
+  try {
+    const animalsJson = await AsyncStorage.getItem('animals');
+    if (animalsJson) {
+      const animals: Animal[] = JSON.parse(animalsJson);
+
+      const updatedAnimals = animals.map(animal => {
+        if (animal.id === animalId) {
+          // Filtrar las notas existentes para eliminar las relacionadas al campo específico
+          const filteredNotes = animal.notas
+            ? animal.notas.filter(note => !note.nota.startsWith(newNote.nota.split(":")[0]))
+            : [];
+
+          return { ...animal, notas: [...filteredNotes, newNote] };
+        }
+        return animal;
+      });
+
+      await AsyncStorage.setItem('animals', JSON.stringify(updatedAnimals));
+      console.log('Nota actualizada correctamente');
+    } else {
+      console.warn('No se encontraron animales para actualizar');
+    }
+  } catch (error) {
+    console.error('Error al guardar nota:', error);
+  }
+};
+
+
 
 
 const getAnimalById = async (id: string): Promise<Animal | null> => {
@@ -62,7 +121,7 @@ const updateAnimalData = async (id: string, field: string, value: string) => {
         const animals = JSON.parse(animalsJson);
         const updatedAnimals = animals.map((animal: any) => {
           if (animal.id === id) {
-            return { ...animal, [field]: value }; // Actualiza el campo específico
+            return { ...animal, [field]: value }; 
           }
           return animal;
         });
@@ -89,11 +148,23 @@ const loadRegistersByAnimalId = async (animalId: string) => {
   try {
     const data = await AsyncStorage.getItem('registers');
     const registers: Register[] = data ? JSON.parse(data) : [];
-    return registers.filter(register => register.animalId === animalId);
+
+    // Filtrar por `animalId` y ordenar en orden descendente por fecha
+    return registers
+      .filter(register => register.animalId === animalId)
+      .sort((a, b) => {
+        const dateA = new Date(a.fecha).getTime();
+        const dateB = new Date(b.fecha).getTime();
+        return dateB - dateA; // Ordenar de más reciente a más antiguo
+      });
   } catch (error) {
     console.log('Error al cargar los registros:', error);
+    return [];
   }
-}
+};
+
+
+
 const deleteRegisterById = async (id: string) => {
   try {
     const registersJson = await AsyncStorage.getItem('registers');
@@ -107,5 +178,5 @@ const deleteRegisterById = async (id: string) => {
   }
 }
 
-export { saveData, loadData, getAnimalById, deleteAnimalById, updateAnimalData, saveRegister, loadRegistersByAnimalId, deleteRegisterById };
+export { saveData, loadData, saveNoteAnimal, getAnimalById, deleteAnimalById, updateAnimalData, saveRegister, loadRegistersByAnimalId, deleteRegisterById };
 

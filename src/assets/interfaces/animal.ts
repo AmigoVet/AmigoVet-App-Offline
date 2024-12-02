@@ -5,8 +5,8 @@ export interface Animal {
     id: string;
     identificador: string;
     nombre: string;
-    especie: Especie; // Especie seleccionada
-    raza: Raza; // Raza asociada a la especie
+    especie: Especie;
+    raza: Raza;
     edad: string;
     genero: Genero;
     peso: string;
@@ -17,8 +17,13 @@ export interface Animal {
     ubicacion: string;
     created_at: string;
     updated_at: string;
-  }
-  
+    notas?: Notes[];
+}
+
+export interface Notes {
+  nota: string
+}
+
 export const generos: Genero[] = ["Macho", "Hembra"];
 
 export type Genero = "Macho" | "Hembra";

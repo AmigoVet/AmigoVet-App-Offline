@@ -14,7 +14,7 @@ interface DataViewAnimalProps {
 
 const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
   return (
-<ScrollView contentContainerStyle={{}}>
+  <View>
 
       
       <View style={styles.titleContainer}>
@@ -27,6 +27,17 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
         <Text style={GlobalStyles.textWhite}>Raza: <Text style={[GlobalStyles.textOrange]}>{animal?.raza}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Color: <Text style={[GlobalStyles.textOrange]}>{animal?.color}</Text></Text>
       </View>
+      {animal.notas && animal.notas.length > 0 && (
+        <View style={styles.dataContainer}>
+          {animal.notas.map((nota, index) => (
+            <Text key={index} style={GlobalStyles.miniText}>
+              {nota.nota}
+            </Text>
+          ))}
+        </View>
+      )}
+
+
 
       <CustomInput 
         label="Descripción"
@@ -66,7 +77,7 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
       </View>
 
 
-    </ScrollView>
+    </View>
   )
 }
 

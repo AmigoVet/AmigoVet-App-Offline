@@ -14,11 +14,12 @@ import {
   ModalButton,
   RowRegister,
 } from "../../assets/components";
-import { saveRegister, updateAnimalData } from "../../assets/utils/asyncStorage";
+import { saveNoteAnimal, saveRegister, updateAnimalData } from "../../assets/utils/asyncStorage";
 import { useRegisters } from "../../assets/hooks/useRegisters";
 import { Register } from "../../assets/interfaces/registers";
 import { RootStackParamList } from "../Welcome";
 import { InseminationRegister, PregnancyRegister, TreatmentRegister } from "../../assets/interfaces/animal";
+import { calculateDueDate } from "../../assets/functions/CalcularFechaParto";
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, "AnimalView">>();
@@ -92,6 +93,7 @@ const AnimalView = () => {
   const handleCreateRegister = async () => {
     if (currentField) {
       const generateId = () => Math.random().toString(36).substr(2, 9);
+      const actualDay = calculateDueDate(animal!.especie, new Date());
 
       const baseRegister: Register = {
         id: generateId(),
@@ -108,16 +110,20 @@ const AnimalView = () => {
           ...baseRegister,
           fechaPartoEstimada: fieldValue,
         };
+        await saveNoteAnimal(animal!.id, {nota: `Fecha registrada del embarazo: ${actualDay}`});
+
       } else if (currentField === "Registrar Tratamiento") {
         specificRegister = {
           ...baseRegister,
           tipoTratamiento: fieldValue,
         };
+        await saveNoteAnimal(animal!.id, {nota: `Ultimo tratamiento: ${actualDay}`});
       } else if (currentField === "Registrar Inseminacion") {
         specificRegister = {
           ...baseRegister,
           semenProveedor: fieldValue,
         };
+        await saveNoteAnimal(animal!.id, {nota: `Posible fecha de parto: ${actualDay}`});
       } else {
         specificRegister = baseRegister;
       }

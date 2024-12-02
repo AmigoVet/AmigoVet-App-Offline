@@ -59,9 +59,9 @@ const Home = () => {
 
     // Función para manejar la recarga
     const handleRefresh = async () => {
-        setRefreshing(true); // Activar el indicador de recarga
-        await loadAnimal(); // Recargar los datos
-        setRefreshing(false); // Desactivar el indicador de recarga
+        setRefreshing(true); 
+        await loadAnimal(); 
+        setRefreshing(false);
     };
 
     const renderItem = ({ item }: { item: Animal }) => (

@@ -11,7 +11,7 @@ interface RowRegisterProps {
 }
 
 const RowRegister = ({ register, isLast = false, bgColor = colors.rowBgDark }: RowRegisterProps) => {
-
+    console.log(register)
     const windowWidth = Dimensions.get('window').width;
 
   const styles = StyleSheet.create({
