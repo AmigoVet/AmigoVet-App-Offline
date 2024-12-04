@@ -13,6 +13,7 @@ export type RootStackParamList = {
   Register: undefined;
   Home: undefined;
   AnimalView: {id: string};
+  Busqueda: undefined;
 };
 
 const Welcome = () => {

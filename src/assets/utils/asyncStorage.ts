@@ -55,6 +55,26 @@ const loadData = async (ownerId: string) => {
   }
 };
 
+const searchAnimals = async (query: string): Promise<Animal[]> => {
+  try {
+    const animalsJson = await AsyncStorage.getItem('animals');
+    if (animalsJson) {
+      const animals: Animal[] = JSON.parse(animalsJson);
+      const lowerCaseQuery = query.toLowerCase();
+
+      return animals.filter(animal =>
+        Object.values(animal).some(value =>
+          value.toString().toLowerCase().includes(lowerCaseQuery)
+        )
+      );
+    }
+    return [];
+  } catch (error) {
+    console.error('Error al buscar animales:', error);
+    return [];
+  }
+};
+
 
 const saveNoteAnimal = async (animalId: string, newNote: Notes) => {
   try {
@@ -178,5 +198,5 @@ const deleteRegisterById = async (id: string) => {
   }
 }
 
-export { saveData, loadData, saveNoteAnimal, getAnimalById, deleteAnimalById, updateAnimalData, saveRegister, loadRegistersByAnimalId, deleteRegisterById };
+export { saveData, loadData, saveNoteAnimal, getAnimalById, deleteAnimalById, updateAnimalData, saveRegister, loadRegistersByAnimalId, deleteRegisterById, searchAnimals };
 
