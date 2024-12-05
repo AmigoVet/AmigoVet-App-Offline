@@ -26,7 +26,7 @@ const Welcome = () => {
   return (
     <View style={[GlobalStyles.container, { alignItems: 'flex-start', justifyContent: 'center' }]}>
       <Text style={[GlobalStyles.title, { fontSize: 30 }]}>Welcome to</Text>
-      <Text style={[GlobalStyles.subTitle, { fontSize: 70 }]}>Animalia</Text>
+      <Text style={[GlobalStyles.subTitle, { fontSize: 70 }]}>AmigoVet</Text>
       <CustomButton onPress={login} text="Ingresa Ahora" />
       <FromDevora />
     </View>

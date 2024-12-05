@@ -9,7 +9,7 @@ interface LogoContainerProps {
 const LogoContainer = ({ height = 200, width = 100 }: LogoContainerProps) => {
   return (
     <Image 
-      source={require('../img/logoAnimalia.png')} 
+      source={require('../img/logoAmigoVet.png')} 
       style={{ 
         width: width, 
         height: height,

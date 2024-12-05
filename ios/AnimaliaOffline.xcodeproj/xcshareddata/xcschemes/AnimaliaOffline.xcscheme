@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "Animalia.app"
-               BlueprintName = "Animalia"
-               ReferencedContainer = "container:Animalia.xcodeproj">
+               BuildableName = "AmigoVet.app"
+               BlueprintName = "AmigoVet"
+               ReferencedContainer = "container:AmigoVet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "AnimaliaTests.xctest"
-               BlueprintName = "AnimaliaTests"
-               ReferencedContainer = "container:Animalia.xcodeproj">
+               BuildableName = "AmigoVetTests.xctest"
+               BlueprintName = "AmigoVetTests"
+               ReferencedContainer = "container:AmigoVet.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Animalia.app"
-            BlueprintName = "Animalia"
-            ReferencedContainer = "container:Animalia.xcodeproj">
+            BuildableName = "AmigoVet.app"
+            BlueprintName = "AmigoVet"
+            ReferencedContainer = "container:AmigoVet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Animalia.app"
-            BlueprintName = "Animalia"
-            ReferencedContainer = "container:Animalia.xcodeproj">
+            BuildableName = "AmigoVet.app"
+            BlueprintName = "AmigoVet"
+            ReferencedContainer = "container:AmigoVet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

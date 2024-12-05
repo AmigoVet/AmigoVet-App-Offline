@@ -1,4 +1,4 @@
-package com.Animalia
+package com.AmigoVet
 
 import android.app.Application
 import com.facebook.react.PackageList
