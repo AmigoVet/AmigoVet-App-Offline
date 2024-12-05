@@ -204,27 +204,12 @@ const New: React.FC = () => {
         </View>
       </View>
 
-      {/* Selector de Fecha o Edad */}
-      <CustomDatePicker
-        label="Fecha de Nacimiento"
-        value={fechaNacimiento}
-        onDateChange={(date) => {
-          setFechaNacimiento(date);
-          setEdad(calcularEdad(date)); // Calcula y actualiza la edad
-        }}
-        onAgeChange={(age) => {
-          setEdad(age);
-          setFechaNacimiento(null); // Borra la fecha si se usa edad aproximada
-        }}
-        ageValue={edad}
-      />
-
-      <CustomInput label="Edad" value={edad} placeholder="Edad calculada o ingresada" editable={false} />
-      <CustomInput label="Nombre" value={nombre} onChangeText={setNombre} placeholder="Nombre del animal" />
-      <CustomInput label="Identificador" value={identificador} onChangeText={setIdentificador} placeholder="Identificador único" />
+      <CustomInput miniText="Obligatorio" label="Nombre" value={nombre} onChangeText={setNombre} placeholder="Nombre del animal" />
+      <CustomInput miniText="Opcional" label="Identificador" value={identificador} onChangeText={setIdentificador} placeholder="Identificador único" />
 
       <CustomSelect
         label="Especie"
+        miniText="Obligatorio"
         value={especie}
         options={[...Object.keys(especiesRazasMap), "Otro"]}
         onValueChange={(value) => {
@@ -240,6 +225,7 @@ const New: React.FC = () => {
 
       <CustomSelect
         label="Raza"
+        miniText="Obligatorio"
         value={raza}
         options={[...razasDisponibles, "Otro"]}
         onValueChange={(value) => setRaza(value)}
@@ -250,6 +236,7 @@ const New: React.FC = () => {
 
       <CustomSelect
         label="Propósito"
+        miniText="Obligatorio"
         value={proposito}
         options={[...propositosDisponibles, "Otro"]}
         onValueChange={(value) => setProposito(value)}
@@ -260,17 +247,34 @@ const New: React.FC = () => {
 
       <CustomSelect
         label="Género"
+        miniText="Obligatorio"
         value={genero}
         options={generos} // Lista de opciones ["Macho", "Hembra"]
         onValueChange={(value) => setGenero(value)}
       />
 
+      {/* Selector de Fecha o Edad */}
+      <CustomDatePicker
+        label="Fecha de Nacimiento"
+        value={fechaNacimiento}
+        onDateChange={(date) => {
+          setFechaNacimiento(date);
+          setEdad(calcularEdad(date)); // Calcula y actualiza la edad
+        }}
+        onAgeChange={(age) => {
+          setEdad(age);
+          setFechaNacimiento(null); // Borra la fecha si se usa edad aproximada
+        }}
+        ageValue={edad}
+      />
+      <CustomInput label="Edad" value={edad} placeholder="Edad calculada o ingresada" editable={false} />
 
-      <CustomInput label="Peso" value={peso} onChangeText={setPeso} placeholder="Peso en kg" type="number" />
-      <CustomInput label="Color" value={color} onChangeText={setColor} placeholder="Color del animal" />
-      <CustomInput label="Ubicación" value={ubicacion} onChangeText={setUbicacion} placeholder="Ubicación del animal" />
+      <CustomInput miniText="Obligatorio" label="Peso" value={peso} onChangeText={setPeso} placeholder="Peso en kg" type="number" />
+      <CustomInput miniText="Obligatorio" label="Color" value={color} onChangeText={setColor} placeholder="Color del animal" />
+      <CustomInput miniText="Obligatorio" label="Ubicación" value={ubicacion} onChangeText={setUbicacion} placeholder="Ubicación del animal" />
       <CustomInput
         label="Descripción"
+        miniText="Opcional"
         value={descripcion}
         onChangeText={setDescripcion}
         placeholder="Descripción adicional"

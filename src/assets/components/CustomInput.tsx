@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, KeyboardTypeOptions } from 'react-native';
 import { colors } from '../styles/colors';
+import { GlobalStyles } from '../styles';
 
 interface CustomInputProps {
   label: string;
+  miniText?: string;
   placeholder: string;
   value: string;
   onChangeText?: (text: string) => void;
@@ -24,6 +26,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   multiline = false ,
   editable = true,
   onFocus = () => {},
+  miniText
 }) => {
   const getKeyboardType = (): KeyboardTypeOptions => {
     switch (type) {
@@ -39,7 +42,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.label}>{label}<Text style={GlobalStyles.miniText}>{miniText ? ` (${miniText})` : ""}</Text></Text>
       <TextInput
         style={[
           styles.input, 
