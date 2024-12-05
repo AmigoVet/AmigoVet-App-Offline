@@ -3,7 +3,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './assets/navigator/AppNavigator';
 import useAuthStore from './assets/store/authStore';
-import { createTableAnimals, createTableRegisters } from '../SQLiteConfig';
 
 const App = () => {
   const loadUser = useAuthStore((state) => state.loadUser);
