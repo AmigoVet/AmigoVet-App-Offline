@@ -20,6 +20,7 @@ import { Register } from "../../assets/interfaces/registers";
 import { RootStackParamList } from "../Welcome";
 import { InseminationRegister, PregnancyRegister, TreatmentRegister } from "../../assets/interfaces/animal";
 import { calculateDueDate } from "../../assets/functions/CalcularFechaParto";
+import { calcularEdad } from "../../assets/functions";
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, "AnimalView">>();
@@ -110,14 +111,14 @@ const AnimalView = () => {
           ...baseRegister,
           fechaPartoEstimada: fieldValue,
         };
-        await saveNoteAnimal(animal!.id, {nota: `Fecha registrada del embarazo: ${actualDay}`});
+        await saveNoteAnimal(animal!.id, {nota: `Posible fecha de parto: ${actualDay}`});
 
       } else if (currentField === "Registrar Tratamiento") {
         specificRegister = {
           ...baseRegister,
           tipoTratamiento: fieldValue,
         };
-        await saveNoteAnimal(animal!.id, {nota: `Ultimo tratamiento: ${actualDay}`});
+        await saveNoteAnimal(animal!.id, {nota: `Ultimo tratamiento: ${actualDay} de ${fieldValue}`});
       } else if (currentField === "Registrar Inseminacion") {
         specificRegister = {
           ...baseRegister,
@@ -239,15 +240,16 @@ const AnimalView = () => {
           <ModalButton text="Editar Identificador" actualData={animal!.identificador} onPress={() => handleEditField("identificador", animal!.identificador)} />
           <ModalButton text="Editar Peso" actualData={animal!.peso} onPress={() => handleEditField("peso", animal!.peso)} />
           <ModalButton text="Editar Propósito" actualData={animal!.proposito} onPress={() => handleEditField("proposito", animal!.proposito)} />
-          <ModalButton text="Editar Edad" actualData={animal!.edad} onPress={() => handleEditField("edad", animal!.edad)} />
+          <ModalButton text="Editar Edad" actualData={animal!.edad} onPress={() => handleEditField("edad", calcularEdad(animal!.nacimiento))} />
           <ModalButton text="Editar Ubicación" actualData={animal!.ubicacion} onPress={() => handleEditField("ubicacion", animal!.ubicacion)} />
           <ModalButton text="Editar Descripción" actualData={animal!.descripcion} onPress={() => handleEditField("descripcion", animal!.descripcion)} />
 
           <View style={{ width: "100%", height: 0.5, backgroundColor: colors.blanco }} />
 
-          <ModalButton text="Registrar Embarazo" onPress={() => handleCreateRegisterModal("Registrar Embarazo")} />
+          {animal!.genero === "Hembra" && <ModalButton text="Registrar Embarazo" onPress={() => handleCreateRegisterModal("Registrar Embarazo")} />}
+          {animal!.genero === "Hembra" && <ModalButton text="Registrar Inseminación" onPress={() => handleCreateRegisterModal("Registrar Inseminacion")} />}
+
           <ModalButton text="Registrar Tratamiento" onPress={() => handleCreateRegisterModal("Registrar Tratamiento")} />
-          <ModalButton text="Registrar Inseminación" onPress={() => handleCreateRegisterModal("Registrar Inseminacion")} />
         </View>
       </Modalize>
 

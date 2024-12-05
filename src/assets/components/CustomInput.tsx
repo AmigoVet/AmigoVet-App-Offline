@@ -6,11 +6,12 @@ interface CustomInputProps {
   label: string;
   placeholder: string;
   value: string;
-  onChangeText: (text: string) => void;
+  onChangeText?: (text: string) => void;
   type?: 'text' | 'password' | 'number';
   secureTextEntry?: boolean;
   multiline?: boolean;
   editable?: boolean;
+  onFocus?: () => void;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({ 
@@ -21,7 +22,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
   secureTextEntry, 
   type = 'text', 
   multiline = false ,
-  editable = true
+  editable = true,
+  onFocus = () => {},
 }) => {
   const getKeyboardType = (): KeyboardTypeOptions => {
     switch (type) {
@@ -51,6 +53,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         multiline={multiline}
         keyboardType={getKeyboardType()}
         editable={editable}
+        onFocus={onFocus}
       />
     </View>
   );

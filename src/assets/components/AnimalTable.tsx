@@ -10,11 +10,8 @@ interface AnimalTableProps {
   edad: string;
 }
 
-
 const AnimalTable = ({ peso, genero, proposito, edad }: AnimalTableProps) => {
-
-
-  const [pesoEdit, setpeso] = useState(peso);
+  const [pesoEdit, setPeso] = useState(peso);
   const [generoEdit, setGenero] = useState(genero);
   const [propositoEdit, setProposito] = useState(proposito);
   const [edadEdit, setEdad] = useState(edad);
@@ -22,43 +19,27 @@ const AnimalTable = ({ peso, genero, proposito, edad }: AnimalTableProps) => {
   return (
     <View style={styles.table}>
       {/* Encabezado */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={styles.row}>
         <Text style={styles.headerCell}>Peso</Text>
-        <Text style={styles.headerCell}>Genero</Text>
-        <Text style={styles.headerCell}>Proposito</Text>
+        <Text style={styles.headerCell}>Género</Text>
+        <Text style={styles.headerCell}>Propósito</Text>
         <Text style={styles.headerCell}>Edad</Text>
       </View>
 
       {/* Fila de datos */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <EditTableText
-          placeholder="Peso"
-          value={pesoEdit}
-          onChangeText={(text) => setpeso(text)}
-          type="number"
-          editable={false}
-        />
-        <EditTableText
-          placeholder="Genero"
-          value={generoEdit}
-          onChangeText={(text) => setGenero(text)}
-          type="text"
-          editable={false}
-        />
-        <EditTableText
-          placeholder="Proposito"
-          value={propositoEdit}
-          onChangeText={(text) => setProposito(text)}
-          type="text"
-          editable={false}
-        />
-        <EditTableText
-          placeholder="Edad"
-          value={edadEdit}
-          onChangeText={(text) => setEdad(text)}
-          type="number"
-          editable={false}
-        />
+      <View style={styles.row}>
+        <View style={styles.cell}>
+          <Text style={styles.text}>{pesoEdit}</Text>
+        </View>
+        <View style={styles.cell}>
+          <Text style={styles.text}>{generoEdit}</Text>
+        </View>
+        <View style={styles.cell}>
+          <Text style={styles.text}>{propositoEdit}</Text>
+        </View>
+        <View style={styles.cell}>
+          <Text style={styles.text}>{edadEdit}</Text>
+        </View>
       </View>
     </View>
   );
@@ -72,6 +53,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     overflow: 'hidden',
   },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start', // Asegura alineación vertical si hay varias líneas
+  },
   headerCell: {
     flex: 1,
     padding: 10,
@@ -80,6 +66,20 @@ const styles = StyleSheet.create({
     color: colors.naranja,
     borderBottomColor: colors.naranja,
     borderBottomWidth: 1,
+  },
+  cell: {
+    flex: 1,
+    padding: 10,
+    borderColor: colors.naranja,
+    borderRightWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center', // Centra horizontalmente
+  },
+  text: {
+    textAlign: 'center',
+    color: colors.blanco,
+    flexWrap: 'wrap', // Permite envolver el texto
+    fontSize: 14,
   },
 });
 

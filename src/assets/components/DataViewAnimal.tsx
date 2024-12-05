@@ -7,6 +7,7 @@ import CustomButton from './CustomButton'
 import CustomImage from './CustomImage'
 import CustomInput from './CustomInput'
 import { Animal } from '../interfaces/animal'
+import { calcularEdad, formatearFecha } from '../functions'
 
 interface DataViewAnimalProps {
   animal: Animal;
@@ -26,6 +27,11 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
         <Text style={GlobalStyles.textWhite}>Especie: <Text style={[GlobalStyles.textOrange]}>{animal?.especie}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Raza: <Text style={[GlobalStyles.textOrange]}>{animal?.raza}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Color: <Text style={[GlobalStyles.textOrange]}>{animal?.color}</Text></Text>
+        <Text style={GlobalStyles.textWhite}>Fecha Nacimiento: 
+          <Text style={[GlobalStyles.textOrange]}>
+            {formatearFecha(animal!.nacimiento ? animal!.nacimiento : '')}
+          </Text>
+        </Text>
       </View>
       {animal.notas && animal.notas.length > 0 && (
         <View style={styles.dataContainer}>
@@ -48,12 +54,15 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
         editable={false}
       />
 
-      <AnimalTable 
+      <AnimalTable
         peso={animal!.peso}
         genero={animal!.genero}
         proposito={animal!.proposito}
-        edad={animal!.edad}
+        edad={
+          animal!.nacimiento ? calcularEdad(animal!.nacimiento) : "Edad desconocida"
+        }
       />
+
       
       <View style={styles.dataContainer}>
         <Text style={[GlobalStyles.subTitle]}>Ubicación actual:</Text>
@@ -65,13 +74,13 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
         <Text style={GlobalStyles.textWhite}>
           Ingresada el :{' '}
           <Text style={[GlobalStyles.textOrange]}>
-            {animal?.created_at ? format(new Date(animal.created_at), 'yyyy-MM-dd') : ''}
+            {formatearFecha(animal?.created_at ? animal.created_at : '')}
           </Text>
         </Text>
         <Text style={GlobalStyles.textWhite}>
           Ultima actualización :{' '}
           <Text style={[GlobalStyles.textOrange]}>
-            {animal?.updated_at ? format(new Date(animal.updated_at), 'yyyy-MM-dd') : ''}
+            {formatearFecha(animal?.updated_at ? animal.updated_at : '')}
           </Text>
         </Text>
       </View>

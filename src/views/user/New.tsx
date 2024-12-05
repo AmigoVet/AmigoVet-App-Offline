@@ -1,14 +1,26 @@
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, Alert, TouchableOpacity, View } from "react-native";
-import { colors, GlobalStyles } from "../../assets/styles";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  Alert,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { colors, GlobalStyles, newStyles } from "../../assets/styles";
 import {
   CustomButton,
   CustomInput,
   CustomSelect,
   CustomImage,
 } from "../../assets/components";
-import { especiesRazasMap, generos, Especie } from "../../assets/interfaces/animal";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomDatePicker from "../../assets/components/CustomDatePicker";
+import {
+  especiesRazasMap,
+  generos,
+  propositosPorEspecie,
+  Especie,
+} from "../../assets/interfaces/animal";
 import {
   launchCamera,
   launchImageLibrary,
@@ -17,24 +29,33 @@ import {
 } from "react-native-image-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import useAuthStore from "../../assets/store/authStore";
+import { calcularEdad, saveAnimalData } from "../../assets/functions";
 
 const New: React.FC = () => {
   const [nombre, setNombre] = useState<string>("");
   const [identificador, setIdentificador] = useState<string>("");
-  const [especie, setEspecie] = useState<Especie | "">("");
-  const [raza, setRaza] = useState<string>("");
+  const [especie, setEspecie] = useState<Especie | "Otro" | "">("");
+  const [customEspecie, setCustomEspecie] = useState<string>(""); // Especie personalizada
+  const [raza, setRaza] = useState<string>(""); // Raza seleccionada
+  const [customRaza, setCustomRaza] = useState<string>(""); // Raza personalizada
   const [genero, setGenero] = useState<string>("");
   const [peso, setPeso] = useState<string>("");
-  const [edad, setEdad] = useState<string>("");
+  const [edad, setEdad] = useState<string>(""); // Edad calculada o ingresada
+  const [fechaNacimiento, setFechaNacimiento] = useState<Date | null>(null); // Fecha de nacimiento
   const [color, setColor] = useState<string>("");
-  const [proposito, setProposito] = useState<string>("");
+  const [proposito, setProposito] = useState<string>("Otro");
+  const [customProposito, setCustomProposito] = useState<string>(""); // Propósito personalizado
   const [ubicacion, setUbicacion] = useState<string>("");
-  const [descripcion, setDescripcion] = useState<string>("");
+  const [descripcion, setDescripcion] = useState<string>(""); // Descripción
   const [image, setImage] = useState<string | null>(null);
 
   const user = useAuthStore((state) => state.user);
 
-  const razasDisponibles = especie ? especiesRazasMap[especie] : [];
+  // Obtener razas y propósitos disponibles
+  const razasDisponibles =
+    especie && especie !== "Otro" ? especiesRazasMap[especie] : [];
+  const propositosDisponibles =
+    especie && especie !== "Otro" ? propositosPorEspecie[especie] : [];
 
   // Seleccionar imagen desde la galería
   const pickImageFromGallery = async () => {
@@ -81,163 +102,173 @@ const New: React.FC = () => {
     });
   };
 
-  // Guardar datos en AsyncStorage
-  const saveAnimalData = async (animal: any) => {
-    try {
-      const existingData = await AsyncStorage.getItem("animals");
-      const parsedData = existingData ? JSON.parse(existingData) : [];
-      parsedData.push(animal);
-      await AsyncStorage.setItem("animals", JSON.stringify(parsedData));
-      console.log("Animal guardado en AsyncStorage");
-    } catch (error) {
-      console.error("Error al guardar los datos:", error);
-    }
-  };
-
   const handleSubmit = () => {
-    if (!nombre || !especie || !raza || !genero || !peso || !descripcion) {
-      Alert.alert("Error", "Por favor, completa todos los campos obligatorios");
+      // Depuración previa al guardado
+      console.log("------------------------------------------------");
+      console.log("Nombre:", nombre);
+      console.log("Especie:", especie === "Otro" ? customEspecie : especie);
+      console.log("Raza:", raza === "Otro" ? customRaza : raza);
+      console.log("Genero:", genero);
+      console.log("Peso:", peso);
+      console.log("Descripcion:", descripcion);
+      console.log("Imagen:", image);
+      console.log("Edad:", edad);
+      console.log("Fecha de nacimiento:", fechaNacimiento);
+      console.log("Color:", color);
+      console.log("Ubicacion:", ubicacion);
+      console.log("Propósito:", proposito === "Otro" ? customProposito : proposito);
+      console.log("Raza personalizada:", customRaza);
+      console.log("Especie personalizada:", customEspecie);
+      console.log("Propósito personalizado:", customProposito);
+      console.log("Identificador:", identificador);
+    // Validar campos obligatorios
+    if (
+      !nombre ||
+      (!especie && !customEspecie) ||
+      (!raza && !customRaza) ||
+      !genero ||
+      !peso ||
+      !descripcion ||
+      !image
+    ) {
+      Alert.alert(
+        "Error",
+        "Por favor, completa todos los campos obligatorios antes de guardar."
+      );
       return;
     }
-    if (!image) {
-      Alert.alert("Error", "Por favor, selecciona una imagen");
-      return;
-    }
-
+  
+    // Crear objeto del animal
     const animal = {
       ownerId: user?.userId,
       id: Math.random().toString(36).substr(2, 9),
       nombre,
-      identificador,
-      especie,
-      raza,
+      identificador: identificador || "Sin identificador",
+      especie: especie === "Otro" ? customEspecie : especie,
+      raza: raza === "Otro" ? customRaza : raza,
       edad,
+      nacimiento: fechaNacimiento,
       genero,
       peso,
       color,
-      proposito,
+      proposito: proposito === "Otro" ? customProposito : proposito,
       ubicacion,
       descripcion,
       image,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-
+  
+    // Guardar datos del animal
     saveAnimalData(animal);
-
+  
     Alert.alert("Éxito", "Animal registrado correctamente");
     resetForm();
   };
-
+  
+  // Reiniciar formulario
   const resetForm = () => {
     setNombre("");
     setIdentificador("");
     setEspecie("");
+    setCustomEspecie("");
     setRaza("");
+    setCustomRaza("");
     setGenero("");
     setPeso("");
     setEdad("");
+    setFechaNacimiento(null);
     setColor("");
-    setProposito("");
+    setProposito("Otro");
+    setCustomProposito("");
     setUbicacion("");
     setDescripcion("");
     setImage(null);
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Registrar Animal</Text>
+    <ScrollView style={newStyles.container}>
+      <Text style={newStyles.title}>Registrar Animal</Text>
 
-      {/* Selección de imagen */}
+      {/* Selector de imagen */}
       <Text style={GlobalStyles.label}>Selecciona o toma una foto</Text>
-      <View style={styles.imageContainer}>
+      <View style={newStyles.imageContainer}>
         {image && <CustomImage source={image} />}
-        <View style={styles.imageButtonContainer}>
-          <TouchableOpacity style={styles.imageButton} onPress={pickImageFromGallery}>
+        <View style={newStyles.imageButtonContainer}>
+          <TouchableOpacity style={newStyles.imageButton} onPress={pickImageFromGallery}>
             <Ionicons name="image-outline" size={40} color={colors.blanco} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.imageButton} onPress={takePhoto}>
+          <TouchableOpacity style={newStyles.imageButton} onPress={takePhoto}>
             <Ionicons name="camera-outline" size={40} color={colors.blanco} />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Campos de formulario */}
-      <CustomInput
-        label="Nombre"
-        value={nombre}
-        onChangeText={setNombre}
-        placeholder="Nombre del animal"
+      {/* Selector de Fecha o Edad */}
+      <CustomDatePicker
+        label="Fecha de Nacimiento"
+        value={fechaNacimiento}
+        onDateChange={(date) => {
+          setFechaNacimiento(date);
+          setEdad(calcularEdad(date)); // Calcula y actualiza la edad
+        }}
+        onAgeChange={(age) => {
+          setEdad(age);
+          setFechaNacimiento(null); // Borra la fecha si se usa edad aproximada
+        }}
+        ageValue={edad}
       />
 
-      <CustomInput
-        label="Identificador"
-        value={identificador}
-        onChangeText={setIdentificador}
-        placeholder="Identificador único del animal"
-      />
+      <CustomInput label="Edad" value={edad} placeholder="Edad calculada o ingresada" editable={false} />
+      <CustomInput label="Nombre" value={nombre} onChangeText={setNombre} placeholder="Nombre del animal" />
+      <CustomInput label="Identificador" value={identificador} onChangeText={setIdentificador} placeholder="Identificador único" />
 
       <CustomSelect
         label="Especie"
         value={especie}
-        options={Object.keys(especiesRazasMap)}
+        options={[...Object.keys(especiesRazasMap), "Otro"]}
         onValueChange={(value) => {
-          setEspecie(value as Especie);
+          setEspecie(value as Especie | "Otro");
+          setCustomEspecie("");
           setRaza("");
+          setProposito("Otro");
         }}
       />
+      {especie === "Otro" && (
+        <CustomInput label="Especie Personalizada" value={customEspecie} onChangeText={setCustomEspecie} placeholder="Escribe la especie" />
+      )}
 
       <CustomSelect
         label="Raza"
         value={raza}
-        options={razasDisponibles}
-        onValueChange={setRaza}
+        options={[...razasDisponibles, "Otro"]}
+        onValueChange={(value) => setRaza(value)}
       />
+      {raza === "Otro" && (
+        <CustomInput label="Raza Personalizada" value={customRaza} onChangeText={setCustomRaza} placeholder="Escribe la raza" />
+      )}
+
+      <CustomSelect
+        label="Propósito"
+        value={proposito}
+        options={[...propositosDisponibles, "Otro"]}
+        onValueChange={(value) => setProposito(value)}
+      />
+      {proposito === "Otro" && (
+        <CustomInput label="Propósito Personalizado" value={customProposito} onChangeText={setCustomProposito} placeholder="Escribe el propósito" />
+      )}
 
       <CustomSelect
         label="Género"
         value={genero}
-        options={generos}
-        onValueChange={setGenero}
+        options={generos} // Lista de opciones ["Macho", "Hembra"]
+        onValueChange={(value) => setGenero(value)}
       />
 
-      <CustomInput
-        label="Color"
-        value={color}
-        onChangeText={setColor}
-        placeholder="Color del animal"
-      />
 
-      <CustomInput
-        label="Peso"
-        value={peso}
-        onChangeText={setPeso}
-        placeholder="Peso en kg"
-        type="number"
-      />
-
-      <CustomInput
-        label="Proposito"
-        value={proposito}
-        onChangeText={setProposito}
-        placeholder="Proposito del animal(Leche, Carne, etc.)"
-      />
-
-      <CustomInput
-        label="Ubicación"
-        value={ubicacion}
-        onChangeText={setUbicacion}
-        placeholder="Ubicación del animal"
-      />
-
-      <CustomInput
-        label="Edad"
-        value={edad}
-        onChangeText={setEdad}
-        placeholder="Edad del animal en años"
-        type="number"
-      />
-
+      <CustomInput label="Peso" value={peso} onChangeText={setPeso} placeholder="Peso en kg" type="number" />
+      <CustomInput label="Color" value={color} onChangeText={setColor} placeholder="Color del animal" />
+      <CustomInput label="Ubicación" value={ubicacion} onChangeText={setUbicacion} placeholder="Ubicación del animal" />
       <CustomInput
         label="Descripción"
         value={descripcion}
@@ -246,44 +277,9 @@ const New: React.FC = () => {
         multiline
       />
 
-      {/* Botón de guardar */}
       <CustomButton text="Guardar" onPress={handleSubmit} />
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.fondo,
-    padding: 20,
-    paddingBottom: 40,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: colors.blancoLight,
-  },
-  imageContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-    borderColor: colors.naranja,
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 5,
-    paddingVertical: 15,
-  },
-  imageButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  imageButton: {
-    marginHorizontal: 20,
-    padding: 10,
-    borderRadius: 5,
-  },
-});
 
 export default New;
