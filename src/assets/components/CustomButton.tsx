@@ -1,17 +1,18 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { colors } from '../styles/colors';
 
 interface CustomButtonProps {
-  text: string;
+  text: string | JSX.Element;
   onPress: () => void;
   disabled?: boolean;
+  loading?: boolean; 
   red?: boolean;
 }
 
-const CustomButton = ({ text, onPress, disabled = false, red = false }: CustomButtonProps) => {
+const CustomButton = ({ text, onPress, disabled = false, loading = false, red = false }: CustomButtonProps) => {
   const backgroundColor = disabled
-    ? colors.blanco 
+    ? colors.blanco
     : red
     ? colors.rojo
     : colors.naranja;
@@ -26,11 +27,15 @@ const CustomButton = ({ text, onPress, disabled = false, red = false }: CustomBu
         pressed && pressedStyle,
       ]}
       onPress={() => {
-        if (!disabled) onPress();
+        if (!disabled && !loading) onPress();
       }}
-      disabled={disabled}
+      disabled={disabled || loading}
     >
-      <Text style={[styles.text, disabled && styles.disabledText]}>{text}</Text>
+      {loading ? (
+        <ActivityIndicator size="small" color={colors.fondoDark} /> 
+      ) : (
+        <Text style={[styles.text, (disabled || loading) && styles.disabledText]}>{text}</Text>
+      )}
     </Pressable>
   );
 };
@@ -54,7 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   disabledText: {
-    color: colors.fondo, 
+    color: colors.fondo,
   },
 });
 

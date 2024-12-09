@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { GlobalStyles } from '../../assets/styles/styles';
 import CustomInput from '../../assets/components/CustomInput';
@@ -9,10 +9,9 @@ import { colors } from '../../assets/styles/colors';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../Welcome';
 
-// Firebase imports
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../../credenciales'; // Importa Firestore desde tu archivo de configuración
+import { db } from '../../credenciales';
 import useAuthStore from '../../assets/store/authStore';
 
 const Register = () => {
@@ -22,27 +21,64 @@ const Register = () => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false); // Estado para manejar el loading
 
   const auth = getAuth();
-  const setUser = useAuthStore((state) => state.setUser); // Obtén la función para guardar el usuario en el estado global
+  const setUser = useAuthStore((state) => state.setUser);
+
+  const validatePassword = (password: string) => {
+    const missingElements: string[] = [];
+    if (!/[A-Z]/.test(password)) {
+      missingElements.push('una letra mayúscula');
+    }
+    if (!/\d/.test(password)) {
+      missingElements.push('un número');
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      missingElements.push('un símbolo');
+    }
+    return missingElements;
+  };
+
+  const validatePhone = (phone: string) => {
+    const phonePattern = /^\d{10}$/;
+    return phonePattern.test(phone);
+  };
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Las contraseñas no coinciden');
+      Alert.alert('Verifica las contraseñas', 'Las contraseñas no coinciden');
+      return;
+    }
+
+    const missingElements = validatePassword(password);
+    if (missingElements.length > 0) {
+      Alert.alert(
+        'Contraseña no válida',
+        `La contraseña debe incluir ${missingElements.join(', ')}.`
+      );
       return;
     }
 
     if (!email || !password || !username || !phone) {
-      Alert.alert('Error', 'Todos los campos son obligatorios');
+      Alert.alert('Rellena todos los campos', 'Todos los campos son obligatorios');
       return;
     }
 
+    if (!validatePhone(phone)) {
+      Alert.alert(
+        'Número de teléfono no válido',
+        'El número de teléfono debe tener 10 dígitos y ser válido en Colombia.'
+      );
+      return;
+    }
+
+    setLoading(true); // Inicia el loading
+
     try {
-      // Crea el usuario en Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Guarda los datos adicionales en Firestore
       const userData = {
         nombre: username,
         correo: email,
@@ -52,14 +88,24 @@ const Register = () => {
 
       await setDoc(doc(db, 'users', user.uid), userData);
 
-      // Guarda los datos en el estado global
       setUser(userData);
 
       Alert.alert('Registro exitoso', 'El usuario ha sido creado');
-      navigate('Home'); // Redirige al Home después del registro
+      navigate('Home');
     } catch (error) {
-      console.error('Error al registrar:', error);
-      Alert.alert('Error al registrar');
+      if (typeof error === 'object' && error !== null && 'code' in error) {
+        const firebaseError = error as { code: string };
+        if (firebaseError.code === 'auth/email-already-in-use') {
+          Alert.alert('Ups..', 'El correo electrónico ya está en uso');
+        } else {
+          Alert.alert('Error', 'Algo salió mal. Inténtalo de nuevo.');
+        }
+      } else {
+        Alert.alert('Error', 'Se produjo un error desconocido.');
+      }
+      console.log(error);
+    } finally {
+      setLoading(false); // Finaliza el loading
     }
   };
 
@@ -67,45 +113,50 @@ const Register = () => {
     <ScrollView
       style={styles.scrollView}
       contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled" // Permite cerrar el teclado al tocar fuera
+      keyboardShouldPersistTaps="handled"
     >
       <LogoContainer />
       <Text style={[GlobalStyles.title, { fontSize: 35 }]}>Rellena el formulario</Text>
       <View style={styles.formContainer}>
         <CustomInput
-          label="Usuario"
-          placeholder="Usuario"
+          label="Nombre"
+          placeholder="Ingresa tu nombre completo"
           value={username}
           onChangeText={setUsername}
         />
         <CustomInput
           label="Correo electrónico"
-          placeholder="Correo electrónico"
+          placeholder="ejemplo@ejemplo.com"
           value={email}
           onChangeText={setEmail}
         />
         <CustomInput
           label="Teléfono"
-          placeholder="Número telefónico"
+          placeholder="+57 XXX XXX XXXX"
           value={phone}
           onChangeText={setPhone}
+          type="number"
         />
         <CustomInput
           label="Contraseña"
           placeholder="Contraseña"
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
+          password
         />
         <CustomInput
           label="Confirmar contraseña"
           placeholder="Confirmar contraseña"
           value={confirmPassword}
           onChangeText={setConfirmPassword}
-          secureTextEntry
+          password
         />
-        <CustomButton onPress={handleRegister} text="Registrarse" />
-        <Pressable onPress={() => { navigate('Login'); }} style={styles.link}>
+        <CustomButton
+          onPress={handleRegister}
+          text={loading ? <ActivityIndicator color="white" /> : 'Registrarse'}
+          disabled={loading} // Deshabilita el botón mientras carga
+        />
+        <Pressable onPress={() => navigate('Login')} style={styles.link}>
           <Text style={{ color: colors.blanco }}>¿Ya tienes una cuenta?</Text>
         </Pressable>
       </View>

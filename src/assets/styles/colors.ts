@@ -6,8 +6,8 @@ export const colors = {
   blancoLight: '#f8f9fa',
   naranja: '#ee7f27',
   naranjaDark: '#c35a00',
-  rojo: '#8a0015',
-  rojoLight: '#d42a35',
+  rojo: '#7a0f1f',
+  rojoLight: '#C94F57', 
   rowBgLight: '#888b8d',
   rowBgDark: '#625b5b',
 }

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Pressable, Alert, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { RootStackParamList } from '../Welcome';
@@ -9,7 +9,7 @@ import { colors, GlobalStyles } from '../../assets/styles';
 import { appFirebase } from '../../credenciales';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../credenciales'; 
+import { db } from '../../credenciales';
 import useAuthStore from '../../assets/store/authStore';
 
 type User = {
@@ -21,12 +21,14 @@ type User = {
 
 const auth = getAuth(appFirebase);
 
+const { width, height } = Dimensions.get('window');
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false); // Estado para el indicador de carga
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
-  const setUser = useAuthStore((state) => state.setUser); 
-
+  const setUser = useAuthStore((state) => state.setUser);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -34,78 +36,122 @@ const Login = () => {
       return;
     }
 
-    try {
-      // Inicia sesión con Firebase Authentication
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user; // Obtén el usuario autenticado
+    setLoading(true); // Inicia el loading
 
-      // Obtén los datos adicionales del usuario desde Firestore
-      const userDocRef = doc(db, 'users', user.uid); // Referencia al documento del usuario
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
 
-      if (userDoc.exists()) {
-        const userData = userDoc.data() as User; // Cast explícito a `User`
-        setUser(userData); // Guarda los datos del usuario en el estado global
-        Alert.alert('Iniciado sesión', `Bienvenido, ${userData.nombre}`);
-      } else {
-        Alert.alert('Error', 'No se encontraron datos del usuario en Firestore.');
-      }
+      const userData = userDoc.data() as User;
+      setUser(userData);
+      Alert.alert('Iniciado sesión', `Bienvenido, ${userData.nombre}`);
     } catch (error) {
-      let errorMessage = 'Ocurrió un error. Inténtalo de nuevo.';
-      if (error === 'auth/user-not-found') {
-        errorMessage = 'Usuario no encontrado. Por favor, regístrate.';
-      } else if (error === 'auth/wrong-password') {
-        errorMessage = 'Contraseña incorrecta.';
-      } else if (error === 'auth/invalid-email') {
-        errorMessage = 'Formato de correo inválido.';
+      if (error instanceof Error && 'code' in error) {
+        const firebaseError = error as { code: string };
+        let errorMessage = 'Ups, algo salió mal. Inténtalo de nuevo.';
+
+        switch (firebaseError.code) {
+          case 'auth/invalid-credential':
+            errorMessage = 'Revisa que los datos ingresados sean correctos.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'El correo electrónico no es válido.';
+            break;
+          case 'auth/user-disabled':
+            errorMessage = 'Esta cuenta ha sido deshabilitada.';
+            break;
+          case 'auth/user-not-found':
+            errorMessage = 'No se encontró un usuario con este correo.';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'La contraseña es incorrecta.';
+            break;
+          default:
+            errorMessage = 'Verifica las crendenciales';
+            break;
+        }
+
+        Alert.alert('Ups, algo salió mal', errorMessage);
+      } else {
+        Alert.alert('Error', 'Se produjo un error desconocido.');
       }
-      Alert.alert('Error al iniciar sesión', errorMessage);
+    } finally {
+      setLoading(false); 
     }
   };
 
   return (
-    <View style={[GlobalStyles.container, { alignItems: 'flex-start' }]}>
-      <LogoContainer />
-      <Text style={[GlobalStyles.title, { fontSize: 35 }]}>Ingresa tu usuario</Text>
-      <View style={styles.formContainer}>
-        <CustomInput
-          label="Correo Electrónico"
-          placeholder="Correo electrónico"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <CustomInput
-          label="Contraseña"
-          placeholder="Contraseña"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <CustomButton onPress={handleLogin} text="Ingresar" />
-        <Pressable onPress={() => navigate('Register')} style={styles.link}>
-          <Text style={{ color: colors.blanco }}>¿No tienes cuenta?</Text>
-        </Pressable>
-      </View>
-    </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={[GlobalStyles.container, { alignItems: 'center' }]}>
+          <LogoContainer />
+          <Text style={[GlobalStyles.title, styles.title]}>Ingresa tu usuario</Text>
+          <View style={styles.formContainer}>
+            <CustomInput
+              label="Correo Electrónico"
+              placeholder="Correo electrónico"
+              value={email}
+              onChangeText={setEmail}
+            />
+            <CustomInput
+              label="Contraseña"
+              placeholder="Contraseña"
+              value={password}
+              onChangeText={setPassword}
+              password
+            />
+            <CustomButton onPress={handleLogin} text="Ingresar" loading={loading} disabled={loading} />
+            <Pressable onPress={() => navigate('Register')}>
+              <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
+            </Pressable>
+          </View>
+          <View style={styles.messageContainer}>
+            <Text style={styles.message}>
+              Recuerda tener acceso a internet para crear tu usuario o ingresar a tu cuenta la primera vez.
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
+
 const styles = StyleSheet.create({
+  title: {
+    fontSize: width * 0.08, 
+    textAlign: 'center',
+  },
   formContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     width: '100%',
-    height: 300,
-    marginTop: 20,
+    padding: width * 0.05,
     borderColor: colors.blanco,
     borderWidth: 1,
     borderRadius: 10,
-    padding: 20,
+    alignItems: 'center',
+    marginVertical: height * 0.03,
   },
-  link: {
-    alignSelf: 'center',
-    marginTop: 'auto',
+  linkText: {
+    color: colors.blanco,
+    fontSize: width * 0.045,
+    marginTop: height * 0.02,
+    textAlign: 'center',
+  },
+  messageContainer: {
+    marginTop: height * 0.03,
+    width: '90%',
+  },
+  message: {
+    color: colors.rojo,
+    fontSize: width * 0.04,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 

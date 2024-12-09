@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.fondo,
   },
   dateText: {
-    color: colors.blancoLight,
+    color: colors.blanco,
   },
   switchButton: {
     marginTop: 10,

@@ -255,8 +255,12 @@ const AnimalView = () => {
 
       <Modalize ref={editModalRef} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Editar {currentField}</Text>
-          <TextInput style={styles.input} value={fieldValue} onChangeText={setFieldValue} />
+          <CustomInput
+            label={"Ingresa el " +currentField}
+            placeholder={currentField}
+            value={fieldValue} 
+            onChangeText={setFieldValue} 
+          />
           <CustomButton text="Guardar" onPress={handleSave} />
           <CustomButton
             text="Cancelar"
@@ -326,16 +330,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-  },
-  input: {
-    width: "90%",
-    height: 40,
-    borderColor: colors.naranja,
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 16,
-    paddingHorizontal: 8,
-    backgroundColor: "#fff",
   },
   hiddenContainer: {
     flex: 1,

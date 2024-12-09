@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import CustomButton from '../assets/components/CustomButton';
 import { GlobalStyles } from '../assets/styles/styles';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import FromDevora from '../assets/components/FromDevora';
-import Register from './auth/Register';
-import { Animal } from '../assets/interfaces/animal';
+import WelcomeIcon from '../assets/img/WelcomeIcon';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -16,6 +15,8 @@ export type RootStackParamList = {
   Busqueda: undefined;
 };
 
+
+
 const Welcome = () => {
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -23,10 +24,12 @@ const Welcome = () => {
     navigate('Login'); 
   };
 
+  const { width, height } = Dimensions.get('window');
+
   return (
     <View style={[GlobalStyles.container, { alignItems: 'flex-start', justifyContent: 'center' }]}>
-      <Text style={[GlobalStyles.title, { fontSize: 30 }]}>Welcome to</Text>
-      <Text style={[GlobalStyles.subTitle, { fontSize: 70 }]}>AmigoVet</Text>
+      <Text style={[GlobalStyles.title, { fontSize: width*0.08 }]}>Welcome to</Text>
+      <Text style={[GlobalStyles.subTitle, { fontSize: width*0.2 }]}>AmigoVet</Text>
       <CustomButton onPress={login} text="Ingresa Ahora" />
       <FromDevora />
     </View>
