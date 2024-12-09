@@ -78,9 +78,9 @@ const AnimalView = () => {
       };
 
       await updateAnimalData(id, currentField, fieldValue);
+      await updateAnimalData(id, "updated_at", new Date().toISOString());
       await saveRegister(register);
 
-      await updateAnimalData(id, "updatedAt", new Date().toISOString());
 
       // Actualizar registros en el estado
       setRegisters((prev) => [...prev, register]);
