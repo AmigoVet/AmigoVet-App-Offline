@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React, { useEffect } from 'react';
 import useAuthStore from '../../assets/store/authStore';
-import { GlobalStyles } from '../../assets/styles';
+import { colors, GlobalStyles } from '../../assets/styles';
 import { CustomButton } from '../../assets/components';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -25,9 +25,7 @@ const Profile = () => {
       {user ? (
         <>
           <Image
-            source={{
-              uri: 'https://i.pravatar.cc/300', // Puedes cambiar por un avatar dinámico
-            }}
+            source={require('../../assets/img/veterinario.png')}
             style={styles.avatar}
           />
             <Text style={GlobalStyles.title}>{user.nombre}</Text>
@@ -62,6 +60,8 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     marginBottom: 20,
+    borderColor: colors.naranja,
+    borderWidth: 1,
   },
   noUserText: {
     fontSize: 18,
