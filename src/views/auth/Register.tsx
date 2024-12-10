@@ -103,7 +103,6 @@ const Register = () => {
       } else {
         Alert.alert('Error', 'Se produjo un error desconocido.');
       }
-      console.log(error);
     } finally {
       setLoading(false); // Finaliza el loading
     }

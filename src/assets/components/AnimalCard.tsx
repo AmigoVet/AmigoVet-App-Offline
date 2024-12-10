@@ -17,7 +17,6 @@ const AnimalCard: React.FC<AnimalCardProps> = ({ animal }) => {
 
     const handleView = () => {
         // Navegar a la vista de detalles del animal
-        console.log("Navegando con info " + animal.id);
         navigate('AnimalView', { id: animal.id});
     };
 

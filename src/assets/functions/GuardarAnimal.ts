@@ -6,7 +6,6 @@ export const saveAnimalData = async (animal: any) => {
       const parsedData = existingData ? JSON.parse(existingData) : [];
       parsedData.push(animal);
       await AsyncStorage.setItem("animals", JSON.stringify(parsedData));
-      console.log("Animal guardado en AsyncStorage");
     } catch (error) {
       console.error("Error al guardar los datos:", error);
     }

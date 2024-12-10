@@ -69,9 +69,7 @@ const New: React.FC = () => {
 
     launchImageLibrary(options, (response) => {
       if (response.didCancel) {
-        console.log("Usuario canceló la selección de imagen");
       } else if (response.errorCode) {
-        console.log("Error al seleccionar imagen:", response.errorMessage);
         Alert.alert("Error", "No se pudo seleccionar la imagen");
       } else if (response.assets && response.assets[0].uri) {
         setImage(response.assets[0].uri);
@@ -92,9 +90,7 @@ const New: React.FC = () => {
 
     launchCamera(options, (response) => {
       if (response.didCancel) {
-        console.log("Usuario canceló la cámara");
       } else if (response.errorCode) {
-        console.log("Error al tomar foto:", response.errorMessage);
         Alert.alert("Error", "No se pudo tomar la foto");
       } else if (response.assets && response.assets[0].uri) {
         setImage(response.assets[0].uri);
@@ -103,25 +99,6 @@ const New: React.FC = () => {
   };
 
   const handleSubmit = () => {
-      // Depuración previa al guardado
-      console.log("------------------------------------------------");
-      console.log("Nombre:", nombre);
-      console.log("Especie:", especie === "Otro" ? customEspecie : especie);
-      console.log("Raza:", raza === "Otro" ? customRaza : raza);
-      console.log("Genero:", genero);
-      console.log("Peso:", peso);
-      console.log("Descripcion:", descripcion);
-      console.log("Imagen:", image);
-      console.log("Edad:", edad);
-      console.log("Fecha de nacimiento:", fechaNacimiento);
-      console.log("Color:", color);
-      console.log("Ubicacion:", ubicacion);
-      console.log("Propósito:", proposito === "Otro" ? customProposito : proposito);
-      console.log("Raza personalizada:", customRaza);
-      console.log("Especie personalizada:", customEspecie);
-      console.log("Propósito personalizado:", customProposito);
-      console.log("Identificador:", identificador);
-    // Validar campos obligatorios
     if (
       !nombre ||
       (!especie && !customEspecie) ||

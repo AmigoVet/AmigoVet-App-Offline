@@ -32,7 +32,6 @@ const loadData = async (ownerId: string) => {
 
             // Comparar si la fecha de parto ya pasó (más de un día después)
             if (currentDate > noteDate) {
-              console.log(`Nota eliminada para el animal ${animal.id}: ${note.nota}`);
               return false; // Eliminar la nota
             }
           }
@@ -95,7 +94,6 @@ const saveNoteAnimal = async (animalId: string, newNote: Notes) => {
       });
 
       await AsyncStorage.setItem('animals', JSON.stringify(updatedAnimals));
-      console.log('Nota actualizada correctamente');
     } else {
       console.warn('No se encontraron animales para actualizar');
     }
@@ -146,7 +144,6 @@ const updateAnimalData = async (id: string, field: string, value: string) => {
           return animal;
         });
         await AsyncStorage.setItem('animals', JSON.stringify(updatedAnimals));
-        console.log(`Animal actualizado: ${field} = ${value}`);
       }
     } catch (error) {
       console.error('Error al actualizar animal:', error);
