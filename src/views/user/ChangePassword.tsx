@@ -3,12 +3,17 @@ import { View, Text, Alert, StyleSheet } from 'react-native';
 import { CustomButton, CustomInput } from '../../assets/components';
 import { changePassword } from '../../assets/functions';
 import { GlobalStyles } from '../../assets/styles';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../Welcome';
 
 const ChangePasswordScreen = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
+
 
   const validatePassword = (password: string) => {
     const missingElements: string[] = [];
@@ -51,6 +56,7 @@ const ChangePasswordScreen = () => {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
+      navigate('Home');
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'No se pudo cambiar la contraseña. Verifica los datos ingresados.');
