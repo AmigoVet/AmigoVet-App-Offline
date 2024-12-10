@@ -3,9 +3,13 @@ import React, { useEffect } from 'react';
 import useAuthStore from '../../assets/store/authStore';
 import { GlobalStyles } from '../../assets/styles';
 import { CustomButton } from '../../assets/components';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../Welcome';
 
 const Profile = () => {
   const { user, loadUser, clearUser } = useAuthStore();
+  const {navigate} = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     loadUser(); // Cargar usuario desde AsyncStorage al montar el componente
@@ -14,6 +18,7 @@ const Profile = () => {
   const closeSession = async () => {
     await clearUser(); // Cerrar sesión
   };
+
 
   return (
     <View style={[GlobalStyles.container, styles.profileContainer]}>
@@ -29,6 +34,10 @@ const Profile = () => {
             <Text style={GlobalStyles.subTitle}>{user.correo}</Text>
             <Text style={GlobalStyles.subTitle}>{`Teléfono: ${user.telefono}`}</Text>
             <View style={{height: 200}} />
+            <CustomButton 
+              text="Cambiar Contraseña"
+              onPress={() => navigate('ChangePassword')}
+            />
             <CustomButton 
               text="Cerrar sesión" 
               onPress={closeSession}

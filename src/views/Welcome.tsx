@@ -4,7 +4,6 @@ import CustomButton from '../assets/components/CustomButton';
 import { GlobalStyles } from '../assets/styles/styles';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import FromDevora from '../assets/components/FromDevora';
-import WelcomeIcon from '../assets/img/WelcomeIcon';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -13,6 +12,7 @@ export type RootStackParamList = {
   Home: undefined;
   AnimalView: {id: string};
   Busqueda: undefined;
+  ChangePassword: undefined;
 };
 
 

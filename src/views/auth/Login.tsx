@@ -26,7 +26,7 @@ const { width, height } = Dimensions.get('window');
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // Estado para el indicador de carga
+  const [loading, setLoading] = useState(false); 
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
   const setUser = useAuthStore((state) => state.setUser);
 

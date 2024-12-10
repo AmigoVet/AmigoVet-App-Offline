@@ -72,7 +72,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         {password && (
           <Pressable onPress={togglePasswordVisibility} style={styles.icon}>
             <Ionicons
-              name={isPasswordVisible ? 'eye-off' : 'eye'}
+              name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
               size={20}
               color={colors.blancoLight}
             />
