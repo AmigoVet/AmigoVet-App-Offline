@@ -35,23 +35,22 @@ const New: React.FC = () => {
   const [nombre, setNombre] = useState<string>("");
   const [identificador, setIdentificador] = useState<string>("");
   const [especie, setEspecie] = useState<Especie | "Otro" | "">("");
-  const [customEspecie, setCustomEspecie] = useState<string>(""); // Especie personalizada
-  const [raza, setRaza] = useState<string>(""); // Raza seleccionada
-  const [customRaza, setCustomRaza] = useState<string>(""); // Raza personalizada
+  const [customEspecie, setCustomEspecie] = useState<string>(""); 
+  const [raza, setRaza] = useState<string>("");
+  const [customRaza, setCustomRaza] = useState<string>("");
   const [genero, setGenero] = useState<string>("");
   const [peso, setPeso] = useState<string>("");
-  const [edad, setEdad] = useState<string>(""); // Edad calculada o ingresada
-  const [fechaNacimiento, setFechaNacimiento] = useState<Date | null>(null); // Fecha de nacimiento
+  const [edad, setEdad] = useState<string>(""); 
+  const [fechaNacimiento, setFechaNacimiento] = useState<Date | null>(null); 
   const [color, setColor] = useState<string>("");
   const [proposito, setProposito] = useState<string>("Otro");
-  const [customProposito, setCustomProposito] = useState<string>(""); // Propósito personalizado
+  const [customProposito, setCustomProposito] = useState<string>(""); 
   const [ubicacion, setUbicacion] = useState<string>("");
-  const [descripcion, setDescripcion] = useState<string>(""); // Descripción
+  const [descripcion, setDescripcion] = useState<string>("");
   const [image, setImage] = useState<string | null>(null);
 
   const user = useAuthStore((state) => state.user);
 
-  // Obtener razas y propósitos disponibles
   const razasDisponibles =
     especie && especie !== "Otro" ? especiesRazasMap[especie] : [];
   const propositosDisponibles =
@@ -115,7 +114,6 @@ const New: React.FC = () => {
       return;
     }
   
-    // Crear objeto del animal
     const animal = {
       ownerId: user?.userId,
       id: Math.random().toString(36).substr(2, 9),
@@ -136,14 +134,12 @@ const New: React.FC = () => {
       updated_at: new Date().toISOString(),
     };
   
-    // Guardar datos del animal
     saveAnimalData(animal);
   
     Alert.alert("Éxito", "Animal registrado correctamente");
     resetForm();
   };
   
-  // Reiniciar formulario
   const resetForm = () => {
     setNombre("");
     setIdentificador("");
@@ -226,7 +222,7 @@ const New: React.FC = () => {
         label="Género"
         miniText="Obligatorio"
         value={genero}
-        options={generos} // Lista de opciones ["Macho", "Hembra"]
+        options={generos}
         onValueChange={(value) => setGenero(value)}
       />
 
@@ -236,11 +232,11 @@ const New: React.FC = () => {
         value={fechaNacimiento}
         onDateChange={(date) => {
           setFechaNacimiento(date);
-          setEdad(calcularEdad(date)); // Calcula y actualiza la edad
+          setEdad(calcularEdad(date)); 
         }}
         onAgeChange={(age) => {
           setEdad(age);
-          setFechaNacimiento(null); // Borra la fecha si se usa edad aproximada
+          setFechaNacimiento(null);
         }}
         ageValue={edad}
       />

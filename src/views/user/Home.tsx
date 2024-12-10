@@ -14,7 +14,7 @@ const Home = () => {
     const user = useAuthStore((state) => state.user);
     const [animals, setAnimals] = useState<Animal[]>([]);
     const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
-    const [refreshing, setRefreshing] = useState(false); // Estado para el indicador de recarga
+    const [refreshing, setRefreshing] = useState(false); 
     const modalRef = useRef<Modalize>(null);
 
     const loadAnimal = async () => {

@@ -1,5 +1,6 @@
 import CustomImage from './CustomImage';
 import AnimalTable from './AnimalTable';
+import CarouselImages from './CarouselImages';
 export { default as CustomButton } from './CustomButton';
 export { default as CustomInput } from './CustomInput';
 export { default as FromDevora } from './FromDevora';
@@ -15,3 +16,4 @@ export { default as RowRegister } from './RowRegister';
 export { default as HeaderRegisterTable } from './HeaderRegisterTable';
 export { default as CustomSelect } from './CustomSelect';
 export { default as CustomDatePicker } from './CustomDatePicker';
+export {default as CarouselImages} from './CarouselImages';

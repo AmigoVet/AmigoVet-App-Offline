@@ -14,7 +14,9 @@ export interface Animal {
     color: string;
     descripcion: string;
     image: string;
-    proposito: string; // Propósito seleccionado
+    image2: string;
+    image3: string;
+    proposito: string; 
     ubicacion: string;
     created_at: string;
     updated_at: string;
@@ -24,7 +26,7 @@ export interface Animal {
 export interface Notes {
     nota: string;
 }
-
+export type Image = string
 export type PropositosDomesticos = "Mascota" | "Cuidados" | "Animal de compañía" | "Otro";
 export type PropositosRurales = "Leche" | "Carne" | "Doble Propósito" | "Otro";
 
