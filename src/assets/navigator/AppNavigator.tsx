@@ -33,7 +33,7 @@ const Tab = createBottomTabNavigator();
 const HomeScreenWithDrawerNavigator = () => {
   return (
     <Drawer.Navigator
-      initialRouteName="HomeScreen"
+      initialRouteName="Principal"
       screenOptions={{
         header: () => <HeaderDrawer />,
         drawerActiveTintColor: colors.naranja, // Color del texto activo
