@@ -83,7 +83,6 @@ const Home = () => {
 
     return (
         <>
-            <Header />
             <View style={[GlobalStyles.container, styles.container]}>
                 {animals.length > 0 ? (
                     <SwipeListView

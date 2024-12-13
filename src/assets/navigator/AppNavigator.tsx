@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import useAuthStore from '../store/authStore';
@@ -13,13 +14,31 @@ import Home from '../../views/user/Home';
 import New from '../../views/user/New';
 import Profile from '../../views/user/Profile';
 import { colors } from '../styles';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import AnimalView from '../../views/user/AnimalView';
 import Busqueda from '../../views/user/Busqueda';
 import ChangePasswordScreen from '../../views/user/ChangePassword';
+import HeaderDrawer from '../components/HeaderDrawer';
+import CustomIcon from '../components/CustomIcon';
 
+const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const HomeScreenWithDrawerNavigator = () => {
+  return (
+    <Drawer.Navigator
+      initialRouteName="HomeScreen"
+      screenOptions={{
+        header: (props) => <HeaderDrawer />, 
+      }}
+    >
+      <Drawer.Screen name="HomeScreen" component={Home} />
+      <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="New" component={New} />
+    </Drawer.Navigator>
+  );
+};
 
 // Configuración del navegador de tabs
 const BottomTabsNavigator = () => {
@@ -42,7 +61,7 @@ const BottomTabsNavigator = () => {
     
         return (
           <View style={{ alignItems: 'center' }}>
-            <Ionicons name={iconName} size={size} color={color} />
+            <CustomIcon name={iconName} size={size} color={color} />
             {focused && (
               <View
                 style={{
@@ -71,7 +90,7 @@ const BottomTabsNavigator = () => {
     
     
     >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={HomeScreenWithDrawerNavigator} />
       <Tab.Screen name="New" component={New} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>

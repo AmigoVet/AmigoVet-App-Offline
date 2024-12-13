@@ -1,29 +1,32 @@
-import { View, StyleSheet, Image, Pressable } from 'react-native';
 import React from 'react';
+import { View, StyleSheet, Image, Pressable } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors } from '../styles';
 import { DrawerActions, NavigationProp, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../views/Welcome';
 import CustomIcon from './CustomIcon';
+import { RootStackParamList } from '../../views/Welcome';
 
-const Header = () => {
-  const {navigate, dispatch} = useNavigation<NavigationProp<RootStackParamList>>();
+
+const HeaderDrawer = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
     <View style={styles.container}>
-      {/* Abrir el Drawer al presionar el icono de menú */}
-      <Pressable onPress={() => dispatch(DrawerActions.openDrawer())}>
+      {/* Botón para abrir el drawer */}
+      <Pressable onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
         <CustomIcon name="menu" size={30} color="white" />
       </Pressable>
-      <Image 
-        source={require('../img/HeaderLogo.png')} 
-        style={{ 
-          width: 100, 
+      {/* Logo central */}
+      <Image
+        source={require('../img/HeaderLogo.png')}
+        style={{
+          width: 100,
           alignSelf: 'center',
-        }} 
+        }}
         resizeMode="contain"
       />
-      <Pressable onPress={() => navigate('Busqueda')}>
+      {/* Botón para ir a la búsqueda */}
+      <Pressable onPress={() => navigation.navigate('Busqueda')}>
         <CustomIcon name="search" size={30} color="white" />
       </Pressable>
     </View>
@@ -45,4 +48,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Header;
+export default HeaderDrawer;
