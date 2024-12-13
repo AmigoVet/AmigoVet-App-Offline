@@ -23,12 +23,12 @@ export const DrawerContent = (props: any) => {
       {/* Imagen */}
       <View>
         <Image
-          source={require('../../assets/img/HeaderLogo.png')}
+          source={require('../../assets/img/HeaderLogo1.png')}
           style={{
             alignSelf: 'center',
             width: '90%',
             margin: 0,
-            marginVertical: -20,
+            marginVertical: -5,
           }}
           resizeMode="contain"
         />
