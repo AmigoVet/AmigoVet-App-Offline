@@ -12,11 +12,9 @@ const HeaderDrawer = () => {
 
   return (
     <View style={styles.container}>
-      {/* Botón para abrir el drawer */}
       <Pressable onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
         <CustomIcon name="menu" size={30} color="white" />
       </Pressable>
-      {/* Logo central */}
       <Image
         source={require('../img/HeaderLogo.png')}
         style={{

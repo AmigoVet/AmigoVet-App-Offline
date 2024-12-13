@@ -19,6 +19,11 @@ import AnimalView from '../../views/user/AnimalView';
 import Busqueda from '../../views/user/Busqueda';
 import ChangePasswordScreen from '../../views/user/ChangePassword';
 import HeaderDrawer from '../components/HeaderDrawer';
+import {DrawerContent} from '../components/DrawerContent';
+import Embarazadas from '../../views/search/Embarazadas';
+import Hembras from '../../views/search/Hembras';
+import Machos from '../../views/search/Machos';
+import Jovenes from '../../views/search/Jovenes';
 import CustomIcon from '../components/CustomIcon';
 
 const Drawer = createDrawerNavigator();
@@ -30,15 +35,64 @@ const HomeScreenWithDrawerNavigator = () => {
     <Drawer.Navigator
       initialRouteName="HomeScreen"
       screenOptions={{
-        header: (props) => <HeaderDrawer />, 
+        header: () => <HeaderDrawer />,
+        drawerActiveTintColor: colors.naranja, // Color del texto activo
+        drawerInactiveTintColor: colors.blanco, // Color del texto inactivo
+        drawerStyle: {
+          backgroundColor: colors.fondoDark, // Fondo del drawer
+        },
       }}
+      drawerContent={(props) => <DrawerContent {...props} />}
     >
-      <Drawer.Screen name="HomeScreen" component={Home} />
-      <Drawer.Screen name="Profile" component={Profile} />
-      <Drawer.Screen name="New" component={New} />
+      <Drawer.Screen
+        name="Principal"
+        component={Home}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <CustomIcon name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Animales Embarazadas"
+        component={Embarazadas}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <CustomIcon name="heart-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Hembras"
+        component={Hembras}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <CustomIcon name="female-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Machos"
+        component={Machos}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <CustomIcon name="male-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Jovenes"
+        component={Jovenes}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <CustomIcon name="paw-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 };
+
 
 // Configuración del navegador de tabs
 const BottomTabsNavigator = () => {
@@ -134,7 +188,6 @@ const AppNavigator = () => {
           <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
           </>
       ) : (
-        // Muestra las pantallas de autenticación si no está autenticado
         <>
           <Stack.Screen name="Welcome" component={Welcome} />
           <Stack.Screen name="Login" component={Login} />
