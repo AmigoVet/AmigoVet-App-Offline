@@ -1,12 +1,13 @@
+
+```
 ██████╗ ███████╗██╗   ██╗ ██████╗ ██████╗  █████╗     ██╗ ███╗   ██╗ ██████╗ 
 ██╔══██╗██╔════╝██║   ██║██╔═══██╗██╔══██╗██╔══██╗    ██║ ████╗  ██║██╔═══██╗
 ██║  ██║█████╗  ██║   ██║██║   ██║██████╔╝███████║    ██║ ██╔██╗ ██║██║   
 ██║  ██║██╔══╝  ╚██╗ ██╔╝██║   ██║██║█║═╝ ██╔══██║    ██║ ██║╚██╗██║██║   ██║
 ██████╔╝███████╗ ╚████╔╝ ╚██████╔╝██║ ██║ ██║  ██║    ██║ ██║ ╚████║╚██████╔╝
-╚═════╝ ╚══════╝  ╚═══╝   ╚═════╝ ╚═╝ ╚═╝ ╚═╝  ╚═╝    ╚═╝ ╚═╝  ╚═══╝ ╚═════╝ 
+╚═════╝ ╚══════╝  ╚═══╝   ╚═════╝ ╚═╝ ╚═╝ ╚═╝  ╚═╝    ╚═╝ ╚═╝  ╚═══╝ ╚═════╝
 ```
-
-# DevoraInc - AmigoVet App
+# Devora Inc - AmigoVet App
 
 **AmigoVet** es una aplicación diseñada para simplificar la gestión de la salud animal, permitiendo a los usuarios llevar un registro eficiente de información veterinaria para sus mascotas o animales de granja.
 
