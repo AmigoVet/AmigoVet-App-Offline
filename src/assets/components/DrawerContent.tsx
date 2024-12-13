@@ -28,7 +28,7 @@ export const DrawerContent = (props: any) => {
             alignSelf: 'center',
             width: '90%',
             margin: 0,
-            marginVertical: -5,
+            marginVertical: -20,
           }}
           resizeMode="contain"
         />
