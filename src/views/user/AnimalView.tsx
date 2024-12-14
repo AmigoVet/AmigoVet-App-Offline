@@ -185,6 +185,7 @@ const AnimalView = () => {
       await updateAnimalData(id, currentField, fieldValue);
       await updateAnimalData(id, "updated_at", new Date().toISOString());
       if (currentField === "Registrar Embarazo" || currentField === "Registrar Inseminacion") {
+        console.log("actualizando embarazada");
         await updateAnimalData(id, "embarazada", true);
       }
       await saveRegister(register);
@@ -220,6 +221,7 @@ const AnimalView = () => {
           fechaPartoEstimada: fieldValue,
         };
         await saveNoteAnimal(animal!.id, {nota: `Posible fecha de parto: ${actualDay}`});
+        await updateAnimalData(id, "embarazada", true);
 
       } else if (currentField === "Registrar Tratamiento") {
         specificRegister = {
@@ -233,6 +235,7 @@ const AnimalView = () => {
           semenProveedor: fieldValue,
         };
         await saveNoteAnimal(animal!.id, {nota: `Posible fecha de parto: ${actualDay}`});
+        await updateAnimalData(id, "embarazada", true);
       } else {
         specificRegister = baseRegister;
       }
