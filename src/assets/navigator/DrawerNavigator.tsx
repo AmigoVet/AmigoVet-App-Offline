@@ -3,7 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import Home from '../../views/user/Home';
 import Profile from '../../views/user/Profile';
 import New from '../../views/user/New';
-import { colors } from '../styles';
+import { staticColors } from '../styles/colors';
 
 const Drawer = createDrawerNavigator();
 
@@ -11,12 +11,12 @@ const DrawerNavigation = () => {
   return (
     <Drawer.Navigator
       screenOptions={{
-        headerShown: false, // Header personalizado con el componente `Header`
+        headerShown: false, 
         drawerStyle: {
-          backgroundColor: colors.fondoDark,
+          backgroundColor: staticColors.negroDark,
         },
-        drawerActiveTintColor: colors.naranja,
-        drawerInactiveTintColor: colors.blanco,
+        drawerActiveTintColor: staticColors.naranja,
+        drawerInactiveTintColor: staticColors.blanco,
       }}
     >
       <Drawer.Screen name="Home" component={Home} />

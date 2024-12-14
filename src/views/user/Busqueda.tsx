@@ -5,10 +5,16 @@ import { AnimalCard, CustomInput, Header } from '../../assets/components';
 import { GlobalStyles } from '../../assets/styles';
 import { searchAnimals } from '../../assets/utils/asyncStorage';
 import { Animal } from '../../assets/interfaces/animal';
+import { useTheme } from '../../assets/context/ThemeContext';
+import { getDynamicColors } from '../../assets/styles/colors';
+import { createGlobalStyles } from '../../assets/styles/styles';
 
 const Busqueda = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<Animal[]>([]);
+
+  const { isDarkTheme } = useTheme();
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);

@@ -1,6 +1,16 @@
-import { View, Text, TextInput, KeyboardTypeOptions, StyleSheet, TextStyle, StyleProp } from 'react-native'
-import React from 'react'
-import { colors } from '../styles';
+import React from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  KeyboardTypeOptions,
+  StyleSheet,
+  TextStyle,
+  StyleProp,
+} from 'react-native';
+import { useTheme } from '../context/ThemeContext'; 
+import { getDynamicColors } from '../styles/colors'; 
+import { createGlobalStyles } from '../styles/styles'; 
 
 interface EditTableTextProps {
   placeholder: string;
@@ -12,45 +22,64 @@ interface EditTableTextProps {
   style?: StyleProp<TextStyle>;
 }
 
-const EditTableText = ({placeholder, value, onChangeText, type, editable = true, style, label}: EditTableTextProps) => {
-    const getKeyboardType = (): KeyboardTypeOptions => {
-        switch (type) {
-          case 'number':
-            return 'numeric'; // Teclado numérico
-          case 'password':
-            return 'default'; // `secureTextEntry`
-          case 'text':
-          default:
-            return 'default'; // Teclado general
-        }
-      };
+const EditTableText = ({
+  placeholder,
+  value,
+  onChangeText,
+  type,
+  editable = true,
+  style,
+  label,
+}: EditTableTextProps) => {
+  const getKeyboardType = (): KeyboardTypeOptions => {
+    switch (type) {
+      case 'number':
+        return 'numeric';
+      case 'password':
+        return 'default'; 
+      case 'text':
+      default:
+        return 'default'; 
+    }
+  };
 
+  const { isDarkTheme } = useTheme(); 
+  const colors = getDynamicColors(isDarkTheme); 
+  const globalStyles = createGlobalStyles(isDarkTheme); 
+  const styles = createStyles(colors);
 
   return (
     <>
-    {label && <Text>
-      {label}: 
-    </Text>}
-    <TextInput 
+      {label && (
+        <Text style={[globalStyles.label, { marginBottom: 5 }]}>
+          {label}:
+        </Text>
+      )}
+      <TextInput
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
-        placeholderTextColor="#888"
+        placeholderTextColor={colors.rowBgLight} 
         keyboardType={getKeyboardType()}
-        style={[styles.dataCell, style]}
+        style={[styles.dataCell, style]} 
         editable={editable}
-    />
+      />
     </>
-  )
-}
+  );
+};
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+  StyleSheet.create({
     dataCell: {
-        flex: 1,
-        padding: 10,
-        textAlign: 'center',
-        color: colors.blanco
-      },
-})
+      flex: 1,
+      padding: 10,
+      textAlign: 'center',
+      color: colors.blanco, 
+      backgroundColor: colors.fondo,
+      borderWidth: 1,
+      borderColor: colors.naranja, 
+      borderRadius: 5,
+    },
+  });
 
-export default EditTableText
+export default EditTableText;

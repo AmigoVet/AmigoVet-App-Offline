@@ -1,9 +1,15 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import React from 'react';
-import { colors, GlobalStyles } from '../styles';
+import { useTheme } from '../context/ThemeContext';
+import { getDynamicColors } from '../styles/colors';
+import { createGlobalStyles } from '../styles/styles';
 
 const HeaderRegisterTable = () => {
   const windowWidth = Dimensions.get('window').width; 
+
+  const { isDarkTheme } = useTheme();
+  const colors = getDynamicColors(isDarkTheme);
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
 
   const styles = StyleSheet.create({
     container: {

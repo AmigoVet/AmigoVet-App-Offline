@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import CustomButton from '../assets/components/CustomButton';
-import { GlobalStyles } from '../assets/styles/styles';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import FromDevora from '../assets/components/FromDevora';
+import { useTheme } from '../assets/context/ThemeContext';
+import { createGlobalStyles } from '../assets/styles/styles';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -30,6 +31,9 @@ const Welcome = () => {
   };
 
   const { width, height } = Dimensions.get('window');
+
+  const {isDarkTheme} = useTheme();
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
 
   return (
     <View style={[GlobalStyles.container, { alignItems: 'flex-start', justifyContent: 'center' }]}>

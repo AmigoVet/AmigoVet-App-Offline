@@ -1,7 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { colors, GlobalStyles } from "../styles";
+import { useTheme } from "../context/ThemeContext";
+import { getDynamicColors } from "../styles/colors";
+import { createGlobalStyles } from "../styles/styles";
 
 const { width } = Dimensions.get("window");
 
@@ -14,6 +16,36 @@ interface CustomSelectProps {
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onValueChange, miniText }) => {
+
+  const { isDarkTheme } = useTheme();
+  const colors = getDynamicColors(isDarkTheme);
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
+
+  const styles = StyleSheet.create({
+    container: {
+      marginBottom: 20,
+    },
+    label: {
+      fontSize: width * 0.04, // Escala dinámica
+      fontWeight: "500",
+      color: colors.naranja,
+      marginBottom: 5,
+    },
+    pickerContainer: {
+      borderWidth: 1,
+      borderColor: colors.naranja,
+      borderRadius: 8,
+      overflow: "hidden",
+      backgroundColor: colors.fondo,
+    },
+    picker: {
+      height: 50,
+      width: "100%",
+      fontSize: width * 0.04, // Ajuste dinámico del texto
+      color: colors.blanco,
+    },
+  });
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>
@@ -37,29 +69,6 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onVa
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: width * 0.04, // Escala dinámica
-    fontWeight: "500",
-    color: colors.naranja,
-    marginBottom: 5,
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: colors.naranja,
-    borderRadius: 8,
-    overflow: "hidden",
-    backgroundColor: colors.fondo,
-  },
-  picker: {
-    height: 50,
-    width: "100%",
-    fontSize: width * 0.04, // Ajuste dinámico del texto
-    color: colors.blanco,
-  },
-});
+
 
 export default CustomSelect;

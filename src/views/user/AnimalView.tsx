@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
-import { colors, GlobalStyles, newStyles } from "../../assets/styles";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { Modalize } from "react-native-modalize";
 import useAnimals from "../../assets/hooks/useAnimals";
@@ -23,8 +22,11 @@ import { InseminationRegister, PregnancyRegister, TreatmentRegister } from "../.
 import { calculateDueDate } from "../../assets/functions/CalcularFechaParto";
 import { calcularEdad } from "../../assets/functions";
 import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from "react-native-image-picker";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import CustomIcon from "../../assets/components/CustomIcon";
+import { useTheme } from '../../assets/context/ThemeContext';
+import { getDynamicColors } from '../../assets/styles/colors';
+import { createGlobalStyles } from "../../assets/styles/styles";
+import { createNewStyles } from "../../assets/styles/NewStyles";
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, "AnimalView">>();
@@ -42,6 +44,11 @@ const AnimalView = () => {
   const [registers, setRegisters] = useState<Register[]>([]);
   const [registerToDelete, setRegisterToDelete] = useState<Register | null>(null);
 
+  const { isDarkTheme } = useTheme();
+  const colors = getDynamicColors(isDarkTheme);
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const newStyles = createNewStyles(isDarkTheme);
+  const styles = dymanycStyles(colors);
 
   const pickImageFromGallery = async () => {
     const options: ImageLibraryOptions = {
@@ -442,7 +449,8 @@ const AnimalView = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+  StyleSheet.create({
   swipeListContainer: {
     flex: 1,
     backgroundColor: colors.fondo,

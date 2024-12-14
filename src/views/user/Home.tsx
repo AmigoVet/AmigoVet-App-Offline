@@ -2,13 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import useAuthStore from '../../assets/store/authStore';
-import { colors, GlobalStyles } from '../../assets/styles';
-import Header from '../../assets/components/Header';
 import { Animal } from '../../assets/interfaces/animal';
 import { deleteAnimalById, loadData } from '../../assets/utils/asyncStorage';
 import RNFS from 'react-native-fs';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { AnimalCard } from '../../assets/components';
+import { useTheme } from '../../assets/context/ThemeContext';
+import { getDynamicColors } from '../../assets/styles/colors';
+import { createGlobalStyles } from '../../assets/styles/styles';
 
 const Home = () => {
     const user = useAuthStore((state) => state.user);
@@ -16,6 +17,11 @@ const Home = () => {
     const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
     const [refreshing, setRefreshing] = useState(false); 
     const modalRef = useRef<Modalize>(null);
+
+    const { isDarkTheme } = useTheme();
+    const colors = getDynamicColors(isDarkTheme);
+    const GlobalStyles = createGlobalStyles(isDarkTheme);
+    const styles = dymanycStyles(colors);
 
     const loadAnimal = async () => {
         const animales = await loadData(String(user?.userId));
@@ -57,26 +63,25 @@ const Home = () => {
         }
     };
 
-    // Función para manejar la recarga
     const handleRefresh = async () => {
-        setRefreshing(true); 
-        await loadAnimal(); 
+        setRefreshing(true);
+        await loadAnimal();
         setRefreshing(false);
     };
 
     const renderItem = ({ item }: { item: Animal }) => (
-        <View style={styles.rowFront}>
+        <View style={[styles.rowFront, { backgroundColor: colors.fondo }]}>
             <AnimalCard animal={item} />
         </View>
     );
 
     const renderHiddenItem = ({ item }: { item: Animal }) => (
-        <View style={styles.rowBack}>
+        <View style={[styles.rowBack, { backgroundColor: colors.fondo }]}>
             <TouchableOpacity
-                style={styles.deleteButton}
+                style={[styles.deleteButton, { backgroundColor: colors.rojo }]}
                 onPress={() => openModal(item)}
             >
-                <Text style={styles.hiddenText}>Eliminar</Text>
+                <Text style={[styles.hiddenText, { color: 'white' }]}>Eliminar</Text>
             </TouchableOpacity>
         </View>
     );
@@ -92,11 +97,13 @@ const Home = () => {
                         keyExtractor={(item) => item.id}
                         leftOpenValue={75}
                         rightOpenValue={-75}
-                        refreshing={refreshing} // Indicador de recarga
-                        onRefresh={handleRefresh} // Función de recarga
+                        refreshing={refreshing}
+                        onRefresh={handleRefresh}
                     />
                 ) : (
-                    <Text style={GlobalStyles.error}>No hay animales registrados</Text>
+                    <Text style={[GlobalStyles.error, { color: colors.rojo }]}>
+                        No hay animales registrados
+                    </Text>
                 )}
             </View>
 
@@ -106,26 +113,35 @@ const Home = () => {
                 modalStyle={{ backgroundColor: colors.fondo }}
             >
                 <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>
+                    <Text style={[styles.modalTitle, { color: colors.naranja }]}>
                         ¿Estás seguro de eliminar este animal?
                     </Text>
                     {selectedAnimal && (
-                        <Text style={styles.modalId}>
+                        <>
+                        <Text style={[styles.modalId, { color: colors.blanco }]}>
                             ID del animal: {selectedAnimal.id}
                         </Text>
+                         <Text style={[styles.modalId, { color: colors.blanco }]}>
+                            Nombre del animal: {selectedAnimal.nombre}
+                        </Text>
+                        </>
                     )}
                     <View style={styles.modalActions}>
                         <TouchableOpacity
-                            style={[styles.modalButton, styles.cancelButton]}
+                            style={[styles.modalButton, { backgroundColor: colors.naranja }]}
                             onPress={() => modalRef.current?.close()}
                         >
-                            <Text style={styles.modalButtonText}>Cancelar</Text>
+                            <Text style={[styles.modalButtonText, { color: colors.blanco }]}>
+                                Cancelar
+                            </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={[styles.modalButton, styles.deleteButtonModal]}
+                            style={[styles.modalButton, { backgroundColor: colors.rojo }]}
                             onPress={deleteAnimal}
                         >
-                            <Text style={styles.modalButtonText}>Eliminar</Text>
+                            <Text style={[styles.modalButtonText, { color: "white" }]}>
+                                Eliminar
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -134,7 +150,8 @@ const Home = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+    StyleSheet.create({
     container: {
         width: '100%',
     },
@@ -152,7 +169,6 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     deleteButton: {
-        backgroundColor: colors.rojo,
         height: '100%',
         justifyContent: 'center',
         alignItems: 'flex-end',
@@ -161,9 +177,9 @@ const styles = StyleSheet.create({
     },
     hiddenText: {
         width: 58,
-        color: 'white',
         fontWeight: 'bold',
     },
+    // Modales
     modalContent: {
         flex: 1,
         padding: 20,
@@ -173,11 +189,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10,
-        color: colors.naranja,
     },
     modalId: {
         fontSize: 16,
-        color: 'gray',
         marginBottom: 20,
     },
     modalActions: {
@@ -190,14 +204,7 @@ const styles = StyleSheet.create({
         width: '40%',
         alignItems: 'center',
     },
-    deleteButtonModal: {
-        backgroundColor: colors.rojo,
-    },
-    cancelButton: {
-        backgroundColor: colors.naranja,
-    },
     modalButtonText: {
-        color: 'white',
         fontWeight: 'bold',
     },
 });

@@ -4,13 +4,16 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { RootStackParamList } from '../Welcome';
 import { CustomButton, CustomInput, LogoContainer } from '../../assets/components';
-import { colors, GlobalStyles } from '../../assets/styles';
 
 import { appFirebase } from '../../credenciales';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../credenciales';
 import useAuthStore from '../../assets/store/authStore';
+import { useTheme } from '../../assets/context/ThemeContext';
+import { getDynamicColors } from '../../assets/styles/colors';
+import { createNewStyles } from '../../assets/styles/NewStyles';
+import { createGlobalStyles } from '../../assets/styles/styles';
 
 type User = {
   nombre: string;
@@ -29,6 +32,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false); 
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
   const setUser = useAuthStore((state) => state.setUser);
+
+  const { isDarkTheme } = useTheme();
+  const colors = getDynamicColors(isDarkTheme);
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -83,6 +90,42 @@ const Login = () => {
     }
   };
 
+
+  const styles = StyleSheet.create({
+    title: {
+      fontSize: width * 0.08, 
+      textAlign: 'center',
+    },
+    formContainer: {
+      width: '100%',
+      padding: width * 0.05,
+      borderColor: colors.blanco,
+      borderWidth: 1,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginVertical: height * 0.03,
+    },
+    linkText: {
+      color: colors.blanco,
+      fontSize: width * 0.045,
+      marginTop: height * 0.02,
+      textAlign: 'center',
+    },
+    messageContainer: {
+      marginTop: height * 0.03,
+      width: '90%',
+    },
+    message: {
+      color: colors.rojo,
+      fontSize: width * 0.04,
+      textAlign: 'center',
+      fontWeight: 'bold',
+    },
+  });
+  
+
+
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -123,36 +166,5 @@ const Login = () => {
 };
 
 
-const styles = StyleSheet.create({
-  title: {
-    fontSize: width * 0.08, 
-    textAlign: 'center',
-  },
-  formContainer: {
-    width: '100%',
-    padding: width * 0.05,
-    borderColor: colors.blanco,
-    borderWidth: 1,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginVertical: height * 0.03,
-  },
-  linkText: {
-    color: colors.blanco,
-    fontSize: width * 0.045,
-    marginTop: height * 0.02,
-    textAlign: 'center',
-  },
-  messageContainer: {
-    marginTop: height * 0.03,
-    width: '90%',
-  },
-  message: {
-    color: colors.rojo,
-    fontSize: width * 0.04,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-});
 
 export default Login;

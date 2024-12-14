@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { colors } from "../styles/colors";
+import { useTheme } from "../context/ThemeContext"; // Contexto para el tema
+import { getDynamicColors } from "../styles/colors";
+import CustomIcon from "./CustomIcon";
 
 interface CustomDatePickerProps {
   label: string;
@@ -22,6 +23,10 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   const [showPicker, setShowPicker] = useState(false);
   const [showAgeInput, setShowAgeInput] = useState(false);
 
+  const { isDarkTheme } = useTheme(); // Obtén el estado del tema
+  const colors = getDynamicColors(isDarkTheme); // Obtén colores dinámicos
+  const styles = createStyles(colors); // Genera estilos dinámicos
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
@@ -35,7 +40,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             <Text style={styles.dateText}>
               {value ? value.toISOString().split("T")[0] : "Selecciona una fecha"}
             </Text>
-            <Ionicons name="calendar-outline" size={20} color={colors.naranja} />
+            <CustomIcon name="calendar-outline" size={20} color={colors.naranja} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -52,6 +57,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
           <TextInput
             style={styles.ageInput}
             placeholder="Ingresa la edad en años"
+            placeholderTextColor={colors.blancoLight}
             keyboardType="numeric"
             value={ageValue}
             onChangeText={onAgeChange}
@@ -83,45 +89,47 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 10,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 5,
-    color: colors.naranja,
-  },
-  datePickerButton: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderColor: colors.naranja,
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    backgroundColor: colors.fondo,
-  },
-  dateText: {
-    color: colors.blanco,
-  },
-  switchButton: {
-    marginTop: 10,
-  },
-  switchText: {
-    color: colors.naranja,
-    fontSize: 14,
-    textDecorationLine: "underline",
-  },
-  ageInput: {
-    borderColor: colors.naranja,
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    color: colors.blancoLight,
-    backgroundColor: colors.fondo,
-  },
-});
+// Función para generar estilos dinámicos
+const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+  StyleSheet.create({
+    container: {
+      marginVertical: 10,
+    },
+    label: {
+      fontSize: 16,
+      fontWeight: "500",
+      marginBottom: 5,
+      color: colors.naranja,
+    },
+    datePickerButton: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      borderColor: colors.naranja,
+      borderWidth: 1,
+      borderRadius: 5,
+      padding: 10,
+      backgroundColor: colors.fondo,
+    },
+    dateText: {
+      color: colors.blanco,
+    },
+    switchButton: {
+      marginTop: 10,
+    },
+    switchText: {
+      color: colors.naranja,
+      fontSize: 14,
+      textDecorationLine: "underline",
+    },
+    ageInput: {
+      borderColor: colors.naranja,
+      borderWidth: 1,
+      borderRadius: 5,
+      padding: 10,
+      color: colors.blancoLight,
+      backgroundColor: colors.fondo,
+    },
+  });
 
 export default CustomDatePicker;

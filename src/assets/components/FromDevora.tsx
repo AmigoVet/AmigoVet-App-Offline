@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
-import { colors } from '../styles/colors';
+import { staticColors } from '../styles/colors';
 
 const FromDevora = () => {
   return (
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 13,
     fontWeight: 300,
-    color: colors.blanco,
+    color: staticColors.blanco,
   },
 });
 

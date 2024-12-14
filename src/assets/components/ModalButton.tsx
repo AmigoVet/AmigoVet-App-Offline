@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
-import { colors } from '../styles';
+import { staticColors } from '../styles/colors';
 
 interface ModalButtonProps {
     text: string;
@@ -17,12 +17,12 @@ const ModalButton = ({ text, onPress, actualData, red }: ModalButtonProps) => {
         paddingHorizontal: 10,
         marginVertical: 8,
         width: '70%',
-        backgroundColor: red ? colors.rojo : colors.naranja,
+        backgroundColor: red ? staticColors.rojo : staticColors.naranja,
         borderRadius: 8,
       },
       modalOptionText: {
         fontSize: 16,
-        color: colors.blancoLight,
+        color: staticColors.blancoLight,
         textAlign: 'center',
       },
 })

@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react'
 import CustomImage from './CustomImage';
-import { colors, GlobalStyles } from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { Animal } from '../interfaces/animal';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../views/Welcome';
+import { getDynamicColors } from '../styles/colors';
+import { createGlobalStyles } from '../styles/styles';
+import { useTheme } from '../context/ThemeContext';
 
 // Usar una prop específica para pasar los datos
 interface AnimalCardProps {
@@ -14,6 +16,11 @@ interface AnimalCardProps {
 
 const AnimalCard: React.FC<AnimalCardProps> = ({ animal }) => {
     const {navigate} = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+    const { isDarkTheme } = useTheme();
+    const colors = getDynamicColors(isDarkTheme);
+    const GlobalStyles = createGlobalStyles(isDarkTheme);
+    const styles = dymanycStyles(colors);
 
     const handleView = () => {
         // Navegar a la vista de detalles del animal
@@ -36,7 +43,8 @@ const AnimalCard: React.FC<AnimalCardProps> = ({ animal }) => {
     )
 }
 
-const styles = StyleSheet.create({
+const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+    StyleSheet.create({
     container: {
         width: 340,
     },

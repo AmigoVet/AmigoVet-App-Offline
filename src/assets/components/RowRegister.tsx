@@ -1,8 +1,9 @@
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import React from 'react';
 import { Register } from '../interfaces/registers';
-import { colors, GlobalStyles } from '../styles';
 import { format } from 'date-fns';
+import { useTheme } from '../context/ThemeContext';
+import { getDynamicColors } from '../styles/colors';
 
 interface RowRegisterProps {
   register: Register;
@@ -10,27 +11,33 @@ interface RowRegisterProps {
   bgColor?: string;
 }
 
-const RowRegister = ({ register, isLast = false, bgColor = colors.rowBgDark }: RowRegisterProps) => {
-    const windowWidth = Dimensions.get('window').width;
+const RowRegister = ({ register, isLast = false, bgColor }: RowRegisterProps) => {
+  const windowWidth = Dimensions.get('window').width;
+
+  const { isDarkTheme } = useTheme(); // Obtener el tema actual
+  const colors = getDynamicColors(isDarkTheme); // Obtener colores dinámicos
+
+  // Si no se pasa `bgColor` como prop, usar el color dinámico por defecto
+  const backgroundColor = bgColor || colors.rowBgDark;
 
   const styles = StyleSheet.create({
     container: {
       width: windowWidth - 32,
       flexDirection: 'row',
-      backgroundColor: bgColor,
+      backgroundColor: backgroundColor, // Color dinámico
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: 8,
       borderBottomRightRadius: isLast ? 10 : 0,
       borderBottomLeftRadius: isLast ? 10 : 0,
-      paddingVertical: 8, 
+      paddingVertical: 8,
     },
     column: {
-      flex: 1, 
-      alignItems: 'center', 
+      flex: 1,
+      alignItems: 'center',
     },
     text: {
-      color: colors.blancoLight,
+      color: colors.blancoLight, // Texto dinámico
       fontWeight: 'bold',
     },
   });
@@ -47,7 +54,6 @@ const RowRegister = ({ register, isLast = false, bgColor = colors.rowBgDark }: R
         <Text style={styles.text}>{register.comentario}</Text>
       </View>
     </View>
-
   );
 };
 

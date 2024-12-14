@@ -8,12 +8,20 @@ import CustomImage from './CustomImage'
 import CustomInput from './CustomInput'
 import { Animal } from '../interfaces/animal'
 import { calcularEdad, formatearFecha } from '../functions'
+import { useTheme } from '../context/ThemeContext'
+import { getDynamicColors } from '../styles/colors'
+import { createGlobalStyles } from '../styles/styles'
+import { createNewStyles } from '../styles/NewStyles'
 
 interface DataViewAnimalProps {
   animal: Animal;
 }
 
 const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
+
+  const { isDarkTheme } = useTheme();
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
+  
   return (
   <View>
 
@@ -27,6 +35,7 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
         <Text style={GlobalStyles.textWhite}>Especie: <Text style={[GlobalStyles.textOrange]}>{animal?.especie}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Raza: <Text style={[GlobalStyles.textOrange]}>{animal?.raza}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Color: <Text style={[GlobalStyles.textOrange]}>{animal?.color}</Text></Text>
+        <Text style={GlobalStyles.textWhite}>Embarazo: <Text style={[GlobalStyles.textOrange]}>{animal?.embarazada ? 'Sí' : 'No'}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Fecha Nacimiento: 
           <Text style={[GlobalStyles.textOrange]}>
             {formatearFecha(animal!.nacimiento ? animal!.nacimiento : '')}

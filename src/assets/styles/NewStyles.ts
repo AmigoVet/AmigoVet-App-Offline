@@ -1,7 +1,10 @@
 import { StyleSheet } from "react-native";
-import { colors } from "./colors";
+import { getDynamicColors } from "./colors";
 
-export const newStyles = StyleSheet.create({
+export const createNewStyles = (isDarkTheme: boolean) => {
+  const colors = getDynamicColors(isDarkTheme); // Obtén colores dinámicos
+
+  return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.fondo,
@@ -34,3 +37,4 @@ export const newStyles = StyleSheet.create({
       borderRadius: 5,
     },
   });
+};

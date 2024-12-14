@@ -5,6 +5,9 @@ import { changePassword } from '../../assets/functions';
 import { GlobalStyles } from '../../assets/styles';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../Welcome';
+import { useTheme } from '../../assets/context/ThemeContext';
+import { getDynamicColors } from '../../assets/styles/colors';
+import { createGlobalStyles } from '../../assets/styles/styles';
 
 const ChangePasswordScreen = () => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -13,6 +16,10 @@ const ChangePasswordScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const { isDarkTheme } = useTheme();
+  const colors = getDynamicColors(isDarkTheme);
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
 
 
   const validatePassword = (password: string) => {

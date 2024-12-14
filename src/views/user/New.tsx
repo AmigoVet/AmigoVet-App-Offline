@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import {
   ScrollView,
-  StyleSheet,
   Text,
   Alert,
   TouchableOpacity,
   View,
 } from "react-native";
-import { colors, GlobalStyles, newStyles } from "../../assets/styles";
 import {
   CustomButton,
   CustomInput,
@@ -27,10 +25,13 @@ import {
   CameraOptions,
   ImageLibraryOptions,
 } from "react-native-image-picker";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import useAuthStore from "../../assets/store/authStore";
 import { calcularEdad, saveAnimalData } from "../../assets/functions";
 import CustomIcon from "../../assets/components/CustomIcon";
+import { useTheme } from "../../assets/context/ThemeContext";
+import { getDynamicColors } from "../../assets/styles/colors";
+import { createGlobalStyles } from "../../assets/styles/styles";
+import { createNewStyles } from "../../assets/styles/NewStyles";
 
 const New: React.FC = () => {
   const [nombre, setNombre] = useState<string>("");
@@ -51,6 +52,11 @@ const New: React.FC = () => {
   const [image, setImage] = useState<string | null>(null);
 
   const user = useAuthStore((state) => state.user);
+
+  const { isDarkTheme } = useTheme();
+  const colors = getDynamicColors(isDarkTheme);
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const newStyles = createNewStyles(isDarkTheme);
 
   const razasDisponibles =
     especie && especie !== "Otro" ? especiesRazasMap[especie] : [];
@@ -160,6 +166,7 @@ const New: React.FC = () => {
     setDescripcion("");
     setImage(null);
   };
+
 
   return (
     <ScrollView style={newStyles.container}>

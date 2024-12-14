@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, KeyboardTypeOptions, Pressable, Dimensions } from 'react-native';
-import { colors } from '../styles/colors';
-import { GlobalStyles } from '../styles';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { getDynamicColors } from '../styles/colors';
+import { useTheme } from '../context/ThemeContext';
+import CustomIcon from './CustomIcon';
 
 const { width } = Dimensions.get('window');
 
@@ -33,6 +33,10 @@ const CustomInput: React.FC<CustomInputProps> = ({
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(!password);
 
+  const { isDarkTheme } = useTheme();
+  const colors = getDynamicColors(isDarkTheme); // Obtén los colores dinámicos
+  const styles = createStyles(colors); // Genera estilos dinámicos
+
   const getKeyboardType = (): KeyboardTypeOptions => {
     switch (type) {
       case 'number':
@@ -51,7 +55,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
     <View style={styles.container}>
       <Text style={styles.label}>
         {label}
-        <Text style={GlobalStyles.miniText}>{miniText ? ` (${miniText})` : ''}</Text>
+        <Text style={styles.miniText}>{miniText ? ` (${miniText})` : ''}</Text>
       </Text>
       <View style={styles.inputContainer}>
         <TextInput
@@ -59,7 +63,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
           placeholder={placeholder}
           value={value}
           onChangeText={onChangeText}
-          placeholderTextColor="#888"
+          placeholderTextColor={colors.naranja}
           secureTextEntry={password && !isPasswordVisible}
           multiline={multiline}
           keyboardType={getKeyboardType()}
@@ -67,11 +71,11 @@ const CustomInput: React.FC<CustomInputProps> = ({
           onFocus={onFocus}
           autoCapitalize="none"
           autoCorrect={false}
-          textAlignVertical="center" // Asegura alineación del texto
+          textAlignVertical="center"
         />
         {password && (
           <Pressable onPress={togglePasswordVisibility} style={styles.icon}>
-            <Ionicons
+            <CustomIcon
               name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
               size={20}
               color={colors.blancoLight}
@@ -83,39 +87,45 @@ const CustomInput: React.FC<CustomInputProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 10,
-    width: '100%',
-  },
-  label: {
-    fontSize: width * 0.04, // Escala dinámica
-    fontWeight: '500',
-    marginBottom: 5,
-    color: colors.naranja,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: colors.naranja,
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    backgroundColor: colors.fondo,
-  },
-  input: {
-    flex: 1,
-    minHeight: 40, // Usa minHeight en lugar de height
-    fontSize: width * 0.04, // Tamaño dinámico del texto
-    color: colors.blancoLight,
-  },
-  multilineInput: {
-    minHeight: 100, // Asegura altura mínima
-    textAlignVertical: 'top',
-  },
-  icon: {
-    marginLeft: 10,
-  },
-});
+// Estilos dinámicos
+const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+  StyleSheet.create({
+    container: {
+      marginVertical: 10,
+      width: '100%',
+    },
+    label: {
+      fontSize: width * 0.04,
+      fontWeight: '500',
+      marginBottom: 5,
+      color: colors.naranja,
+    },
+    miniText: {
+      fontSize: width * 0.03,
+      color: colors.rowBgLight,
+    },
+    inputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderColor: colors.naranja,
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      backgroundColor: colors.fondo,
+    },
+    input: {
+      flex: 1,
+      minHeight: 40,
+      fontSize: width * 0.04,
+      color: colors.blancoLight,
+    },
+    multilineInput: {
+      minHeight: 100,
+      textAlignVertical: 'top',
+    },
+    icon: {
+      marginLeft: 10,
+    },
+  });
 
 export default CustomInput;

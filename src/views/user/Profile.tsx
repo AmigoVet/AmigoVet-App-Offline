@@ -6,10 +6,17 @@ import { CustomButton } from '../../assets/components';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Welcome';
+import { useTheme } from '../../assets/context/ThemeContext';
+import { getDynamicColors } from '../../assets/styles/colors';
+import { createGlobalStyles } from '../../assets/styles/styles';
 
 const Profile = () => {
   const { user, loadUser, clearUser } = useAuthStore();
   const {navigate} = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+    const { isDarkTheme } = useTheme();
+    const colors = getDynamicColors(isDarkTheme);
+    const GlobalStyles = createGlobalStyles(isDarkTheme);
 
   useEffect(() => {
     loadUser(); // Cargar usuario desde AsyncStorage al montar el componente
@@ -19,6 +26,25 @@ const Profile = () => {
     await clearUser(); // Cerrar sesión
   };
 
+  const styles = StyleSheet.create({
+    profileContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 20,
+    },
+    avatar: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      marginBottom: 20,
+      borderColor: colors.naranja,
+      borderWidth: 1,
+    },
+    noUserText: {
+      fontSize: 18,
+      color: '#999',
+    },
+  });
 
   return (
     <View style={[GlobalStyles.container, styles.profileContainer]}>
@@ -49,24 +75,6 @@ const Profile = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  profileContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 20,
-    borderColor: colors.naranja,
-    borderWidth: 1,
-  },
-  noUserText: {
-    fontSize: 18,
-    color: '#999',
-  },
-});
+
 
 export default Profile;

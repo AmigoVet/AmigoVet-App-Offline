@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { GlobalStyles } from '../../assets/styles/styles';
 import CustomInput from '../../assets/components/CustomInput';
 import CustomButton from '../../assets/components/CustomButton';
 import LogoContainer from '../../assets/components/LogoContainer';
-import { colors } from '../../assets/styles/colors';
+import { getDynamicColors } from '../../assets/styles/colors';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../Welcome';
 
@@ -13,6 +12,8 @@ import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../credenciales';
 import useAuthStore from '../../assets/store/authStore';
+import { useTheme } from '../../assets/context/ThemeContext';
+import { createGlobalStyles } from '../../assets/styles/styles';
 
 const Register = () => {
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
@@ -22,6 +23,12 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false); // Estado para manejar el loading
+
+  const { isDarkTheme } = useTheme();
+  const colors = getDynamicColors(isDarkTheme);
+  const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const styles = dymanycStyles(colors);
+
 
   const auth = getAuth();
   const setUser = useAuthStore((state) => state.setUser);
@@ -163,7 +170,8 @@ const Register = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+  StyleSheet.create({
   scrollView: {
     flex: 1,
     backgroundColor: colors.fondo,

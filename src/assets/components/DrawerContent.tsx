@@ -5,22 +5,21 @@ import {
   Image,
   Pressable,
   Text,
-  ScrollView,
 } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors } from '../styles';
-import { useNavigation, DrawerActions } from '@react-navigation/native';
+import { useTheme } from '../context/ThemeContext'; // Importa el contexto de tema
+import { getDynamicColors } from '../styles/colors'; // Usa colores dinámicos
 import CustomIcon from './CustomIcon';
 import useAuthStore from '../store/authStore';
 import { formatPhoneNumber } from '../functions/FormaterNumberPhone';
 
 export const DrawerContent = (props: any) => {
   const { user } = useAuthStore();
-  const [isDark, setIsDark] = React.useState(false);
+  const { isDarkTheme, toggleTheme } = useTheme(); // Obtén el estado y la función para alternar el tema
+  const colors = getDynamicColors(isDarkTheme); // Obtén colores dinámicos
 
   return (
-    <DrawerContentScrollView {...props} contentContainerStyle={styles.container}>
+    <DrawerContentScrollView {...props} contentContainerStyle={[styles.container, { backgroundColor: colors.fondo }]}>
       {/* Imagen */}
       <View>
         <Image
@@ -36,7 +35,7 @@ export const DrawerContent = (props: any) => {
       </View>
 
       {/* Información del usuario */}
-      <View style={styles.userInfo}>
+      <View style={[styles.userInfo, { borderColor: colors.naranja }]}>
         <View>
           <Image
             source={require('../../assets/img/veterinario.png')}
@@ -44,9 +43,11 @@ export const DrawerContent = (props: any) => {
           />
         </View>
         <View>
-          <Text style={styles.userName}>{user?.nombre || 'Usuario Anónimo'}</Text>
-          <Text style={styles.userName}>{user?.correo || 'Correo No Encontrado'}</Text>
-          <Text style={styles.userName}>+57 {formatPhoneNumber(user!.telefono)  || 'Telefono No Encontrado'}</Text>
+          <Text style={[styles.userName, { color: colors.blanco }]}>{user?.nombre || 'Usuario Anónimo'}</Text>
+          <Text style={[styles.userName, { color: colors.blanco }]}>{user?.correo || 'Correo No Encontrado'}</Text>
+          <Text style={[styles.userName, { color: colors.blanco }]}>
+            +57 {formatPhoneNumber(user!.telefono) || 'Telefono No Encontrado'}
+          </Text>
         </View>
       </View>
 
@@ -57,14 +58,11 @@ export const DrawerContent = (props: any) => {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Pressable onPress={() => setIsDark(!isDark)}>
-          <CustomIcon name="exit-outline" size={30} color={colors.rojo} />
-        </Pressable>
-        <Pressable onPress={() => setIsDark(!isDark)}>
+        <Pressable onPress={toggleTheme}>
           <CustomIcon
-            name={isDark ? 'sunny-outline' : 'moon-outline'}
+            name={isDarkTheme ? 'sunny-outline' : 'moon-outline'}
             size={30}
-            color="white"
+            color={isDarkTheme ? colors.naranja : colors.naranja}
           />
         </Pressable>
       </View>
@@ -75,12 +73,10 @@ export const DrawerContent = (props: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.fondoDark,
     padding: 20,
   },
   userInfo: {
     flexDirection: 'row',
-    borderColor: colors.naranja,
     borderWidth: 1,
     padding: 10,
     borderRadius: 20,
@@ -95,7 +91,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   userName: {
-    color: colors.blanco,
     fontSize: 16,
   },
   footer: {

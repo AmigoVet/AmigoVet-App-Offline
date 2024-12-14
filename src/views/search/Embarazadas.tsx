@@ -2,12 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import useAuthStore from '../../assets/store/authStore';
-import { colors, GlobalStyles } from '../../assets/styles';
 import { Animal } from '../../assets/interfaces/animal';
 import { deleteAnimalById, getPregnantAnimals, loadData } from '../../assets/utils/asyncStorage';
-import RNFS from 'react-native-fs';
+import RNFS, { stat } from 'react-native-fs';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { AnimalCard } from '../../assets/components';
+import { useTheme } from '../../assets/context/ThemeContext';
+import { getDynamicColors, staticColors } from '../../assets/styles/colors';
+import { createGlobalStyles } from '../../assets/styles/styles';
 
 const Embarazadas = () => {
     const user = useAuthStore((state) => state.user);
@@ -15,6 +17,10 @@ const Embarazadas = () => {
     const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
     const [refreshing, setRefreshing] = useState(false); 
     const modalRef = useRef<Modalize>(null);
+
+    const { isDarkTheme } = useTheme();
+    const colors = getDynamicColors(isDarkTheme);
+    const GlobalStyles = createGlobalStyles(isDarkTheme);
 
     const loadAnimal = async () => {
       try {
@@ -154,7 +160,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     deleteButton: {
-        backgroundColor: colors.rojo,
+        backgroundColor: staticColors.rojo,
         height: '100%',
         justifyContent: 'center',
         alignItems: 'flex-end',
@@ -175,7 +181,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10,
-        color: colors.naranja,
+        color: staticColors.naranja,
     },
     modalId: {
         fontSize: 16,
@@ -193,10 +199,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     deleteButtonModal: {
-        backgroundColor: colors.rojo,
+        backgroundColor: staticColors.rojo,
     },
     cancelButton: {
-        backgroundColor: colors.naranja,
+        backgroundColor: staticColors.naranja,
     },
     modalButtonText: {
         color: 'white',

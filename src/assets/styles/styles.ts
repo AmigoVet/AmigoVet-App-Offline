@@ -1,70 +1,72 @@
-import { StyleSheet } from 'react-native'
-import { colors } from './colors'
+import { StyleSheet } from 'react-native';
+import { getDynamicColors } from './colors';
 
-export const GlobalStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.fondo,
-    marginTop: -20,
-    paddingTop: 30,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.blanco,
-  },
-  subTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.naranja,
-  },
-  textOrange:{
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.naranja,
-  },
-  textWhite:{
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.blanco,
-  },
-  miniText:{
-    fontSize: 12,
-    fontWeight: 'medium',
-    color: colors.blanco,
-  },
-  label:{
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 5,
-    color: colors.naranja,
-  },
-  errorContainer:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.fondo,
-  },
-  loadingContainer:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.fondo,
-  },
-  error:{
-    fontSize: 25,
-    color: colors.rojoLight,
-    fontWeight: 'bold',
-    marginTop: 50,
-  },
-  note:{
-    fontSize: 13,
-    fontWeight: '400',
-    color: colors.naranja,
+export const createGlobalStyles = (isDarkTheme: boolean) => {
+  const colors = getDynamicColors(isDarkTheme);
 
-  }
-})
-
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.fondo,
+      marginTop: -20,
+      paddingTop: 30,
+      padding: 20,
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: colors.blanco,
+    },
+    subTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: colors.naranja,
+    },
+    textOrange: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: colors.naranja,
+    },
+    textWhite: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: colors.blanco,
+    },
+    miniText: {
+      fontSize: 12,
+      fontWeight: 'medium',
+      color: colors.blanco,
+    },
+    label: {
+      fontSize: 16,
+      fontWeight: '500',
+      marginBottom: 5,
+      color: colors.naranja,
+    },
+    errorContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.fondo,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.fondo,
+    },
+    error: {
+      fontSize: 25,
+      color: colors.rojoLight,
+      fontWeight: 'bold',
+      marginTop: 50,
+    },
+    note: {
+      fontSize: 13,
+      fontWeight: '400',
+      color: colors.naranja,
+    },
+  });
+};

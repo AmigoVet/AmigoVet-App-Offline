@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors } from '../styles';
-import EditTableText from './EditTableText';
+import { useTheme } from '../context/ThemeContext'; // Importa el contexto del tema
+import { getDynamicColors } from '../styles/colors'; // Colores dinámicos
 
 interface AnimalTableProps {
   peso: string;
@@ -15,6 +15,10 @@ const AnimalTable = ({ peso, genero, proposito, edad }: AnimalTableProps) => {
   const [generoEdit, setGenero] = useState(genero);
   const [propositoEdit, setProposito] = useState(proposito);
   const [edadEdit, setEdad] = useState(edad);
+
+  const { isDarkTheme } = useTheme(); // Obtén el estado del tema
+  const colors = getDynamicColors(isDarkTheme); // Genera colores dinámicos
+  const styles = createStyles(colors); // Genera estilos dinámicos
 
   return (
     <View style={styles.table}>
@@ -45,42 +49,47 @@ const AnimalTable = ({ peso, genero, proposito, edad }: AnimalTableProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  table: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: colors.naranja,
-    borderRadius: 5,
-    overflow: 'hidden',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start', // Asegura alineación vertical si hay varias líneas
-  },
-  headerCell: {
-    flex: 1,
-    padding: 10,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: colors.naranja,
-    borderBottomColor: colors.naranja,
-    borderBottomWidth: 1,
-  },
-  cell: {
-    flex: 1,
-    padding: 10,
-    borderColor: colors.naranja,
-    borderRightWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center', // Centra horizontalmente
-  },
-  text: {
-    textAlign: 'center',
-    color: colors.blanco,
-    flexWrap: 'wrap', // Permite envolver el texto
-    fontSize: 14,
-  },
-});
+// Estilos dinámicos
+const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+  StyleSheet.create({
+    table: {
+      width: '100%',
+      borderWidth: 1,
+      borderColor: colors.naranja,
+      borderRadius: 5,
+      overflow: 'hidden',
+      backgroundColor: colors.fondo, // Fondo dinámico
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start', 
+    },
+    headerCell: {
+      flex: 1,
+      padding: 10,
+      textAlign: 'center',
+      fontWeight: 'bold',
+      color: colors.naranja,
+      borderBottomColor: colors.naranja,
+      borderBottomWidth: 1,
+      backgroundColor: colors.fondo, 
+    },
+    cell: {
+      flex: 1,
+      padding: 10,
+      borderColor: colors.naranja,
+      borderRightWidth: 1,
+      justifyContent: 'center',
+      alignItems: 'center', 
+      backgroundColor: colors.fondo, 
+    },
+    text: {
+      textAlign: 'center',
+      color: colors.blanco, 
+      flexWrap: 'wrap', 
+      fontSize: 14,
+    },
+  });
 
 export default AnimalTable;
