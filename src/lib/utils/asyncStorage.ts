@@ -321,7 +321,7 @@ const getRegisteredAnimalsCount = async (): Promise<number> => {
 };
 
 // **2. Función para obtener los últimos tres registros con nombre e identificador del animal**
-const getLastThreeRegisters = async (): Promise<{ nombre: string; identificador: string; fecha: string }[]> => {
+const getLastThreeRegisters = async (): Promise<{ nombre: string; identificador: string; fecha: string, comentario: string, accion: string }[]> => {
   try {
     const registersJson = await AsyncStorage.getItem('registers');
     const registers: Register[] = registersJson ? JSON.parse(registersJson) : [];
@@ -340,6 +340,8 @@ const getLastThreeRegisters = async (): Promise<{ nombre: string; identificador:
         nombre: animal?.nombre || 'Desconocido',
         identificador: animal?.identificador || 'Desconocido',
         fecha: register.fecha,
+        comentario: register.accion,
+        accion: register.accion,
       };
     });
   } catch (error) {
