@@ -24,6 +24,7 @@ import { calculateDueDate } from "../../assets/functions/CalcularFechaParto";
 import { calcularEdad } from "../../assets/functions";
 import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from "react-native-image-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import CustomIcon from "../../assets/components/CustomIcon";
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, "AnimalView">>();
@@ -176,6 +177,9 @@ const AnimalView = () => {
 
       await updateAnimalData(id, currentField, fieldValue);
       await updateAnimalData(id, "updated_at", new Date().toISOString());
+      if (currentField === "Registrar Embarazo" || currentField === "Registrar Inseminacion") {
+        await updateAnimalData(id, "embarazada", true);
+      }
       await saveRegister(register);
 
 
@@ -187,6 +191,7 @@ const AnimalView = () => {
       setFieldValue("");
     }
   };
+
   const handleCreateRegister = async () => {
     if (currentField) {
       const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -379,10 +384,10 @@ const AnimalView = () => {
 
           <View style={newStyles.imageButtonContainer}>
             <TouchableOpacity style={newStyles.imageButton} onPress={pickImageFromGallery}>
-              <Ionicons name="image-outline" size={40} color={colors.blanco} />
+              <CustomIcon name="image-outline" size={40} color={colors.blanco} />
             </TouchableOpacity>
             <TouchableOpacity style={newStyles.imageButton} onPress={takePhoto}>
-              <Ionicons name="camera-outline" size={40} color={colors.blanco} />
+              <CustomIcon name="camera-outline" size={40} color={colors.blanco} />
             </TouchableOpacity>
           </View>
         </View>

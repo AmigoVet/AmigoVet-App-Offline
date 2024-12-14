@@ -13,6 +13,7 @@ import { colors } from '../styles';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import CustomIcon from './CustomIcon';
 import useAuthStore from '../store/authStore';
+import { formatPhoneNumber } from '../functions/FormaterNumberPhone';
 
 export const DrawerContent = (props: any) => {
   const { user } = useAuthStore();
@@ -45,7 +46,7 @@ export const DrawerContent = (props: any) => {
         <View>
           <Text style={styles.userName}>{user?.nombre || 'Usuario Anónimo'}</Text>
           <Text style={styles.userName}>{user?.correo || 'Correo No Encontrado'}</Text>
-          <Text style={styles.userName}>+57 {user?.telefono || 'Telefono No Encontrado'}</Text>
+          <Text style={styles.userName}>+57 {formatPhoneNumber(user!.telefono)  || 'Telefono No Encontrado'}</Text>
         </View>
       </View>
 

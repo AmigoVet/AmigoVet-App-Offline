@@ -30,6 +30,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import useAuthStore from "../../assets/store/authStore";
 import { calcularEdad, saveAnimalData } from "../../assets/functions";
+import CustomIcon from "../../assets/components/CustomIcon";
 
 const New: React.FC = () => {
   const [nombre, setNombre] = useState<string>("");
@@ -132,6 +133,7 @@ const New: React.FC = () => {
       image,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      embarazada: false,
     };
   
     saveAnimalData(animal);
@@ -169,10 +171,10 @@ const New: React.FC = () => {
         {image && <CustomImage source={image} />}
         <View style={newStyles.imageButtonContainer}>
           <TouchableOpacity style={newStyles.imageButton} onPress={pickImageFromGallery}>
-            <Ionicons name="image-outline" size={40} color={colors.blanco} />
+            <CustomIcon name="image-outline" size={40} color={colors.blanco} />
           </TouchableOpacity>
           <TouchableOpacity style={newStyles.imageButton} onPress={takePhoto}>
-            <Ionicons name="camera-outline" size={40} color={colors.blanco} />
+            <CustomIcon name="camera-outline" size={40} color={colors.blanco} />
           </TouchableOpacity>
         </View>
       </View>

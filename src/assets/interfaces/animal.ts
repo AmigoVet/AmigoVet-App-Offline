@@ -21,6 +21,7 @@ export interface Animal {
     created_at: string;
     updated_at: string;
     notas?: Notes[];
+    embarazada: boolean;
 }
 
 export interface Notes {

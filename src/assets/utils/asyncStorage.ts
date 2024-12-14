@@ -132,7 +132,7 @@ const deleteAnimalById = async (id: string) => {
     }
 };
 
-const updateAnimalData = async (id: string, field: string, value: string) => {
+const updateAnimalData = async (id: string, field: string, value: string | boolean) => {
     try {
       const animalsJson = await AsyncStorage.getItem('animals');
       if (animalsJson) {
@@ -195,5 +195,88 @@ const deleteRegisterById = async (id: string) => {
   }
 }
 
-export { saveData, loadData, saveNoteAnimal, getAnimalById, deleteAnimalById, updateAnimalData, saveRegister, loadRegistersByAnimalId, deleteRegisterById, searchAnimals };
+// Función para devolver animales donde embarazada = true
+const getPregnantAnimals = async (ownerId: string): Promise<Animal[]> => {
+  try {
+    const animalsJson = await AsyncStorage.getItem('animals');
+    if (animalsJson) {
+      const animals: Animal[] = JSON.parse(animalsJson);
+
+      // Filtrar por `ownerId` y `embarazada = true`
+      return animals.filter(
+        animal => animal.ownerId === ownerId && animal.embarazada === true
+      );
+    }
+    return [];
+  } catch (error) {
+    console.error('Error al obtener animales embarazados:', error);
+    return [];
+  }
+};
+
+const getMaleAnimals = async (ownerId: string): Promise<Animal[]> => {
+  try {
+    const animalsJson = await AsyncStorage.getItem('animals');
+    if (animalsJson) {
+      const animals: Animal[] = JSON.parse(animalsJson);
+
+      // Filtrar por `ownerId` y `genero = Macho`
+      return animals.filter(
+        animal => animal.ownerId === ownerId && animal.genero === 'Macho'
+      );
+    }
+    return [];
+  } catch (error) {
+    console.error('Error al obtener animales machos:', error);
+    return [];
+  }
+};
+
+const getFemaleAnimals = async (ownerId: string): Promise<Animal[]> => {
+  try {
+    const animalsJson = await AsyncStorage.getItem('animals');
+    if (animalsJson) {
+      const animals: Animal[] = JSON.parse(animalsJson);
+
+      // Filtrar por `ownerId` y `genero = Hembra`
+      return animals.filter(
+        animal => animal.ownerId === ownerId && animal.genero === 'Hembra'
+      );
+    }
+    return [];
+  } catch (error) {
+    console.error('Error al obtener animales hembras:', error);
+    return [];
+  }
+};
+
+const getAnimalsUnderTwoYears = async (ownerId: string): Promise<Animal[]> => {
+  try {
+    const animalsJson = await AsyncStorage.getItem('animals');
+    if (animalsJson) {
+      const animals: Animal[] = JSON.parse(animalsJson);
+      const currentDate = new Date();
+
+      // Filtrar por `ownerId` y edad menor a 2 años
+      return animals.filter(animal => {
+        if (animal.ownerId === ownerId && animal.nacimiento) {
+          const birthDate = new Date(animal.nacimiento);
+          const ageInYears =
+            (currentDate.getTime() - birthDate.getTime()) /
+            (1000 * 60 * 60 * 24 * 365.25);
+          return ageInYears < 2;
+        }
+        return false;
+      });
+    }
+    return [];
+  } catch (error) {
+    console.error('Error al obtener animales menores de 2 años:', error);
+    return [];
+  }
+};
+
+
+
+export { saveData, loadData, saveNoteAnimal, getAnimalById, deleteAnimalById, updateAnimalData, saveRegister, loadRegistersByAnimalId, deleteRegisterById, searchAnimals, getPregnantAnimals, getMaleAnimals, getFemaleAnimals, getAnimalsUnderTwoYears };
 
