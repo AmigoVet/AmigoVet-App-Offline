@@ -1,5 +1,5 @@
 // **Librerías externas**
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, Text, Alert, TouchableOpacity, View } from "react-native";
 import {launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions} from "react-native-image-picker";
 
@@ -19,6 +19,7 @@ import { CustomImage, CustomIcon, CustomInput, CustomSelect, CustomDatePicker, C
 // **Funciones utilitarias**
 import { calcularEdad } from "../../lib/functions/CalcularEdad";
 import { saveAnimalData } from "../../lib/functions/GuardarAnimal";
+import { getRegisteredAnimalsCount } from "../../lib/utils/asyncStorage";
 
 
 const New: React.FC = () => {
@@ -45,6 +46,15 @@ const New: React.FC = () => {
   const colors = getDynamicColors(isDarkTheme);
   const GlobalStyles = createGlobalStyles(isDarkTheme);
   const newStyles = createNewStyles(isDarkTheme);
+
+  
+  const [totalAnimals, setTotalAnimals] = useState<number>(0);
+  useEffect(() => {
+  const fetchAnimalCount = async () => {
+      const count = await getRegisteredAnimalsCount();
+      setTotalAnimals(count);
+  };    fetchAnimalCount();
+  }, []); 
 
   const razasDisponibles =
     especie && especie !== "Otro" ? especiesRazasMap[especie] : [];
@@ -93,6 +103,13 @@ const New: React.FC = () => {
   };
 
   const handleSubmit = () => {
+    if (totalAnimals >= 50) {
+      Alert.alert(
+        "Error",
+        "No puedes registrar más de 50 animales"
+      );
+      return;
+    }
     if (
       !nombre ||
       (!especie && !customEspecie) ||

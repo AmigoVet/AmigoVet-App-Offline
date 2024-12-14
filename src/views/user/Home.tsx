@@ -14,7 +14,7 @@ import { createGlobalStyles } from '../../assets/styles/styles';
 import { Animal } from '../../lib/interfaces/animal';
 
 // **Funciones utilitarias**
-import { deleteAnimalById, loadData } from '../../lib/utils/asyncStorage';
+import { deleteAnimalById, getRegisteredAnimalsCount, loadData } from '../../lib/utils/asyncStorage';
 
 // **Hooks **
 import useAuthStore from '../../lib/store/authStore';
@@ -34,6 +34,17 @@ const Home = () => {
     const colors = getDynamicColors(isDarkTheme);
     const GlobalStyles = createGlobalStyles(isDarkTheme);
     const styles = dymanycStyles(colors);
+
+    const [totalAnimals, setTotalAnimals] = useState<number>(0);
+    useEffect(() => {
+    const fetchAnimalCount = async () => {
+        const count = await getRegisteredAnimalsCount();
+        setTotalAnimals(count);
+    };
+
+    fetchAnimalCount();
+    }, [animals]);
+
 
     const loadAnimal = async () => {
         const animales = await loadData(String(user?.userId));
@@ -111,6 +122,11 @@ const Home = () => {
                         rightOpenValue={-75}
                         refreshing={refreshing}
                         onRefresh={handleRefresh}
+                        ListFooterComponent={
+                            <Text style={{ textAlign: 'center', marginTop: 20, color: colors.blanco, fontWeight: 'bold' }}>
+                                Aun te quedan {50 - totalAnimals} animales para registrar.
+                            </Text>
+                        }
                     />
                 ) : (
                     <Text style={[GlobalStyles.error, { color: colors.rojo }]}>

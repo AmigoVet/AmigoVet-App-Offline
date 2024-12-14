@@ -9,7 +9,7 @@ import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } 
 // **Interfaces y tipos**
 import { Register } from "../../lib/interfaces/registers";
 import { RootStackParamList } from "../Welcome";
-import { InseminationRegister, PregnancyRegister, TreatmentRegister } from "../../lib/interfaces/animal";
+import { InseminationRegister, PregnancyRegister, TreatmentRegister, AbortoRegister } from "../../lib/interfaces/animal";
 
 // **Contexto y estilos**
 import { useTheme } from '../../lib/context/ThemeContext';
@@ -31,7 +31,7 @@ import useAnimals from "../../lib/hooks/useAnimals";
 import { useRegisters } from "../../lib/hooks/useRegisters";
 
 // ** AsyncStorage**
-import { updateAnimalData, saveRegister, saveNoteAnimal } from "../../lib/utils/asyncStorage";
+import { updateAnimalData, saveRegister, saveNoteAnimal, deleteNoteAnimal } from "../../lib/utils/asyncStorage";
 
 
 const AnimalView = () => {
@@ -190,10 +190,6 @@ const AnimalView = () => {
 
       await updateAnimalData(id, currentField, fieldValue);
       await updateAnimalData(id, "updated_at", new Date().toISOString());
-      if (currentField === "Registrar Embarazo" || currentField === "Registrar Inseminacion") {
-        console.log("actualizando embarazada");
-        await updateAnimalData(id, "embarazada", true);
-      }
       await saveRegister(register);
 
 
@@ -210,7 +206,7 @@ const AnimalView = () => {
     if (currentField) {
       const generateId = () => Math.random().toString(36).substr(2, 9);
       const actualDay = calculateDueDate(animal!.especie, new Date());
-
+  
       const baseRegister: Register = {
         id: generateId(),
         animalId: id,
@@ -218,44 +214,54 @@ const AnimalView = () => {
         accion: currentField,
         fecha: new Date().toISOString(),
       };
-
-      let specificRegister: Register | PregnancyRegister | TreatmentRegister | InseminationRegister;
-
-      if (currentField === "Registrar Embarazo") {
+  
+      let specificRegister: Register | PregnancyRegister | TreatmentRegister | InseminationRegister | AbortoRegister;
+  
+      if (currentField === 'Registro Preñes') {
         specificRegister = {
           ...baseRegister,
           fechaPartoEstimada: fieldValue,
         };
-        await saveNoteAnimal(animal!.id, {nota: `Posible fecha de parto: ${actualDay}`});
-        await updateAnimalData(id, "embarazada", true);
-
-      } else if (currentField === "Registrar Tratamiento") {
+        await saveNoteAnimal(animal!.id, { nota: `Posible fecha de parto: ${actualDay}` });
+        await updateAnimalData(id, 'embarazada', true);
+      } else if (currentField === 'Registro Tratamiento') {
         specificRegister = {
           ...baseRegister,
           tipoTratamiento: fieldValue,
         };
-        await saveNoteAnimal(animal!.id, {nota: `Ultimo tratamiento: ${actualDay} de ${fieldValue}`});
-      } else if (currentField === "Registrar Inseminacion") {
+        await saveNoteAnimal(animal!.id, { nota: `Ultimo tratamiento: ${actualDay} de ${fieldValue}` });
+      } else if (currentField === 'Registro Inseminacion') {
         specificRegister = {
           ...baseRegister,
           semenProveedor: fieldValue,
         };
-        await saveNoteAnimal(animal!.id, {nota: `Posible fecha de parto: ${actualDay}`});
-        await updateAnimalData(id, "embarazada", true);
+        await saveNoteAnimal(animal!.id, { nota: `Posible fecha de parto: ${actualDay}` });
+        await updateAnimalData(id, 'embarazada', true);
+      } else if (currentField === 'Registro Aborto') {
+        specificRegister = {
+          ...baseRegister,
+          fechaAborto: fieldValue,
+        };
+        await saveNoteAnimal(animal!.id, { nota: `Hubo un aborto el : ${actualDay}` });
+        await updateAnimalData(id, 'embarazada', false);
+  
+        // Elimina la nota de "Posible fecha de parto:"
+        await deleteNoteAnimal(animal!.id, 'Posible fecha de parto:');
       } else {
         specificRegister = baseRegister;
       }
-
+  
       await saveRegister(specificRegister);
-
+  
       // Actualizar lista de registros
       setRegisters((prev) => [...prev, specificRegister]);
-
+  
       modalCreateRegister.current?.close();
-      setCurrentField("");
-      setFieldValue("");
+      setCurrentField('');
+      setFieldValue('');
     }
   };
+  
   const handleDeletePrompt = (item: Register) => {
     setRegisterToDelete(item);
     confirmDeleteModalRef.current?.open();
@@ -380,10 +386,30 @@ const AnimalView = () => {
 
           <View style={{ width: "100%", height: 0.5, backgroundColor: colors.blanco }} />
 
-          {animal!.genero === "Hembra" && <ModalButton text="Registrar Preñes" onPress={() => handleCreateRegisterModal("Registrar Preñes")} />}
-          {animal!.genero === "Hembra" && <ModalButton text="Registrar Inseminación" onPress={() => handleCreateRegisterModal("Registrar Inseminacion")} />}
+          {
+            animal!.genero === "Hembra" && 
+            animal!.embarazada === false && (
+              <ModalButton text="Registrar Preñes" onPress={() => handleCreateRegisterModal("Registro Preñes")} />
+            )
+          }
+          {
+            (animal!.genero === "Hembra" || 
+            animal!.especie === 'Aviar' || 
+            animal!.especie === 'Canino' || 
+            animal!.especie === 'Felino') && 
+            animal!.embarazada === false && (
+              <ModalButton text="Registrar Inseminación" onPress={() => handleCreateRegisterModal("Registro Inseminacion")} />
+            )
+          }
+          {
+            animal!.embarazada === true && (
+              <ModalButton text="Registrar Aborto" onPress={() => handleCreateRegisterModal("Registro Aborto")} />
+            )
+          }
 
-          <ModalButton text="Registrar Tratamiento" onPress={() => handleCreateRegisterModal("Registrar Tratamiento")} />
+
+
+          <ModalButton text="Registrar Tratamiento" onPress={() => handleCreateRegisterModal("Registro Tratamiento")} />
         </View>
       </Modalize>
 

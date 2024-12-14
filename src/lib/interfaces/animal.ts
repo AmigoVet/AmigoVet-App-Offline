@@ -116,3 +116,7 @@ export interface TreatmentRegister extends Register {
 export interface InseminationRegister extends Register {
     semenProveedor?: string; // Proveedor del semen
 }
+
+export interface AbortoRegister extends Register {
+    fechaAborto?: string; // Proveedor del semen
+}

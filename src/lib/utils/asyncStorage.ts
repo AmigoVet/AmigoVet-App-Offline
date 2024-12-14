@@ -81,11 +81,17 @@ const saveNoteAnimal = async (animalId: string, newNote: Notes) => {
     if (animalsJson) {
       const animals: Animal[] = JSON.parse(animalsJson);
 
-      const updatedAnimals = animals.map(animal => {
+      const updatedAnimals = animals.map((animal) => {
         if (animal.id === animalId) {
-          // Filtrar las notas existentes para eliminar las relacionadas al campo específico
           const filteredNotes = animal.notas
-            ? animal.notas.filter(note => !note.nota.startsWith(newNote.nota.split(":")[0]))
+            ? animal.notas.filter(
+                (note) =>
+                  !note.nota.startsWith(newNote.nota.split(':')[0]) && // Elimina notas similares
+                  !(
+                    newNote.nota.startsWith('Hubo un aborto el') &&
+                    note.nota.startsWith('Posible fecha de parto:')
+                  ) // También elimina "Posible fecha de parto:" si la nueva nota es "Hubo un aborto el"
+              )
             : [];
 
           return { ...animal, notas: [...filteredNotes, newNote] };
@@ -101,6 +107,31 @@ const saveNoteAnimal = async (animalId: string, newNote: Notes) => {
     console.error('Error al guardar nota:', error);
   }
 };
+const deleteNoteAnimal = async (animalId: string, noteText: string) => {
+  try {
+    const animalsJson = await AsyncStorage.getItem('animals');
+    if (animalsJson) {
+      const animals: Animal[] = JSON.parse(animalsJson);
+
+      const updatedAnimals = animals.map((animal) => {
+        if (animal.id === animalId) {
+          const filteredNotes = animal.notas
+            ? animal.notas.filter((note) => !note.nota.startsWith(noteText))
+            : [];
+          return { ...animal, notas: filteredNotes };
+        }
+        return animal;
+      });
+
+      await AsyncStorage.setItem('animals', JSON.stringify(updatedAnimals));
+    } else {
+      console.warn('No se encontraron animales para actualizar');
+    }
+  } catch (error) {
+    console.error('Error al eliminar nota:', error);
+  }
+};
+
 
 
 
@@ -277,6 +308,82 @@ const getAnimalsUnderTwoYears = async (ownerId: string): Promise<Animal[]> => {
 };
 
 
+// **1. Función para obtener la cantidad de animales registrados**
+const getRegisteredAnimalsCount = async (): Promise<number> => {
+  try {
+    const animalsJson = await AsyncStorage.getItem('animals');
+    const animals: Animal[] = animalsJson ? JSON.parse(animalsJson) : [];
+    return animals.length;
+  } catch (error) {
+    console.error('Error al contar animales registrados:', error);
+    return 0;
+  }
+};
 
-export { saveData, loadData, saveNoteAnimal, getAnimalById, deleteAnimalById, updateAnimalData, saveRegister, loadRegistersByAnimalId, deleteRegisterById, searchAnimals, getPregnantAnimals, getMaleAnimals, getFemaleAnimals, getAnimalsUnderTwoYears };
+// **2. Función para obtener los últimos tres registros con nombre e identificador del animal**
+const getLastThreeRegisters = async (): Promise<{ nombre: string; identificador: string; fecha: string }[]> => {
+  try {
+    const registersJson = await AsyncStorage.getItem('registers');
+    const registers: Register[] = registersJson ? JSON.parse(registersJson) : [];
+
+    // Ordenar registros por fecha descendente y tomar los últimos tres
+    const lastThreeRegisters = registers
+      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+      .slice(0, 3);
+
+    const animalsJson = await AsyncStorage.getItem('animals');
+    const animals: Animal[] = animalsJson ? JSON.parse(animalsJson) : [];
+
+    return lastThreeRegisters.map((register) => {
+      const animal = animals.find((animal) => animal.id === register.animalId);
+      return {
+        nombre: animal?.nombre || 'Desconocido',
+        identificador: animal?.identificador || 'Desconocido',
+        fecha: register.fecha,
+      };
+    });
+  } catch (error) {
+    console.error('Error al obtener los últimos tres registros:', error);
+    return [];
+  }
+};
+
+// **3. Función para obtener las especies registradas y la cantidad de animales de cada especie**
+const getSpeciesCount = async (): Promise<Record<string, number>> => {
+  try {
+    const animalsJson = await AsyncStorage.getItem('animals');
+    const animals: Animal[] = animalsJson ? JSON.parse(animalsJson) : [];
+
+    return animals.reduce((acc: Record<string, number>, animal) => {
+      const especie = animal.especie || 'Desconocido';
+      acc[especie] = (acc[especie] || 0) + 1;
+      return acc;
+    }, {});
+  } catch (error) {
+    console.error('Error al contar especies registradas:', error);
+    return {};
+  }
+};
+
+
+export { 
+  saveData,
+  loadData, 
+  saveNoteAnimal, 
+  deleteNoteAnimal,
+  getAnimalById, 
+  deleteAnimalById, 
+  updateAnimalData, 
+  saveRegister, 
+  loadRegistersByAnimalId, 
+  deleteRegisterById, 
+  searchAnimals, 
+  getPregnantAnimals, 
+  getMaleAnimals, 
+  getFemaleAnimals, 
+  getAnimalsUnderTwoYears,
+  getRegisteredAnimalsCount, 
+  getLastThreeRegisters, 
+  getSpeciesCount 
+};
 
