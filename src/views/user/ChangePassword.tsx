@@ -1,13 +1,22 @@
+// **Librerías externas**
 import React, { useState } from 'react';
 import { View, Text, Alert, StyleSheet } from 'react-native';
-import { CustomButton, CustomInput } from '../../assets/components';
-import { changePassword } from '../../assets/functions';
-import { GlobalStyles } from '../../assets/styles';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+
+// **Interfaces y tipos**
 import { RootStackParamList } from '../Welcome';
-import { useTheme } from '../../assets/context/ThemeContext';
+
+// **Contexto y estilos**
+import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from '../../assets/styles/styles';
+
+// **Funciones utilitarias**
+import { changePassword } from '../../lib/functions/changePassword ';
+
+// **Componentes locales**
+import { CustomInput, CustomButton } from '../../components/Customs';
+
 
 const ChangePasswordScreen = () => {
   const [currentPassword, setCurrentPassword] = useState('');

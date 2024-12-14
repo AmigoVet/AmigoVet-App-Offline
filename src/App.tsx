@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './assets/navigator/AppNavigator';
-import useAuthStore from './assets/store/authStore';
-import { ThemeProvider } from './assets/context/ThemeContext';
+import useAuthStore from './lib/store/authStore';
+import { ThemeProvider } from './lib/context/ThemeContext';
+import AppNavigator from './lib/navigator/AppNavigator';
 
 const App = () => {
   const loadUser = useAuthStore((state) => state.loadUser);

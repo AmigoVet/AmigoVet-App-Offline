@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, Dimensions } from 'react-native';
-import CustomButton from '../assets/components/CustomButton';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import FromDevora from '../assets/components/FromDevora';
-import { useTheme } from '../assets/context/ThemeContext';
+import { useTheme } from '../lib/context/ThemeContext';
 import { createGlobalStyles } from '../assets/styles/styles';
+import { CustomButton } from '../components/Customs';
+import { FromDevora } from '../components/global';
 
 export type RootStackParamList = {
   Welcome: undefined;

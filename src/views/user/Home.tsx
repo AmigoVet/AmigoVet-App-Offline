@@ -1,15 +1,27 @@
+// **Librerías externas**
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Modalize } from 'react-native-modalize';
-import useAuthStore from '../../assets/store/authStore';
-import { Animal } from '../../assets/interfaces/animal';
-import { deleteAnimalById, loadData } from '../../assets/utils/asyncStorage';
 import RNFS from 'react-native-fs';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import { AnimalCard } from '../../assets/components';
-import { useTheme } from '../../assets/context/ThemeContext';
+
+// **Contexto y estilos**
+import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from '../../assets/styles/styles';
+
+// **Interfaces y tipos**
+import { Animal } from '../../lib/interfaces/animal';
+
+// **Funciones utilitarias**
+import { deleteAnimalById, loadData } from '../../lib/utils/asyncStorage';
+
+// **Hooks **
+import useAuthStore from '../../lib/store/authStore';
+
+// **Componentes locales**
+import { AnimalCard } from '../../components/AnimalDataView';
+
 
 const Home = () => {
     const user = useAuthStore((state) => state.user);

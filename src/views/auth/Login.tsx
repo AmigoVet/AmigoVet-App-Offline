@@ -1,19 +1,27 @@
+// **Librerías externas**
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Alert, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-
-import { RootStackParamList } from '../Welcome';
-import { CustomButton, CustomInput, LogoContainer } from '../../assets/components';
-
-import { appFirebase } from '../../credenciales';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../credenciales';
-import useAuthStore from '../../assets/store/authStore';
-import { useTheme } from '../../assets/context/ThemeContext';
+
+// **Interfaces y tipos**
+import { RootStackParamList } from '../Welcome';
+
+// **Configuración y almacenamiento**
+import { appFirebase, db } from '../../lib/utils/FirebaseConfig';
+import useAuthStore from '../../lib/store/authStore';
+
+// **Contexto y estilos**
+import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
 import { createNewStyles } from '../../assets/styles/NewStyles';
 import { createGlobalStyles } from '../../assets/styles/styles';
+
+// **Componentes locales**
+import { CustomInput, CustomButton } from '../../components/Customs';
+import { LogoContainer } from '../../components/global';
+
 
 type User = {
   nombre: string;

@@ -1,19 +1,26 @@
+// **Librerías externas**
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import CustomInput from '../../assets/components/CustomInput';
-import CustomButton from '../../assets/components/CustomButton';
-import LogoContainer from '../../assets/components/LogoContainer';
-import { getDynamicColors } from '../../assets/styles/colors';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../Welcome';
-
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../../credenciales';
-import useAuthStore from '../../assets/store/authStore';
-import { useTheme } from '../../assets/context/ThemeContext';
+
+// **Interfaces y tipos**
+import { RootStackParamList } from '../Welcome';
+
+// **Configuración y almacenamiento**
+import { db } from '../../lib/utils/FirebaseConfig';
+import useAuthStore from '../../lib/store/authStore';
+
+// **Contexto y estilos**
+import { useTheme } from '../../lib/context/ThemeContext';
+import { getDynamicColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from '../../assets/styles/styles';
+
+// **Componentes locales**
+import { CustomInput, CustomButton } from '../../components/Customs';
+import { LogoContainer } from '../../components/global';
 
 const Register = () => {
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();

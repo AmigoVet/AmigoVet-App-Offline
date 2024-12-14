@@ -1,13 +1,23 @@
+// **Librerías externas**
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { AnimalCard, CustomInput, Header } from '../../assets/components';
-import { GlobalStyles } from '../../assets/styles';
-import { searchAnimals } from '../../assets/utils/asyncStorage';
-import { Animal } from '../../assets/interfaces/animal';
-import { useTheme } from '../../assets/context/ThemeContext';
-import { getDynamicColors } from '../../assets/styles/colors';
+
+// **Interfaces y tipos**
+import { Animal } from '../../lib/interfaces/animal';
+
+// **Contexto y estilos**
+import { useTheme } from '../../lib/context/ThemeContext';
 import { createGlobalStyles } from '../../assets/styles/styles';
+
+// **Componentes locales**
+import { AnimalCard } from '../../components/AnimalDataView';
+import { CustomInput } from '../../components/Customs';
+
+// **Funciones utilitarias**
+import { searchAnimals } from '../../lib/utils/asyncStorage';
+import { Header } from '../../components/global';
+
 
 const Busqueda = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');

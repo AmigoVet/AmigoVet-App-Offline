@@ -1,32 +1,38 @@
+// **Librerías externas**
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { Modalize } from "react-native-modalize";
-import useAnimals from "../../assets/hooks/useAnimals";
-import {
-  CarouselImages,
-  CustomButton,
-  CustomImage,
-  CustomInput,
-  DataViewAnimal,
-  HeaderRegisterTable,
-  ModalButton,
-  RowRegister,
-} from "../../assets/components";
-import { saveNoteAnimal, saveRegister, updateAnimalData } from "../../assets/utils/asyncStorage";
-import { useRegisters } from "../../assets/hooks/useRegisters";
-import { Register } from "../../assets/interfaces/registers";
-import { RootStackParamList } from "../Welcome";
-import { InseminationRegister, PregnancyRegister, TreatmentRegister } from "../../assets/interfaces/animal";
-import { calculateDueDate } from "../../assets/functions/CalcularFechaParto";
-import { calcularEdad } from "../../assets/functions";
 import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from "react-native-image-picker";
-import CustomIcon from "../../assets/components/CustomIcon";
-import { useTheme } from '../../assets/context/ThemeContext';
+
+// **Interfaces y tipos**
+import { Register } from "../../lib/interfaces/registers";
+import { RootStackParamList } from "../Welcome";
+import { InseminationRegister, PregnancyRegister, TreatmentRegister } from "../../lib/interfaces/animal";
+
+// **Contexto y estilos**
+import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from "../../assets/styles/styles";
 import { createNewStyles } from "../../assets/styles/NewStyles";
+
+// **Componentes locales**
+import { CarouselImages, DataViewAnimal, HeaderRegisterTable, RowRegister } from "../../components/AnimalDataView";
+import { CustomButton, CustomImage, CustomIcon, CustomInput } from "../../components/Customs";
+import { ModalButton } from "../../components/global";
+
+// **Funciones utilitarias**
+import { calcularEdad } from "../../lib/functions/CalcularEdad";
+import { calculateDueDate } from "../../lib/functions/CalcularFechaParto";
+
+// **Hooks **
+import useAnimals from "../../lib/hooks/useAnimals";
+import { useRegisters } from "../../lib/hooks/useRegisters";
+
+// ** AsyncStorage**
+import { updateAnimalData, saveRegister, saveNoteAnimal } from "../../lib/utils/asyncStorage";
+
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, "AnimalView">>();
@@ -374,7 +380,7 @@ const AnimalView = () => {
 
           <View style={{ width: "100%", height: 0.5, backgroundColor: colors.blanco }} />
 
-          {animal!.genero === "Hembra" && <ModalButton text="Registrar Embarazo" onPress={() => handleCreateRegisterModal("Registrar Embarazo")} />}
+          {animal!.genero === "Hembra" && <ModalButton text="Registrar Preñes" onPress={() => handleCreateRegisterModal("Registrar Preñes")} />}
           {animal!.genero === "Hembra" && <ModalButton text="Registrar Inseminación" onPress={() => handleCreateRegisterModal("Registrar Inseminacion")} />}
 
           <ModalButton text="Registrar Tratamiento" onPress={() => handleCreateRegisterModal("Registrar Tratamiento")} />
@@ -427,7 +433,7 @@ const AnimalView = () => {
       <Modalize ref={modalCreateRegister} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>{currentField}</Text>
-          {currentField === "Registrar Embarazo" && (
+          {currentField === "Registrar Preñes" && (
             <CustomInput label="Comentario" placeholder="Comentario" value={fieldValue} onChangeText={setFieldValue} />
           )}
           {currentField === "Registrar Tratamiento" && (

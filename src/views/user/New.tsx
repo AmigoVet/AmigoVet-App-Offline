@@ -1,37 +1,25 @@
+// **Librerías externas**
 import React, { useState } from "react";
-import {
-  ScrollView,
-  Text,
-  Alert,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import {
-  CustomButton,
-  CustomInput,
-  CustomSelect,
-  CustomImage,
-} from "../../assets/components";
-import CustomDatePicker from "../../assets/components/CustomDatePicker";
-import {
-  especiesRazasMap,
-  generos,
-  propositosPorEspecie,
-  Especie,
-} from "../../assets/interfaces/animal";
-import {
-  launchCamera,
-  launchImageLibrary,
-  CameraOptions,
-  ImageLibraryOptions,
-} from "react-native-image-picker";
-import useAuthStore from "../../assets/store/authStore";
-import { calcularEdad, saveAnimalData } from "../../assets/functions";
-import CustomIcon from "../../assets/components/CustomIcon";
-import { useTheme } from "../../assets/context/ThemeContext";
+import { ScrollView, Text, Alert, TouchableOpacity, View } from "react-native";
+import {launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions} from "react-native-image-picker";
+
+// **Interfaces y tipos**
+import { especiesRazasMap, generos, propositosPorEspecie, Especie,} from "../../lib/interfaces/animal";
+
+// **Contexto y estilos**
+import useAuthStore from "../../lib/store/authStore";
+import { useTheme } from "../../lib/context/ThemeContext";
 import { getDynamicColors } from "../../assets/styles/colors";
 import { createGlobalStyles } from "../../assets/styles/styles";
 import { createNewStyles } from "../../assets/styles/NewStyles";
+
+// **Componentes locales**
+import { CustomImage, CustomIcon, CustomInput, CustomSelect, CustomDatePicker, CustomButton } from "../../components/Customs";
+
+// **Funciones utilitarias**
+import { calcularEdad } from "../../lib/functions/CalcularEdad";
+import { saveAnimalData } from "../../lib/functions/GuardarAnimal";
+
 
 const New: React.FC = () => {
   const [nombre, setNombre] = useState<string>("");

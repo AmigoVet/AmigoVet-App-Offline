@@ -1,14 +1,21 @@
+// **Librerías externas**
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React, { useEffect } from 'react';
-import useAuthStore from '../../assets/store/authStore';
-import { colors, GlobalStyles } from '../../assets/styles';
-import { CustomButton } from '../../assets/components';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+// **Interfaces y tipos**
 import { RootStackParamList } from '../Welcome';
-import { useTheme } from '../../assets/context/ThemeContext';
+
+// **Contexto y estilos**
+import useAuthStore from '../../lib/store/authStore';
+import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from '../../assets/styles/styles';
+
+// **Componentes locales**
+import { CustomButton } from '../../components/Customs';
+
 
 const Profile = () => {
   const { user, loadUser, clearUser } = useAuthStore();
