@@ -25,6 +25,7 @@ import { getDynamicColors, staticColors } from '../../assets/styles/colors';
 import { CustomIcon } from '../../components/Customs';
 import HeaderDrawer from '../../components/Navigations/HeaderDrawer';
 import { DrawerContent } from '../../components/Navigations/DrawerContent';
+import HomePublic from '../../views/public/HomePublic';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -109,12 +110,14 @@ const BottomTabsNavigator = () => {
         tabBarIcon: ({ color, size, focused }) => {
           let iconName: string;
 
-          if (route.name === 'Home') {
-            iconName = 'home-outline';
-          } else if (route.name === 'Profile') {
+          if (route.name === 'Privado') {
+            iconName = 'folder-outline';
+          } else if (route.name === 'Perfil') {
             iconName = 'person-outline';
-          } else if (route.name === 'New') {
+          } else if (route.name === 'Agregar') {
             iconName = 'add-circle-outline';
+          } else if (route.name === 'Publico') {
+            iconName = 'wifi-outline';
           } else {
             iconName = 'alert-circle-outline';
           }
@@ -148,9 +151,10 @@ const BottomTabsNavigator = () => {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreenWithDrawerNavigator} />
-      <Tab.Screen name="New" component={New} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Privado" component={HomeScreenWithDrawerNavigator} />
+      <Tab.Screen name="Publico" component={HomePublic} />
+      <Tab.Screen name="Agregar" component={New} />
+      <Tab.Screen name="Perfil" component={Profile} />
     </Tab.Navigator>
   );
 };
