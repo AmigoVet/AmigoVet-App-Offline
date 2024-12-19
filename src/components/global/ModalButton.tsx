@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { act } from 'react'
 import { staticColors } from '../../assets/styles/colors';
 
 interface ModalButtonProps {
@@ -25,7 +25,9 @@ const ModalButton = ({ text, onPress, actualData, red }: ModalButtonProps) => {
         color: staticColors.blancoLight,
         textAlign: 'center',
       },
-})
+  })
+
+  if (text === 'Editar Descripción'){ actualData = '' }
 
   return (
     <TouchableOpacity style={styles.modalOption} onPress={() => onPress()}>

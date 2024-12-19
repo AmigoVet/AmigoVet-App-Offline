@@ -123,7 +123,7 @@ const Home = () => {
                         refreshing={refreshing}
                         onRefresh={handleRefresh}
                         ListFooterComponent={
-                            <Text style={{ textAlign: 'center', marginTop: 20, color: colors.blanco, fontWeight: 'bold' }}>
+                            <Text style={{ textAlign: 'center', marginVertical: 20, color: colors.blanco, fontWeight: 'bold' }}>
                                 Aun te quedan {50 - totalAnimals} animales para registrar.
                             </Text>
                         }

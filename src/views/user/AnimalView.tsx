@@ -393,14 +393,20 @@ const AnimalView = () => {
             )
           }
           {
-            (animal!.genero === "Hembra" || 
-            animal!.especie === 'Aviar' || 
-            animal!.especie === 'Canino' || 
-            animal!.especie === 'Felino') && 
-            animal!.embarazada === false && (
-              <ModalButton text="Registrar Inseminación" onPress={() => handleCreateRegisterModal("Registro Inseminacion")} />
+            (animal!.genero === "Hembra" && 
+            (animal!.especie === 'Bovino' || 
+              animal!.especie === 'Equino' || 
+              animal!.especie === 'Ovino' || 
+              animal!.especie === 'Porcino' || 
+              animal!.especie === 'Caprino') && 
+            animal!.embarazada === false) && (
+              <ModalButton 
+                text="Registrar Inseminación" 
+                onPress={() => handleCreateRegisterModal("Registro Inseminacion")} 
+              />
             )
           }
+
           {
             animal!.embarazada === true && (
               <ModalButton text="Registrar Aborto" onPress={() => handleCreateRegisterModal("Registro Aborto")} />
