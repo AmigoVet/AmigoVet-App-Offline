@@ -103,7 +103,7 @@ const New: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    if (totalAnimals >= 50) {
+    if (totalAnimals >= 30) {
       Alert.alert(
         "Error",
         "No puedes registrar más de 50 animales"

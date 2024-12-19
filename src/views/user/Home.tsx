@@ -124,7 +124,7 @@ const Home = () => {
                         onRefresh={handleRefresh}
                         ListFooterComponent={
                             <Text style={{ textAlign: 'center', marginVertical: 20, color: colors.blanco, fontWeight: 'bold' }}>
-                                Aun te quedan {50 - totalAnimals} animales para registrar.
+                                Aun te quedan {30 - totalAnimals} animales para registrar.
                             </Text>
                         }
                     />

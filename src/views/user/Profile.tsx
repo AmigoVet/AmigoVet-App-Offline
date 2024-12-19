@@ -139,7 +139,7 @@ const Profile = () => {
           {/* Bloque de cantidad de animales */}
           <View style={styles.glassBlock}>
             <Text style={[GlobalStyles.subTitle, { fontSize: fontSubTitle }]}>Cantidad de animales registrados</Text>
-            <Text style={styles.animalsCount}>Aun puedes registrar <Text style={{ color: colors.naranja }}>{50 - totalAnimals}</Text> animales</Text>
+            <Text style={styles.animalsCount}>Aun puedes registrar <Text style={{ color: colors.naranja }}>{30 - totalAnimals}</Text> animales</Text>
           </View>
 
           {/* Botones de acción */}
