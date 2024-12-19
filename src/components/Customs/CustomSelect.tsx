@@ -5,9 +5,6 @@ import { useTheme } from "../../lib/context/ThemeContext";
 import { getDynamicColors } from "../../assets/styles/colors";
 import { createGlobalStyles } from "../../assets/styles/styles";
 
-
-const { width } = Dimensions.get("window");
-
 interface CustomSelectProps {
   label: string;
   value: string;
@@ -17,19 +14,21 @@ interface CustomSelectProps {
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onValueChange, miniText }) => {
-
   const { isDarkTheme } = useTheme();
   const colors = getDynamicColors(isDarkTheme);
   const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const { width } = Dimensions.get("window");
+
+  const fontSize = width * 0.04;
 
   const styles = StyleSheet.create({
     container: {
       marginBottom: 20,
     },
     label: {
-      fontSize: width * 0.04, // Escala dinámica
+      fontSize: fontSize,
       fontWeight: "500",
-      color: colors.naranja,
+      color: colors.blanco,
       marginBottom: 5,
     },
     pickerContainer: {
@@ -42,8 +41,14 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onVa
     picker: {
       height: 50,
       width: "100%",
-      fontSize: width * 0.04, // Ajuste dinámico del texto
-      color: colors.blanco,
+    },
+    pickerItemDefault: {
+      color: colors.rowBgLight, // Color para el primer elemento
+      fontSize: fontSize,
+    },
+    pickerItemOption: {
+      color: colors.blanco, // Color para el resto de opciones
+      fontSize: fontSize,
     },
   });
 
@@ -58,18 +63,25 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onVa
           selectedValue={value}
           onValueChange={onValueChange}
           style={styles.picker}
-          dropdownIconColor={colors.blanco} // Cambia el color del ícono desplegable
+          dropdownIconColor={colors.blanco}
         >
-          <Picker.Item label={`Seleccione ${label.toLowerCase()}`} value="" />
+          <Picker.Item
+            label={`Seleccione ${label.toLowerCase()}`}
+            value=""
+            style={styles.pickerItemDefault} // Estilo para el primer elemento
+          />
           {options.map((option) => (
-            <Picker.Item key={option} label={option} value={option} />
+            <Picker.Item
+              key={option}
+              label={option}
+              value={option}
+              style={styles.pickerItemOption} // Estilo para los demás elementos
+            />
           ))}
         </Picker>
       </View>
     </View>
   );
 };
-
-
 
 export default CustomSelect;

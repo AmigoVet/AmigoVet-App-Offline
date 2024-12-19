@@ -64,7 +64,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
           placeholder={placeholder}
           value={value}
           onChangeText={onChangeText}
-          placeholderTextColor={colors.naranja}
+          placeholderTextColor={colors.rowBgLight}
           secureTextEntry={password && !isPasswordVisible}
           multiline={multiline}
           keyboardType={getKeyboardType()}
@@ -99,7 +99,7 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       fontSize: width * 0.04,
       fontWeight: '500',
       marginBottom: 5,
-      color: colors.naranja,
+      color: colors.blanco,
     },
     miniText: {
       fontSize: width * 0.03,
@@ -118,7 +118,7 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       flex: 1,
       minHeight: 40,
       fontSize: width * 0.04,
-      color: colors.blancoLight,
+      color: colors.blanco,
     },
     multilineInput: {
       minHeight: 100,
