@@ -1,3 +1,5 @@
+import { stat } from "react-native-fs"
+
 export const getDynamicColors  = (isDarkTheme: boolean) =>  {
   return {
     fondo: isDarkTheme ? staticColors.negro : lightColors.blancoLight,
@@ -8,6 +10,8 @@ export const getDynamicColors  = (isDarkTheme: boolean) =>  {
     naranjaDark: staticColors.naranjaDark,
     rojo: staticColors.rojo,
     rojoLight: staticColors.rojoLight,
+    verde: isDarkTheme ? staticColors.verde : staticColors.verdeDark,
+    verdeDark: isDarkTheme ? staticColors.verdeDark : staticColors.verde,
     rowBgLight: isDarkTheme ? staticColors.rowBgDark : lightColors.rowBgLight,
     rowBgDark: isDarkTheme ? staticColors.rowBgLight : lightColors.rowBgDark,
   }
@@ -24,6 +28,8 @@ export const staticColors = {
   naranjaDark: '#c35a00',
   rojo: '#7a0f1f',
   rojoLight: '#C94F57', 
+  verde: '#04503b',
+  verdeDark: '#012d22',
   rowBgLight: '#888b8d',
   rowBgDark: '#625b5b',
 }

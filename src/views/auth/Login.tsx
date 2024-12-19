@@ -20,7 +20,7 @@ import { createGlobalStyles } from '../../assets/styles/styles';
 
 // **Componentes locales**
 import { CustomInput, CustomButton } from '../../components/Customs';
-import { LogoContainer } from '../../components/global';
+import { FromDevora, LogoContainer } from '../../components/global';
 
 
 type User = {
@@ -168,6 +168,7 @@ const Login = () => {
             </Text>
           </View>
         </View>
+        <FromDevora />
       </ScrollView>
     </KeyboardAvoidingView>
   );

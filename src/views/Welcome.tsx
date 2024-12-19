@@ -5,6 +5,7 @@ import { useTheme } from '../lib/context/ThemeContext';
 import { createGlobalStyles } from '../assets/styles/styles';
 import { CustomButton } from '../components/Customs';
 import { FromDevora } from '../components/global';
+import { getDynamicColors, staticColors } from '../assets/styles/colors';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -34,11 +35,12 @@ const Welcome = () => {
 
   const {isDarkTheme} = useTheme();
   const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const colors = getDynamicColors(isDarkTheme);
 
   return (
     <View style={[GlobalStyles.container, { alignItems: 'flex-start', justifyContent: 'center' }]}>
-      <Text style={[GlobalStyles.title, { fontSize: width*0.08 }]}>Welcome to</Text>
-      <Text style={[GlobalStyles.subTitle, { fontSize: width*0.2 }]}>AmigoVet</Text>
+      <Text style={[GlobalStyles.title, { fontSize: width*0.10 }]}>Bienvenido a</Text>
+      <Text style={[GlobalStyles.subTitle, { fontSize: width*0.2, color: colors.verde, marginBottom: 30 }]}>AmigoVet</Text>
       <CustomButton onPress={login} text="Ingresa Ahora" />
       <FromDevora />
     </View>

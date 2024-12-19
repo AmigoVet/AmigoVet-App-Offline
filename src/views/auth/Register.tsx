@@ -20,7 +20,7 @@ import { createGlobalStyles } from '../../assets/styles/styles';
 
 // **Componentes locales**
 import { CustomInput, CustomButton } from '../../components/Customs';
-import { LogoContainer } from '../../components/global';
+import { FromDevora, LogoContainer } from '../../components/global';
 
 const Register = () => {
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
@@ -173,6 +173,7 @@ const Register = () => {
           <Text style={{ color: colors.blanco }}>¿Ya tienes una cuenta?</Text>
         </Pressable>
       </View>
+      <FromDevora />
     </ScrollView>
   );
 };
