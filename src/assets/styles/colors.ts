@@ -14,6 +14,7 @@ export const getDynamicColors  = (isDarkTheme: boolean) =>  {
     verdeDark: isDarkTheme ? staticColors.verdeDark : staticColors.verde,
     rowBgLight: isDarkTheme ? staticColors.rowBgDark : lightColors.rowBgLight,
     rowBgDark: isDarkTheme ? staticColors.rowBgLight : lightColors.rowBgDark,
+    bgLight: '#b0b0b0'
   }
 }
 

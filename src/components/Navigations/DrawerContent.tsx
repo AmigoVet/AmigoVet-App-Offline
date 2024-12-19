@@ -96,7 +96,7 @@ const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>, widht: numbe
     marginRight: 10,
   },
   userName: {
-    fontSize: widht * 0.045,
+    fontSize: widht * 0.04,
   },
   footer: {
     height: 50,
