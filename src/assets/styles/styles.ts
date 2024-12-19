@@ -59,7 +59,7 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
     },
     error: {
       fontSize: 25,
-      color: colors.rojoLight,
+      color: colors.rojo,
       fontWeight: 'bold',
       marginTop: 50,
     },

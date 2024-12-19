@@ -26,7 +26,7 @@ export const staticColors = {
   blancoMediumLight: '#e6e7e8',
   naranja: '#ee7f27',
   naranjaDark: '#c35a00',
-  rojo: '#7a0f1f',
+  rojo: '#a80c23',
   rojoLight: '#C94F57', 
   verde: '#04503b',
   verdeDark: '#012d22',
