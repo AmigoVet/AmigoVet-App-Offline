@@ -51,7 +51,7 @@ const New: React.FC = () => {
   const [totalAnimals, setTotalAnimals] = useState<number>(0);
   useEffect(() => {
   const fetchAnimalCount = async () => {
-      const count = await getRegisteredAnimalsCount();
+      const count = await getRegisteredAnimalsCount(user!.userId);
       setTotalAnimals(count);
   };    fetchAnimalCount();
   }, []); 
@@ -244,29 +244,24 @@ const New: React.FC = () => {
         label="Fecha de Nacimiento"
         value={fechaNacimiento}
         onDateChange={(date) => {
-          if (!fechaNacimiento || date.getTime() !== fechaNacimiento.getTime()) { 
-            setFechaNacimiento(date);
-            setEdad(calcularEdad(date)); 
+          setFechaNacimiento(date);
+          if (date) {
+            setEdad(calcularEdad(date));
           }
-          console.log("Seleccion de Fecha de nacimiento");
-          console.log(fechaNacimiento);
-          console.log(date);
         }}
         onAgeChange={(age) => {
-          if (age !== edad) { 
-            setEdad(age);
-            setFechaNacimiento(null);
-          }
+          setEdad(age);
+          setFechaNacimiento(null);
         }}
         onBirthDateCalculated={(birthDate) => {
-          if (!fechaNacimiento || birthDate!.getTime() !== fechaNacimiento.getTime()) { 
-            setFechaNacimiento(birthDate);
-          }
-          console.log("Fecha de nacimiento aproximada");
-          console.log(birthDate);
+          setFechaNacimiento(birthDate);
         }}
         ageValue={edad}
       />
+
+
+
+
 
       <CustomInput miniText="Obligatorio" label="Peso" value={peso} onChangeText={setPeso} placeholder="Peso en kg" type="number" />
       <CustomInput miniText="Obligatorio" label="Color" value={color} onChangeText={setColor} placeholder="Color del animal" />

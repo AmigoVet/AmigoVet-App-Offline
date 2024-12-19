@@ -8,7 +8,7 @@ import CustomIcon from "./CustomIcon";
 interface CustomDatePickerProps {
   label: string;
   value: Date | null;
-  onDateChange: (date: Date) => void;
+  onDateChange: (date: Date | null) => void;
   onAgeChange?: (age: string) => void;
   onBirthDateCalculated?: (birthDate: Date | null) => void;
   ageValue?: string;
@@ -29,7 +29,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   const colors = getDynamicColors(isDarkTheme);
   const styles = createStyles(colors);
 
-  // Calcular la edad aproximada según la fecha de nacimiento
+  // Calcular texto de la edad según la fecha seleccionada
   const calculateAgeText = (birthDate: Date | null): string => {
     if (!birthDate) return "";
     const now = new Date();
@@ -41,6 +41,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     return `${Math.floor(diffDays / 365)} años`;
   };
 
+  // Calcular fecha aproximada de nacimiento según la edad ingresada
   const approximateBirthDate = (): string => {
     if (!ageValue) return "";
     const now = new Date();
@@ -51,24 +52,20 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     return approxDate.toISOString().split("T")[0];
   };
 
-  // Calcular la fecha de nacimiento solo si hay cambios en 'ageValue'
+  // Calcular la fecha de nacimiento solo si se ingresa una edad manualmente
   useEffect(() => {
-    if (onBirthDateCalculated && ageValue) {
+    if (showAgeInput && onBirthDateCalculated && ageValue) {
       const yearsAgo = parseInt(ageValue, 10);
       if (!isNaN(yearsAgo)) {
         const now = new Date();
         const birthDate = new Date();
         birthDate.setFullYear(now.getFullYear() - yearsAgo);
-
-        // Solo llama a 'onBirthDateCalculated' si el valor cambia
-        if (!value || birthDate.getTime() !== value.getTime()) {
-          onBirthDateCalculated(birthDate);
-        }
+        onBirthDateCalculated(birthDate);
       } else {
         onBirthDateCalculated(null);
       }
     }
-  }, [ageValue, onBirthDateCalculated, value]);
+  }, [ageValue, onBirthDateCalculated, showAgeInput]);
 
   const handleDateChange = (selectedDate: Date | null) => {
     if (selectedDate && (!value || selectedDate.getTime() !== value.getTime())) {
@@ -79,9 +76,9 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   const handleSwitchMode = () => {
     setShowAgeInput((prev) => !prev);
     if (!showAgeInput) {
-      onDateChange(new Date("2022-01-01"));
+      onDateChange(null); // Limpiar la fecha al cambiar a modo de edad manual
     } else if (onAgeChange) {
-      onAgeChange(""); 
+      onAgeChange("");
     }
   };
 
@@ -134,10 +131,10 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 
       {showPicker && (
         <DateTimePicker
-          value={value || new Date()}
+          value={value ?? new Date()}
           mode="date"
           display="default"
-          maximumDate={new Date()} // Bloquear fechas futuras
+          maximumDate={new Date()}
           onChange={(event, selectedDate) => {
             setShowPicker(false);
             handleDateChange(selectedDate || null);
@@ -148,7 +145,6 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   );
 };
 
-// Función para generar estilos dinámicos
 const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
   StyleSheet.create({
     container: {
