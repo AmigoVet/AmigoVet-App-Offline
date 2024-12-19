@@ -38,7 +38,7 @@ const Home = () => {
     const [totalAnimals, setTotalAnimals] = useState<number>(0);
     useEffect(() => {
     const fetchAnimalCount = async () => {
-        const count = await getRegisteredAnimalsCount();
+        const count = await getRegisteredAnimalsCount(user!.userId);
         setTotalAnimals(count);
     };
 

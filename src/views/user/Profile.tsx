@@ -1,5 +1,5 @@
 // **Librerías externas**
-import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -17,10 +17,12 @@ import { createGlobalStyles } from '../../assets/styles/styles';
 // **Componentes locales**
 import { CustomButton } from '../../components/Customs';
 import { getLastThreeRegisters, getRegisteredAnimalsCount, getSpeciesCount } from '../../lib/utils/asyncStorage';
+import { formatPhoneNumber } from '../../lib/functions/FormaterNumberPhone';
 
 const Profile = () => {
   const { user, loadUser, clearUser } = useAuthStore();
   const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const {width} = Dimensions.get('window');
 
   const { isDarkTheme } = useTheme();
   const colors = getDynamicColors(isDarkTheme);
@@ -34,13 +36,13 @@ const Profile = () => {
   useEffect(() => {
     const fetchInfo = async () => {
       setLoading(true);
-      const count = await getRegisteredAnimalsCount();
+      const count = await getRegisteredAnimalsCount(user!.userId);
       setTotalAnimals(count);
 
-      const latestRegisters = await getLastThreeRegisters();
+      const latestRegisters = await getLastThreeRegisters(user!.userId);
       setLatestRegisters(latestRegisters);
 
-      const speciesCount = await getSpeciesCount();
+      const speciesCount = await getSpeciesCount(user!.userId);
       setSpeciesCount(speciesCount);
 
       setLoading(false);
@@ -56,7 +58,7 @@ const Profile = () => {
   const closeSession = async () => {
     await clearUser(); // Cerrar sesión
   };
-  const styles = dymanycStyles(colors);
+  const styles = dymanycStyles(colors, width);
 
 
 
@@ -68,6 +70,7 @@ const Profile = () => {
       </View>
     );
   }
+  const fontSubTitle = width * 0.055;
 
   return (
     <View style={[GlobalStyles.container, styles.profileContainer]}>
@@ -78,10 +81,15 @@ const Profile = () => {
             style={styles.avatar}
           />
           <Text style={GlobalStyles.title}>{user.nombre}</Text>
-          <Text style={GlobalStyles.label}>{user.correo}</Text>
-          <Text style={GlobalStyles.label}>{`Teléfono: ${user.telefono}`}</Text>
+
+          <View style={styles.basicInfoContainer}>
+            <Text style={[GlobalStyles.label, {fontSize: width*0.04}]}>{user.correo}</Text>
+            <Text style={[GlobalStyles.label, {fontSize: width*0.04}]}>{`+57 ${formatPhoneNumber(user.telefono)}`}</Text>
+          </View>
+
           <View style={{ width: "100%", height: 0.5, backgroundColor: colors.blanco }} />
-          <Text style={[GlobalStyles.subTitle, {fontSize: 22, marginTop: 10}]}>Registros recientes</Text>
+
+          <Text style={[GlobalStyles.subTitle, {fontSize:fontSubTitle, marginTop: 10}]}>Registros recientes</Text>
           {latestRegisters.length > 0 ? (
             latestRegisters.map((register, index) => (
               <RowRegister 
@@ -95,7 +103,7 @@ const Profile = () => {
             <Text style={styles.noSpeciesText}>No hay registros</Text>
           )}
 
-          <Text style={[GlobalStyles.subTitle, {fontSize: 22, marginTop: 10}]}>Cantidad de especies registradas</Text>
+          <Text style={[GlobalStyles.subTitle, {fontSize: fontSubTitle, marginTop: 10}]}>Cantidad de especies registradas</Text>
           {speciesCount ? (
             Object.entries(speciesCount).map(([species, count]) => (
               <Text key={species} style={styles.speciesItem}>
@@ -108,7 +116,7 @@ const Profile = () => {
           )}
 
 
-          <Text style={[GlobalStyles.subTitle, {fontSize: 22, marginTop: 10}]}>Cantidad de animales registrados</Text>
+          <Text style={[GlobalStyles.subTitle, {fontSize: fontSubTitle, marginTop: 10}]}>Cantidad de animales registrados</Text>
           <Text style={styles.animalsCount}>Aun puedes registrar <Text style={{ color: colors.naranja }}>{50 -totalAnimals}</Text> animales</Text>
 
           <View style={{ width: "100%", height: 0.5, backgroundColor: colors.blanco, marginVertical: 10 }} />
@@ -132,8 +140,9 @@ const Profile = () => {
 
 const RowRegister = ({ register, bgColor, isLast }: { register: any; bgColor: string; isLast: boolean }) => {
   const { isDarkTheme } = useTheme();
+  const { width } = Dimensions.get('window');
   const colors = getDynamicColors(isDarkTheme);
-  const styles = dymanycStyles(colors);
+  const styles = dymanycStyles(colors, width);
 
   return (
     <View style={[styles.register, { backgroundColor: bgColor }]}>
@@ -146,12 +155,18 @@ const RowRegister = ({ register, bgColor, isLast }: { register: any; bgColor: st
 };
 
 
-const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>, width: number) =>
   StyleSheet.create({
   profileContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+  },
+  basicInfoContainer: {
+    width: "100%",
+    flexDirection: "row", 
+    justifyContent: "space-between",
+    marginVertical: 10,
   },
   avatar: {
     width: 100,
