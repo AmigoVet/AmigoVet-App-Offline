@@ -337,6 +337,7 @@ const AnimalView = () => {
         rightOpenValue={-75}
       />
 
+      { /* Modal para confirmar eliminación de registro */ }
       <Modalize ref={confirmDeleteModalRef} modalHeight={200} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>¿Estás seguro de eliminar este registro?</Text>
@@ -419,6 +420,7 @@ const AnimalView = () => {
         </View>
       </Modalize>
 
+      { /* Modal para seleccionar imagen */ }
       <Modalize ref={modalAddImage} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo, padding: 20 }}>
         <Text style={GlobalStyles.label}>Selecciona o toma una foto</Text>
         <View style={newStyles.imageContainer}>
@@ -441,6 +443,7 @@ const AnimalView = () => {
         </View>
       </Modalize>
 
+      { /* Modal para actualizar datos */ }
       <Modalize ref={editModalRef} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <CustomInput
@@ -462,16 +465,17 @@ const AnimalView = () => {
         </View>
       </Modalize>
 
+      
       <Modalize ref={modalCreateRegister} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>{currentField}</Text>
-          {currentField === "Registrar Preñes" && (
+          {currentField === "Registro Preñes" && (
             <CustomInput label="Comentario" placeholder="Comentario" value={fieldValue} onChangeText={setFieldValue} />
           )}
-          {currentField === "Registrar Tratamiento" && (
+          {currentField === "Registro Tratamiento" && (
             <CustomInput label="Comentario del tratamiento" placeholder="Tipo de tratamiento" value={fieldValue} onChangeText={setFieldValue} />
           )}
-          {currentField === "Registrar Inseminacion" && (
+          {currentField === "Registro Inseminacion" && (
             <CustomInput label="Comentario de inseminación" placeholder="Proveedor del semen" value={fieldValue} onChangeText={setFieldValue} />
           )}
           <CustomButton text="Guardar" onPress={handleCreateRegister} />
