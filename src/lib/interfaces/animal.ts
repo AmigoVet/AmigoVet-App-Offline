@@ -28,8 +28,8 @@ export interface Notes {
     nota: string;
 }
 export type Image = string
-export type PropositosDomesticos = "Mascota" | "Cuidados" | "Animal de compañía" | "Otro";
-export type PropositosRurales = "Leche" | "Carne" | "Doble Propósito" | "Otro";
+export type PropositosDomesticos = "Mascota" | "Cuidados" | "Animal de compañía" ;
+export type PropositosRurales = "Leche" | "Carne" | "Doble Propósito";
 
 export const generos: Genero[] = ["Macho", "Hembra"];
 
@@ -95,14 +95,14 @@ export const especiesRazasMap: Record<Especie, Raza[]> = {
 };
 
 export const propositosPorEspecie: Record<Especie, string[]> = {
-    Bovino: ["Leche", "Carne", "Doble Propósito", "Otro"],
-    Canino: ["Mascota", "Animal de compañía", "Cuidados", "Otro"],
-    Felino: ["Mascota", "Animal de compañía", "Cuidados", "Otro"],
-    Aviar: ["Producción de huevos", "Carne", "Otro"],
-    Equino: ["Trabajo", "Deporte", "Otro"],
-    Caprino: ["Leche", "Carne", "Otro"],
-    Ovino: ["Carne", "Lana", "Otro"],
-    Porcino: ["Carne", "Reproducción", "Otro"],
+    Bovino: ["Leche", "Carne", "Doble Propósito"],
+    Canino: ["Mascota", "Animal de compañía", "Cuidados"],
+    Felino: ["Mascota", "Animal de compañía", "Cuidados"],
+    Aviar: ["Producción de huevos", "Carne"],
+    Equino: ["Trabajo", "Deporte"],
+    Caprino: ["Leche", "Carne"],
+    Ovino: ["Carne", "Lana"],
+    Porcino: ["Carne", "Reproducción"],
 };
 
 export interface PregnancyRegister extends Register {

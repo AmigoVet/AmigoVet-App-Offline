@@ -133,7 +133,6 @@ const New: React.FC = () => {
       identificador: identificador || "Sin identificador",
       especie: especie === "Otro" ? customEspecie : especie,
       raza: raza === "Otro" ? customRaza : raza,
-      edad,
       nacimiento: fechaNacimiento,
       genero,
       peso,
@@ -245,16 +244,29 @@ const New: React.FC = () => {
         label="Fecha de Nacimiento"
         value={fechaNacimiento}
         onDateChange={(date) => {
-          setFechaNacimiento(date);
-          setEdad(calcularEdad(date)); 
+          if (!fechaNacimiento || date.getTime() !== fechaNacimiento.getTime()) { 
+            setFechaNacimiento(date);
+            setEdad(calcularEdad(date)); 
+          }
+          console.log("Seleccion de Fecha de nacimiento");
+          console.log(fechaNacimiento);
+          console.log(date);
         }}
         onAgeChange={(age) => {
-          setEdad(age);
-          setFechaNacimiento(null);
+          if (age !== edad) { 
+            setEdad(age);
+            setFechaNacimiento(null);
+          }
+        }}
+        onBirthDateCalculated={(birthDate) => {
+          if (!fechaNacimiento || birthDate!.getTime() !== fechaNacimiento.getTime()) { 
+            setFechaNacimiento(birthDate);
+          }
+          console.log("Fecha de nacimiento aproximada");
+          console.log(birthDate);
         }}
         ageValue={edad}
       />
-      <CustomInput label="Edad" value={edad} placeholder="Edad calculada o ingresada" editable={false} />
 
       <CustomInput miniText="Obligatorio" label="Peso" value={peso} onChangeText={setPeso} placeholder="Peso en kg" type="number" />
       <CustomInput miniText="Obligatorio" label="Color" value={color} onChangeText={setColor} placeholder="Color del animal" />

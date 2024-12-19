@@ -35,10 +35,7 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
         <Text style={GlobalStyles.textWhite}>Raza: <Text style={[GlobalStyles.textOrange]}>{animal?.raza}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Color: <Text style={[GlobalStyles.textOrange]}>{animal?.color}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Preñes: <Text style={[GlobalStyles.textOrange]}>{animal?.embarazada ? 'Sí' : 'No'}</Text></Text>
-        <Text style={GlobalStyles.textWhite}>Fecha Nacimiento: 
-          <Text style={[GlobalStyles.textOrange]}>
-            {formatearFecha(animal!.nacimiento ? animal!.nacimiento : '')}
-          </Text>
+        <Text style={GlobalStyles.textWhite}>Fecha Nacimiento: <Text style={[GlobalStyles.textOrange]}>{ formatearFecha(animal!.nacimiento ? animal!.nacimiento : '')}</Text>
         </Text>
       </View>
       {animal.notas && animal.notas.length > 0 && (

@@ -5,6 +5,7 @@ import {
   Image,
   Pressable,
   Text,
+  Dimensions,
 } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { getDynamicColors } from '../../assets/styles/colors';
@@ -18,6 +19,8 @@ export const DrawerContent = (props: any) => {
   const { user } = useAuthStore();
   const { isDarkTheme, toggleTheme } = useTheme(); 
   const colors = getDynamicColors(isDarkTheme); 
+  const { width} = Dimensions.get('window');
+  const styles = dymanycStyles(colors, width);
 
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={[styles.container, { backgroundColor: colors.fondo }]}>
@@ -71,7 +74,8 @@ export const DrawerContent = (props: any) => {
   );
 };
 
-const styles = StyleSheet.create({
+const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>, widht: number) =>
+  StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
@@ -92,7 +96,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   userName: {
-    fontSize: 16,
+    fontSize: widht * 0.045,
   },
   footer: {
     height: 50,
