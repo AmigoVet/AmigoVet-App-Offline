@@ -1,8 +1,14 @@
 import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
-import { staticColors } from '../../assets/styles/colors';
+import { getDynamicColors, staticColors } from '../../assets/styles/colors';
+import { useTheme } from '../../lib/context/ThemeContext';
 
 const FromDevora = () => {
+
+  const {isDarkTheme} = useTheme();
+  const colors = getDynamicColors(isDarkTheme);
+  const styles = dymanycStyles(colors);
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>BY Devora Inc</Text>
@@ -10,7 +16,8 @@ const FromDevora = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+  StyleSheet.create({
   container: {
     position: 'absolute', 
     bottom: 20, 
@@ -21,7 +28,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 13,
     fontWeight: 300,
-    color: staticColors.blanco,
+    color: colors.blanco,
   },
 });
 

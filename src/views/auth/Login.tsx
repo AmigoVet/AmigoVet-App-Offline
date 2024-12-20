@@ -1,27 +1,32 @@
-// **Librerías externas**
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
+import React, { useState, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Alert,
+  Dimensions,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  getAuth,
+} from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
+import { Modalize } from 'react-native-modalize';
 
-// **Interfaces y tipos**
 import { RootStackParamList } from '../Welcome';
-
-// **Configuración y almacenamiento**
 import { appFirebase, db } from '../../lib/utils/FirebaseConfig';
 import useAuthStore from '../../lib/store/authStore';
-
-// **Contexto y estilos**
 import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
-import { createNewStyles } from '../../assets/styles/NewStyles';
 import { createGlobalStyles } from '../../assets/styles/styles';
-
-// **Componentes locales**
 import { CustomInput, CustomButton } from '../../components/Customs';
 import { FromDevora, LogoContainer } from '../../components/global';
-
 
 type User = {
   nombre: string;
@@ -31,13 +36,16 @@ type User = {
 };
 
 const auth = getAuth(appFirebase);
-
 const { width, height } = Dimensions.get('window');
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
+  const [resetEmail, setResetEmail] = useState(''); // Estado para el correo de recuperación
+
+  const modalizeRef = useRef<Modalize>(null); // Referencia para Modalize
+
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
   const setUser = useAuthStore((state) => state.setUser);
 
@@ -51,7 +59,7 @@ const Login = () => {
       return;
     }
 
-    setLoading(true); // Inicia el loading
+    setLoading(true);
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -60,48 +68,40 @@ const Login = () => {
       const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
 
+      if (!userDoc.exists()) {
+        Alert.alert('Error', 'No se encontró la información del usuario.');
+        setLoading(false);
+        return;
+      }
+
       const userData = userDoc.data() as User;
       setUser(userData);
       Alert.alert('Iniciado sesión', `Bienvenido, ${userData.nombre}`);
     } catch (error) {
-      if (error instanceof Error && 'code' in error) {
-        const firebaseError = error as { code: string };
-        let errorMessage = 'Ups, algo salió mal. Inténtalo de nuevo.';
-
-        switch (firebaseError.code) {
-          case 'auth/invalid-credential':
-            errorMessage = 'Revisa que los datos ingresados sean correctos.';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'El correo electrónico no es válido.';
-            break;
-          case 'auth/user-disabled':
-            errorMessage = 'Esta cuenta ha sido deshabilitada.';
-            break;
-          case 'auth/user-not-found':
-            errorMessage = 'No se encontró un usuario con este correo.';
-            break;
-          case 'auth/wrong-password':
-            errorMessage = 'La contraseña es incorrecta.';
-            break;
-          default:
-            errorMessage = 'Verifica las crendenciales';
-            break;
-        }
-
-        Alert.alert('Ups, algo salió mal', errorMessage);
-      } else {
-        Alert.alert('Error', 'Se produjo un error desconocido.');
-      }
+      Alert.alert('Error', 'No se pudo iniciar sesión. Revisa tus credenciales.');
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
+  const handleResetPassword = async () => {
+    if (!resetEmail) {
+      Alert.alert('Campo vacío', 'Por favor, ingresa un correo electrónico.');
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      Alert.alert('Correo enviado', 'Se ha enviado un enlace para recuperar tu contraseña.');
+      modalizeRef.current?.close(); // Cierra el modal después de enviar el correo
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo enviar el correo. Revisa el correo ingresado.');
+    }
+  };
 
   const styles = StyleSheet.create({
     title: {
-      fontSize: width * 0.08, 
+      fontSize: width * 0.08,
       textAlign: 'center',
     },
     formContainer: {
@@ -119,20 +119,17 @@ const Login = () => {
       marginTop: height * 0.02,
       textAlign: 'center',
     },
-    messageContainer: {
-      marginTop: height * 0.03,
-      width: '90%',
+    modalContent: {
+      padding: 20,
+      alignItems: 'center',
     },
-    message: {
-      color: colors.rojo,
-      fontSize: width * 0.04,
-      textAlign: 'center',
+    modalTitle: {
+      fontSize: 20,
       fontWeight: 'bold',
+      marginBottom: 20,
+      color: colors.fondo,
     },
   });
-  
-
-
 
   return (
     <KeyboardAvoidingView
@@ -161,19 +158,39 @@ const Login = () => {
             <Pressable onPress={() => navigate('Register')}>
               <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
             </Pressable>
-          </View>
-          <View style={styles.messageContainer}>
-            <Text style={styles.message}>
-              Recuerda tener acceso a internet para crear tu usuario o ingresar a tu cuenta la primera vez.
-            </Text>
+            <Pressable onPress={() => modalizeRef.current?.open()}>
+              <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
+            </Pressable>
           </View>
         </View>
         <FromDevora />
       </ScrollView>
+
+      {/* Modalize para recuperación */}
+      <Modalize ref={modalizeRef} adjustToContentHeight>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Recuperar Contraseña</Text>
+          <CustomInput
+            label="Correo Electrónico"
+            placeholder="Correo electrónico"
+            value={resetEmail}
+            onChangeText={setResetEmail}
+          />
+          <CustomButton
+            onPress={handleResetPassword}
+            text="Enviar correo"
+            loading={false}
+            disabled={!resetEmail}
+          />
+          <CustomButton
+            onPress={() => modalizeRef.current?.close()}
+            text="Cancelar"
+            loading={false}
+          />
+        </View>
+      </Modalize>
     </KeyboardAvoidingView>
   );
 };
-
-
 
 export default Login;
