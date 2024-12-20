@@ -164,19 +164,18 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>, width: numbe
       padding: 10,
     },
     glassBlock: {
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      backgroundColor: colors.bgGlassBlock, 
       borderRadius: 15,
       padding: 15,
       marginVertical: 10,
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 10,
-      elevation: 8,
-      borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.3)',
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
       width: '100%',
     },
+    
+    
     speciesItem: {
       fontSize: 16,
       color: colors.blanco,
@@ -233,7 +232,9 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>, width: numbe
       fontWeight: 'bold',
       color: colors.blanco,
       marginVertical: 10,
+      backgroundColor: 'transparent', // Asegura que no haya fondo
     },
+    
   });
 
 export default Profile;

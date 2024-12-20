@@ -14,7 +14,8 @@ export const getDynamicColors  = (isDarkTheme: boolean) =>  {
     verdeDark: isDarkTheme ? staticColors.verdeDark : staticColors.verde,
     rowBgLight: isDarkTheme ? staticColors.rowBgDark : lightColors.rowBgLight,
     rowBgDark: isDarkTheme ? staticColors.rowBgLight : lightColors.rowBgDark,
-    bgLight: '#b0b0b0'
+    bgLight: '#b0b0b0',
+    bgGlassBlock: isDarkTheme ? staticColors.bgGlassBlock : lightColors.bgGlassBlock,
   }
 }
 
@@ -33,6 +34,7 @@ export const staticColors = {
   verdeDark: '#012d22',
   rowBgLight: '#888b8d',
   rowBgDark: '#625b5b',
+  bgGlassBlock: '#3b3934',
 }
 const lightColors = {
   negro: '#3d3d3d',
@@ -46,4 +48,5 @@ const lightColors = {
   rojoLight: '#C94F57', 
   rowBgLight: '#aeb0b2',
   rowBgDark: '#888b8d',
+  bgGlassBlock: '#eceff2',
 }
