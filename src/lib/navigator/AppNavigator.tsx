@@ -111,13 +111,13 @@ const BottomTabsNavigator = () => {
           let iconName: string;
 
           if (route.name === 'Privado') {
-            iconName = 'folder-outline';
+            iconName = 'home-outline';
           } else if (route.name === 'Perfil') {
             iconName = 'person-outline';
           } else if (route.name === 'Agregar') {
             iconName = 'add-circle-outline';
           } else if (route.name === 'Publico') {
-            iconName = 'wifi-outline';
+            iconName = 'storefront-outline';
           } else {
             iconName = 'alert-circle-outline';
           }
