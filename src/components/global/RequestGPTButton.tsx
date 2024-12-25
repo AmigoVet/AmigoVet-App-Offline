@@ -14,7 +14,7 @@ const RequestGPTButton = ({ onPress }: props) => {
     const styles = dymanycStyles(colors);
   return (
     <Pressable style={styles.button} onPress={() => onPress()}>
-        <CustomIcon name="star-half-outline" size={30} color={colors.verdeLight} />
+        <CustomIcon name="sparkles-sharp" size={30} color={colors.verdeLight} />
     </Pressable>
   )
 }

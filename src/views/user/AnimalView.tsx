@@ -9,7 +9,7 @@ import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } 
 // **Interfaces y tipos**
 import { Register } from "../../lib/interfaces/registers";
 import { RootStackParamList } from "../Welcome";
-import { InseminationRegister, PregnancyRegister, TreatmentRegister, AbortoRegister } from "../../lib/interfaces/animal";
+import { InseminationRegister, PregnancyRegister, TreatmentRegister, AbortoRegister, Animal } from "../../lib/interfaces/animal";
 
 // **Contexto y estilos**
 import { useTheme } from '../../lib/context/ThemeContext';
@@ -42,6 +42,7 @@ const AnimalView = () => {
   const { animal, isLoading, error } = useAnimals(id);
   const modalRef = useRef<Modalize>(null);
   const editModalRef = useRef<Modalize>(null);
+  const modalRefGpt = useRef<Modalize>(null);
   const confirmDeleteModalRef = useRef<Modalize>(null);
   const modalCreateRegister = useRef<Modalize>(null);
   const modalAddImage = useRef<Modalize>(null);
@@ -49,6 +50,7 @@ const AnimalView = () => {
   const [currentField, setCurrentField] = useState("");
   const [fieldValue, setFieldValue] = useState("");
   const [fieldImage, setFieldImage] = useState<number | null>(null);
+  const [fieldPeticionGpt, setFieldPeticionGpt] = useState("");
   const [registers, setRegisters] = useState<Register[]>([]);
   const [registerToDelete, setRegisterToDelete] = useState<Register | null>(null);
 
@@ -289,11 +291,24 @@ const AnimalView = () => {
     );
   }
 
+  // Peticion GPT
+  const handleGPTRequest = async (question: string, animal: Animal, registers: Register[]) => {
+    try {
+      const response = await gptRequest(question, animal, registers);
+      console.log(response);
+    } catch (error) {
+      console.error("Error al realizar la peticion GPT:", error);
+    }
+  };
+
+  const handelGptRequestModal = () => {
+    modalRefGpt.current?.open();
+  }
+
   return (
     <>
       <RequestGPTButton onPress={() => {
-        const response =  gptRequest("Como estas?")
-        console.log(response)
+        handelGptRequestModal();
       }} />
       <SwipeListView
         style={styles.swipeListContainer}
@@ -492,6 +507,28 @@ const AnimalView = () => {
           />
         </View>
       </Modalize>
+
+      { /* Modal para GPT Request */ }
+      <Modalize ref={modalRefGpt} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Hazle tu pregunta a tu veterinario personal!</Text>
+          <CustomInput 
+            label="Escribe aqui tu duda" 
+            placeholder="Mi animal se siente mal..." 
+            value={fieldPeticionGpt} 
+            onChangeText={setFieldPeticionGpt} 
+          />
+          <CustomButton 
+            text="Enviar" 
+            onPress={
+              () => {
+                handleGPTRequest(fieldPeticionGpt, animal!, registers);
+              }
+            } 
+          />
+          <CustomButton text="Cancelar" onPress={() => {modalRefGpt.current?.close();}} red/>
+        </View>
+      </Modalize>
     </>
   );
 };
@@ -517,7 +554,7 @@ const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>) =>
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 16,
-    color: colors.naranja,
+    color: colors.verdeLight,
     textAlign: "center",
   },
   modalActions: {
