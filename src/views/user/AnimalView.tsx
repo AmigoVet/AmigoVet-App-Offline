@@ -32,6 +32,8 @@ import { useRegisters } from "../../lib/hooks/useRegisters";
 
 // ** AsyncStorage**
 import { updateAnimalData, saveRegister, saveNoteAnimal, deleteNoteAnimal } from "../../lib/utils/asyncStorage";
+import RequestGPTButton from "../../components/global/RequestGPTButton";
+import { gptRequest } from "../../lib/functions/gptRequest";
 
 
 const AnimalView = () => {
@@ -143,10 +145,6 @@ const AnimalView = () => {
     modalAddImage.current?.close();
   };
   
-  
-  
-
-
   // Cargar registros del animal al montar el componente
   useEffect(() => {
     const fetchRegisters = async () => {
@@ -293,6 +291,10 @@ const AnimalView = () => {
 
   return (
     <>
+      <RequestGPTButton onPress={() => {
+        const response =  gptRequest("Como estas?")
+        console.log(response)
+      }} />
       <SwipeListView
         style={styles.swipeListContainer}
         ListHeaderComponent={
