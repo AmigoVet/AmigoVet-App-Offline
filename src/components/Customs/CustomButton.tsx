@@ -15,7 +15,7 @@ const CustomButton = ({ text, onPress, disabled = false, loading = false, red = 
     ? staticColors.blanco
     : red
     ? staticColors.rojo
-    : staticColors.naranja;
+    : staticColors.verde;
 
   const pressedStyle = disabled ? null : styles.pressedContainer;
 
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   pressedContainer: {
-    backgroundColor: staticColors.naranjaDark,
+    backgroundColor: staticColors.verdeDark,
   },
   text: {
     color: 'white',

@@ -108,7 +108,7 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
     inputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      borderColor: colors.naranja,
+      borderColor: colors.verdeLight,
       borderWidth: 1,
       borderRadius: 5,
       paddingHorizontal: 10,

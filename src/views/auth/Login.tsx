@@ -154,7 +154,12 @@ const Login = () => {
               onChangeText={setPassword}
               password
             />
-            <CustomButton onPress={handleLogin} text="Ingresar" loading={loading} disabled={loading} />
+            <CustomButton 
+              onPress={handleLogin} 
+              text="Ingresar" 
+              loading={loading} 
+              disabled={loading || email.trim() === '' || password.trim() === ''}
+            />
             <Pressable onPress={() => navigate('Register')}>
               <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
             </Pressable>
@@ -186,6 +191,7 @@ const Login = () => {
             onPress={() => modalizeRef.current?.close()}
             text="Cancelar"
             loading={false}
+            red
           />
         </View>
       </Modalize>
