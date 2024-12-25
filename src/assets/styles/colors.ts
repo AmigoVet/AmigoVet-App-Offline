@@ -47,7 +47,7 @@ export const staticColors = {
 
   rowBgLight: '#888b8d',
   rowBgDark: '#625b5b',
-  bgGlassBlock: '#3b3934',
+  bgGlassBlock: '#464644',
 }
 const lightColors = {
   negro: '#3d3d3d',
@@ -61,5 +61,5 @@ const lightColors = {
   rojoLight: '#C94F57', 
   rowBgLight: '#aeb0b2',
   rowBgDark: '#888b8d',
-  bgGlassBlock: '#eceff2',
+  bgGlassBlock: '#f8f6f4',
 }

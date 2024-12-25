@@ -17,7 +17,7 @@ const ModalButton = ({ text, onPress, actualData, red }: ModalButtonProps) => {
         paddingHorizontal: 10,
         marginVertical: 8,
         width: '70%',
-        backgroundColor: red ? staticColors.rojo : staticColors.naranja,
+        backgroundColor: red ? staticColors.rojo : staticColors.verde,
         borderRadius: 8,
       },
       modalOptionText: {
