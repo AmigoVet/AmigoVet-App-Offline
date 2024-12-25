@@ -33,7 +33,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onVa
     },
     pickerContainer: {
       borderWidth: 1,
-      borderColor: colors.naranja,
+      borderColor: colors.verdeLight,
       borderRadius: 8,
       overflow: "hidden",
       backgroundColor: colors.fondo,

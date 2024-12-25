@@ -55,10 +55,9 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
     table: {
       width: '100%',
       borderWidth: 1,
-      borderColor: colors.naranja,
+      borderColor: colors.verde,
       borderRadius: 5,
       overflow: 'hidden',
-      backgroundColor: colors.fondo, // Fondo dinámico
     },
     row: {
       flexDirection: 'row',
@@ -70,19 +69,18 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       padding: 10,
       textAlign: 'center',
       fontWeight: 'bold',
-      color: colors.naranja,
-      borderBottomColor: colors.naranja,
+      color: colors.verdeLight,
+      borderBottomColor: colors.verde,
       borderBottomWidth: 1,
-      backgroundColor: colors.fondo, 
+      backgroundColor: colors.verdeDark, 
     },
     cell: {
       flex: 1,
       padding: 10,
-      borderColor: colors.naranja,
+      borderColor: colors.verde,
       borderRightWidth: 1,
       justifyContent: 'center',
       alignItems: 'center', 
-      backgroundColor: colors.fondo, 
     },
     text: {
       textAlign: 'center',

@@ -63,7 +63,7 @@ const Profile = () => {
   if (loading) {
     return (
       <View style={[GlobalStyles.container, styles.profileContainer]}>
-        <ActivityIndicator size="large" color={colors.naranja} />
+        <ActivityIndicator size="large" color={colors.verdeLight} />
         <Text style={GlobalStyles.label}>Cargando información...</Text>
       </View>
     );
@@ -127,8 +127,8 @@ const Profile = () => {
             {speciesCount ? (
               Object.entries(speciesCount).map(([species, count]) => (
                 <Text key={species} style={styles.speciesItem}>
-                  De la especie <Text style={{ color: colors.naranja }}>{species}</Text> tienes{' '}
-                  <Text style={{ color: colors.naranja }}>{count}</Text> animales
+                  De la especie <Text style={{ color: colors.verde }}>{species}</Text> tienes{' '}
+                  <Text style={{ color: colors.verde }}>{count}</Text> animales
                 </Text>
               ))
             ) : (
@@ -139,7 +139,7 @@ const Profile = () => {
           {/* Bloque de cantidad de animales */}
           <View style={styles.glassBlock}>
             <Text style={[GlobalStyles.subTitle, { fontSize: fontSubTitle }]}>Cantidad de animales registrados</Text>
-            <Text style={styles.animalsCount}>Aun puedes registrar <Text style={{ color: colors.naranja }}>{30 - totalAnimals}</Text> animales</Text>
+            <Text style={styles.animalsCount}>Aun puedes registrar <Text style={{ color: colors.verde }}>{30 - totalAnimals}</Text> animales</Text>
           </View>
 
           {/* Botones de acción */}
@@ -186,7 +186,7 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>, width: numbe
       height: 100,
       borderRadius: 50,
       marginBottom: 20,
-      borderColor: colors.naranja,
+      borderColor: colors.verde,
       borderWidth: 1,
       alignSelf: 'center',
     },
@@ -201,7 +201,7 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>, width: numbe
     tableHeader: {
       flexDirection: 'row',
       borderBottomWidth: 1,
-      borderBottomColor: colors.naranja,
+      borderBottomColor: colors.verde,
       paddingBottom: 5,
     },
     tableHeaderText: {

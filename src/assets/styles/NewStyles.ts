@@ -21,7 +21,7 @@ export const createNewStyles = (isDarkTheme: boolean) => {
     imageContainer: {
       alignItems: "center",
       marginBottom: 20,
-      borderColor: colors.naranja,
+      borderColor: colors.verdeLight,
       borderWidth: 1,
       borderRadius: 10,
       paddingHorizontal: 5,

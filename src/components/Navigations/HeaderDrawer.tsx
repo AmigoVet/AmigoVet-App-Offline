@@ -19,7 +19,7 @@ const HeaderDrawer = () => {
         <CustomIcon name="menu" size={30} color={staticColors.blancoLight} />
       </Pressable>
       <Image
-        source={require('../../assets/img/HeaderLogo1.png')}
+        source={require('../../assets/img/HeaderLogo.png')}
         style={styles.logo}
         resizeMode="contain"
       />

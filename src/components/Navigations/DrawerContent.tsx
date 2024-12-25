@@ -27,19 +27,18 @@ export const DrawerContent = (props: any) => {
       {/* Imagen */}
       <View>
         <Image
-          source={require('../../assets/img/HeaderLogo1.png')}
+          source={require('../../assets/img/HeaderLogo.png')}
           style={{
             alignSelf: 'center',
             width: '90%',
-            margin: 0,
-            marginVertical: -20,
+            height: width*0.3,
           }}
           resizeMode="contain"
         />
       </View>
 
       {/* Información del usuario */}
-      <View style={[styles.userInfo, { borderColor: colors.naranja }]}>
+      <View style={[styles.userInfo, { borderColor: colors.verde }]}>
         <View>
           <Image
             source={require('../../assets/img/veterinario.png')}
@@ -66,7 +65,7 @@ export const DrawerContent = (props: any) => {
           <CustomIcon
             name={isDarkTheme ? 'sunny-outline' : 'moon-outline'}
             size={30}
-            color={isDarkTheme ? colors.naranja : colors.naranja}
+            color={isDarkTheme ? colors.naranja : colors.verde}
           />
         </Pressable>
       </View>
@@ -96,7 +95,7 @@ const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>, widht: numbe
     marginRight: 10,
   },
   userName: {
-    fontSize: widht * 0.04,
+    fontSize: widht * 0.035,
   },
   footer: {
     height: 50,

@@ -97,7 +97,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             <Text style={styles.dateText}>
               {value ? value.toISOString().split("T")[0] : "Selecciona una fecha"}
             </Text>
-            <CustomIcon name="calendar-outline" size={20} color={colors.naranja} />
+            <CustomIcon name="calendar-outline" size={20} color={colors.verde} />
           </TouchableOpacity>
           {value && (
             <Text style={styles.ageLabel}>{`Edad aproximada: ${calculateAgeText(value)}`}</Text>
@@ -160,7 +160,7 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      borderColor: colors.naranja,
+      borderColor: colors.verdeLight,
       borderWidth: 1,
       borderRadius: 5,
       padding: 10,
@@ -173,12 +173,12 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       marginTop: 10,
     },
     switchText: {
-      color: colors.naranja,
+      color: colors.verde,
       fontSize: 14,
       textDecorationLine: "underline",
     },
     ageInput: {
-      borderColor: colors.naranja,
+      borderColor: colors.verdeLight,
       borderWidth: 1,
       borderRadius: 5,
       padding: 10,

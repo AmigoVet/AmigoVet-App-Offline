@@ -10,6 +10,7 @@ import { Animal } from '../../lib/interfaces/animal'
 import { CustomInput } from '../Customs'
 import { calcularEdad } from '../../lib/functions/CalcularEdad'
 import { formatearFecha } from '../../lib/functions/FormateraFecha'
+import { getDynamicColors } from '../../assets/styles/colors'
 
 
 interface DataViewAnimalProps {
@@ -20,6 +21,8 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
 
   const { isDarkTheme } = useTheme();
   const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const colors = getDynamicColors(isDarkTheme);
+  const styles = createStyles(colors);
   
   return (
   <View>
@@ -96,7 +99,8 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
 }
 
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+  StyleSheet.create({
     container: {
       flexGrow: 1,
       padding: 16,
@@ -107,6 +111,12 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between', 
       alignItems: 'center', 
       marginBottom: 10, 
+      // backgroundColor: colors.verdeDark,
+      borderRadius: 15,
+      borderWidth: 0.5,
+      borderColor: colors.verde,
+      paddingHorizontal: 20,
+      paddingVertical: 5,
     },
     dataContainer: {
       marginVertical: 10,

@@ -40,7 +40,7 @@ const HomeScreenWithDrawerNavigator = () => {
       initialRouteName="Principal"
       screenOptions={{
         header: () => <HeaderDrawer />,
-        drawerActiveTintColor: colors.naranja, 
+        drawerActiveTintColor: colors.verde, 
         drawerInactiveTintColor: colors.blanco, 
         drawerStyle: {
           backgroundColor: colors.fondoDark, 
@@ -139,7 +139,7 @@ const BottomTabsNavigator = () => {
             </View>
           );
         },
-        tabBarActiveTintColor: colors.naranja,
+        tabBarActiveTintColor: colors.verdeLight,
         tabBarInactiveTintColor: staticColors.blancoLight,
         tabBarStyle: {
           backgroundColor: colors.fondoDark,
@@ -170,12 +170,12 @@ const AppNavigator = () => {
       try {
         const storedUser = await AsyncStorage.getItem('user');
         if (storedUser) {
-          setUser(JSON.parse(storedUser)); // Carga el usuario al estado global
+          setUser(JSON.parse(storedUser));
         }
       } catch (error) {
         console.error('Error al cargar el usuario desde AsyncStorage:', error);
       } finally {
-        setLoading(false); // Oculta el estado de carga
+        setLoading(false); 
       }
     };
 
@@ -183,7 +183,7 @@ const AppNavigator = () => {
   }, [setUser]);
 
   if (loading) {
-    return null; // Puedes agregar un indicador de carga aquí
+    return null; 
   }
 
   return (

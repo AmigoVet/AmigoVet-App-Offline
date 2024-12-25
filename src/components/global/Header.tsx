@@ -36,7 +36,7 @@ const Header = () => {
         <CustomIcon name="menu" size={30} color={staticColors.blancoLight} />
       </Pressable>
       <Image 
-        source={require('../../assets/img/HeaderLogo1.png')} 
+        source={require('../../assets/img/HeaderLogo.png')} 
         style={{ 
           width: 100, 
           alignSelf: 'center',

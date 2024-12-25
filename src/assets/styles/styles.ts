@@ -22,12 +22,12 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
     subTitle: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: colors.naranja,
+      color: colors.verde,
     },
     textOrange: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: colors.naranja,
+      color: colors.verde,
     },
     textWhite: {
       fontSize: 18,
@@ -43,7 +43,7 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
       fontSize: 16,
       fontWeight: '500',
       marginBottom: 5,
-      color: colors.naranja,
+      color: colors.verde,
     },
     errorContainer: {
       flex: 1,
@@ -66,7 +66,7 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
     note: {
       fontSize: 13,
       fontWeight: '400',
-      color: colors.naranja,
+      color: colors.verde,
     },
   });
 };

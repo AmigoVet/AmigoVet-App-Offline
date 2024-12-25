@@ -10,7 +10,7 @@ const HomePublic = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.fondo }]}>
-      <Text style={[styles.title, { color: colors.naranja }]}>¡Llegara Pronto!</Text>
+      <Text style={[styles.title, { color: colors.verdeLight }]}>¡Llegara Pronto!</Text>
       <Text style={[styles.description, { color: colors.blanco }]}>
         Estamos trabajando para traerte una nueva sección donde podrás ver y publicar tus animales tanto para venta como para adopción.
       </Text>
