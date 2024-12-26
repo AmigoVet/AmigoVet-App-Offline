@@ -4,7 +4,7 @@ import { ScrollView, Text, Alert, TouchableOpacity, View } from "react-native";
 import {launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions} from "react-native-image-picker";
 
 // **Interfaces y tipos**
-import { especiesRazasMap, generos, propositosPorEspecie, Especie,} from "../../lib/interfaces/animal";
+import { especiesRazasMap, generos, propositosPorEspecie, Especie, Raza,} from "../../lib/interfaces/animal";
 
 // **Contexto y estilos**
 import useAuthStore from "../../lib/store/authStore";
@@ -20,6 +20,8 @@ import { CustomImage, CustomIcon, CustomInput, CustomSelect, CustomDatePicker, C
 import { calcularEdad } from "../../lib/functions/CalcularEdad";
 import { saveAnimalData } from "../../lib/functions/GuardarAnimal";
 import { getRegisteredAnimalsCount } from "../../lib/utils/asyncStorage";
+import { setDataAnimal } from "../../lib/db/setDataAnimal";
+import { saveImagePermanently } from "../../lib/functions/saveImage";
 
 
 const New: React.FC = () => {
@@ -102,55 +104,55 @@ const New: React.FC = () => {
     });
   };
 
-  const handleSubmit = () => {
-    if (totalAnimals >= 30) {
-      Alert.alert(
-        "Error",
-        "No puedes registrar más de 50 animales"
-      );
-      return;
+  const handleSubmit = async () => {
+    if (totalAnimals >= 50) {
+        Alert.alert("Error", "No puedes registrar más de 50 animales");
+        return;
     }
-    if (
-      !nombre ||
-      (!especie && !customEspecie) ||
-      (!raza && !customRaza) ||
-      !genero ||
-      !peso ||
-      !descripcion ||
-      !image
-    ) {
-      Alert.alert(
-        "Error",
-        "Por favor, completa todos los campos obligatorios antes de guardar."
-      );
-      return;
+    
+    if (!nombre || (!especie && !customEspecie) || (!raza && !customRaza) ||
+        !genero || !peso || !descripcion || !image) {
+        Alert.alert("Error", "Por favor, completa todos los campos obligatorios antes de guardar.");
+        return;
     }
-  
-    const animal = {
-      ownerId: user?.userId,
-      id: Math.random().toString(36).substr(2, 9),
-      nombre,
-      identificador: identificador || "Sin identificador",
-      especie: especie === "Otro" ? customEspecie : especie,
-      raza: raza === "Otro" ? customRaza : raza,
-      nacimiento: fechaNacimiento,
-      genero,
-      peso,
-      color,
-      proposito: proposito === "Otro" ? customProposito : proposito,
-      ubicacion,
-      descripcion,
-      image,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      embarazada: false,
-    };
-  
-    saveAnimalData(animal);
-  
-    Alert.alert("Éxito", "Animal registrado correctamente");
-    resetForm();
-  };
+
+    try {
+        const savedImagePath = await saveImagePermanently(image);
+        if (!savedImagePath) {
+            Alert.alert("Error", "No se pudo guardar la imagen");
+            return;
+        }
+
+        await setDataAnimal({
+            ownerId: user!.userId,
+            id: Math.random().toString(36).substr(2, 9),
+            nombre,
+            identificador: identificador || "Sin identificador",
+            especie: especie === "Otro" ? (customEspecie as Especie) : (especie as Especie),
+            raza: raza === "Otro" ? (customRaza as Raza) : (raza as Raza),
+            nacimiento: fechaNacimiento ? fechaNacimiento.toISOString() : "",
+            genero: genero as "Macho" | "Hembra",
+            peso,
+            color,
+            proposito: proposito === "Otro" ? customProposito : proposito,
+            ubicacion,
+            descripcion,
+            image: savedImagePath,
+            image2: undefined,
+            image3: undefined,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            embarazada: false,
+        });
+
+        Alert.alert("Éxito", "Animal registrado correctamente");
+        resetForm();
+    } catch (error) {
+        console.error('Error saving animal:', error);
+        Alert.alert("Error", "No se pudo guardar el animal");
+    }
+};
+
   
   const resetForm = () => {
     setNombre("");

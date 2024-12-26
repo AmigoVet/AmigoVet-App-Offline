@@ -14,8 +14,8 @@ export interface Animal {
     color: string;
     descripcion: string;
     image: string;
-    image2: string;
-    image3: string;
+    image2?: string;
+    image3?: string;
     proposito: string; 
     ubicacion: string;
     created_at: string;
