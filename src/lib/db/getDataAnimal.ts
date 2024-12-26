@@ -13,7 +13,6 @@ export const getDataAnimal = (ownerId: string): Promise<Animal[]> => {
                     
                     for (let i = 0; i < len; i++) {
                         const item = result.rows.item(i);
-                        console.log('Raw item from DB:', item); // Debugging
                         animals.push({
                             ...item,
                             embarazada: Boolean(item.embarazada),
@@ -22,7 +21,6 @@ export const getDataAnimal = (ownerId: string): Promise<Animal[]> => {
                             image3: item.image3 || ''
                         });
                     }
-                    console.log('Processed animals:', animals); // Debugging
                     resolve(animals);
                 },
                 (_, error) => {
@@ -33,4 +31,11 @@ export const getDataAnimal = (ownerId: string): Promise<Animal[]> => {
             );
         });
     });
+};
+
+export const getLenghtAnimal = async (ownerId: string): Promise<number> => {
+    const animals = await getDataAnimal(ownerId);
+    const len = animals.length;
+
+    return len
 };
