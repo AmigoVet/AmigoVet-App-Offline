@@ -34,6 +34,7 @@
     "react-native-responsive-fontsize": "0.5.1",
     "react-native-safe-area-context": "5.0.0",
     "react-native-screens": "4.3.0",
+    "react-native-sqlite-storage": "^6.0.1",
     "react-native-svg": "15.10.1",
     "react-native-svg-transformer": "1.5.0",
     "react-native-swipe-list-view": "3.2.9",
