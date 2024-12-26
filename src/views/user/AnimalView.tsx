@@ -34,12 +34,12 @@ import { useRegisters } from "../../lib/hooks/useRegisters";
 import { updateAnimalData, saveRegister, saveNoteAnimal, deleteNoteAnimal } from "../../lib/utils/asyncStorage";
 import RequestGPTButton from "../../components/global/RequestGPTButton";
 import { gptRequest } from "../../lib/functions/gptRequest";
+import { getDataAnimal, getDataAnimalbyId } from "../../lib/db/getDataAnimal";
 
 
 const AnimalView = () => {
   const route = useRoute<RouteProp<RootStackParamList, "AnimalView">>();
   const { id } = route.params;
-  const { animal, isLoading, error } = useAnimals(id);
   const modalRef = useRef<Modalize>(null);
   const editModalRef = useRef<Modalize>(null);
   const modalRefGpt = useRef<Modalize>(null);
@@ -53,6 +53,7 @@ const AnimalView = () => {
   const [fieldPeticionGpt, setFieldPeticionGpt] = useState("");
   const [registers, setRegisters] = useState<Register[]>([]);
   const [registerToDelete, setRegisterToDelete] = useState<Register | null>(null);
+  const [animal, setAnimal] = useState<Animal | null>(null);
 
   const { isDarkTheme } = useTheme();
   const colors = getDynamicColors(isDarkTheme);
@@ -149,12 +150,29 @@ const AnimalView = () => {
   
   // Cargar registros del animal al montar el componente
   useEffect(() => {
-    const fetchRegisters = async () => {
-      const loadedRegisters = await useRegisters(id);
-      setRegisters(loadedRegisters);
-    };
-    fetchRegisters();
+    if (id) {
+      const fetchRegisters = async () => {
+        const loadedRegisters = await useRegisters(id);
+        setRegisters(loadedRegisters);
+      };
+      fetchRegisters();
+    }
   }, [id]);
+  
+  useEffect(() => {
+    if (id) {
+      const fetchAnimal = async () => {
+        const loadedAnimal = await getDataAnimalbyId(id);
+        setAnimal(loadedAnimal);
+      };
+      fetchAnimal();
+    }
+  }, [id]);
+
+  if (!animal) {
+    return <Text>Cargando datos del animal...</Text>;
+  }
+  
 
   // Abre el modal con las opciones
   const handleOpenModal = () => {
@@ -275,21 +293,6 @@ const AnimalView = () => {
       confirmDeleteModalRef.current?.close();
     }
   };
-
-  if (isLoading) {
-    return (
-      <View style={GlobalStyles.loadingContainer}>
-        <Text>Cargando información del animal...</Text>
-      </View>
-    );
-  }
-  if (error) {
-    return (
-      <View style={GlobalStyles.errorContainer}>
-        <Text>{error}</Text>
-      </View>
-    );
-  }
 
   // Peticion GPT
   const handleGPTRequest = async (question: string, animal: Animal, registers: Register[]) => {

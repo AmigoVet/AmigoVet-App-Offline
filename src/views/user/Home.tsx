@@ -43,7 +43,6 @@ const Home = () => {
         const animales = await getDataAnimal(String(user?.userId));
         const lenghtAnimals = await getLenghtAnimal(user!.userId)
         setTotalAnimals(lenghtAnimals);
-        console.log(lenghtAnimals)
         setAnimals(animales);
     };
 
