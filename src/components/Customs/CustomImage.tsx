@@ -1,5 +1,6 @@
 import { View, Text, Image, Dimensions, StyleProp, ImageStyle } from 'react-native';
 import React from 'react'
+import { checkFileExists } from '../../lib/functions/checkFileExists';
 
 interface CustomImageProps {
     source: string;
@@ -11,8 +12,7 @@ interface CustomImageProps {
 const CustomImage = ({ source, full, style }: CustomImageProps) => {
 
   const windowWidth = Dimensions.get('window').width;
-
-
+  checkFileExists(source)
   return (
     <Image 
         source={{ uri: `file://${source}` }} 

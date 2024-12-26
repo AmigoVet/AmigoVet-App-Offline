@@ -1,15 +1,6 @@
-import SQLite from 'react-native-sqlite-storage';
+import { db } from './db';
 
 export const createAnimalTable = () => {
-    const db = SQLite.openDatabase(
-        {
-            name: 'test.db',
-            location: 'default',
-        },
-        () => { console.log('Database opened successfully'); },
-        (error) => { console.log(error); }
-    );
-
     db.transaction((tx) => {
         tx.executeSql(
             `CREATE TABLE IF NOT EXISTS Animal (
@@ -19,7 +10,6 @@ export const createAnimalTable = () => {
                 nombre TEXT,
                 especie TEXT,
                 raza TEXT,
-                edad TEXT,
                 nacimiento TEXT,
                 genero TEXT,
                 peso TEXT,
