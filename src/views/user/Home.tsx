@@ -21,6 +21,7 @@ import useAuthStore from '../../lib/store/authStore';
 
 // **Componentes locales**
 import { AnimalCard } from '../../components/AnimalDataView';
+import { createAnimalTable } from '../../lib/db/createTable';
 
 
 const Home = () => {
@@ -37,6 +38,7 @@ const Home = () => {
 
     const [totalAnimals, setTotalAnimals] = useState<number>(0);
     useEffect(() => {
+        createAnimalTable();
     const fetchAnimalCount = async () => {
         const count = await getRegisteredAnimalsCount(user!.userId);
         setTotalAnimals(count);
