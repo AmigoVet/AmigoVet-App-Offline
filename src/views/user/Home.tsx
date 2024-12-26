@@ -22,6 +22,7 @@ import useAuthStore from '../../lib/store/authStore';
 // **Componentes locales**
 import { AnimalCard } from '../../components/AnimalDataView';
 import { createAnimalTable } from '../../lib/db/createTable';
+import { getDataAnimal, getLenghtAnimal } from '../../lib/db/getDataAnimal';
 
 
 const Home = () => {
@@ -37,38 +38,13 @@ const Home = () => {
     const styles = dymanycStyles(colors);
 
     const [totalAnimals, setTotalAnimals] = useState<number>(0);
-    useEffect(() => {
-        createAnimalTable();
-    const fetchAnimalCount = async () => {
-        const count = await getRegisteredAnimalsCount(user!.userId);
-        setTotalAnimals(count);
-    };
-
-    fetchAnimalCount();
-    }, [animals]);
-
 
     const loadAnimal = async () => {
-        const animales = await loadData(String(user?.userId));
-
-        const validatedAnimals = await Promise.all(
-            animales.map(async (animal: Animal) => {
-                if (animal.image) {
-                    try {
-                        const fileExists = await RNFS.exists(animal.image);
-                        if (!fileExists) {
-                            animal.image = '';
-                        }
-                    } catch (error) {
-                        console.error(`Error verificando imagen para ${animal.nombre}:`, error);
-                        animal.image = '';
-                    }
-                }
-                return animal;
-            })
-        );
-
-        setAnimals(validatedAnimals);
+        const animales = await getDataAnimal(String(user?.userId));
+        const lenghtAnimals = await getLenghtAnimal(user!.userId)
+        setTotalAnimals(lenghtAnimals);
+        console.log(lenghtAnimals)
+        setAnimals(animales);
     };
 
     useEffect(() => {

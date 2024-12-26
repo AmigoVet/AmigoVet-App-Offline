@@ -12,7 +12,7 @@ interface CustomImageProps {
 const CustomImage = ({ source, full, style }: CustomImageProps) => {
 
   const windowWidth = Dimensions.get('window').width;
-  checkFileExists(source)
+  // checkFileExists(source)
   return (
     <Image 
         source={{ uri: `file://${source}` }} 

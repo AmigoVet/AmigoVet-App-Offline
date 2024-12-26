@@ -28,7 +28,6 @@ export const setDataAnimal = (animal: Animal): Promise<void> => {
                     animal.embarazada ? 1 : 0,
                 ],
                 (_, result) => {
-                    console.log('Animal guardado:', animal);
                     resolve();
                 },
                 (_, error) => {

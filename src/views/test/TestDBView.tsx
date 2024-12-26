@@ -17,7 +17,6 @@ const TestDBView = () => {
         const fetchData = async () => {
             try {
                 const animalData = await getDataAnimal(user!.userId);
-                console.log('Fetched animals:', animalData);
                 setAnimals(animalData);
             } catch (error) {
                 console.error('Error loading animals:', error);
