@@ -1,3 +1,4 @@
+import { updateAnimal } from "../../../lib/db/animals/updateDataAnimal";
 import { setDataRegister } from "../../../lib/db/registers/setDataRegister";
 import { calculateDueDate } from '../../../lib/functions/CalcularFechaParto';
 import { PregnancyRegister, TreatmentRegister, InseminationRegister, AbortoRegister, Especie } from "../../../lib/interfaces/animal";
@@ -33,7 +34,13 @@ export const handleCreateRegister = async (field: string, fieldValue: string, an
           fechaPartoEstimada: calculateDueDate(animalSpecies, new Date()),
         };
         // await saveNoteAnimal(animalId, { nota: `Posible fecha de parto: ${actualDay}` });
-        // await updateAnimalData(id, 'embarazada', true);
+        try {
+          await updateAnimal(animalId, {
+            embarazada: true,
+          });
+        } catch (error) {
+          console.error("Error al cambiar el estado de preñes:", error);
+        }
       } else if (field === 'Registro Tratamiento') {
         specificRegister = {
           ...baseRegister,
@@ -46,14 +53,26 @@ export const handleCreateRegister = async (field: string, fieldValue: string, an
           semenProveedor: fieldValue,
         };
         // await saveNoteAnimal(animal!.id, { nota: `Posible fecha de parto: ${actualDay}` });
-        // await updateAnimalData(id, 'embarazada', true);
+        try {
+          await updateAnimal(animalId, {
+            embarazada: true,
+          });
+        } catch (error) {
+          console.error("Error al cambiar el estado de preñes:", error);
+        }
       } else if (field === 'Registro Aborto') {
         specificRegister = {
           ...baseRegister,
           fechaAborto: fieldValue,
         };
         // await saveNoteAnimal(animal!.id, { nota: `Hubo un aborto el : ${actualDay}` });
-        // await updateAnimalData(id, 'embarazada', false);
+        try {
+          await updateAnimal(animalId, {
+            embarazada: false,
+          });
+        } catch (error) {
+          console.error("Error al cambiar el estado de preñes:", error);
+        }
   
         // Elimina la nota de "Posible fecha de parto:"
         // await deleteNoteAnimal(animal!.id, 'Posible fecha de parto:');
