@@ -15,8 +15,10 @@ import { createGlobalStyles } from '../../assets/styles/styles';
 
 // **Componentes locales**
 import { CustomButton } from '../../components/Customs';
-import { getLastThreeRegisters, getRegisteredAnimalsCount, getSpeciesCount } from '../../lib/utils/asyncStorage';
 import { formatPhoneNumber } from '../../lib/functions/FormaterNumberPhone';
+import { getRegisteredAnimalsCount } from '../../lib/db/stats/getRegisteredAnimalsCount';
+import { getLastThreeRegisters } from '../../lib/db/stats/getLastThreeRegisters';
+import { getSpeciesCount } from '../../lib/db/stats/getSpeciesCount';
 
 const Profile = () => {
   const { user, loadUser, clearUser } = useAuthStore();
