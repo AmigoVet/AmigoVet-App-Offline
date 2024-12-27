@@ -39,6 +39,7 @@ import { getDataRegisters } from "../../lib/db/registers/getDataRegister";
 import { setDataRegister } from "../../lib/db/registers/setDataRegister";
 import { handleCreateRegister } from "./functions/handleCreateRegister";
 import { handleSave } from "./functions/handleSave";
+import { saveImagePermanently } from "../../lib/functions/saveImage";
 
 
 const AnimalView = () => {
@@ -127,29 +128,19 @@ const AnimalView = () => {
     );
   };
   const saveImage = async (newImage: string) => {
+    const savedImagePath = await saveImagePermanently(newImage);
     // Actualizar la imagen en el AsyncStorage
     if (fieldImage === 1) {
-      await updateAnimalData(id, "image", newImage);
+      await handleSave( "image",  savedImagePath!, id,() => {modalAddImage.current?.close();});
       animal!.image = newImage;
     } else if (fieldImage === 2) {
-      await updateAnimalData(id, "image2", newImage);
+      await handleSave( "image2", savedImagePath!, id,() => {modalAddImage.current?.close();});
       animal!.image2 = newImage;
     } else if (fieldImage === 3) {
-      await updateAnimalData(id, "image3", newImage);
+      await handleSave( "image3", savedImagePath!, id,() => {modalAddImage.current?.close();});
       animal!.image3 = newImage;
     }
-  
-    // Crear un registro
-    await saveRegister({
-      id: Math.random().toString(36).substr(2, 9),
-      animalId: id,
-      comentario: "Actualización de imagen",
-      accion: "Actualización de Imagen",
-      fecha: new Date().toISOString(),
-    });
-  
-    Alert.alert("Imagen actualizada", "La imagen ha sido guardada correctamente.");
-    modalAddImage.current?.close();
+    
   };
   
   // Cargar Registros y datos del animal
@@ -398,7 +389,6 @@ const AnimalView = () => {
             text="Cancelar"
             onPress={() => {
               editModalRef.current?.close();
-              Alert.alert("Datos actualizados correctamente")
               setCurrentField("");
               setFieldValue("");
             }}
