@@ -38,6 +38,7 @@ import { getDataAnimal, getDataAnimalbyId } from "../../lib/db/getDataAnimal";
 import { getDataRegisters } from "../../lib/db/registers/getDataRegister";
 import { setDataRegister } from "../../lib/db/registers/setDataRegister";
 import { handleCreateRegister } from "./functions/handleCreateRegister";
+import { handleSave } from "./functions/handleSave";
 
 
 const AnimalView = () => {
@@ -151,7 +152,7 @@ const AnimalView = () => {
     modalAddImage.current?.close();
   };
   
-  // Cargar registros del animal al montar el componente
+  // Cargar Registros y datos del animal
   useEffect(() => {
     if (id) {
       const fetchRegisters = async () => {
@@ -196,31 +197,7 @@ const AnimalView = () => {
     modalRef.current?.close();
     modalCreateRegister.current?.open();
   };
-  const handleSave = async () => {
-    if (currentField) {
-      const generateId = () => Math.random().toString(36).substr(2, 9);
 
-      const register: Register = {
-        id: generateId(),
-        animalId: id,
-        comentario: fieldValue,
-        accion: `Cambio de ${currentField}`,
-        fecha: new Date().toISOString(),
-      };
-
-      await updateAnimalData(id, currentField, fieldValue);
-      await updateAnimalData(id, "updated_at", new Date().toISOString());
-      await setDataRegister(register);
-
-
-      // Actualizar registros en el estado
-      setRegisters((prev) => [...prev, register]);
-
-      editModalRef.current?.close();
-      setCurrentField("");
-      setFieldValue("");
-    }
-  };
 
 
   const handleDeletePrompt = (item: Register) => {
@@ -312,7 +289,7 @@ const AnimalView = () => {
       </Modalize>
 
       {/* Modal de Opciones */}
-      <Modalize ref={modalRef} modalHeight={650} modalStyle={{ backgroundColor: colors.fondo }}>
+      <Modalize ref={modalRef} modalHeight={650} modalStyle={{ backgroundColor: colors.fondo }}> 
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>¿Qué registro deseas realizar?</Text>
           <ModalButton 
@@ -344,7 +321,6 @@ const AnimalView = () => {
             onPress={() => handleEditField("peso", animal!.peso)} 
           />
           <ModalButton text="Editar Propósito" actualData={animal!.proposito} onPress={() => handleEditField("proposito", animal!.proposito)} />
-          <ModalButton text="Editar Edad" actualData={animal!.edad} onPress={() => handleEditField("edad", calcularEdad(animal!.nacimiento))} />
           <ModalButton text="Editar Ubicación" actualData={animal!.ubicacion} onPress={() => handleEditField("ubicacion", animal!.ubicacion)} />
           <ModalButton text="Editar Descripción" actualData={animal!.descripcion} onPress={() => handleEditField("descripcion", animal!.descripcion)} />
 
@@ -415,11 +391,14 @@ const AnimalView = () => {
             value={fieldValue} 
             onChangeText={setFieldValue} 
           />
-          <CustomButton text="Guardar" onPress={handleSave} />
+          <CustomButton text="Guardar" onPress={() => {
+            handleSave(currentField, fieldValue, animal!.id, () => {editModalRef.current?.close();});
+          }} />
           <CustomButton
             text="Cancelar"
             onPress={() => {
               editModalRef.current?.close();
+              Alert.alert("Datos actualizados correctamente")
               setCurrentField("");
               setFieldValue("");
             }}

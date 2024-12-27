@@ -8,7 +8,7 @@ interface props {
     fieldValue: string;
     animalId: string;
     animalSpecies: Especie;
-    onFinish: () => void;
+    onFinish?: () => void;
 }
 
 export const handleCreateRegister = async (field: string, fieldValue: string, animalId: string, animalSpecies: Especie, onFinish: () => void) => {
