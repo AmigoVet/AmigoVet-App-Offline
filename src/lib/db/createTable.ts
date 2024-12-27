@@ -1,6 +1,15 @@
 import { db } from './db';
+import { create } from 'zustand';
 
-export const createAnimalTable = () => {
+export const createTables = () => {
+    createAnimalTable();
+    createRegisterTable();
+    createNotesTable();
+
+};
+
+
+const createAnimalTable = () => {
     db.transaction((tx) => {
         tx.executeSql(
             `CREATE TABLE IF NOT EXISTS Animal (
@@ -22,11 +31,44 @@ export const createAnimalTable = () => {
                 ubicacion TEXT,
                 created_at TEXT,
                 updated_at TEXT,
-                embarazada INTEGER
+                embarazada INTEGER DEFAULT 0
             )`,
             [],
             () => { console.log('Animal table created successfully'); },
             (error) => { console.log('Error creating table:', error); }
         );
     });
-};
+}
+const createRegisterTable = () => {
+    db.transaction((tx) => {
+        tx.executeSql(
+            `CREATE TABLE IF NOT EXISTS Register (
+                id TEXT PRIMARY KEY,
+                animalId TEXT,
+                comentario TEXT,
+                accion TEXT,
+                fecha TEXT,
+                FOREIGN KEY (animalId) REFERENCES Animal (id)
+            )`,
+            [],
+            () => { console.log('Register table created successfully'); },
+            (error) => { console.log('Error creating table:', error); }
+        );
+    });
+}
+const createNotesTable = () => {
+    db.transaction((tx) => {
+        tx.executeSql(
+            `CREATE TABLE IF NOT EXISTS Notas (
+                id TEXT PRIMARY KEY,
+                animalId TEXT,
+                fecha TEXT,
+                created_at TEXT,
+                FOREIGN KEY (animalId) REFERENCES Animal (id)
+            )`,
+            [],
+            () => { console.log('Notas table created successfully'); },
+            (error) => { console.log('Error creating table:', error); }
+        );
+    });
+}

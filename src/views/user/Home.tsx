@@ -21,8 +21,8 @@ import useAuthStore from '../../lib/store/authStore';
 
 // **Componentes locales**
 import { AnimalCard } from '../../components/AnimalDataView';
-import { createAnimalTable } from '../../lib/db/createTable';
 import { getDataAnimal, getLenghtAnimal } from '../../lib/db/getDataAnimal';
+import { createTables } from '../../lib/db/createTable';
 
 
 const Home = () => {
@@ -47,6 +47,7 @@ const Home = () => {
     };
 
     useEffect(() => {
+        createTables();
         loadAnimal();
     }, []);
 
