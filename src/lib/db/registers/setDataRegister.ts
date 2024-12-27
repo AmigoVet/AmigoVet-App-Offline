@@ -2,7 +2,7 @@ import { Register } from "../../interfaces/registers";
 import { db } from "../db";
 
 export const setDataRegister = (register: Register): Promise<void> => {
-    console.log("Registro a guardar:", JSON.stringify(register, null, 2));
+    // console.log("Registro a guardar:", JSON.stringify(register, null, 2));
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql(

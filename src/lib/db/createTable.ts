@@ -60,15 +60,16 @@ const createNotesTable = () => {
     db.transaction((tx) => {
         tx.executeSql(
             `CREATE TABLE IF NOT EXISTS Notas (
-                id TEXT PRIMARY KEY,
-                animalId TEXT,
-                fecha TEXT,
-                created_at TEXT,
-                FOREIGN KEY (animalId) REFERENCES Animal (id)
+                id TEXT PRIMARY KEY NOT NULL,
+                animalId TEXT NOT NULL,
+                nota TEXT NOT NULL,
+                fecha TEXT NOT NULL,
+                created_at TEXT NOT NULL
             )`,
             [],
-            () => { console.log('Notas table created successfully'); },
-            (error) => { console.log('Error creating table:', error); }
+            () => { console.log('Tabla Notas creada correctamente'); },
+            (_, error) => { console.error('Error al crear la tabla Notas:', error); }
         );
     });
+    
 }

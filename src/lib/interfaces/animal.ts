@@ -20,12 +20,16 @@ export interface Animal {
     ubicacion: string;
     created_at: string;
     updated_at: string;
-    notas?: Notes[];
     embarazada: boolean;
 }
 
 export interface Notes {
+    id: string;
+    animalId: string;
     nota: string;
+    fecha: string;
+    created_at: string;
+
 }
 export type Image = string
 export type PropositosDomesticos = "Mascota" | "Cuidados" | "Animal de compañía" ;

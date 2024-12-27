@@ -44,7 +44,7 @@ export const handleSave = async (
 
         // Guardar el registro
         try {
-            console.log("Registro a guardar:", JSON.stringify(register, null, 2));
+            // console.log("Registro a guardar:", JSON.stringify(register, null, 2));
             await setDataRegister(register);
         } catch (error) {
             console.error("Error al guardar el registro:", error);
