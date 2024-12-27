@@ -121,31 +121,17 @@ const AnimalView = () => {
   };
   const saveImage = async (newImage: string) => {
     const savedImagePath = await saveImagePermanently(newImage);
-    // Actualizar la imagen en el AsyncStorage
     if (fieldImage === 1) {
       await handleSave( "image",  savedImagePath!, id,() => {modalAddImage.current?.close();});
-      animal!.image = newImage;
     } else if (fieldImage === 2) {
       await handleSave( "image2", savedImagePath!, id,() => {modalAddImage.current?.close();});
-      animal!.image2 = newImage;
     } else if (fieldImage === 3) {
       await handleSave( "image3", savedImagePath!, id,() => {modalAddImage.current?.close();});
-      animal!.image3 = newImage;
     }
-    
+    loadData();
   };
-  
-  // Cargar Registros y datos del animal
-  useEffect(() => {
-    if (id) {
-      const fetchRegisters = async () => {
-        const loadedRegisters = await getDataRegisters(id);
-        setRegisters(loadedRegisters);
-      };
-      fetchRegisters();
-    }
-  }, [id]);
-  useEffect(() => {
+
+  const loadData = async () => {
     if (id) {
       const fetchAnimal = async () => {
         const loadedAnimal = await getDataAnimalbyId(id);
@@ -153,6 +139,21 @@ const AnimalView = () => {
       };
       fetchAnimal();
     }
+  };
+  const loadRegisters = async () => {
+    if (id) {
+      const fetchRegisters = async () => {
+        const loadedRegisters = await getDataRegisters(id);
+        setRegisters(loadedRegisters);
+      };
+      fetchRegisters();
+    }
+  };
+  
+  // Cargar Registros y datos del animal
+  useEffect(() => {
+    loadRegisters();
+    loadData();
   }, [id]);
 
   if (!animal) {
@@ -191,7 +192,7 @@ const AnimalView = () => {
     if (registerToDelete) {
       deleteDataRegister(registerToDelete.id);
       Alert.alert("Registro eliminado", "El registro fue eliminado correctamente.");
-      setRegisterToDelete(null);
+      loadRegisters();
       confirmDeleteModalRef.current?.close();
     }
   };
@@ -374,14 +375,20 @@ const AnimalView = () => {
             onChangeText={setFieldValue} 
           />
           <CustomButton text="Guardar" onPress={() => {
-            handleSave(currentField, fieldValue, animal!.id, () => {editModalRef.current?.close();});
+            handleSave(currentField, fieldValue, animal!.id, () => {
+              editModalRef.current?.close();
+              loadData();
+              loadRegisters();
+              setCurrentField("");
+              setFieldValue("");
+            });
           }} />
           <CustomButton
             text="Cancelar"
             onPress={() => {
-              editModalRef.current?.close();
-              setCurrentField("");
               setFieldValue("");
+              setCurrentField("");
+              editModalRef.current?.close();
             }}
             red
           />
@@ -401,7 +408,7 @@ const AnimalView = () => {
             <CustomInput label="Comentario de inseminación" placeholder="Proveedor del semen" value={fieldValue} onChangeText={setFieldValue} />
           )}
           <CustomButton text="Guardar" onPress={() => {
-            handleCreateRegister(currentField, fieldValue, animal.id, animal.especie, () => {modalCreateRegister.current?.close();})
+            handleCreateRegister(currentField, fieldValue, animal.id, animal.especie, () => {modalCreateRegister.current?.close(); loadData();})
           }} />
           <CustomButton
             text="Cancelar"
