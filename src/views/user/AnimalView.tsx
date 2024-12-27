@@ -9,7 +9,7 @@ import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } 
 // **Interfaces y tipos**
 import { Register } from "../../lib/interfaces/registers";
 import { RootStackParamList } from "../Welcome";
-import { InseminationRegister, PregnancyRegister, TreatmentRegister, AbortoRegister, Animal } from "../../lib/interfaces/animal";
+import { Animal } from "../../lib/interfaces/animal";
 
 // **Contexto y estilos**
 import { useTheme } from '../../lib/context/ThemeContext';
@@ -22,24 +22,16 @@ import { CarouselImages, DataViewAnimal, HeaderRegisterTable, RowRegister } from
 import { CustomButton, CustomImage, CustomIcon, CustomInput } from "../../components/Customs";
 import { ModalButton } from "../../components/global";
 
-// **Funciones utilitarias**
-import { calcularEdad } from "../../lib/functions/CalcularEdad";
-import { calculateDueDate } from "../../lib/functions/CalcularFechaParto";
-
-// **Hooks **
-import useAnimals from "../../lib/hooks/useAnimals";
-import { useRegisters } from "../../lib/hooks/useRegisters";
 
 // ** AsyncStorage**
-import { updateAnimalData, saveRegister, saveNoteAnimal, deleteNoteAnimal } from "../../lib/utils/asyncStorage";
 import RequestGPTButton from "../../components/global/RequestGPTButton";
 import { gptRequest } from "../../lib/functions/gptRequest";
-import { getDataAnimal, getDataAnimalbyId } from "../../lib/db/getDataAnimal";
+import {getDataAnimalbyId } from "../../lib/db/getDataAnimal";
 import { getDataRegisters } from "../../lib/db/registers/getDataRegister";
-import { setDataRegister } from "../../lib/db/registers/setDataRegister";
 import { handleCreateRegister } from "./functions/handleCreateRegister";
 import { handleSave } from "./functions/handleSave";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
+import { deleteDataRegister } from "../../lib/db/registers/deleteDataRegister";
 
 
 const AnimalView = () => {
@@ -197,8 +189,7 @@ const AnimalView = () => {
   };
   const handleConfirmDelete = () => {
     if (registerToDelete) {
-      const newRegisters = registers.filter((item) => item.id !== registerToDelete.id);
-      setRegisters(newRegisters);
+      deleteDataRegister(registerToDelete.id);
       Alert.alert("Registro eliminado", "El registro fue eliminado correctamente.");
       setRegisterToDelete(null);
       confirmDeleteModalRef.current?.close();
