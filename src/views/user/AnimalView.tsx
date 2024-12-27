@@ -35,6 +35,9 @@ import { updateAnimalData, saveRegister, saveNoteAnimal, deleteNoteAnimal } from
 import RequestGPTButton from "../../components/global/RequestGPTButton";
 import { gptRequest } from "../../lib/functions/gptRequest";
 import { getDataAnimal, getDataAnimalbyId } from "../../lib/db/getDataAnimal";
+import { getDataRegisters } from "../../lib/db/registers/getDataRegister";
+import { setDataRegister } from "../../lib/db/registers/setDataRegister";
+import { handleCreateRegister } from "./functions/handleCreateRegister";
 
 
 const AnimalView = () => {
@@ -152,13 +155,12 @@ const AnimalView = () => {
   useEffect(() => {
     if (id) {
       const fetchRegisters = async () => {
-        const loadedRegisters = await useRegisters(id);
+        const loadedRegisters = await getDataRegisters(id);
         setRegisters(loadedRegisters);
       };
       fetchRegisters();
     }
   }, [id]);
-  
   useEffect(() => {
     if (id) {
       const fetchAnimal = async () => {
@@ -208,7 +210,7 @@ const AnimalView = () => {
 
       await updateAnimalData(id, currentField, fieldValue);
       await updateAnimalData(id, "updated_at", new Date().toISOString());
-      await saveRegister(register);
+      await setDataRegister(register);
 
 
       // Actualizar registros en el estado
@@ -220,66 +222,7 @@ const AnimalView = () => {
     }
   };
 
-  const handleCreateRegister = async () => {
-    if (currentField) {
-      const generateId = () => Math.random().toString(36).substr(2, 9);
-      const actualDay = calculateDueDate(animal!.especie, new Date());
-  
-      const baseRegister: Register = {
-        id: generateId(),
-        animalId: id,
-        comentario: fieldValue,
-        accion: currentField,
-        fecha: new Date().toISOString(),
-      };
-  
-      let specificRegister: Register | PregnancyRegister | TreatmentRegister | InseminationRegister | AbortoRegister;
-  
-      if (currentField === 'Registro Preñes') {
-        specificRegister = {
-          ...baseRegister,
-          fechaPartoEstimada: fieldValue,
-        };
-        await saveNoteAnimal(animal!.id, { nota: `Posible fecha de parto: ${actualDay}` });
-        await updateAnimalData(id, 'embarazada', true);
-      } else if (currentField === 'Registro Tratamiento') {
-        specificRegister = {
-          ...baseRegister,
-          tipoTratamiento: fieldValue,
-        };
-        await saveNoteAnimal(animal!.id, { nota: `Ultimo tratamiento: ${actualDay} de ${fieldValue}` });
-      } else if (currentField === 'Registro Inseminacion') {
-        specificRegister = {
-          ...baseRegister,
-          semenProveedor: fieldValue,
-        };
-        await saveNoteAnimal(animal!.id, { nota: `Posible fecha de parto: ${actualDay}` });
-        await updateAnimalData(id, 'embarazada', true);
-      } else if (currentField === 'Registro Aborto') {
-        specificRegister = {
-          ...baseRegister,
-          fechaAborto: fieldValue,
-        };
-        await saveNoteAnimal(animal!.id, { nota: `Hubo un aborto el : ${actualDay}` });
-        await updateAnimalData(id, 'embarazada', false);
-  
-        // Elimina la nota de "Posible fecha de parto:"
-        await deleteNoteAnimal(animal!.id, 'Posible fecha de parto:');
-      } else {
-        specificRegister = baseRegister;
-      }
-  
-      await saveRegister(specificRegister);
-  
-      // Actualizar lista de registros
-      setRegisters((prev) => [...prev, specificRegister]);
-  
-      modalCreateRegister.current?.close();
-      setCurrentField('');
-      setFieldValue('');
-    }
-  };
-  
+
   const handleDeletePrompt = (item: Register) => {
     setRegisterToDelete(item);
     confirmDeleteModalRef.current?.open();
@@ -485,7 +428,6 @@ const AnimalView = () => {
         </View>
       </Modalize>
 
-      
       <Modalize ref={modalCreateRegister} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>{currentField}</Text>
@@ -498,7 +440,9 @@ const AnimalView = () => {
           {currentField === "Registro Inseminacion" && (
             <CustomInput label="Comentario de inseminación" placeholder="Proveedor del semen" value={fieldValue} onChangeText={setFieldValue} />
           )}
-          <CustomButton text="Guardar" onPress={handleCreateRegister} />
+          <CustomButton text="Guardar" onPress={() => {
+            handleCreateRegister(currentField, fieldValue, animal.id, animal.especie, () => {modalCreateRegister.current?.close();})
+          }} />
           <CustomButton
             text="Cancelar"
             onPress={() => {
