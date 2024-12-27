@@ -6,7 +6,7 @@ import CustomButton from '../Customs/CustomButton'
 import CustomImage from '../Customs/CustomImage'
 import { useTheme } from '../../lib/context/ThemeContext'
 import { createGlobalStyles } from '../../assets/styles/styles'
-import { Animal } from '../../lib/interfaces/animal'
+import { Animal, Notes } from '../../lib/interfaces/animal'
 import { CustomInput } from '../Customs'
 import { calcularEdad } from '../../lib/functions/CalcularEdad'
 import { formatearFecha } from '../../lib/functions/FormateraFecha'
@@ -15,9 +15,10 @@ import { getDynamicColors } from '../../assets/styles/colors'
 
 interface DataViewAnimalProps {
   animal: Animal;
+  notas: Notes[];
 }
 
-const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
+const DataViewAnimal = ({ animal, notas }: DataViewAnimalProps) => {
 
   const { isDarkTheme } = useTheme();
   const GlobalStyles = createGlobalStyles(isDarkTheme);
@@ -38,14 +39,14 @@ const DataViewAnimal = ({ animal }: DataViewAnimalProps) => {
         <Text style={GlobalStyles.textWhite}>Raza: <Text style={[GlobalStyles.textOrange]}>{animal?.raza}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Color: <Text style={[GlobalStyles.textOrange]}>{animal?.color}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Preñes: <Text style={[GlobalStyles.textOrange]}>{animal?.embarazada ? 'Sí' : 'No'}</Text></Text>
-        <Text style={GlobalStyles.textWhite}>Fecha Nacimiento: <Text style={[GlobalStyles.textOrange]}>{ formatearFecha(animal!.nacimiento ? animal!.nacimiento : '')}</Text>
+        <Text style={GlobalStyles.textWhite}>Nacimiento: <Text style={[GlobalStyles.textOrange]}>{ formatearFecha(animal!.nacimiento ? animal!.nacimiento : '')}</Text>
         </Text>
       </View>
-      {animal.notas && animal.notas.length > 0 && (
+      {notas && notas.length > 0 && (
         <View style={styles.dataContainer}>
-          {animal.notas.map((nota, index) => (
+          {notas.map((nota, index) => (
             <Text key={index} style={GlobalStyles.note}>
-              ● {nota.nota}
+              ● {nota.nota}{nota.fecha ? `${formatearFecha(nota.fecha)}` : ''}
             </Text>
           ))}
         </View>

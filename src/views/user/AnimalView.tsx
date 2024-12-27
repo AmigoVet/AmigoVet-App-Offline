@@ -9,7 +9,7 @@ import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } 
 // **Interfaces y tipos**
 import { Register } from "../../lib/interfaces/registers";
 import { RootStackParamList } from "../Welcome";
-import { Animal } from "../../lib/interfaces/animal";
+import { Animal, Notes } from "../../lib/interfaces/animal";
 
 // **Contexto y estilos**
 import { useTheme } from '../../lib/context/ThemeContext';
@@ -32,6 +32,7 @@ import { handleCreateRegister } from "./functions/handleCreateRegister";
 import { handleSave } from "./functions/handleSave";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
 import { deleteDataRegister } from "../../lib/db/registers/deleteDataRegister";
+import { getDataNotas } from "../../lib/db/notas/getDataNotas";
 
 
 const AnimalView = () => {
@@ -50,7 +51,9 @@ const AnimalView = () => {
   const [fieldPeticionGpt, setFieldPeticionGpt] = useState("");
   const [registers, setRegisters] = useState<Register[]>([]);
   const [registerToDelete, setRegisterToDelete] = useState<Register | null>(null);
+
   const [animal, setAnimal] = useState<Animal | null>(null);
+  const [notes, setNotes] = useState<Notes[]>([]);
 
   const { isDarkTheme } = useTheme();
   const colors = getDynamicColors(isDarkTheme);
@@ -149,11 +152,23 @@ const AnimalView = () => {
       fetchRegisters();
     }
   };
+  const loadNotes = async () => {
+    if (id) {
+        try {
+            const loadedNotes = await getDataNotas(id); 
+            setNotes(loadedNotes); 
+            console.log(notes);
+        } catch (error) {
+            console.error("Error al cargar las notas:", error);
+        }
+    }
+};
   
   // Cargar Registros y datos del animal
   useEffect(() => {
     loadRegisters();
     loadData();
+    loadNotes();
   }, [id]);
 
   if (!animal) {
@@ -223,7 +238,7 @@ const AnimalView = () => {
             <CarouselImages
               sources={[animal!.image, animal!.image2, animal!.image3]}
             />
-            <DataViewAnimal animal={animal!} />
+            <DataViewAnimal animal={animal} notas={notes} />
             <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
             {registers.length > 0 && <HeaderRegisterTable />}
           </View>
