@@ -23,6 +23,7 @@ import useAuthStore from '../../lib/store/authStore';
 import { AnimalCard } from '../../components/AnimalDataView';
 import { getDataAnimal, getLenghtAnimal } from '../../lib/db/getDataAnimal';
 import { createTables } from '../../lib/db/createTable';
+import { deleteDataAnimal } from '../../lib/db/animals/deleteDataAnimal';
 
 
 const Home = () => {
@@ -58,7 +59,7 @@ const Home = () => {
 
     const deleteAnimal = async () => {
         if (selectedAnimal) {
-            await deleteAnimalById(selectedAnimal.id);
+            await deleteDataAnimal(selectedAnimal.id);
             loadAnimal();
             modalRef.current?.close();
         }
