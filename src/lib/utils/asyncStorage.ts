@@ -308,82 +308,82 @@ const getAnimalsUnderTwoYears = async (ownerId: string): Promise<Animal[]> => {
 };
 
 
-// **1. Función para obtener la cantidad de animales registrados**
-const getRegisteredAnimalsCount = async (ownerId: string): Promise<number> => {
-  try {
-    const animalsJson = await AsyncStorage.getItem('animals');
-    const animals: Animal[] = animalsJson ? JSON.parse(animalsJson) : [];
+// // **1. Función para obtener la cantidad de animales registrados**
+// const getRegisteredAnimalsCount = async (ownerId: string): Promise<number> => {
+//   try {
+//     const animalsJson = await AsyncStorage.getItem('animals');
+//     const animals: Animal[] = animalsJson ? JSON.parse(animalsJson) : [];
 
-    // Filtrar animales por ownerId
-    const filteredAnimals = animals.filter((animal) => animal.ownerId === ownerId);
+//     // Filtrar animales por ownerId
+//     const filteredAnimals = animals.filter((animal) => animal.ownerId === ownerId);
 
-    return filteredAnimals.length;
-  } catch (error) {
-    console.error('Error al contar animales registrados:', error);
-    return 0;
-  }
-};
-
-
-// **2. Función para obtener los últimos tres registros con nombre e identificador del animal**
-const getLastThreeRegisters = async (ownerId: string): Promise<{ nombre: string; identificador: string; fecha: string; comentario: string; accion: string }[]> => {
-  try {
-    const registersJson = await AsyncStorage.getItem('registers');
-    const registers: Register[] = registersJson ? JSON.parse(registersJson) : [];
-
-    const animalsJson = await AsyncStorage.getItem('animals');
-    const animals: Animal[] = animalsJson ? JSON.parse(animalsJson) : [];
-
-    // Filtrar animales por ownerId
-    const filteredAnimals = animals.filter((animal) => animal.ownerId === ownerId);
-
-    // Obtener IDs de los animales del propietario
-    const animalIds = new Set(filteredAnimals.map((animal) => animal.id));
-
-    // Filtrar registros relacionados con los animales del propietario
-    const filteredRegisters = registers.filter((register) => animalIds.has(register.animalId));
-
-    // Ordenar registros por fecha descendente y tomar los últimos tres
-    const lastThreeRegisters = filteredRegisters
-      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
-      .slice(0, 3);
-
-    return lastThreeRegisters.map((register) => {
-      const animal = filteredAnimals.find((animal) => animal.id === register.animalId);
-      return {
-        nombre: animal?.nombre || 'Desconocido',
-        identificador: animal?.identificador || 'Desconocido',
-        fecha: register.fecha,
-        comentario: register.comentario,
-        accion: register.accion,
-      };
-    });
-  } catch (error) {
-    console.error('Error al obtener los últimos tres registros:', error);
-    return [];
-  }
-};
+//     return filteredAnimals.length;
+//   } catch (error) {
+//     console.error('Error al contar animales registrados:', error);
+//     return 0;
+//   }
+// };
 
 
-// **3. Función para obtener las especies registradas y la cantidad de animales de cada especie**
-const getSpeciesCount = async (ownerId: string): Promise<Record<string, number>> => {
-  try {
-    const animalsJson = await AsyncStorage.getItem('animals');
-    const animals: Animal[] = animalsJson ? JSON.parse(animalsJson) : [];
+// // **2. Función para obtener los últimos tres registros con nombre e identificador del animal**
+// const getLastThreeRegisters = async (ownerId: string): Promise<{ nombre: string; identificador: string; fecha: string; comentario: string; accion: string }[]> => {
+//   try {
+//     const registersJson = await AsyncStorage.getItem('registers');
+//     const registers: Register[] = registersJson ? JSON.parse(registersJson) : [];
 
-    // Filtrar animales por ownerId
-    const filteredAnimals = animals.filter((animal) => animal.ownerId === ownerId);
+//     const animalsJson = await AsyncStorage.getItem('animals');
+//     const animals: Animal[] = animalsJson ? JSON.parse(animalsJson) : [];
 
-    return filteredAnimals.reduce((acc: Record<string, number>, animal) => {
-      const especie = animal.especie || 'Desconocido';
-      acc[especie] = (acc[especie] || 0) + 1;
-      return acc;
-    }, {});
-  } catch (error) {
-    console.error('Error al contar especies registradas:', error);
-    return {};
-  }
-};
+//     // Filtrar animales por ownerId
+//     const filteredAnimals = animals.filter((animal) => animal.ownerId === ownerId);
+
+//     // Obtener IDs de los animales del propietario
+//     const animalIds = new Set(filteredAnimals.map((animal) => animal.id));
+
+//     // Filtrar registros relacionados con los animales del propietario
+//     const filteredRegisters = registers.filter((register) => animalIds.has(register.animalId));
+
+//     // Ordenar registros por fecha descendente y tomar los últimos tres
+//     const lastThreeRegisters = filteredRegisters
+//       .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+//       .slice(0, 3);
+
+//     return lastThreeRegisters.map((register) => {
+//       const animal = filteredAnimals.find((animal) => animal.id === register.animalId);
+//       return {
+//         nombre: animal?.nombre || 'Desconocido',
+//         identificador: animal?.identificador || 'Desconocido',
+//         fecha: register.fecha,
+//         comentario: register.comentario,
+//         accion: register.accion,
+//       };
+//     });
+//   } catch (error) {
+//     console.error('Error al obtener los últimos tres registros:', error);
+//     return [];
+//   }
+// };
+
+
+// // **3. Función para obtener las especies registradas y la cantidad de animales de cada especie**
+// const getSpeciesCount = async (ownerId: string): Promise<Record<string, number>> => {
+//   try {
+//     const animalsJson = await AsyncStorage.getItem('animals');
+//     const animals: Animal[] = animalsJson ? JSON.parse(animalsJson) : [];
+
+//     // Filtrar animales por ownerId
+//     const filteredAnimals = animals.filter((animal) => animal.ownerId === ownerId);
+
+//     return filteredAnimals.reduce((acc: Record<string, number>, animal) => {
+//       const especie = animal.especie || 'Desconocido';
+//       acc[especie] = (acc[especie] || 0) + 1;
+//       return acc;
+//     }, {});
+//   } catch (error) {
+//     console.error('Error al contar especies registradas:', error);
+//     return {};
+//   }
+// };
 
 
 
@@ -403,8 +403,8 @@ export {
   getMaleAnimals, 
   getFemaleAnimals, 
   getAnimalsUnderTwoYears,
-  getRegisteredAnimalsCount, 
-  getLastThreeRegisters, 
-  getSpeciesCount 
+  // getRegisteredAnimalsCount, 
+  // getLastThreeRegisters, 
+  // getSpeciesCount 
 };
 
