@@ -26,7 +26,6 @@ import { CustomIcon } from '../../components/Customs';
 import HeaderDrawer from '../../components/Navigations/HeaderDrawer';
 import { DrawerContent } from '../../components/Navigations/DrawerContent';
 import HomePublic from '../../views/public/HomePublic';
-import TestDBView from '../../views/test/TestDBView';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -156,7 +155,6 @@ const BottomTabsNavigator = () => {
       <Tab.Screen name="Publico" component={HomePublic} />
       <Tab.Screen name="Agregar" component={New} />
       <Tab.Screen name="Perfil" component={Profile} />
-      <Tab.Screen name="SQLite" component={TestDBView} />
     </Tab.Navigator>
   );
 };
