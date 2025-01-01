@@ -13,6 +13,7 @@ import { formatPhoneNumber } from '../../lib/functions/FormaterNumberPhone';
 import useAuthStore from '../../lib/store/authStore';
 import { CustomIcon } from '../Customs';
 import { useTheme } from '../../lib/context/ThemeContext';
+import LabelLogo from '../global/LabelLogo';
 
 
 export const DrawerContent = (props: any) => {
@@ -26,15 +27,7 @@ export const DrawerContent = (props: any) => {
     <DrawerContentScrollView {...props} contentContainerStyle={[styles.container, { backgroundColor: colors.fondo }]}>
       {/* Imagen */}
       <View>
-        <Image
-          source={require('../../assets/img/HeaderLogo.png')}
-          style={{
-            alignSelf: 'center',
-            width: '90%',
-            height: width*0.3,
-          }}
-          resizeMode="contain"
-        />
+        <LabelLogo width={500} height={100} />
       </View>
 
       {/* Información del usuario */}

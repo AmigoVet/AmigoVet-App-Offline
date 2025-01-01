@@ -5,6 +5,7 @@ import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors, staticColors } from '../../assets/styles/colors';
 import { RootStackParamList } from '../../views/Welcome';
 import { CustomIcon } from '../Customs';
+import LabelLogo from '../global/LabelLogo';
 
 
 const HeaderDrawer = () => {
@@ -18,11 +19,12 @@ const HeaderDrawer = () => {
       <Pressable onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
         <CustomIcon name="menu" size={30} color={staticColors.blancoLight} />
       </Pressable>
-      <Image
+      <LabelLogo estatico='dark' width={200} height={100} />
+      {/* <Image
         source={require('../../assets/img/HeaderLogo.png')}
         style={styles.logo}
         resizeMode="contain"
-      />
+      /> */}
       <Pressable onPress={() => navigation.navigate('Busqueda')}>
         <CustomIcon name="search" size={30} color={staticColors.blancoLight} />
       </Pressable>
