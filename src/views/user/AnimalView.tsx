@@ -213,9 +213,9 @@ const AnimalView = () => {
   };
 
   // Peticion GPT
-  const handleGPTRequest = async (question: string, animal: Animal, registers: Register[]) => {
+  const handleGPTRequest = async (question: string, animal: Animal, registers: Register[], notas: Notes[]) => {
     try {
-      const response = await gptRequest(question, animal, registers);
+      const response = await gptRequest(question, animal, registers, notas);
       console.log(response);
     } catch (error) {
       console.error("Error al realizar la peticion GPT:", error);
@@ -451,7 +451,7 @@ const AnimalView = () => {
             text="Enviar" 
             onPress={
               () => {
-                handleGPTRequest(fieldPeticionGpt, animal!, registers);
+                handleGPTRequest(fieldPeticionGpt, animal!, registers, notes);
               }
             } 
           />

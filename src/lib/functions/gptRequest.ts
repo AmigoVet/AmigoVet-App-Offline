@@ -1,44 +1,96 @@
 import OpenAI from "openai";
 import env from "../../../dotenvConfig";
-import { Animal } from "../interfaces/animal";
+import { Animal, Notes } from "../interfaces/animal";
 import { Register } from "../interfaces/registers";
 
 const openai = new OpenAI({
-  apiKey: env.OPENAI_API_KEY, 
+  apiKey: env.OPENAI_API_KEY,
 });
 
-export const gptRequest = async (question: string, animal: Animal, registers: Register[]) => {
+export const gptRequest = async (question: string, animal: Animal, registers: Register[], notas: Notes[]) => {
   console.log(question);
   console.log(animal);
   console.log(registers);
+  console.log(notas);
+
   try {
     // Validar que la API Key esté configurada
     if (!env.OPENAI_API_KEY) {
       throw new Error("La clave API no está configurada.");
     }
 
-    // Prompt que se enviará a la API
-    const messages = [
-      {
-        role: "system",
-        content: "You are a helpful assistant."
-      },
-      {
-        role: "user",
-        content: `Plan a comprehensive travel itinerary. I am travelling with family. I am going to Paris for 7 days. And I want to include the following activities: sightseeing, dining.`
-      }
-    ];
+    // Crear el contexto dinámico para el asistente
+    const animalDetails = `
+    Propietario: ${animal.ownerId}
+    ID: ${animal.id}
+    Identificador: ${animal.identificador}
+    Nombre: ${animal.nombre}
+    Especie: ${animal.especie}
+    Raza: ${animal.raza}
+    Edad: ${animal.edad || "Desconocida"}
+    Fecha de nacimiento: ${animal.nacimiento || "No especificada"}
+    Género: ${animal.genero}
+    Peso: ${animal.peso}
+    Color: ${animal.color}
+    Descripción: ${animal.descripcion}
+    Imágenes: 
+      - Principal: ${animal.image}
+      - Secundaria: ${animal.image2 || "No especificada"}
+      - Tercera: ${animal.image3 || "No especificada"}
+    Propósito: ${animal.proposito}
+    Ubicación: ${animal.ubicacion}
+    Fecha de creación: ${animal.created_at}
+    Última actualización: ${animal.updated_at}
+    Embarazada: ${animal.embarazada ? "Sí" : "No"}
+    `;
+
+    const registersDetails = registers
+      .map(
+        (reg) => `- Acción: ${reg.accion}, Fecha: ${reg.fecha}, Comentario: ${reg.comentario || "Sin comentario"}`
+      )
+      .join("\n");
+
+    const notesDetails = notas
+      .map(
+        (nota) => `- Nota: ${nota.nota}, Fecha: ${nota.fecha}, Creada el: ${nota.created_at}`
+      )
+      .join("\n");
+
+    const prompt = `
+Eres un veterinario experto que analiza datos de animales y responde preguntas relacionadas en español. A continuación, tienes los detalles de un animal, sus registros históricos y notas. Responde con base en esta información.
+
+**Detalles del animal:**
+${animalDetails}
+
+**Registros históricos:**
+${registersDetails || "No hay registros históricos."}
+
+**Notas del animal:**
+${notesDetails || "No hay notas registradas."}
+
+**Pregunta del usuario:**
+${question}
+    `;
 
     // Solicitud a la API de OpenAI
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${env.OPENAI_API_KEY}`
+        'Authorization': `Bearer ${env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: messages,
+        model: "gpt-4o-mini-2024-07-18",
+        messages: [
+          {
+            role: "system",
+            content: "Eres un veterinario experto que siempre responde en español.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
       }),
     });
 
