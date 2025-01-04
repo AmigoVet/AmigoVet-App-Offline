@@ -33,6 +33,7 @@ import { handleSave } from "./functions/handleSave";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
 import { deleteDataRegister } from "../../lib/db/registers/deleteDataRegister";
 import { getDataNotas } from "../../lib/db/notas/getDataNotas";
+import { getAvailableRequests, manageDailyRequests } from "../../lib/utils/limitRequestGpt";
 
 
 const AnimalView = () => {
@@ -51,6 +52,7 @@ const AnimalView = () => {
   const [fieldPeticionGpt, setFieldPeticionGpt] = useState("");
   const [registers, setRegisters] = useState<Register[]>([]);
   const [registerToDelete, setRegisterToDelete] = useState<Register | null>(null);
+  const [availableRequest, setAvailableRequest] = useState<number>(0);
 
   const [animal, setAnimal] = useState<Animal | null>(null);
   const [notes, setNotes] = useState<Notes[]>([]);
@@ -162,13 +164,22 @@ const AnimalView = () => {
             console.error("Error al cargar las notas:", error);
         }
     }
-};
+  };
+  const loadSettings = async () => {
+    try {
+      const availableRequests = await getAvailableRequests();
+      setAvailableRequest(availableRequests);
+    } catch (error) {
+      console.error("Error al cargar la configuración:", error);
+    }
+  };
   
   // Cargar Registros y datos del animal
   useEffect(() => {
     loadRegisters();
     loadData();
     loadNotes();
+    loadSettings();
   }, [id]);
 
   if (!animal) {
@@ -215,8 +226,12 @@ const AnimalView = () => {
   // Peticion GPT
   const handleGPTRequest = async (question: string, animal: Animal, registers: Register[], notas: Notes[]) => {
     try {
-      const response = await gptRequest(question, animal, registers, notas);
-      console.log(response);
+      const canRequest = await manageDailyRequests();
+      if (canRequest) {
+        setAvailableRequest(availableRequest - 1);
+        const response = await gptRequest(question, animal, registers, notas);
+        console.log(response);
+      }
     } catch (error) {
       console.error("Error al realizar la peticion GPT:", error);
     }
@@ -440,6 +455,7 @@ const AnimalView = () => {
       { /* Modal para GPT Request */ }
       <Modalize ref={modalRefGpt} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
+          <Text>{availableRequest} solicitudes disponibles</Text>
           <Text style={styles.modalTitle}>Hazle tu pregunta a tu veterinario personal!</Text>
           <CustomInput 
             label="Escribe aqui tu duda" 
