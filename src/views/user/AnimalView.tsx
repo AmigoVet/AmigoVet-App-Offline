@@ -38,6 +38,7 @@ import LoaderScreen from "../../components/global/LoaderScreen";
 import { AnimalViewStyles } from "../../assets/styles/AnimalViewStyles";
 import ContentModalSelecionaropcion from "../../components/modals/AnimalView/ContentModalSelecionaropcion";
 import ContentModalSelectImage from "../../components/modals/AnimalView/ContentModalSelectImage";
+import ButtonAddRegister from "../../components/AnimalDataView/ButtonAddRegister";
 
 
 const AnimalView = () => {
@@ -217,6 +218,7 @@ const AnimalView = () => {
   return (
     <>
       <RequestGPTButton animal={animal} registers={registers} notes={notes} />
+      <ButtonAddRegister onPress={handleOpenModal} />
       <SwipeListView
         style={styles.swipeListContainer}
         ListHeaderComponent={
@@ -225,7 +227,6 @@ const AnimalView = () => {
               sources={[animal!.image, animal!.image2, animal!.image3]}
             />
             <DataViewAnimal animal={animal} notas={notes} />
-            <CustomButton text="Registrar Cambio de Datos" onPress={handleOpenModal} />
             {registers.length > 0 && <HeaderRegisterTable />}
           </View>
         }
