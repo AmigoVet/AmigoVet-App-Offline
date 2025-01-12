@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
+import { CustomIcon } from '../Customs';
 
 interface AnimalTableProps {
   peso: string;
@@ -33,10 +34,13 @@ const AnimalTable = ({ peso, genero, proposito, edad }: AnimalTableProps) => {
       {/* Fila de datos */}
       <View style={styles.row}>
         <View style={styles.cell}>
-          <Text style={styles.text}>{pesoEdit}</Text>
+          <Text style={styles.text}>{pesoEdit} Kg</Text>
         </View>
         <View style={styles.cell}>
-          <Text style={styles.text}>{generoEdit}</Text>
+          <Text style={styles.text}>{generoEdit}
+            {generoEdit === "Hembra" && <CustomIcon name="female-outline" size={15} color={colors.verde} />}
+            {generoEdit === "Macho" && <CustomIcon name="male-outline" size={15} color={colors.verde} />}
+          </Text>
         </View>
         <View style={styles.cell}>
           <Text style={styles.text}>{propositoEdit}</Text>
