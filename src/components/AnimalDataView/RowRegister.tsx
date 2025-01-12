@@ -24,7 +24,7 @@ const RowRegister = ({ register, isLast = false, bgColor }: RowRegisterProps) =>
     container: {
       width: windowWidth - 32,
       flexDirection: 'row',
-      backgroundColor: backgroundColor, // Color dinámico
+      backgroundColor: backgroundColor,
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: 8,

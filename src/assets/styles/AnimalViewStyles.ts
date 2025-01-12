@@ -53,7 +53,7 @@ export const AnimalViewStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       borderBottomLeftRadius: 10,
     },
     deleteText: {
-      color: colors.blancoLight,
+      color: colors.fondo,
       fontWeight: "bold",
     },
   });

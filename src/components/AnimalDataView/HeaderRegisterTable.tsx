@@ -17,7 +17,7 @@ const HeaderRegisterTable = () => {
       width: windowWidth - 32,
       height: 40,
       flexDirection: 'row',
-      backgroundColor: colors.naranja,
+      backgroundColor: colors.verde,
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: 8,
@@ -30,7 +30,7 @@ const HeaderRegisterTable = () => {
       alignItems: 'center', 
     },
     text: {
-      color: colors.blancoLight,
+      color: colors.verdeLight,
       fontWeight: 'bold',
     },
   });
