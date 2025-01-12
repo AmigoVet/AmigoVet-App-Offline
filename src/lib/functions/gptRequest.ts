@@ -8,10 +8,10 @@ const openai = new OpenAI({
 });
 
 export const gptRequest = async (question: string, animal: Animal, registers: Register[], notas: Notes[]) => {
-  console.log(question);
-  console.log(animal);
-  console.log(registers);
-  console.log(notas);
+  // console.log(question);
+  // console.log(animal);
+  // console.log(registers);
+  // console.log(notas);
 
   try {
     // Validar que la API Key esté configurada
@@ -70,6 +70,7 @@ ${notesDetails || "No hay notas registradas."}
 
 **Pregunta del usuario:**
 ${question}
+No recomiendes ir con un veterinario a menos que no sepas lo que pasa,Analiza todos los datos del animal, las notas, y registros y segun esa informacion responde a la pregunta del usuario.
     `;
 
     // Solicitud a la API de OpenAI
@@ -84,7 +85,7 @@ ${question}
         messages: [
           {
             role: "system",
-            content: "Eres un veterinario experto que siempre responde en español.",
+            content: "Eres un veterinario experto que siempre responde en español, dando respuestas detalladas y precisas, relacionando si los tratamientos tienen algo que ver con la pregunta o problema del animal, y si los registros tienen algo que ver con la pregunta o problema del animal, tu respuesta debe ser menor a 1000 caracteres",
           },
           {
             role: "user",
@@ -99,7 +100,9 @@ ${question}
       const errorData = await response.json();
       throw new Error(`Error en la API: ${errorData.error.message}`);
     }
-
+    console.log("------------------------------------------------------------------------------------------------");
+    console.log(prompt);
+    console.log("------------------------------------------------------------------------------------------------");
     // Procesar y devolver la respuesta
     const data = await response.json();
     return data.choices[0].message.content; // Retorna el contenido generado
