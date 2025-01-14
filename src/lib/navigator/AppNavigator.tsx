@@ -21,11 +21,12 @@ import Hembras from '../../views/search/Hembras';
 import Machos from '../../views/search/Machos';
 import Jovenes from '../../views/search/Jovenes';
 import { useTheme } from '../../lib/context/ThemeContext';
-import { getDynamicColors, staticColors } from '../../assets/styles/colors';
+import { getDynamicColors, staticColors, newColors } from '../../assets/styles/colors';
 import { CustomIcon } from '../../components/Customs';
 import HeaderDrawer from '../../components/Navigations/HeaderDrawer';
 import { DrawerContent } from '../../components/Navigations/DrawerContent';
 import HomePublic from '../../views/public/HomePublic';
+import Feed from '../../views/user/Feed';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -101,63 +102,76 @@ const HomeScreenWithDrawerNavigator = () => {
 // Configuración del navegador de tabs
 const BottomTabsNavigator = () => {
   const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme); 
+  const colors = getDynamicColors(isDarkTheme);
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarIcon: ({ color, size, focused }) => {
-          let iconName: string;
+          let iconName;
 
           if (route.name === 'Privado') {
-            iconName = 'home-outline';
+            iconName = 'archive-outline';
           } else if (route.name === 'Perfil') {
             iconName = 'person-outline';
           } else if (route.name === 'Agregar') {
             iconName = 'add-circle-outline';
           } else if (route.name === 'Publico') {
             iconName = 'storefront-outline';
+          } else if (route.name === 'Inicio') {
+            iconName = 'home-outline';
           } else {
             iconName = 'alert-circle-outline';
           }
 
           return (
-            <View style={{ alignItems: 'center' }}>
-              <CustomIcon name={iconName} size={size} color={color} />
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+              }}
+            >
               {focused && (
                 <View
                   style={{
-                    width: '60%',
-                    height: 3,
-                    backgroundColor: colors.naranja,
-                    borderRadius: 2,
-                    marginTop: 5,
+                    position: 'absolute',
+                    bottom: -20,
+                    width: 70,
+                    height: 55,
+                    backgroundColor: newColors.principal,
+                    borderTopLeftRadius: -30,
+                    borderTopRightRadius: -30,
+                    borderBottomLeftRadius: 50,
+                    borderBottomRightRadius: 50,
                   }}
                 />
               )}
+              <CustomIcon name={iconName} size={focused ? 32 : size} color={color} />
             </View>
           );
         },
         tabBarActiveTintColor: colors.verdeLight,
-        tabBarInactiveTintColor: staticColors.blancoLight,
+        tabBarInactiveTintColor: newColors.principal,
         tabBarStyle: {
-          backgroundColor: colors.fondoDark,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          marginTop: -20,
-          height: 60,
-          borderTopWidth: 0,
+          backgroundColor: newColors.fondo_secundario,
+          height: 65,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+          borderWidth: 0,
         },
       })}
     >
+      <Tab.Screen name="Inicio" component={Feed} />
       <Tab.Screen name="Privado" component={HomeScreenWithDrawerNavigator} />
-      <Tab.Screen name="Publico" component={HomePublic} />
       <Tab.Screen name="Agregar" component={New} />
+      <Tab.Screen name="Publico" component={HomePublic} />
       <Tab.Screen name="Perfil" component={Profile} />
     </Tab.Navigator>
   );
 };
+
 
 // Navegador principal
 const AppNavigator = () => {

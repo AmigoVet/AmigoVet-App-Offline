@@ -14,7 +14,6 @@ import { createGlobalStyles } from '../../assets/styles/styles';
 import { Animal } from '../../lib/interfaces/animal';
 
 // **Funciones utilitarias**
-import { deleteAnimalById, getRegisteredAnimalsCount, loadData } from '../../lib/utils/asyncStorage';
 
 // **Hooks **
 import useAuthStore from '../../lib/store/authStore';
@@ -24,6 +23,7 @@ import { AnimalCard } from '../../components/AnimalDataView';
 import { getDataAnimal, getLenghtAnimal } from '../../lib/db/getDataAnimal';
 import { createTables } from '../../lib/db/createTable';
 import { deleteDataAnimal } from '../../lib/db/animals/deleteDataAnimal';
+import PrivateAnimalCard from '../../components/AnimalCard/PrivateAnimalCard';
 
 
 const Home = () => {
@@ -73,7 +73,7 @@ const Home = () => {
 
     const renderItem = ({ item }: { item: Animal }) => (
         <View style={[styles.rowFront, { backgroundColor: colors.fondo }]}>
-            <AnimalCard animal={item} />
+            <PrivateAnimalCard animal={item} />
         </View>
     );
 

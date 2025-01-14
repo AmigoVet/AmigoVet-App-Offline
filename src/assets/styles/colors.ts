@@ -1,4 +1,11 @@
-import { stat } from "react-native-fs"
+export const newColors = {
+
+  principal : '#e9e3dc',
+  secundario : '#232322',
+  
+  fondo_principal : '#e9e3dc',
+  fondo_secundario : '#232322',
+}
 
 export const getDynamicColors  = (isDarkTheme: boolean) =>  {
   return {

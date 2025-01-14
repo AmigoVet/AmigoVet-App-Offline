@@ -8,8 +8,9 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
     container: {
       flex: 1,
       backgroundColor: colors.fondo,
-      marginTop: -20,
+      marginTop: -30,
       paddingTop: 30,
+      marginBottom: -30,
       padding: 20,
       alignItems: 'center',
       justifyContent: 'flex-start',
