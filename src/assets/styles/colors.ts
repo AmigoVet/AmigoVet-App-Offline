@@ -5,6 +5,9 @@ export const newColors = {
   
   fondo_principal : '#e9e3dc',
   fondo_secundario : '#232322',
+
+
+  verde: '#495445',
 }
 
 export const getDynamicColors  = (isDarkTheme: boolean) =>  {

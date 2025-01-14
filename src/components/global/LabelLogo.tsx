@@ -17,10 +17,10 @@ const LabelLogo: React.FC<LabelLogoProps> = ({ width = 100, height = 50, estatic
   const LogoComponent = estatico
     ? estatico === 'dark'
       ? LabelNameDark
-      : LabelNameLight
+      : LabelNameDark
     : isDarkTheme
     ? LabelNameDark
-    : LabelNameLight;
+    : LabelNameDark;
 
   return (
     <View>

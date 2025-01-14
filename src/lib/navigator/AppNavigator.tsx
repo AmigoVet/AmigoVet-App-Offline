@@ -140,7 +140,7 @@ const BottomTabsNavigator = () => {
                     bottom: -20,
                     width: 70,
                     height: 55,
-                    backgroundColor: newColors.principal,
+                    backgroundColor: 'transparent',
                     borderTopLeftRadius: -30,
                     borderTopRightRadius: -30,
                     borderBottomLeftRadius: 50,

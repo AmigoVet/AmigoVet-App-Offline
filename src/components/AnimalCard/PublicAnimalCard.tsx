@@ -22,16 +22,8 @@ const PublicAnimalCard: React.FC<PublicAnimalCardProps> = ({ animal }) => {
     const GlobalStyles = createGlobalStyles(isDarkTheme);
     const styles = dymanycStyles(colors);
 
-    const handleView = () => {
-        // Navegar a la vista de detalles del animal
-        navigate('AnimalView', { id: animal.id});
-    };
-
     return (
-        <Pressable 
-            style={styles.container}
-            onPress={() => handleView()}
-        >
+        <Pressable style={styles.container} onPress={() => {navigate('AnimalView', { id: animal.id})}}>
             <View style={styles.textContainer}>
                 <Text style={styles.nombre}>{animal.nombre}<Text style={GlobalStyles.miniText}>({animal.id})</Text></Text>
                 <Text style={GlobalStyles.label}>{animal.identificador}</Text>

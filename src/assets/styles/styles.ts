@@ -6,12 +6,12 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
 
   return StyleSheet.create({
     container: {
+      width: '100%',
       flex: 1,
       backgroundColor: colors.fondo,
       marginTop: -30,
       paddingTop: 30,
       marginBottom: -30,
-      padding: 20,
       alignItems: 'center',
       justifyContent: 'flex-start',
     },

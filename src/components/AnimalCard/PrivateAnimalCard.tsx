@@ -1,63 +1,52 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import React from 'react'
-import CustomImage from '../Customs/CustomImage';
+import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getDynamicColors } from '../../assets/styles/colors';
-import { createGlobalStyles } from '../../assets/styles/styles';
+import { getDynamicColors, newColors } from '../../assets/styles/colors';
 import { Animal } from '../../lib/interfaces/animal';
 import { RootStackParamList } from '../../views/Welcome';
 import { useTheme } from '../../lib/context/ThemeContext';
 
-// Usar una prop específica para pasar los datos
 interface PrivateAnimalCardProps {
   animal: Animal;
 }
 
 const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
-    const {navigate} = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { isDarkTheme } = useTheme();
+  const colors = getDynamicColors(isDarkTheme);
+  const styles = dynamicStyles(colors);
 
-    const { isDarkTheme } = useTheme();
-    const colors = getDynamicColors(isDarkTheme);
-    const GlobalStyles = createGlobalStyles(isDarkTheme);
-    const styles = dymanycStyles(colors);
+  return (
+    <Pressable
+      style={styles.container}
+      onPress={() => navigate('AnimalView', { id: animal.id })}
+    >
+      <View style={styles.box}>
+        <Text style={styles.text}>Animal: {animal.nombre}</Text>
+      </View>
+    </Pressable>
+  );
+};
 
-    const handleView = () => {
-        // Navegar a la vista de detalles del animal
-        navigate('AnimalView', { id: animal.id});
-    };
-
-    return (
-        <Pressable 
-            style={styles.container}
-            onPress={() => handleView()}
-        >
-            <View style={styles.textContainer}>
-                <Text style={styles.nombre}>{animal.nombre}<Text style={GlobalStyles.miniText}>({animal.id})</Text></Text>
-                <Text style={GlobalStyles.label}>{animal.identificador}</Text>
-            </View>
-            <CustomImage 
-                source={animal.image}
-            />
-        </Pressable>
-    )
-}
-
-const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>) =>
-    StyleSheet.create({
+const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+  StyleSheet.create({
     container: {
-        width: 340,
+      borderRadius: 10,
+      backgroundColor: colors.fondo,
     },
-    nombre: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: colors.blanco
+    box: {
+      height: 150,
+      width: 340,
+      backgroundColor: newColors.verde,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 10,
     },
-    textContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+    text: {
+      color: colors.fondo,
+      fontSize: 16,
     },
-})
+  });
 
 export default PrivateAnimalCard;
