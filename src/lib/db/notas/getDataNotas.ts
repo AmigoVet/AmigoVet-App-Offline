@@ -1,5 +1,4 @@
 import { Notes } from "../../interfaces/animal";
-import { Register } from "../../interfaces/registers";
 import { db } from "../db";
 
 export const getDataNotas = (animalId: string): Promise<Notes[]> => {

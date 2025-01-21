@@ -3,12 +3,13 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getDynamicColors, newColors } from '../../assets/styles/colors';
-import { Animal } from '../../lib/interfaces/animal';
+import { AnimalWithNotes } from '../../lib/interfaces/animal';
 import { RootStackParamList } from '../../views/Welcome';
 import { useTheme } from '../../lib/context/ThemeContext';
+import { CustomIcon, CustomImage } from '../Customs';
 
 interface PrivateAnimalCardProps {
-  animal: Animal;
+  animal: AnimalWithNotes;
 }
 
 const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
@@ -18,12 +19,40 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
   const styles = dynamicStyles(colors);
 
   return (
-    <Pressable
-      style={styles.container}
-      onPress={() => navigate('AnimalView', { id: animal.id })}
-    >
-      <View style={styles.box}>
-        <Text style={styles.text}>Animal: {animal.nombre}</Text>
+    <Pressable style={styles.box} onPress={() => navigate('AnimalView', { id: animal.id })}>
+      <View style={styles.imageContainer}>
+        <CustomImage source={animal.image} style={styles.image} />
+      </View>
+      <View style={styles.textContainer}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+          <Text style={[styles.text, { fontWeight: 'bold' }]}>{animal.identificador}</Text>
+          <Text style={styles.text}>{animal.nombre}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start' }}>
+          <CustomIcon name="location-outline" size={20} color={newColors.principal} />
+          <Text style={[styles.text, { marginLeft: 8 }]}>{animal.ubicacion}</Text>
+        </View>
+        <View style={styles.notesContainer}>
+          {animal.notes.length > 0 ? (
+            animal.notes.map((note) => (
+              <View key={note.id}>
+                <Text style={styles.text}>{note.nota}</Text>
+                <Text style={styles.noteDate}>{note.fecha}</Text>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.emptyNotes}>Sin notas relevantes</Text>
+          )}
+        </View>
+        <View>
+          {animal.embarazada && <Text style={styles.text}>En estado de preñez</Text>}
+          {animal.genero === "Hembra" && <Text style={styles.text}>Próxima fecha de gestación: {}</Text>}
+          <CustomIcon
+            name={animal.genero === "Hembra" ? "female" : "male"}
+            size={20}
+            color={newColors.principal}
+          />
+        </View>
       </View>
     </Pressable>
   );
@@ -31,21 +60,46 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
 
 const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
   StyleSheet.create({
-    container: {
-      borderRadius: 10,
-      backgroundColor: colors.fondo,
-    },
     box: {
-      height: 150,
+      height: 150, 
       width: 340,
       backgroundColor: newColors.verde,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 10,
+      borderRadius: 30,
+      flexDirection: 'row',
+      overflow: 'hidden',
+    },
+    imageContainer: {
+      width: '40%',
+      justifyContent: 'center', 
+      alignItems: 'center', 
+    },
+    image: {
+      height: '80%',
+      width: '80%',
+      resizeMode: 'contain',
+    },
+    textContainer: {
+      width: '60%', 
+      justifyContent: 'flex-start', 
+      padding: 15, 
     },
     text: {
       color: colors.fondo,
-      fontSize: 16,
+      fontSize: 14,
+      textAlign: 'left', 
+    },
+    notesContainer: {
+      marginTop: 10,
+    },
+    noteDate: {
+      fontSize: 13,
+      fontWeight: 'bold',
+      color: newColors.principalLight,
+    },
+    emptyNotes: {
+      fontSize: 12,
+      fontStyle: 'italic',
+      color: '#888',
     },
   });
 

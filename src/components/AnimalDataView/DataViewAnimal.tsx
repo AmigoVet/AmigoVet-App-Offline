@@ -24,7 +24,7 @@ const DataViewAnimal = ({ animal, notas }: DataViewAnimalProps) => {
   const GlobalStyles = createGlobalStyles(isDarkTheme);
   const colors = getDynamicColors(isDarkTheme);
   const styles = createStyles(colors);
-  
+  console.log(notas)
   return (
   <View>
 
@@ -46,7 +46,7 @@ const DataViewAnimal = ({ animal, notas }: DataViewAnimalProps) => {
         <View style={styles.dataContainer}>
           {notas.map((nota, index) => (
             <Text key={index} style={GlobalStyles.note}>
-              ● {nota.nota}{nota.fecha ? `${formatearFecha(nota.fecha)}` : ''}
+              ● {nota.nota}{nota.fecha ? ` ${nota.fecha}` : ''}
             </Text>
           ))}
         </View>

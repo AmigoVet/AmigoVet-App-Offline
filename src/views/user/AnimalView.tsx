@@ -14,8 +14,6 @@ import { Animal, Notes } from "../../lib/interfaces/animal";
 // **Contexto y estilos**
 import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
-import { createGlobalStyles } from "../../assets/styles/styles";
-import { createNewStyles } from "../../assets/styles/NewStyles";
 
 // **Componentes locales**
 import { CarouselImages, DataViewAnimal, HeaderRegisterTable, RowRegister } from "../../components/AnimalDataView";
@@ -25,7 +23,6 @@ import { ModalButton } from "../../components/global";
 
 // ** AsyncStorage**
 import RequestGPTButton from "../../components/global/RequestGPTButton";
-import { gptRequest } from "../../lib/functions/gptRequest";
 import {getDataAnimalbyId } from "../../lib/db/getDataAnimal";
 import { getDataRegisters } from "../../lib/db/registers/getDataRegister";
 import { handleCreateRegister } from "./functions/handleCreateRegister";
@@ -33,7 +30,6 @@ import { handleSave } from "./functions/handleSave";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
 import { deleteDataRegister } from "../../lib/db/registers/deleteDataRegister";
 import { getDataNotas } from "../../lib/db/notas/getDataNotas";
-import { getAvailableRequests, manageDailyRequests } from "../../lib/utils/limitRequestGpt";
 import LoaderScreen from "../../components/global/LoaderScreen";
 import { AnimalViewStyles } from "../../assets/styles/AnimalViewStyles";
 import ContentModalSelecionaropcion from "../../components/modals/AnimalView/ContentModalSelecionaropcion";
@@ -164,6 +160,10 @@ const AnimalView = () => {
         console.error("Error al cargar los registros:", error);
       }
     }
+    console.log("-----------------------------------------------------------------------------");
+    console.log(animal);
+    console.log(notes);
+    console.log(registers);
   };
 
   // Cargar Registros y datos del animal

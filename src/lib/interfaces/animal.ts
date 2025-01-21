@@ -23,6 +23,10 @@ export interface Animal {
     embarazada: boolean;
 }
 
+export interface AnimalWithNotes extends Animal {
+    notes: Notes[];
+}
+
 export interface Notes {
     id: string;
     animalId: string;

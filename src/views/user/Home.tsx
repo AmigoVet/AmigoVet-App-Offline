@@ -5,16 +5,16 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from '../../assets/styles/styles';
-import { Animal } from '../../lib/interfaces/animal';
+import { Animal, AnimalWithNotes } from '../../lib/interfaces/animal';
 import useAuthStore from '../../lib/store/authStore';
-import { getDataAnimal, getLenghtAnimal } from '../../lib/db/getDataAnimal';
+import { getLenghtAnimal, getSimplificatedDataAnimalsWithNotes } from '../../lib/db/getDataAnimal';
 import { createTables } from '../../lib/db/createTable';
 import { deleteDataAnimal } from '../../lib/db/animals/deleteDataAnimal';
 import PrivateAnimalCard from '../../components/AnimalCard/PrivateAnimalCard';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user);
-  const [animals, setAnimals] = useState<Animal[]>([]);
+  const [animals, setAnimals] = useState<AnimalWithNotes[]>([]);
   const [selectedAnimal, setSelectedAnimal] = useState<Animal>({} as Animal);
   const [refreshing, setRefreshing] = useState(false);
   const modalRef = useRef<Modalize>(null);
@@ -27,7 +27,7 @@ const Home = () => {
   const [totalAnimals, setTotalAnimals] = useState<number>(0);
 
   const loadAnimal = async () => {
-    const animales = await getDataAnimal(String(user?.userId));
+    const animales = await getSimplificatedDataAnimalsWithNotes(String(user?.userId));
     const lengthAnimals = await getLenghtAnimal(user!.userId);
     setTotalAnimals(lengthAnimals);
     setAnimals(animales);
@@ -50,13 +50,13 @@ const Home = () => {
     setRefreshing(false);
   };
 
-  const renderItem = ({ item }: { item: Animal }) => (
+  const renderItem = ({ item }: { item: AnimalWithNotes }) => (
     <View style={[styles.rowFront, styles.row]}>
       <PrivateAnimalCard animal={item} />
     </View>
   );
 
-  const renderHiddenItem = ({ item }: { item: Animal }) => (
+  const renderHiddenItem = ({ item }: { item: AnimalWithNotes }) => (
     <View style={[styles.rowBack, styles.row]}>
       <TouchableOpacity style={styles.deleteButton} onPress={() => openModal(item)}>
         <Text style={styles.hiddenText}>Eliminar</Text>
@@ -102,7 +102,7 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
         width: '100%',
         height: 150,
         marginVertical: 10,
-        borderRadius: 10,
+        borderRadius: 30,
       },
       rowFront: {
         backgroundColor: colors.fondo,

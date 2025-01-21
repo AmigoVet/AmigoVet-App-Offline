@@ -1,6 +1,8 @@
 export const newColors = {
 
   principal : '#e9e3dc',
+  principalLight : '#e3e6e1',
+  
   secundario : '#232322',
   
   fondo_principal : '#e9e3dc',
