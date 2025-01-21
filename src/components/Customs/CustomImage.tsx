@@ -9,22 +9,24 @@ interface CustomImageProps {
 
 
 const CustomImage = ({ source, full, style }: CustomImageProps) => {
-
-  const windowWidth = Dimensions.get('window').width;
   return (
-    <Image 
-        source={{ uri: `file://${source}` }} 
-        style={[{ 
-            width: full ? windowWidth : '100%',
-            height: full ? 250 : 200, 
-            borderRadius: 30, 
-            marginBottom: 10,
-            marginHorizontal: full ? -10 : 0,
-            zIndex: 10,
-        }, style]}
-        resizeMode="cover"
+    <Image
+      source={{ uri: `file://${source}` }}
+      style={[
+        {
+          width: full ? Dimensions.get('window').width : '100%',
+          height: full ? 250 : '100%',
+          resizeMode: 'cover', 
+          borderTopLeftRadius: full ? 0 : 30,
+          borderTopRightRadius: full ? 0 : 30,
+          borderBottomLeftRadius: 30,
+          borderBottomRightRadius: 30,
+        },
+        style, 
+      ]}
     />
-  )
-}
+  );
+};
+
 
 export default CustomImage

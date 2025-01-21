@@ -21,7 +21,7 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
   return (
     <Pressable style={styles.box} onPress={() => navigate('AnimalView', { id: animal.id })}>
       <View style={styles.imageContainer}>
-        <CustomImage source={animal.image} style={styles.image} />
+        <CustomImage source={animal.image} />
       </View>
       <View style={styles.textContainer}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
@@ -30,13 +30,13 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start' }}>
           <CustomIcon name="location-outline" size={20} color={newColors.principal} />
-          <Text style={[styles.text, { marginLeft: 8 }]}>{animal.ubicacion}</Text>
+          <Text style={[styles.text, { fontWeight: 200 }]}>{animal.ubicacion}</Text>
         </View>
-        <View style={styles.notesContainer}>
+        <View >
           {animal.notes.length > 0 ? (
             animal.notes.map((note) => (
               <View key={note.id}>
-                <Text style={styles.text}>{note.nota}</Text>
+                <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>{note.nota}</Text>
                 <Text style={styles.noteDate}>{note.fecha}</Text>
               </View>
             ))
@@ -46,12 +46,7 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
         </View>
         <View>
           {animal.embarazada && <Text style={styles.text}>En estado de preñez</Text>}
-          {animal.genero === "Hembra" && <Text style={styles.text}>Próxima fecha de gestación: {}</Text>}
-          <CustomIcon
-            name={animal.genero === "Hembra" ? "female" : "male"}
-            size={20}
-            color={newColors.principal}
-          />
+          {animal.genero === "Hembra" && <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>Fecha de gestación: {}</Text>}
         </View>
       </View>
     </Pressable>
@@ -69,27 +64,22 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       overflow: 'hidden',
     },
     imageContainer: {
-      width: '40%',
+      width: '50%',
       justifyContent: 'center', 
       alignItems: 'center', 
     },
-    image: {
-      height: '80%',
-      width: '80%',
-      resizeMode: 'contain',
-    },
     textContainer: {
-      width: '60%', 
+      width: '50%', 
       justifyContent: 'flex-start', 
-      padding: 15, 
+      paddingVertical: 10,
+      paddingRight: 10,
+      paddingLeft: 5,
     },
     text: {
       color: colors.fondo,
       fontSize: 14,
       textAlign: 'left', 
-    },
-    notesContainer: {
-      marginTop: 10,
+      fontWeight: 400,
     },
     noteDate: {
       fontSize: 13,
