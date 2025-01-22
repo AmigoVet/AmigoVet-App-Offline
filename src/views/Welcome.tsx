@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Dimensions, Image } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useTheme } from '../lib/context/ThemeContext';
@@ -6,6 +6,7 @@ import { createGlobalStyles } from '../assets/styles/styles';
 import { CustomButton } from '../components/Customs';
 import { FromDevora } from '../components/global';
 import { getDynamicColors, staticColors } from '../assets/styles/colors';
+import { createTables } from '../lib/db/createTable';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -30,6 +31,11 @@ const Welcome = () => {
   const login = () => {
     navigate('Login'); 
   };
+
+    useEffect(() => {
+      createTables();
+    }, []);
+  
 
   const { width, height } = Dimensions.get('window');
 
