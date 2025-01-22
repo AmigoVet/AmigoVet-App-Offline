@@ -2,10 +2,10 @@ import React from 'react';
 import { View, StyleSheet, Image, Pressable } from 'react-native';
 import { DrawerActions, NavigationProp, useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../lib/context/ThemeContext';
-import { getDynamicColors, staticColors } from '../../assets/styles/colors';
+import { getDynamicColors, newColors, staticColors } from '../../assets/styles/colors';
 import { RootStackParamList } from '../../views/Welcome';
 import { CustomIcon } from '../Customs';
-import LabelLogo from '../global/LabelLogo';
+import LogoSimple from '../global/LogoSimple';
 
 
 const HeaderDrawer = () => {
@@ -17,22 +17,13 @@ const HeaderDrawer = () => {
   return (
     <View style={styles.container}>
       <Pressable onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-        <CustomIcon name="menu" size={30} color={staticColors.blancoLight} />
+        <CustomIcon name="chevron-forward-outline" size={30} color={staticColors.blancoLight} />
       </Pressable>
-      <LabelLogo estatico='dark' width={200} height={100} />
-      {/* <Image
-        source={require('../../assets/img/HeaderLogo.png')}
-        style={styles.logo}
-        resizeMode="contain"
-      /> */}
-      <Pressable onPress={() => navigation.navigate('Busqueda')}>
-        <CustomIcon name="search" size={30} color={staticColors.blancoLight} />
-      </Pressable>
+      <LogoSimple estatico='light' />
     </View>
   );
 };
 
-// Función para generar estilos dinámicos
 const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
   StyleSheet.create({
     container: {
@@ -41,7 +32,7 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: colors.fondoDark,
+      backgroundColor: newColors.fondo_secundario,
       borderBottomLeftRadius: 20,
       borderBottomRightRadius: 20,
       zIndex: 10,
