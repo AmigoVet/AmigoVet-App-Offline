@@ -8,9 +8,6 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
     container: {
       flex: 1,
       backgroundColor: colors.fondo,
-      marginTop: -30,
-      paddingTop: 30,
-      marginBottom: -30,
       width: "100%",
       paddingHorizontal: 10,
       alignItems: 'center',
