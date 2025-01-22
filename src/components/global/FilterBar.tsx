@@ -1,6 +1,8 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import React, { useState } from 'react';
 import { generos, Especie, especiesRazasMap, propositosPorEspecie } from '../../lib/interfaces/animal';
+import { newColors } from '../../assets/styles/colors';
+import { constants } from '../../assets/styles/constants';
 
 type Filter = {
   id: string;
@@ -37,7 +39,9 @@ const FilterBar: React.FC = () => {
     if (selectedFilter) {
       setFilters((prevFilters) =>
         prevFilters.map((filter) =>
-          filter.id === selectedFilter.id ? { ...filter, selectedOption: option } : filter
+          filter.id === selectedFilter.id
+            ? { ...filter, selectedOption: option === 'Ninguno' ? undefined : option }
+            : filter
         )
       );
       closeModal();
@@ -72,7 +76,7 @@ const FilterBar: React.FC = () => {
             <Text style={styles.modalTitle}>{selectedFilter?.label}</Text>
             {selectedFilter?.options.length ? (
               <FlatList
-                data={selectedFilter.options}
+                data={['Ninguno', ...selectedFilter.options]}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                   <TouchableOpacity
@@ -104,8 +108,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   filterButton: {
-    backgroundColor: '#EFEFEF',
-    borderRadius: 20,
+    backgroundColor: newColors.verde,
+    borderRadius: constants.borderRadius,
     paddingVertical: 10,
     paddingHorizontal: 15,
     marginRight: 10,
@@ -113,7 +117,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   filterText: {
-    color: '#333',
+    color: newColors.fondo_principal,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -124,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#FFF',
+    backgroundColor: newColors.fondo_principal,
     borderRadius: 10,
     padding: 20,
     width: '80%',
@@ -137,27 +141,27 @@ const styles = StyleSheet.create({
   optionButton: {
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#DDD',
+    borderBottomColor: newColors.principalLight,
   },
   optionText: {
     fontSize: 16,
-    color: '#333',
+    color: newColors.fondo_secundario,
   },
   noOptionsText: {
     fontSize: 16,
-    color: '#999',
+    color: newColors.rojo,
     textAlign: 'center',
     marginVertical: 10,
   },
   closeButton: {
     marginTop: 20,
-    backgroundColor: '#EFEFEF',
+    backgroundColor: newColors.rojo,
     paddingVertical: 10,
     borderRadius: 10,
     alignItems: 'center',
   },
   closeButtonText: {
-    color: '#333',
+    color: newColors.principal,
     fontSize: 16,
     fontWeight: '600',
   },

@@ -8,7 +8,7 @@ export const newColors = {
   fondo_principal : '#e9e3dc',
   fondo_secundario : '#232322',
 
-
+  rojo: '#a80c23',
   verde: '#495445',
 }
 
