@@ -7,6 +7,7 @@ import { AnimalWithNotes } from '../../lib/interfaces/animal';
 import { RootStackParamList } from '../../views/Welcome';
 import { useTheme } from '../../lib/context/ThemeContext';
 import { CustomIcon, CustomImage } from '../Customs';
+import { constants } from '../../assets/styles/constants';
 
 interface PrivateAnimalCardProps {
   animal: AnimalWithNotes;
@@ -59,7 +60,7 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       height: 150, 
       width: 340,
       backgroundColor: newColors.verde,
-      borderRadius: 30,
+      borderRadius: constants.borderRadius,
       flexDirection: 'row',
       overflow: 'hidden',
     },

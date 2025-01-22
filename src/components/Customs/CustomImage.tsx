@@ -1,5 +1,6 @@
 import { View, Text, Image, Dimensions, StyleProp, ImageStyle } from 'react-native';
 import React from 'react'
+import { constants } from '../../assets/styles/constants';
 
 interface CustomImageProps {
     source: string;
@@ -17,10 +18,10 @@ const CustomImage = ({ source, full, style }: CustomImageProps) => {
           width: full ? Dimensions.get('window').width : '100%',
           height: full ? 250 : '100%',
           resizeMode: 'cover', 
-          borderTopLeftRadius: full ? 0 : 30,
-          borderTopRightRadius: full ? 0 : 30,
-          borderBottomLeftRadius: 30,
-          borderBottomRightRadius: 30,
+          borderTopLeftRadius: full ? 0 : constants.borderRadius,
+          borderTopRightRadius: full ? 0 : constants.borderRadius,
+          borderBottomLeftRadius: constants.borderRadius,
+          borderBottomRightRadius: constants.borderRadius,
         },
         style, 
       ]}

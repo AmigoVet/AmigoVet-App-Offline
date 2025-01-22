@@ -8,9 +8,11 @@ import { createGlobalStyles } from '../../assets/styles/styles';
 import { Animal, AnimalWithNotes } from '../../lib/interfaces/animal';
 import useAuthStore from '../../lib/store/authStore';
 import { getLenghtAnimal, getSimplificatedDataAnimalsWithNotes } from '../../lib/db/getDataAnimal';
-import { createTables } from '../../lib/db/createTable';
 import { deleteDataAnimal } from '../../lib/db/animals/deleteDataAnimal';
 import PrivateAnimalCard from '../../components/AnimalCard/PrivateAnimalCard';
+import CustomSwitch from '../../components/Customs/CustomSwitch';
+import SearchButton from '../../components/global/SearchButton';
+import { constants } from '../../assets/styles/constants';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user);
@@ -63,9 +65,23 @@ const Home = () => {
     </View>
   );
 
+  const onSwitchFilter = (value: string) => {
+    console.log(value);
+  };
+
   return (
     <>
       <View style={[GlobalStyles.container, styles.container]}>
+
+      <View style={styles.searchContainer}>
+        <View style={styles.customSwitch}>
+          <CustomSwitch option1="Privado" option2="Público" onSwitch={onSwitchFilter} />
+        </View>
+        <View style={styles.searchButton}>
+          <SearchButton />
+        </View>
+      </View>
+
         {animals.length > 0 ? (
             <SwipeListView
                 data={animals}
@@ -78,8 +94,7 @@ const Home = () => {
                 disableRightSwipe
                 onRefresh={handleRefresh}
                 disableLeftSwipe={false}
-                />
-
+              />
         ) : (
           <Text style={[GlobalStyles.error, { color: colors.rojo }]}>No hay animales registrados</Text>
         )}
@@ -101,7 +116,7 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
         width: '100%',
         height: 150,
         marginVertical: 10,
-        borderRadius: 30,
+        borderRadius: constants.borderRadius,
       },
       rowFront: {
         backgroundColor: colors.fondo,
@@ -145,6 +160,21 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       },
       modalButtonText: {
         fontWeight: 'bold',
+      },
+      searchContainer: {
+        flexDirection: 'row',
+        width: '90%',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginVertical: 10,
+      },
+      customSwitch: {
+        flex: 3, 
+      },
+      searchButton: {
+        flex: 1, 
+        alignItems: 'center',
+        justifyContent: 'center',
       },
 });
   
