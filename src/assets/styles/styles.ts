@@ -6,7 +6,6 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
 
   return StyleSheet.create({
     container: {
-      width: '100%',
       flex: 1,
       backgroundColor: colors.fondo,
       marginTop: -30,

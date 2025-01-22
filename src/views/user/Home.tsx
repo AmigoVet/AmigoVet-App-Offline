@@ -13,6 +13,7 @@ import PrivateAnimalCard from '../../components/AnimalCard/PrivateAnimalCard';
 import CustomSwitch from '../../components/Customs/CustomSwitch';
 import SearchButton from '../../components/global/SearchButton';
 import { constants } from '../../assets/styles/constants';
+import FilterBar from '../../components/global/FilterBar';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user);
@@ -52,17 +53,13 @@ const Home = () => {
   };
 
   const renderItem = ({ item }: { item: AnimalWithNotes }) => (
-    <View style={[styles.rowFront, styles.row]}>
       <PrivateAnimalCard animal={item} />
-    </View>
   );
 
   const renderHiddenItem = ({ item }: { item: AnimalWithNotes }) => (
-    <View style={[styles.rowBack, styles.row]}>
-      <TouchableOpacity style={styles.deleteButton} onPress={() => openModal(item)}>
-        <Text style={styles.hiddenText}>Eliminar</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity style={[styles.deleteButton, styles.row]} onPress={() => openModal(item)}>
+      <Text style={styles.hiddenText}>Eliminar</Text>
+    </TouchableOpacity>
   );
 
   const onSwitchFilter = (value: string) => {
@@ -71,29 +68,33 @@ const Home = () => {
 
   return (
     <>
-      <View style={[GlobalStyles.container, styles.container]}>
-
-      <View style={styles.searchContainer}>
-        <View style={styles.customSwitch}>
-          <CustomSwitch option1="Privado" option2="Público" onSwitch={onSwitchFilter} />
-        </View>
-        <View style={styles.searchButton}>
-          <SearchButton />
-        </View>
-      </View>
+      <View style={[GlobalStyles.container]}>
 
         {animals.length > 0 ? (
             <SwipeListView
-                data={animals}
-                renderItem={renderItem}
-                renderHiddenItem={renderHiddenItem}
-                keyExtractor={(item) => item.id}
-                leftOpenValue={0}
-                rightOpenValue={-65} 
-                refreshing={refreshing}
-                disableRightSwipe
-                onRefresh={handleRefresh}
-                disableLeftSwipe={false}
+            data={animals}
+            renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
+            keyExtractor={(item) => item.id}
+            leftOpenValue={0}
+            rightOpenValue={-85}
+            refreshing={refreshing}
+            disableRightSwipe
+            onRefresh={handleRefresh}
+            disableLeftSwipe={false}
+                ListHeaderComponent={
+                  <>
+                    <View style={styles.searchContainer}>
+                      <View style={styles.customSwitch}>
+                        <CustomSwitch option1="Privado" option2="Público" onSwitch={onSwitchFilter} />
+                      </View>
+                      <View style={styles.searchButton}>
+                        <SearchButton />
+                      </View>
+                    </View>
+                    <FilterBar />
+                  </>
+                }
               />
         ) : (
           <Text style={[GlobalStyles.error, { color: colors.rojo }]}>No hay animales registrados</Text>
@@ -108,74 +109,58 @@ const Home = () => {
 };
 
 const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
-    StyleSheet.create({
-      container: {
-        width: '100%',
-      },
-      row:{
-        width: '100%',
-        height: 150,
-        marginVertical: 10,
-        borderRadius: constants.borderRadius,
-      },
-      rowFront: {
-        backgroundColor: colors.fondo,
-      },
-      rowBack: {
-        overflow: 'hidden',
-      },
-      deleteButton: {
-        flex: 1, 
-        height: '100%', 
-        width: 340,
-        justifyContent: 'center',
-        alignItems: 'flex-end', 
-        backgroundColor: colors.rojo,
-        padding: 10,
-      },
-      hiddenText: {
-        color: 'white',
-        fontWeight: 'bold',
-      },
-      modalContent: {
-        flex: 1,
-        padding: 20,
-      },
-      modalTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-      },
-      modalId: {
-        fontSize: 16,
-      },
-      modalActions: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-      },
-      modalButton: {
-        padding: 10,
-        borderRadius: 5,
-        width: '40%',
-        alignItems: 'center',
-      },
-      modalButtonText: {
-        fontWeight: 'bold',
-      },
-      searchContainer: {
-        flexDirection: 'row',
-        width: '90%',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginVertical: 10,
-      },
-      customSwitch: {
-        flex: 3, 
-      },
-      searchButton: {
-        flex: 1, 
-        alignItems: 'center',
-        justifyContent: 'center',
-      },
+  StyleSheet.create({
+    row: {
+      height: 150,
+      width: "100%",
+      marginVertical: 5,
+      borderRadius: constants.borderRadius,
+    },
+    deleteButton: {
+      padding: 15,
+      justifyContent: 'center',
+      alignItems: 'flex-end',
+      backgroundColor: colors.rojo,
+    },
+    hiddenText: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+    modalContent: {
+      flex: 1,
+      padding: 20,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    modalId: {
+      fontSize: 16,
+    },
+    modalActions: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    modalButton: {
+      padding: 10,
+      borderRadius: 5,
+      width: '40%',
+      alignItems: 'center',
+    },
+    modalButtonText: {
+      fontWeight: 'bold',
+    },
+    searchContainer: {
+      flexDirection: 'row',
+      marginVertical: 10,
+      gap: 10,
+    },
+    customSwitch: {
+      flex: 3,
+    },
+    searchButton: {
+      flex: 1,
+    },
 });
   
 interface ContendModalProps {

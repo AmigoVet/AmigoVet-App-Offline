@@ -57,12 +57,12 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
 const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
   StyleSheet.create({
     box: {
+      marginVertical: 5,
       height: 150, 
-      width: 340,
+      width: 360,
       backgroundColor: newColors.verde,
       borderRadius: constants.borderRadius,
       flexDirection: 'row',
-      overflow: 'hidden',
     },
     imageContainer: {
       width: '50%',
