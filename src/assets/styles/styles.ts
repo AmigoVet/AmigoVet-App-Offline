@@ -11,6 +11,8 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
       marginTop: -30,
       paddingTop: 30,
       marginBottom: -30,
+      width: "100%",
+      paddingHorizontal: 10,
       alignItems: 'center',
       justifyContent: 'flex-start',
     },

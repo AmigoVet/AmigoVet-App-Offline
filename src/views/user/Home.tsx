@@ -112,7 +112,7 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
   StyleSheet.create({
     row: {
       height: 150,
-      width: "100%",
+      width: "94%",
       marginVertical: 5,
       borderRadius: constants.borderRadius,
     },
