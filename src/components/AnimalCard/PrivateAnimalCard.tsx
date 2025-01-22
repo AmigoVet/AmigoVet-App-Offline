@@ -8,6 +8,7 @@ import { RootStackParamList } from '../../views/Welcome';
 import { useTheme } from '../../lib/context/ThemeContext';
 import { CustomIcon, CustomImage } from '../Customs';
 import { constants } from '../../assets/styles/constants';
+import {  calcularProximaFechaCelo } from '../../lib/functions/CalcularFechaCelo';
 
 interface PrivateAnimalCardProps {
   animal: AnimalWithNotes;
@@ -47,7 +48,9 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
         </View>
         <View>
           {animal.embarazada && <Text style={styles.text}>En estado de preñez</Text>}
-          {animal.genero === "Hembra" && <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>Fecha de gestación: {}</Text>}
+          {animal.genero === "Hembra" && <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>
+            Proxima fecha de celo: </Text>}
+          {animal.genero === "Hembra" && <Text style={styles.noteDate}>{calcularProximaFechaCelo(animal.celo!, animal.especie)}</Text>}
         </View>
       </View>
     </Pressable>

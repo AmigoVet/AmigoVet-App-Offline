@@ -8,7 +8,6 @@ export const createTables = () => {
 
 };
 
-
 const createAnimalTable = () => {
     db.transaction((tx) => {
         tx.executeSql(
@@ -31,7 +30,8 @@ const createAnimalTable = () => {
                 ubicacion TEXT,
                 created_at TEXT,
                 updated_at TEXT,
-                embarazada INTEGER DEFAULT 0
+                embarazada INTEGER DEFAULT 0,
+                celo TEXT
             )`,
             [],
             () => { console.log('Animal table created successfully'); },

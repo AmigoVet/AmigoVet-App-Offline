@@ -18,6 +18,7 @@ interface Props {
   onPressEditProposito: () => void;
   onPressEditUbicacion: () => void;
   onPressEditDescripcion: () => void;
+  onPressEditFechaCalor: () => void;
   onPressRegistroPrenos: () => void;
   onPressRegistroAborto: () => void;
   onPressRegistroTratamiento: () => void;
@@ -35,6 +36,7 @@ const ContentModalSelecionaropcion: React.FC<Props> = ({
   onPressEditProposito,
   onPressEditUbicacion,
   onPressEditDescripcion,
+  onPressEditFechaCalor,
   onPressRegistroPrenos,
   onPressRegistroTratamiento,
   onPressRegistroInseminacion,
@@ -67,6 +69,7 @@ const ContentModalSelecionaropcion: React.FC<Props> = ({
       <ModalButton text="Editar Propósito" actualData={animal.proposito} onPress={onPressEditProposito} />
       <ModalButton text="Editar Ubicación" actualData={animal.ubicacion} onPress={onPressEditUbicacion} />
       <ModalButton text="Editar Descripción" actualData={animal.descripcion} onPress={onPressEditDescripcion} />
+      <ModalButton text="Editar ultimo celo" actualData={animal.celo} onPress={onPressEditFechaCalor} />
 
       {/* Separador */}
       <View style={{ width: "100%", height: 0.5, backgroundColor: colors.blanco, marginVertical: 10 }} />

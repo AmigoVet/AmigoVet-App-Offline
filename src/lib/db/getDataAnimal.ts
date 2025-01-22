@@ -14,6 +14,8 @@ export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Pro
                     A.ubicacion, 
                     A.genero, 
                     A.embarazada,
+                    A.celo,
+                    A.especie,
                     N.id AS noteId, 
                     N.nota, 
                     N.fecha AS noteDate
@@ -50,6 +52,9 @@ export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Pro
                                 image: item.animalImage || '',
                                 ubicacion: item.ubicacion,
                                 genero: item.genero,
+                                celo: item.celo,
+                                embarazada: item.embarazada,
+                                especie: item.especie,
                                 notes: item.noteId && item.nota.toLowerCase().includes('parto')
                                     ? [
                                           {

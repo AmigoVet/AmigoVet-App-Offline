@@ -19,7 +19,6 @@ import { CustomImage, CustomIcon, CustomInput, CustomSelect, CustomDatePicker, C
 // **Funciones utilitarias**
 import { calcularEdad } from "../../lib/functions/CalcularEdad";
 import { saveAnimalData } from "../../lib/functions/GuardarAnimal";
-import { getRegisteredAnimalsCount } from "../../lib/utils/asyncStorage";
 import { setDataAnimal } from "../../lib/db/setDataAnimal";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
 
@@ -51,12 +50,7 @@ const New: React.FC = () => {
 
   
   const [totalAnimals, setTotalAnimals] = useState<number>(0);
-  useEffect(() => {
-  const fetchAnimalCount = async () => {
-      const count = await getRegisteredAnimalsCount(user!.userId);
-      setTotalAnimals(count);
-  };    fetchAnimalCount();
-  }, []); 
+
 
   const razasDisponibles =
     especie && especie !== "Otro" ? especiesRazasMap[especie] : [];

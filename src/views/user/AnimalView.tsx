@@ -17,7 +17,7 @@ import { getDynamicColors } from '../../assets/styles/colors';
 
 // **Componentes locales**
 import { CarouselImages, DataViewAnimal, HeaderRegisterTable, RowRegister } from "../../components/AnimalDataView";
-import { CustomButton, CustomImage, CustomIcon, CustomInput } from "../../components/Customs";
+import { CustomButton, CustomImage, CustomIcon, CustomInput, CustomDatePicker } from "../../components/Customs";
 import { ModalButton } from "../../components/global";
 
 
@@ -26,7 +26,7 @@ import RequestGPTButton from "../../components/global/RequestGPTButton";
 import {getDataAnimalbyId } from "../../lib/db/getDataAnimal";
 import { getDataRegisters } from "../../lib/db/registers/getDataRegister";
 import { handleCreateRegister } from "./functions/handleCreateRegister";
-import { handleSave } from "./functions/handleSave";
+import { handleSave, handleSaveCelo } from "./functions/handleSave";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
 import { deleteDataRegister } from "../../lib/db/registers/deleteDataRegister";
 import { getDataNotas } from "../../lib/db/notas/getDataNotas";
@@ -35,6 +35,7 @@ import { AnimalViewStyles } from "../../assets/styles/AnimalViewStyles";
 import ContentModalSelecionaropcion from "../../components/modals/AnimalView/ContentModalSelecionaropcion";
 import ContentModalSelectImage from "../../components/modals/AnimalView/ContentModalSelectImage";
 import ButtonAddRegister from "../../components/AnimalDataView/ButtonAddRegister";
+import { set } from "date-fns";
 
 
 const AnimalView = () => {
@@ -48,6 +49,7 @@ const AnimalView = () => {
 
   const [currentField, setCurrentField] = useState("");
   const [fieldValue, setFieldValue] = useState("");
+  const [fieldDate, setFieldDate] = useState<Date | null>(null);
   const [fieldImage, setFieldImage] = useState<number | null>(null);
   const [registers, setRegisters] = useState<Register[]>([]);
   const [registerToDelete, setRegisterToDelete] = useState<Register | null>(null);
@@ -160,10 +162,6 @@ const AnimalView = () => {
         console.error("Error al cargar los registros:", error);
       }
     }
-    console.log("-----------------------------------------------------------------------------");
-    console.log(animal);
-    console.log(notes);
-    console.log(registers);
   };
 
   // Cargar Registros y datos del animal
@@ -282,11 +280,12 @@ const AnimalView = () => {
           onPressEditImagen={() => handelAddImage(1)}
           onPressEditSecondImagen={() => handelAddImage(2)}
           onPressEditExtraImagen={() => handelAddImage(3)}
-          onPressEditIdentificador={() => handleEditField("identificador", animal!.identificador)}
-          onPressEditPeso={() => handleEditField("peso", animal!.peso)}
-          onPressEditProposito={() => handleEditField("proposito", animal!.proposito)}
-          onPressEditUbicacion={() => handleEditField("ubicacion", animal!.ubicacion)}
-          onPressEditDescripcion={() => handleEditField("descripcion", animal!.descripcion)}
+          onPressEditIdentificador={() => handleEditField("identificador", animal.identificador)}
+          onPressEditPeso={() => handleEditField("peso", animal.peso)}
+          onPressEditProposito={() => handleEditField("proposito", animal.proposito)}
+          onPressEditUbicacion={() => handleEditField("ubicacion", animal.ubicacion)}
+          onPressEditDescripcion={() => handleEditField("descripcion", animal.descripcion)}
+          onPressEditFechaCalor={() => handleEditField("celo", animal.celo || '')}
           onPressRegistroPrenos={() => handleCreateRegisterModal("Registro Preñes")}
           onPressRegistroTratamiento={() => handleCreateRegisterModal("Registro Tratamiento")}
           onPressRegistroInseminacion={() => handleCreateRegisterModal("Registro Inseminacion")}
@@ -307,20 +306,45 @@ const AnimalView = () => {
       { /* Modal para actualizar datos */ }
       <Modalize ref={editModalRef} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={styles.modalContent}>
-          <CustomInput
-            label={"Ingresa el " +currentField}
-            placeholder={currentField}
-            value={fieldValue} 
-            onChangeText={setFieldValue} 
-          />
-          <CustomButton text="Guardar" onPress={() => {
-            handleSave(currentField, fieldValue, animal!.id, () => {
-              editModalRef.current?.close();
-              loadData();
-              setCurrentField("");
-              setFieldValue("");
-            });
-          }} />
+          {currentField === 'celo' ? 
+          <>
+            <CustomDatePicker 
+              label={"Ingresa la última fecha de " + currentField} // Etiqueta dinámica
+              value={fieldDate} // Estado que contiene la fecha seleccionada
+              onDateChange={(date) => setFieldDate(date)} // Actualiza el estado con la fecha seleccionada
+            /> 
+
+            <CustomButton 
+              text="Guardar" 
+              onPress={() => {
+                handleSaveCelo(animal.id, fieldDate!.toISOString(), () => {
+                  editModalRef.current?.close(); // Cierra el modal
+                  loadData(); // Recarga los datos del animal
+                  setCurrentField(""); // Reinicia el campo actual
+                  setFieldDate(new Date()); // Reinicia el valor de la fecha
+                });
+              }} 
+            />
+          </>
+          : 
+          <>
+            <CustomButton text="Guardar" onPress={() => {
+              handleSave(currentField, fieldValue, animal.id, () => {
+                editModalRef.current?.close();
+                loadData();
+                setCurrentField("");
+                setFieldValue("");
+              });
+            }} />
+            <CustomInput
+              label={"Ingresa el " +currentField}
+              placeholder={currentField}
+              value={fieldValue} 
+              onChangeText={setFieldValue} 
+            />
+          </>
+          }
+
           <CustomButton
             text="Cancelar"
             onPress={() => {

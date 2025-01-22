@@ -56,3 +56,42 @@ export const handleSave = async (
     }
 };
 
+export const handleSaveCelo = async (
+    animalId: string,
+    nuevaFechaCelo: string,
+    onFinish: () => void
+  ) => {
+    if (!nuevaFechaCelo || !animalId) {
+      console.error("ID del animal o nueva fecha de celo no proporcionados.");
+      return;
+    }
+  
+    try {
+      // Actualizar la fecha de celo del animal en la tabla
+      await updateAnimal(animalId, { celo: nuevaFechaCelo });
+      console.log("Fecha de celo actualizada exitosamente.");
+  
+      // Crear un registro para auditar el cambio
+      const generateId = () => Math.random().toString(36).substr(2, 9);
+      const registro: Register = {
+        id: generateId(),
+        animalId: animalId,
+        comentario: `Se actualizó la fecha de celo a ${nuevaFechaCelo}`,
+        accion: "Actualización de fecha de celo",
+        fecha: new Date().toISOString(),
+      };
+  
+      await setDataRegister(registro);
+      console.log("Registro creado exitosamente.");
+  
+      // Mostrar alerta de éxito
+      Alert.alert("Fecha de celo", "La fecha de celo fue actualizada correctamente.");
+  
+      // Ejecutar el callback para finalizar
+      onFinish();
+    } catch (error) {
+      console.error("Error al actualizar la fecha de celo o guardar el registro:", error);
+      console.error("datos", animalId, nuevaFechaCelo);
+      Alert.alert("Error", "No se pudo actualizar la fecha de celo.");
+    }
+  };

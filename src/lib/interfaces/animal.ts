@@ -21,6 +21,7 @@ export interface Animal {
     created_at: string;
     updated_at: string;
     embarazada: boolean;
+    celo?: string;
 }
 
 export interface AnimalWithNotes extends Animal {

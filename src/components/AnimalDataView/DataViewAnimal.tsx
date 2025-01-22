@@ -41,7 +41,9 @@ const DataViewAnimal = ({ animal, notas }: DataViewAnimalProps) => {
         <Text style={GlobalStyles.textWhite}>Preñes: <Text style={[GlobalStyles.textOrange]}>{animal?.embarazada ? 'Sí' : 'No'}</Text></Text>
         <Text style={GlobalStyles.textWhite}>Nacimiento: <Text style={[GlobalStyles.textOrange]}>{ formatearFecha(animal!.nacimiento ? animal!.nacimiento : '')}</Text>
         </Text>
+        <Text style={GlobalStyles.textWhite}>Ultima fecha de calor: <Text style={[GlobalStyles.textOrange]}>{formatearFecha(animal?.celo ? animal?.celo : '')}</Text></Text>
       </View>
+      
       {notas && notas.length > 0 && (
         <View style={styles.dataContainer}>
           {notas.map((nota, index) => (

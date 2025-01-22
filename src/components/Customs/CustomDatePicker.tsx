@@ -12,6 +12,7 @@ interface CustomDatePickerProps {
   onAgeChange?: (age: string) => void;
   onBirthDateCalculated?: (birthDate: Date | null) => void;
   ageValue?: string;
+  findAge?: boolean;
 }
 
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
@@ -21,6 +22,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   onAgeChange,
   onBirthDateCalculated,
   ageValue = "",
+  findAge = false,
 }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [showAgeInput, setShowAgeInput] = useState(false);
@@ -99,12 +101,15 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             </Text>
             <CustomIcon name="calendar-outline" size={20} color={colors.verde} />
           </TouchableOpacity>
-          {value && (
+          {value && findAge && (
             <Text style={styles.ageLabel}>{`Edad aproximada: ${calculateAgeText(value)}`}</Text>
           )}
+          {findAge && 
           <TouchableOpacity style={styles.switchButton} onPress={handleSwitchMode}>
             <Text style={styles.switchText}>No sé la fecha exacta</Text>
           </TouchableOpacity>
+          }
+          
         </>
       )}
 
