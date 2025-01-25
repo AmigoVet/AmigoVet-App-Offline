@@ -1,13 +1,26 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
 import { CustomIcon } from '../Customs'; // Asegúrate de que el path sea correcto
 import { newColors } from '../../assets/styles/colors';
 import { constants } from '../../assets/styles/constants';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../views/Welcome';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const SearchButton = () => {
+
+  const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+
+  const onPress = () => {
+    navigate('Busqueda');
+  };
+
   return (
     <View style={styles.container}>
-      <CustomIcon name="search" size={30} color="black" />
+      <Pressable onPress={onPress}>
+        <CustomIcon name="search" size={30} color="black" />
+      </Pressable>
     </View>
   );
 };
