@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Animated } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { useTheme } from '../../lib/context/ThemeContext';
-import { getDynamicColors } from '../../assets/styles/colors';
+import { getDynamicColors, newColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from '../../assets/styles/styles';
 import { Animal, AnimalWithNotes } from '../../lib/interfaces/animal';
 import useAuthStore from '../../lib/store/authStore';
@@ -14,26 +15,74 @@ import CustomSwitch from '../../components/Customs/CustomSwitch';
 import SearchButton from '../../components/global/SearchButton';
 import { constants } from '../../assets/styles/constants';
 import FilterBar from '../../components/global/FilterBar';
+import ContentModalHome from '../../components/modals/Home/ContentModalHome';
+import { HomeViewStyles } from '../../assets/styles/HomeViewStyles';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user);
   const [animals, setAnimals] = useState<AnimalWithNotes[]>([]);
   const [selectedAnimal, setSelectedAnimal] = useState<Animal>({} as Animal);
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); 
   const modalRef = useRef<Modalize>(null);
+  
+  // Animation refs for each animal card and hidden item
+  const animatedValues = useRef<{
+    card: Animated.Value;
+    hiddenItem: Animated.Value;
+  }[]>([]);
 
   const { isDarkTheme } = useTheme();
   const colors = getDynamicColors(isDarkTheme);
   const GlobalStyles = createGlobalStyles(isDarkTheme);
-  const styles = dynamicStyles(colors);
+  const styles = HomeViewStyles(colors);
 
   const [totalAnimals, setTotalAnimals] = useState<number>(0);
 
   const loadAnimal = async () => {
-    const animales = await getSimplificatedDataAnimalsWithNotes(String(user?.userId));
-    const lengthAnimals = await getLenghtAnimal(user!.userId);
-    setTotalAnimals(lengthAnimals);
-    setAnimals(animales);
+    setIsLoading(true); 
+    try {
+      const animales = await getSimplificatedDataAnimalsWithNotes(String(user?.userId));
+      const lengthAnimals = await getLenghtAnimal(user!.userId);
+      
+      // Create animated values for each animal's card and hidden item
+      animatedValues.current = animales.map(() => ({
+        card: new Animated.Value(0),
+        hiddenItem: new Animated.Value(0)
+      }));
+      
+      setTotalAnimals(lengthAnimals);
+      setAnimals(animales);
+
+      // Animate cards first
+      const cardAnimations = animales.map((_, index) => 
+        Animated.timing(animatedValues.current[index].card, {
+          toValue: 1,
+          duration: 800,
+          delay: index * 150,
+          useNativeDriver: true
+        })
+      );
+
+      // Animate hidden items after cards are done
+      Animated.sequence([
+        Animated.parallel(cardAnimations),
+        Animated.parallel(
+          animales.map((_, index) => 
+            Animated.timing(animatedValues.current[index].hiddenItem, {
+              toValue: 1,
+              duration: 800,
+              useNativeDriver: true
+            })
+          )
+        )
+      ]).start();
+
+    } catch (error) {
+      console.error("Error loading animals:", error);
+    } finally {
+      setIsLoading(false); 
+    }
   };
 
   useEffect(() => {
@@ -45,22 +94,56 @@ const Home = () => {
     modalRef.current?.open();
   };
 
-
   const handleRefresh = async () => {
     setRefreshing(true);
     await loadAnimal();
     setRefreshing(false);
   };
 
-  const renderItem = ({ item }: { item: AnimalWithNotes }) => (
-      <PrivateAnimalCard animal={item} />
-  );
+  const renderItem = ({ item, index }: { item: AnimalWithNotes, index: number }) => {
+    // Animated style for card with smoother fade and scale
+    const animatedStyle = {
+      opacity: animatedValues.current[index].card.interpolate({
+        inputRange: [0, 0.3, 1],
+        outputRange: [0, 0.3, 1]
+      }),
+      transform: [
+        {
+          scale: animatedValues.current[index].card.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: [0.9, 0.95, 1]
+          })
+        }
+      ]
+    };
 
-  const renderHiddenItem = ({ item }: { item: AnimalWithNotes }) => (
-    <TouchableOpacity style={[styles.deleteButton, styles.row]} onPress={() => openModal(item)}>
-      <Text style={styles.hiddenText}>Eliminar</Text>
-    </TouchableOpacity>
-  );
+    return (
+      <Animated.View style={animatedStyle}>
+        <PrivateAnimalCard animal={item} />
+      </Animated.View>
+    );
+  };
+
+  const renderHiddenItem = ({ item, index }: { item: AnimalWithNotes, index: number }) => {
+    // Animated style for hidden item
+    const animatedStyle = {
+      opacity: animatedValues.current[index].hiddenItem.interpolate({
+        inputRange: [0, 0.3, 1],
+        outputRange: [0, 0.3, 1]
+      })
+    };
+
+    return (
+      <Animated.View style={animatedStyle}>
+        <TouchableOpacity 
+          style={[styles.deleteButton, styles.row]} 
+          onPress={() => openModal(item)}
+        >
+          <Text style={styles.hiddenText}>Eliminar</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  };
 
   const onSwitchFilter = (value: string) => {
     console.log(value);
@@ -69,9 +152,13 @@ const Home = () => {
   return (
     <>
       <View style={[GlobalStyles.container]}>
-
-        {animals.length > 0 ? (
-            <SwipeListView
+        {isLoading ? ( 
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color={newColors.fondo_secundario} />
+            <Text style={styles.loadingText}>Cargando animales...</Text>
+          </View>
+        ) : animals.length > 0 ? (
+          <SwipeListView
             data={animals}
             renderItem={renderItem}
             renderHiddenItem={renderHiddenItem}
@@ -82,130 +169,30 @@ const Home = () => {
             disableRightSwipe
             onRefresh={handleRefresh}
             disableLeftSwipe={false}
-                ListHeaderComponent={
-                  <>
-                    <View style={styles.searchContainer}>
-                      <View style={styles.customSwitch}>
-                        <CustomSwitch option1="Privado" option2="Público" onSwitch={onSwitchFilter} />
-                      </View>
-                      <View style={styles.searchButton}>
-                        <SearchButton />
-                      </View>
-                    </View>
-                    <FilterBar />
-                  </>
-                }
-              />
+            ListHeaderComponent={
+              <>
+                <View style={styles.searchContainer}>
+                  <View style={styles.customSwitch}>
+                    <CustomSwitch option1="Privado" option2="Público" onSwitch={onSwitchFilter} />
+                  </View>
+                  <View style={styles.searchButton}>
+                    <SearchButton />
+                  </View>
+                </View>
+                <FilterBar />
+              </>
+            }
+          />
         ) : (
           <Text style={[GlobalStyles.error, { color: colors.rojo }]}>No hay animales registrados</Text>
         )}
       </View>
 
       <Modalize ref={modalRef} modalHeight={200} modalStyle={{ backgroundColor: colors.fondo }}>
-        <ContendModal selectedAnimal={selectedAnimal!} modalRef={modalRef} onPress={loadAnimal}/>
+        <ContentModalHome selectedAnimal={selectedAnimal!} modalRef={modalRef} onPress={loadAnimal} />
       </Modalize>
     </>
   );
 };
-
-const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
-  StyleSheet.create({
-    row: {
-      height: 150,
-      width: "94%",
-      marginVertical: 5,
-      borderRadius: constants.borderRadius,
-    },
-    deleteButton: {
-      padding: 15,
-      justifyContent: 'center',
-      alignItems: 'flex-end',
-      backgroundColor: colors.rojo,
-    },
-    hiddenText: {
-      color: 'white',
-      fontWeight: 'bold',
-    },
-    modalContent: {
-      flex: 1,
-      padding: 20,
-    },
-    modalTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    modalId: {
-      fontSize: 16,
-    },
-    modalActions: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-    },
-    modalButton: {
-      padding: 10,
-      borderRadius: 5,
-      width: '40%',
-      alignItems: 'center',
-    },
-    modalButtonText: {
-      fontWeight: 'bold',
-    },
-    searchContainer: {
-      flexDirection: 'row',
-      marginVertical: 10,
-      gap: 10,
-    },
-    customSwitch: {
-      flex: 3,
-    },
-    searchButton: {
-      flex: 1,
-    },
-});
-  
-interface ContendModalProps {
-    selectedAnimal: Animal;
-    modalRef: React.RefObject<Modalize>;
-    onPress: () => void;
-}
-    const ContendModal: React.FC<ContendModalProps> = ({ selectedAnimal, modalRef, onPress }) => {
-    const { isDarkTheme } = useTheme();
-    const colors = getDynamicColors(isDarkTheme);
-    const styles = dynamicStyles(colors);
-    
-    const deleteAnimal = async () => {
-        if (selectedAnimal) {
-          await deleteDataAnimal(selectedAnimal.id);
-          modalRef.current?.close();
-          onPress();
-        }
-      };
-
-    return  (
-        <View style={styles.modalContent}>
-          <Text style={[styles.modalTitle, { color: colors.naranja }]}>¿Estás seguro de eliminar este animal?</Text>
-          {selectedAnimal && (
-            <>
-              <Text style={[styles.modalId, { color: colors.blanco }]}>ID del animal: {selectedAnimal.id}</Text>
-              <Text style={[styles.modalId, { color: colors.blanco }]}>Nombre del animal: {selectedAnimal.nombre}</Text>
-            </>
-          )}
-          <View style={styles.modalActions}>
-            <TouchableOpacity
-              style={[styles.modalButton, { backgroundColor: colors.naranja }]}
-              onPress={() => modalRef.current?.close()}
-            >
-              <Text style={[styles.modalButtonText, { color: colors.blanco }]}>Cancelar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.modalButton, { backgroundColor: colors.rojo }]}
-              onPress={deleteAnimal}
-            >
-              <Text style={[styles.modalButtonText, { color: 'white' }]}>Eliminar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-    )
-}
 
 export default Home;
