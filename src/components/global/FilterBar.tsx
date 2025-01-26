@@ -1,8 +1,9 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generos, Especie, especiesRazasMap, propositosPorEspecie } from '../../lib/interfaces/animal';
 import { newColors } from '../../assets/styles/colors';
 import { constants } from '../../assets/styles/constants';
+import { CustomIcon } from '../Customs';
 
 type Filter = {
   id: string;
@@ -11,7 +12,11 @@ type Filter = {
   selectedOption?: string;
 };
 
-const FilterBar: React.FC = () => {
+type FilterBarProps = {
+  onChange: (selectedValues: { [key: string]: string | undefined }) => void;
+};
+
+const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
   const [filters, setFilters] = useState<Filter[]>([
     { id: '1', label: 'Género', options: generos },
     { id: '2', label: 'Especie', options: Object.keys(especiesRazasMap) },
@@ -24,6 +29,15 @@ const FilterBar: React.FC = () => {
 
   const [selectedFilter, setSelectedFilter] = useState<Filter | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    // Notify parent component about selected filters
+    const selectedValues = filters.reduce((acc, filter) => {
+      acc[filter.label] = filter.selectedOption;
+      return acc;
+    }, {} as { [key: string]: string | undefined });
+    onChange(selectedValues);
+  }, [filters]);
 
   const openModal = (filter: Filter) => {
     setSelectedFilter(filter);
@@ -48,6 +62,12 @@ const FilterBar: React.FC = () => {
     }
   };
 
+  const resetFilters = () => {
+    setFilters((prevFilters) =>
+      prevFilters.map((filter) => ({ ...filter, selectedOption: undefined }))
+    );
+  };
+
   const renderFilterItem = ({ item }: { item: Filter }) => (
     <TouchableOpacity style={styles.filterButton} onPress={() => openModal(item)}>
       <Text style={styles.filterText}>{item.selectedOption || item.label}</Text>
@@ -57,11 +77,19 @@ const FilterBar: React.FC = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={filters}
+        data={[{ id: '0', label: 'X', options: [] }, ...filters]}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
-        renderItem={renderFilterItem}
+        renderItem={({ item }) =>
+          item.id === '0' ? (
+            <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
+              <CustomIcon name="trash-outline" size={20} color={newColors.fondo_principal} />
+            </TouchableOpacity>
+          ) : (
+            renderFilterItem({ item })
+          )
+        }
         contentContainerStyle={styles.listContainer}
       />
 
@@ -118,6 +146,20 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: newColors.fondo_principal,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  resetButton: {
+    backgroundColor: newColors.rojo,
+    borderRadius: constants.borderRadius,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  resetText: {
+    color: newColors.principal,
     fontSize: 14,
     fontWeight: '600',
   },

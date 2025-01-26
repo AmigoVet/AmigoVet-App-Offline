@@ -180,7 +180,7 @@ const Home = () => {
                     <SearchButton />
                   </View>
                 </View>
-                <FilterBar />
+                <FilterBar onChange={(value) => console.log(value)} />
               </>
             }
           />
