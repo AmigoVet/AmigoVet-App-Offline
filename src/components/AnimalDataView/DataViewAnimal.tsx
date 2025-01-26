@@ -24,7 +24,6 @@ const DataViewAnimal = ({ animal, notas }: DataViewAnimalProps) => {
   const GlobalStyles = createGlobalStyles(isDarkTheme);
   const colors = getDynamicColors(isDarkTheme);
   const styles = createStyles(colors);
-  console.log(notas)
   return (
   <View>
 

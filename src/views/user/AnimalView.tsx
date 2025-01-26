@@ -148,7 +148,6 @@ const AnimalView = () => {
       try {
         const loadedNotes = await getDataNotas(id); 
         setNotes(loadedNotes); 
-        console.log(notes);
       } catch (error) {
           console.error("Error al cargar las notas:", error);
       }
