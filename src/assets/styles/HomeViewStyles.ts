@@ -30,8 +30,10 @@ export const HomeViewStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       },
       modalId: {
         fontSize: 16,
+        fontWeight: 'bold',
       },
       modalActions: {
+        marginVertical: 20,
         flexDirection: 'row',
         justifyContent: 'space-around',
       },
