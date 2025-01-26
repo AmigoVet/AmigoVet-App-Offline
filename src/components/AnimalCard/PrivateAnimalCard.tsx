@@ -26,20 +26,20 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
         <CustomImage source={animal.image} />
       </View>
       <View style={styles.textContainer}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-          <Text style={[styles.text, { fontWeight: 'bold' }]}>{animal.identificador}</Text>
-          <Text style={styles.text}>{animal.nombre}</Text>
-        </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+        <Text style={[styles.text, { fontWeight: 'bold' }]}>{animal.identificador}</Text>
+        <Text style={styles.text}>{animal.nombre}</Text>
+      </View>
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start' }}>
           <CustomIcon name="location-outline" size={20} color={newColors.principal} />
-          <Text style={[styles.text, { fontWeight: 200 }]}>{animal.ubicacion}</Text>
+          <Text style={[styles.text, { fontWeight: 200 }]}>{animal.ubicacion || '-'}</Text>
         </View>
         <View >
           {animal.notes.length > 0 ? (
             animal.notes.map((note) => (
               <View key={note.id}>
                 <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>{note.nota}</Text>
-                <Text style={styles.noteDate}>{note.fecha}</Text>
+                <Text style={styles.noteDate}>{note.fecha || '-'}</Text>
               </View>
             ))
           ) : (
@@ -47,10 +47,10 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
           )}
         </View>
         <View>
-          {animal.embarazada && <Text style={styles.text}>En estado de preñez</Text>}
-          {animal.genero === "Hembra" && <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>
-            Proxima fecha de celo: </Text>}
-          {animal.genero === "Hembra" && <Text style={styles.noteDate}>{calcularProximaFechaCelo(animal.celo!, animal.especie)}</Text>}
+        {animal.embarazada && <Text style={styles.text}>En estado de preñez</Text>}
+        {animal.genero === "Hembra" && <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>
+          Proxima fecha de celo: </Text>}
+        {animal.genero === "Hembra" && <Text style={styles.noteDate}>{calcularProximaFechaCelo(animal.celo!, animal.especie)}</Text>}
         </View>
       </View>
     </Pressable>

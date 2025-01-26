@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { getDynamicColors } from "./colors";
+import { getDynamicColors, newColors } from "./colors";
 import { constants } from "./constants";
 
 export const HomeViewStyles = (colors: ReturnType<typeof getDynamicColors>) =>
@@ -67,4 +67,11 @@ export const HomeViewStyles = (colors: ReturnType<typeof getDynamicColors>) =>
         fontSize: 16,
         color: '#666',
       },
+      footer: {
+        marginVertical: 20,
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: newColors.fondo_secundario,
+      }
   });

@@ -169,6 +169,7 @@ const Home = () => {
             disableRightSwipe
             onRefresh={handleRefresh}
             disableLeftSwipe={false}
+            ListFooterComponent={<Text style={styles.footer}>{`Registros disponibles: ${constants.cantidadPosiblesAnimales - totalAnimals}`}</Text>}
             ListHeaderComponent={
               <>
                 <View style={styles.searchContainer}>
