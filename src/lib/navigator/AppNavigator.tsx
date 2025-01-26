@@ -137,18 +137,10 @@ const BottomTabsNavigator = () => {
                 <View
                   style={{
                     position: 'absolute',
-                    bottom: -20,
-                    width: 70,
-                    height: 55,
-                    backgroundColor: 'transparent',
-                    borderTopLeftRadius: -30,
-                    borderTopRightRadius: -30,
-                    borderBottomLeftRadius: 50,
-                    borderBottomRightRadius: 50,
                   }}
                 />
               )}
-              <CustomIcon name={iconName} size={focused ? 32 : size} color={color} />
+              <CustomIcon name={iconName} size={size} color={color} />
             </View>
           );
         },
