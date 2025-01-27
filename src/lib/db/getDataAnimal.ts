@@ -2,12 +2,17 @@ import { Animal } from '../interfaces/animal';
 import { db } from './db';
 
 export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Promise<any[]> => {
+    if (!ownerId) {
+        throw new Error('OwnerId is required');
+    }
+
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql(
                 `
                 SELECT 
                     A.id,
+                    A.ownerId,
                     A.identificador, 
                     A.nombre, 
                     A.image AS animalImage, 
@@ -16,9 +21,18 @@ export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Pro
                     A.embarazada,
                     A.celo,
                     A.especie,
+                    A.raza,
+                    A.nacimiento,
+                    A.peso,
+                    A.color,
+                    A.descripcion,
+                    A.proposito,
+                    A.created_at AS animalCreatedAt,
+                    A.updated_at AS animalUpdatedAt,
                     N.id AS noteId, 
                     N.nota, 
-                    N.fecha AS noteDate
+                    N.fecha AS noteDate,
+                    N.created_at AS noteCreatedAt
                 FROM Animal A
                 LEFT JOIN Notas N ON A.id = N.animalId
                 WHERE A.ownerId = ?
@@ -37,33 +51,44 @@ export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Pro
                         );
 
                         if (existingAnimalIndex >= 0) {
-                            if (item.noteId && item.nota.toLowerCase().includes('parto')) {
+                            if (item.noteId) {
                                 data[existingAnimalIndex].notes.push({
                                     id: item.noteId,
                                     nota: item.nota,
                                     fecha: item.noteDate,
+                                    created_at: item.noteCreatedAt,
                                 });
                             }
                         } else {
                             data.push({
                                 id: item.id,
+                                ownerId: item.ownerId,
                                 identificador: item.identificador,
                                 nombre: item.nombre,
                                 image: item.animalImage || '',
                                 ubicacion: item.ubicacion,
                                 genero: item.genero,
-                                celo: item.celo,
                                 embarazada: item.embarazada,
+                                celo: item.celo,
                                 especie: item.especie,
-                                notes: item.noteId && item.nota.toLowerCase().includes('parto')
+                                raza: item.raza,
+                                nacimiento: item.nacimiento,
+                                peso: item.peso,
+                                color: item.color,
+                                descripcion: item.descripcion,
+                                proposito: item.proposito,
+                                created_at: item.animalCreatedAt,
+                                updated_at: item.animalUpdatedAt,
+                                notes: item.noteId
                                     ? [
                                           {
                                               id: item.noteId,
                                               nota: item.nota,
                                               fecha: item.noteDate,
+                                              created_at: item.noteCreatedAt,
                                           },
                                       ]
-                                    : [], // Solo agrega notas con "parto"
+                                    : [],
                             });
                         }
                     }
@@ -78,6 +103,7 @@ export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Pro
         });
     });
 };
+
 
 
 
