@@ -105,21 +105,28 @@ const Home = () => {
   const applyFilters = (filterValues: Record<string, string | undefined>) => {
     const filteredAnimals = originalAnimals.filter((animal) => {
       const { Especie, Raza, Género, Propósito, Edad, Reciente, Antiguo } = filterValues;
-
+  
       if (Especie && animal.especie !== Especie) return false;
       if (Raza && animal.raza !== Raza) return false;
       if (Género && animal.genero !== Género) return false;
       if (Propósito && animal.proposito !== Propósito) return false;
-
-      // Filtro de edad
+  
       if (Edad) {
         const animalEdad = animal.nacimiento ? calcularEdadAños(animal.nacimiento) : undefined;
-        if (animalEdad !== parseInt(Edad, 10)) return false;
+        const edadFiltro = parseInt(Edad, 10);
+  
+        if (edadFiltro === 1) {
+          if (animalEdad === undefined || animalEdad > 1) return false;
+        } else if (edadFiltro === 10) {
+          if (animalEdad === undefined || animalEdad < 10) return false;
+        } else {
+          if (animalEdad !== edadFiltro) return false;
+        }
       }
-
+  
       return true;
     });
-
+  
     // Ordenar por reciente o antiguo
     if (filterValues.Reciente) {
       filteredAnimals.sort((a, b) => {
@@ -134,9 +141,10 @@ const Home = () => {
         return dateA - dateB; // Antiguo primero
       });
     }
-
+  
     setAnimals(filteredAnimals);
   };
+  
 
   const renderItem = ({ item, index }: { item: AnimalWithNotes; index: number }) => {
     const animatedStyle = {
@@ -204,7 +212,7 @@ const Home = () => {
                     <SearchButton />
                   </View>
                 </View>
-                <FilterBar onChange={(value) => handleFilterChange(value)} />
+                <FilterBar onChange={(selectedValues) => handleFilterChange(selectedValues)} />
               </>
             }
           />

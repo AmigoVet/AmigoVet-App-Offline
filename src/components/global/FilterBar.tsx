@@ -1,19 +1,21 @@
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { generos, Especie, especiesRazasMap, propositosPorEspecie } from '../../lib/interfaces/animal';
 import { newColors } from '../../assets/styles/colors';
 import { constants } from '../../assets/styles/constants';
 import { CustomIcon } from '../Customs';
 
+const { height: screenHeight } = Dimensions.get('window');
+
 type Filter = {
   id: string;
   label: string;
   options: string[];
-  selectedOption?: string;
+  selectedOption?: string | number | boolean;
 };
 
 type FilterBarProps = {
-  onChange: (selectedValues: { [key: string]: string | undefined }) => void;
+  onChange: (selectedValues: { [key: string]: string | number | boolean | undefined }) => void;
 };
 
 const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
@@ -24,24 +26,31 @@ const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
     { id: '4', label: 'Propósito', options: Object.values(propositosPorEspecie).flat() },
     { id: '5', label: 'Reciente', options: [] },
     { id: '6', label: 'Antiguo', options: [] },
-    { id: '7', label: 'Edad', options: [] },
+    { id: '7', label: 'Edad', options: ['1 años', '2 años', '3 años', '4 años', '5 años', '6 años', '7 años', '8 años', '9 años', '10 años+'] },
   ]);
 
   const [selectedFilter, setSelectedFilter] = useState<Filter | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
-    // Notify parent component about selected filters
     const selectedValues = filters.reduce((acc, filter) => {
       acc[filter.label] = filter.selectedOption;
       return acc;
-    }, {} as { [key: string]: string | undefined });
+    }, {} as { [key: string]: string | number | boolean | undefined });
     onChange(selectedValues);
   }, [filters]);
 
   const openModal = (filter: Filter) => {
-    setSelectedFilter(filter);
-    setIsModalVisible(true);
+    if (filter.label === 'Reciente' || filter.label === 'Antiguo') {
+      setFilters((prevFilters) =>
+        prevFilters.map((f) =>
+          f.id === filter.id ? { ...f, selectedOption: !f.selectedOption } : f
+        )
+      );
+    } else {
+      setSelectedFilter(filter);
+      setIsModalVisible(true);
+    }
   };
 
   const closeModal = () => {
@@ -51,10 +60,17 @@ const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
 
   const selectOption = (option: string) => {
     if (selectedFilter) {
+      const parsedOption =
+        selectedFilter.label === 'Edad'
+          ? option === '10 años+' ? 10 : option === 'Ninguno' ? undefined : parseInt(option.split(' ')[0], 10)
+          : option === 'Ninguno'
+          ? undefined
+          : option;
+
       setFilters((prevFilters) =>
         prevFilters.map((filter) =>
           filter.id === selectedFilter.id
-            ? { ...filter, selectedOption: option === 'Ninguno' ? undefined : option }
+            ? { ...filter, selectedOption: parsedOption }
             : filter
         )
       );
@@ -69,8 +85,22 @@ const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
   };
 
   const renderFilterItem = ({ item }: { item: Filter }) => (
-    <TouchableOpacity style={styles.filterButton} onPress={() => openModal(item)}>
-      <Text style={styles.filterText}>{item.selectedOption || item.label}</Text>
+    <TouchableOpacity
+      style={[
+        styles.filterButton,
+        (item.label === 'Reciente' || item.label === 'Antiguo') && item.selectedOption
+          ? { backgroundColor: newColors.fondo_secundario }
+          : item.selectedOption
+          ? { backgroundColor: newColors.fondo_secundario }
+          : {},
+      ]}
+      onPress={() => openModal(item)}
+    >
+      <Text style={styles.filterText}>
+        {item.selectedOption !== undefined && item.label !== 'Reciente' && item.label !== 'Antiguo'
+          ? String(item.selectedOption)
+          : item.label}
+      </Text>
     </TouchableOpacity>
   );
 
@@ -100,7 +130,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
         onRequestClose={closeModal}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { maxHeight: screenHeight * 0.9 }]}>
             <Text style={styles.modalTitle}>{selectedFilter?.label}</Text>
             {selectedFilter?.options.length ? (
               <FlatList
@@ -157,11 +187,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  resetText: {
-    color: newColors.principal,
-    fontSize: 14,
-    fontWeight: '600',
   },
   modalOverlay: {
     flex: 1,
