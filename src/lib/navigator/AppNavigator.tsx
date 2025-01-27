@@ -126,22 +126,7 @@ const BottomTabsNavigator = () => {
           }
 
           return (
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-              }}
-            >
-              {focused && (
-                <View
-                  style={{
-                    position: 'absolute',
-                  }}
-                />
-              )}
               <CustomIcon name={iconName} size={size} color={color} />
-            </View>
           );
         },
         tabBarActiveTintColor: colors.verdeLight,
@@ -151,7 +136,7 @@ const BottomTabsNavigator = () => {
           height: 65,
           borderTopLeftRadius: 10,
           borderTopRightRadius: 10,
-          borderWidth: 0,
+          borderTopWidth: 0,
         },
       })}
     >
