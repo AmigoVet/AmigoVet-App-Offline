@@ -4,7 +4,7 @@ export const formatearFecha = (fechaISO: string): string => {
   
     // Validar que la fecha sea válida
     if (isNaN(fecha.getTime())) {
-      return "Fecha inválida";
+      return fechaISO;
     }
   
     // Formateador para el día de la semana

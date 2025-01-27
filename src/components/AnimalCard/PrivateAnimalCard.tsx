@@ -9,6 +9,7 @@ import { useTheme } from '../../lib/context/ThemeContext';
 import { CustomIcon, CustomImage } from '../Customs';
 import { constants } from '../../assets/styles/constants';
 import {  calcularProximaFechaCelo } from '../../lib/functions/CalcularFechaCelo';
+import { formatearFecha } from '../../lib/functions/FormateraFecha';
 
 interface PrivateAnimalCardProps {
   animal: AnimalWithNotes;
@@ -39,7 +40,7 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
             animal.notes.map((note) => (
               <View key={note.id}>
                 <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>{note.nota}</Text>
-                <Text style={styles.noteDate}>{note.fecha || '-'}</Text>
+                <Text style={styles.noteDate}>{formatearFecha(note.fecha) || '-'}</Text>
               </View>
             ))
           ) : (
