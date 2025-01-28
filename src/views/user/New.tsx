@@ -18,7 +18,6 @@ import { CustomImage, CustomIcon, CustomInput, CustomSelect, CustomDatePicker, C
 
 // **Funciones utilitarias**
 import { calcularEdad } from "../../lib/functions/CalcularEdad";
-import { saveAnimalData } from "../../lib/functions/GuardarAnimal";
 import { setDataAnimal } from "../../lib/db/setDataAnimal";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
 
@@ -175,7 +174,7 @@ const New: React.FC = () => {
       {/* Selector de imagen */}
       <Text style={GlobalStyles.label}>Selecciona o toma una foto</Text>
       <View style={newStyles.imageContainer}>
-        {image && <CustomImage source={image} />}
+        {image && <CustomImage source={image} style={{ height: 250 }} />}
         <View style={newStyles.imageButtonContainer}>
           <TouchableOpacity style={newStyles.imageButton} onPress={pickImageFromGallery}>
             <CustomIcon name="image-outline" size={40} color={colors.blanco} />
