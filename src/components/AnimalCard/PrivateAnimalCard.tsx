@@ -70,8 +70,7 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
     },
     imageContainer: {
       width: '50%',
-      justifyContent: 'center', 
-      alignItems: 'center', 
+      padding: 10,
     },
     textContainer: {
       width: '50%', 
