@@ -89,9 +89,9 @@ const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
       style={[
         styles.filterButton,
         (item.label === 'Reciente' || item.label === 'Antiguo') && item.selectedOption
-          ? { backgroundColor: newColors.fondo_secundario }
+          ? { backgroundColor: newColors.verde }
           : item.selectedOption
-          ? { backgroundColor: newColors.fondo_secundario }
+          ? { backgroundColor: newColors.verde }
           : {},
       ]}
       onPress={() => openModal(item)}
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   filterButton: {
-    backgroundColor: newColors.verde,
+    backgroundColor: newColors.fondo_secundario,
     borderRadius: constants.borderRadius,
     paddingVertical: 10,
     paddingHorizontal: 15,

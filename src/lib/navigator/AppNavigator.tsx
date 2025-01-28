@@ -12,7 +12,6 @@ import Register from '../../views/auth/Register';
 import Home from '../../views/user/Home';
 import New from '../../views/user/New';
 import Profile from '../../views/user/Profile';
-import { View } from 'react-native';
 import AnimalView from '../../views/user/AnimalView';
 import Busqueda from '../../views/user/Busqueda';
 import ChangePasswordScreen from '../../views/user/ChangePassword';
