@@ -271,6 +271,7 @@ const New: React.FC = () => {
       />
 
       <CustomButton text="Guardar" onPress={handleSubmit} />
+      <View style={{ height: 100 }} />
     </ScrollView>
   );
 };
