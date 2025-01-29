@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 25,
-        backgroundColor: newColors.fondo_secundario,
+        backgroundColor: newColors.verde_light,
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1,

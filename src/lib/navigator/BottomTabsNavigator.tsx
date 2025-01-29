@@ -24,23 +24,23 @@ export const BottomTabsNavigator = () => {
           let iconName;
         
           if (route.name === 'Privado') {
-            iconName = focused ? 'archive' : 'archive-outline';
+            iconName = 'archive-outline';
           } else if (route.name === 'Perfil') {
-            iconName = focused ? 'person' : 'person-outline';
+            iconName = 'person-outline';
           } else if (route.name === 'Agregar') {
-            iconName = focused ? 'add-circle' : 'add-circle-outline';
+            iconName = 'add-circle-outline';
           } else if (route.name === 'Publico') {
-            iconName = focused ? 'storefront' : 'storefront-outline';
+            iconName = 'storefront-outline';
           } else if (route.name === 'Inicio') {
-            iconName = focused ? 'home' : 'home-outline';
+            iconName = 'home-outline';
           } else {
-            iconName = focused ? 'alert-circle' : 'alert-circle-outline';
+            iconName = 'alert-circle-outline';
           }
           return <CustomIcon name={iconName} size={26} color={color} />;
         },
         
         tabBarLabel: () => null,
-        tabBarActiveTintColor: colors.verdeLight,
+        tabBarActiveTintColor: newColors.fondo_secundario,
         tabBarInactiveTintColor: newColors.principal,
         tabBarStyle: {
           backgroundColor: 'transparent',

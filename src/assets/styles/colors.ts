@@ -10,6 +10,7 @@ export const newColors = {
 
   rojo: '#a80c23',
   verde: '#495445',
+  verde_light: '#7da96c'
 }
 
 export const getDynamicColors  = (isDarkTheme: boolean) =>  {
