@@ -98,9 +98,18 @@ const Home = () => {
     setRefreshing(false);
   };
 
-  const handleFilterChange = (filterValues: Record<string, string | undefined>) => {
-    setFilters(filterValues);
-    applyFilters(filterValues);
+  const handleFilterChange = (filterValues: Record<string, string | number | boolean | undefined>) => {
+    const stringFilterValues: Record<string, string | undefined> = {};
+    for (const key in filterValues) {
+      if (filterValues[key] !== undefined) {
+        stringFilterValues[key] = String(filterValues[key]);
+      } else {
+        stringFilterValues[key] = undefined;
+      }
+    }
+  
+    setFilters(stringFilterValues);
+    applyFilters(stringFilterValues);
   };
 
   const applyFilters = (filterValues: Record<string, string | undefined>) => {
