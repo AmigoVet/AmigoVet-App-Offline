@@ -37,7 +37,7 @@ export const BottomTabsNavigator = () => {
             iconName = 'alert-circle-outline';
           }
 
-          return <CustomIcon name={iconName} size={size} color={color} />;
+          return <CustomIcon name={iconName} size={26} color={color} />;
         },
         tabBarLabel: () => null,
         tabBarActiveTintColor: colors.verdeLight,
@@ -45,13 +45,8 @@ export const BottomTabsNavigator = () => {
         tabBarStyle: {
           backgroundColor: 'transparent',
           height: 65,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
           borderTopWidth: 0,
           position: 'absolute', 
-          left: 0,
-          right: 0,
-          bottom: 0,
         },
       })}
     >
