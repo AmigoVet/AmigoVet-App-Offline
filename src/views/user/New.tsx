@@ -20,6 +20,7 @@ import { CustomImage, CustomIcon, CustomInput, CustomSelect, CustomDatePicker, C
 import { calcularEdad } from "../../lib/functions/CalcularEdad";
 import { setDataAnimal } from "../../lib/db/setDataAnimal";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
+import Separator from "../../components/global/Separator";
 
 
 const New: React.FC = () => {
@@ -271,7 +272,7 @@ const New: React.FC = () => {
       />
 
       <CustomButton text="Guardar" onPress={handleSubmit} />
-      <View style={{ height: 100 }} />
+      <Separator  />
     </ScrollView>
   );
 };

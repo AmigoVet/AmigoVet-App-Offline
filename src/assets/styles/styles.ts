@@ -61,6 +61,7 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
       color: colors.rojo,
       fontWeight: 'bold',
       marginTop: 50,
+      textAlign: 'center',
     },
     note: {
       fontSize: 13,

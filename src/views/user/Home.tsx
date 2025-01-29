@@ -16,6 +16,7 @@ import FilterBar from '../../components/global/FilterBar';
 import ContentModalHome from '../../components/modals/Home/ContentModalHome';
 import { HomeViewStyles } from '../../assets/styles/HomeViewStyles';
 import { calcularEdadAños } from '../../lib/functions/CalcularEdadAños';
+import Separator from '../../components/global/Separator';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user);
@@ -104,7 +105,7 @@ const Home = () => {
 
   const applyFilters = (filterValues: Record<string, string | undefined>) => {
     const filteredAnimals = originalAnimals.filter((animal) => {
-      const { Especie, Raza, Género, Propósito, Edad, Reciente, Antiguo } = filterValues;
+      const { Especie, Raza, Género, Propósito, Edad } = filterValues;
   
       if (Especie && animal.especie !== Especie) return false;
       if (Raza && animal.raza !== Raza) return false;
@@ -128,13 +129,13 @@ const Home = () => {
     });
   
     // Ordenar por reciente o antiguo
-    if (filterValues.Reciente) {
+    if (filterValues.Reciente === 'true') {
       filteredAnimals.sort((a, b) => {
         const dateA = a.nacimiento ? new Date(a.nacimiento).getTime() : 0;
         const dateB = b.nacimiento ? new Date(b.nacimiento).getTime() : 0;
         return dateB - dateA; // Reciente primero
       });
-    } else if (filterValues.Antiguo) {
+    } else if (filterValues.Antiguo === 'true') {
       filteredAnimals.sort((a, b) => {
         const dateA = a.nacimiento ? new Date(a.nacimiento).getTime() : 0;
         const dateB = b.nacimiento ? new Date(b.nacimiento).getTime() : 0;
@@ -185,40 +186,46 @@ const Home = () => {
   return (
     <>
       <View style={[GlobalStyles.container]}>
-        {isLoading ? (
-          <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color={newColors.fondo_secundario} />
-            <Text style={styles.loadingText}>Cargando animales...</Text>
-          </View>
-        ) : animals.length > 0 ? (
-          <SwipeListView
-            data={animals}
-            renderItem={renderItem}
-            renderHiddenItem={renderHiddenItem}
-            keyExtractor={(item) => item.id}
-            onRefresh={handleRefresh}
-            refreshing={refreshing}
-            leftOpenValue={0}
-            rightOpenValue={-85}
-            disableRightSwipe
-            ListFooterComponent={<Text style={styles.footer}>{`Registros disponibles: ${constants.cantidadPosiblesAnimales - totalAnimals}`}</Text>}
-            ListHeaderComponent={
-              <>
-                <View style={styles.searchContainer}>
-                  <View style={styles.customSwitch}>
-                    <CustomSwitch option1="Privado" option2="Público" onSwitch={() => {}} />
-                  </View>
-                  <View style={styles.searchButton}>
-                    <SearchButton />
-                  </View>
-                </View>
-                <FilterBar onChange={(selectedValues) => handleFilterChange(selectedValues)} />
-              </>
-            }
-          />
-        ) : (
-          <Text style={[GlobalStyles.error, { color: colors.rojo }]}>No hay animales registrados</Text>
-        )}
+      <SwipeListView
+        data={animals}
+        renderItem={renderItem} 
+        renderHiddenItem={renderHiddenItem}
+        keyExtractor={(item) => item.id}
+        onRefresh={handleRefresh}
+        refreshing={refreshing}
+        leftOpenValue={0}
+        rightOpenValue={-85}
+        disableRightSwipe
+        ListFooterComponent={
+          <>
+            <Text style={styles.footer}>{`Registros disponibles: ${constants.cantidadPosiblesAnimales - totalAnimals}`}</Text>
+            <Separator />
+          </>
+        }
+        ListHeaderComponent={
+          <>
+            <View style={styles.searchContainer}>
+              <View style={styles.customSwitch}>
+                <CustomSwitch option1="Privado" option2="Público" onSwitch={() => {}} />
+              </View>
+              <View style={styles.searchButton}>
+                <SearchButton />
+              </View>
+            </View>
+            <FilterBar onChange={(selectedValues) => handleFilterChange(selectedValues)} />
+          </>
+        }
+        ListEmptyComponent={
+          isLoading ? (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color={newColors.fondo_secundario} />
+              <Text style={styles.loadingText}>Cargando animales...</Text>
+            </View>
+          ) : (
+            <Text style={[GlobalStyles.error, { color: colors.rojo }]}>No hay animales registrados</Text>
+          )
+        }
+      />
       </View>
 
       <Modalize ref={modalRef} modalHeight={200} modalStyle={{ backgroundColor: colors.fondo }}>
