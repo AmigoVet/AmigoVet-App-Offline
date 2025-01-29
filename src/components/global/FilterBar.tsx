@@ -114,7 +114,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
         renderItem={({ item }) =>
           item.id === '0' ? (
             <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
-              <CustomIcon name="trash-outline" size={20} color={newColors.fondo_principal} />
+              <CustomIcon name="trash" size={20} color={newColors.rojo} />
             </TouchableOpacity>
           ) : (
             renderFilterItem({ item })
@@ -160,19 +160,19 @@ const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
+    height: 40,
   },
   listContainer: {
-    paddingHorizontal: 10,
+    alignItems: 'center',
   },
   filterButton: {
     backgroundColor: newColors.fondo_secundario,
     borderRadius: constants.borderRadius,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    marginRight: 10,
+    paddingHorizontal: 25,
+    marginHorizontal: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    height: 25
   },
   filterText: {
     color: newColors.fondo_principal,
@@ -180,13 +180,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   resetButton: {
-    backgroundColor: newColors.rojo,
-    borderRadius: constants.borderRadius,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    marginRight: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 10,
   },
   modalOverlay: {
     flex: 1,
@@ -207,8 +201,9 @@ const styles = StyleSheet.create({
   },
   optionButton: {
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: newColors.principalLight,
+    borderBottomWidth: 0.5,
+    borderBottomColor: newColors.fondo_secundario,
+
   },
   optionText: {
     fontSize: 16,
