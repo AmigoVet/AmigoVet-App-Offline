@@ -47,6 +47,7 @@ export const BottomTabsNavigator = () => {
           height: 65,
           borderTopWidth: 0,
           position: 'absolute', 
+          elevation: 0,
         },
       })}
     >

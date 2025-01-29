@@ -19,10 +19,8 @@ const CustomButtonTab = (props: any) => {
                     >
                         <Path
                             d="M600 80C300 80 50 50 0 20V120h1200V20c-50 30-300 60-600 60Z"
-
-
-
                             fill={newColors.fondo_secundario}
+                            stroke='none'
                         />
                     </Svg>
                 </View>
@@ -65,7 +63,7 @@ const styles = StyleSheet.create({
     },
     activeBtn: {
         position: 'absolute',
-        top: -25,
+        top: -15,
         width: 50,
         height: 50,
         borderRadius: 25,
