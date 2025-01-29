@@ -22,23 +22,23 @@ export const BottomTabsNavigator = () => {
         headerShown: false,
         tabBarIcon: ({ color, size, focused }) => {
           let iconName;
-
+        
           if (route.name === 'Privado') {
-            iconName = 'archive-outline';
+            iconName = focused ? 'archive' : 'archive-outline';
           } else if (route.name === 'Perfil') {
-            iconName = 'person-outline';
+            iconName = focused ? 'person' : 'person-outline';
           } else if (route.name === 'Agregar') {
-            iconName = 'add-circle-outline';
+            iconName = focused ? 'add-circle' : 'add-circle-outline';
           } else if (route.name === 'Publico') {
-            iconName = 'storefront-outline';
+            iconName = focused ? 'storefront' : 'storefront-outline';
           } else if (route.name === 'Inicio') {
-            iconName = 'home-outline';
+            iconName = focused ? 'home' : 'home-outline';
           } else {
-            iconName = 'alert-circle-outline';
+            iconName = focused ? 'alert-circle' : 'alert-circle-outline';
           }
-
           return <CustomIcon name={iconName} size={26} color={color} />;
         },
+        
         tabBarLabel: () => null,
         tabBarActiveTintColor: colors.verdeLight,
         tabBarInactiveTintColor: newColors.principal,
