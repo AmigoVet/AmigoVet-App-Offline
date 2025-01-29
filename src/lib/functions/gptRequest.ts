@@ -1,7 +1,7 @@
 import OpenAI from "openai";
-import env from "../../../dotenvConfig";
 import { Animal, Notes } from "../interfaces/animal";
 import { Register } from "../interfaces/registers";
+import { env } from "../utils/dotenvConfig";
 
 const openai = new OpenAI({
   apiKey: env.OPENAI_API_KEY,
