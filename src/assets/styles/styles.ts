@@ -9,7 +9,7 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
       flex: 1,
       backgroundColor: colors.fondo,
       width: "100%",
-      paddingHorizontal: 10,
+      display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-start',
     },

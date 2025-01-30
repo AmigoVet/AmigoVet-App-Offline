@@ -180,9 +180,9 @@ const Home = () => {
     };
 
     return (
-      <Animated.View style={animatedStyle}>
+      <Animated.View style={[animatedStyle, {marginLeft: 40}]}>
         <TouchableOpacity
-          style={[styles.deleteButton, styles.row]}
+          style={[styles.deleteButton, styles.row,]}
           onPress={() => openModal(item)}
         >
           <Text style={styles.hiddenText}>Eliminar</Text>
@@ -194,7 +194,7 @@ const Home = () => {
 
   return (
     <>
-      <View style={[GlobalStyles.container]}>
+      <View style={[GlobalStyles.container,]}>
       <SwipeListView
         data={animals}
         renderItem={renderItem} 

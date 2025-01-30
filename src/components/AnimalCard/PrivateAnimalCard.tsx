@@ -67,6 +67,7 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       backgroundColor: newColors.verde,
       borderRadius: constants.borderRadius,
       flexDirection: 'row',
+      alignSelf: 'center'
     },
     imageContainer: {
       width: '50%',
