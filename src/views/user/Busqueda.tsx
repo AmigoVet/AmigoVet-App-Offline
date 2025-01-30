@@ -38,7 +38,7 @@ const Busqueda = () => {
 
   return (
     <>
-      <Header />
+      <Header title='Buscar animales' />
 
       <View style={GlobalStyles.container}>
         <CustomInput

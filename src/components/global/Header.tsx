@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Pressable } from 'react-native';
+import { View, StyleSheet, Image, Pressable, Text } from 'react-native';
 import { DrawerActions, NavigationProp, useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors, newColors, staticColors } from '../../assets/styles/colors';
@@ -7,8 +7,11 @@ import { RootStackParamList } from '../../views/Welcome';
 import { CustomIcon } from '../Customs';
 import LogoSimple from '../global/LogoSimple';
 
+interface HeaderProps {
+  title?: string;
+}
 
-const Header = () => {
+const Header = ({title}: HeaderProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { isDarkTheme } = useTheme(); 
   const colors = getDynamicColors(isDarkTheme); 
@@ -19,6 +22,7 @@ const Header = () => {
       <Pressable onPress={() => navigation.goBack()}>
         <CustomIcon name="chevron-back-outline" size={30} color={staticColors.blancoLight} />
       </Pressable>
+      {title && <Text style={styles.title}>{title}</Text>}
       <LogoSimple estatico='light' />
     </View>
   );
@@ -36,11 +40,13 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       borderBottomLeftRadius: 20,
       borderBottomRightRadius: 20,
       zIndex: 10,
-      paddingHorizontal: 20,
+      paddingHorizontal: 10,
     },
-    logo: {
-      width: 100,
-      alignSelf: 'center',
+    title:{
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: newColors.fondo_principal,
+      textAlign: 'center',
     },
   });
 
