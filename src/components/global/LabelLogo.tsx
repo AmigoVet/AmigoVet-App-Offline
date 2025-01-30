@@ -16,11 +16,11 @@ const LabelLogo: React.FC<LabelLogoProps> = ({ width = 100, height = 50, estatic
   // Determinar qué logo mostrar
   const LogoComponent = estatico
     ? estatico === 'dark'
-      ? LabelNameDark
-      : LabelNameDark
+      ? LabelNameLight
+      : LabelNameLight
     : isDarkTheme
-    ? LabelNameDark
-    : LabelNameDark;
+    ? LabelNameLight
+    : LabelNameLight;
 
   return (
     <View>

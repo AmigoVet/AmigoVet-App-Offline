@@ -4,8 +4,8 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../../../lib/context/ThemeContext';
 import { getDynamicColors, newColors, staticColors } from '../../../../assets/styles/colors';
 import { CustomIcon } from '../../../../components/Customs';
-import LogoSimple from '../../../../components/global/LogoSimple';
 import { RootStackParamList } from '../../../Welcome';
+import LabelLogo from '../../../../assets/svgs/LabelLogoLight';
 
 const HeaderFeed = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -15,10 +15,25 @@ const HeaderFeed = () => {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => navigation.goBack()}>
-        <CustomIcon name="chevron-back-outline" size={30} color={staticColors.blancoLight} />
-      </Pressable>
-      <LogoSimple estatico='light' />
+      <View>
+        <LabelLogo width={140} height={140} fill="#e9e3dc" />
+      </View>
+      <View style={styles.iconsContainer}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 5}}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <CustomIcon name="search-outline" size={25} color={staticColors.blancoLight} />
+          </Pressable>
+          <Pressable onPress={() => navigation.goBack()}>
+            <CustomIcon name="add-circle-outline" size={25} color={staticColors.blancoLight} />
+          </Pressable>
+          <Pressable onPress={() => navigation.goBack()}>
+            <CustomIcon name="chatbubble-outline" size={25} color={staticColors.blancoLight} />
+          </Pressable>
+        </View>
+        <Pressable onPress={() => navigation.goBack()}>
+          <CustomIcon name="ellipsis-vertical" size={25} color={staticColors.blancoLight} />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -28,7 +43,7 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
   StyleSheet.create({
     container: {
       width: '100%',
-      height: 60,
+      height: 80,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -38,9 +53,11 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       zIndex: 10,
       paddingHorizontal: 20,
     },
+    iconsContainer: {
+      flexDirection: 'row',
+      gap: 10,
+    },
     logo: {
-      width: 100,
-      alignSelf: 'center',
     },
   });
 
