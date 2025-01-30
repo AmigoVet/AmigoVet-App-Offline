@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { getDynamicColors, newColors } from "../../assets/styles/colors";
 import { CustomIcon } from "../../components/Customs";
 import HomePublic from "../../views/public/HomePublic";
-import Feed from "../../views/user/Feed";
+import Feed from "../../views/user/feed/Feed";
 import New from "../../views/user/New";
 import Profile from "../../views/user/Profile";
 import { useTheme } from "../context/ThemeContext";
