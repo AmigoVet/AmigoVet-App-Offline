@@ -11,6 +11,7 @@ import AnimalView from '../../views/user/AnimalView';
 import Busqueda from '../../views/user/Busqueda';
 import ChangePasswordScreen from '../../views/user/ChangePassword';
 import { BottomTabsNavigator } from './BottomTabsNavigator';
+import New from '../../views/user/New';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,7 @@ const AppNavigator = () => {
           <Stack.Screen name="BottomTabs" component={BottomTabsNavigator} />
           <Stack.Screen name="AnimalView" component={AnimalView} />
           <Stack.Screen name="Busqueda" component={Busqueda} />
+          <Stack.Screen name="Nuevo" component={New} />
           <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
           </>
       ) : (

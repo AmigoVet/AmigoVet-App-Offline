@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native'
 import React from 'react'
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../../../lib/context/ThemeContext';
@@ -8,7 +8,7 @@ import { RootStackParamList } from '../../../Welcome';
 import LabelLogo from '../../../../assets/svgs/LabelLogoLight';
 
 const HeaderFeed = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const {navigate, goBack, } = useNavigation<NavigationProp<RootStackParamList>>();
   const { isDarkTheme } = useTheme(); 
   const colors = getDynamicColors(isDarkTheme); 
   const styles = createStyles(colors); 
@@ -20,17 +20,17 @@ const HeaderFeed = () => {
       </View>
       <View style={styles.iconsContainer}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 5}}>
-          <Pressable onPress={() => navigation.goBack()}>
+          <Pressable onPress={() => navigate('Busqueda')}>
             <CustomIcon name="search-outline" size={25} color={staticColors.blancoLight} />
           </Pressable>
-          <Pressable onPress={() => navigation.goBack()}>
+          <Pressable onPress={() => navigate('Nuevo')}>
             <CustomIcon name="add-circle-outline" size={25} color={staticColors.blancoLight} />
           </Pressable>
-          <Pressable onPress={() => navigation.goBack()}>
+          <Pressable onPress={() => {Alert.alert('Llegara pronto!!')}}>
             <CustomIcon name="chatbubble-outline" size={25} color={staticColors.blancoLight} />
           </Pressable>
         </View>
-        <Pressable onPress={() => navigation.goBack()}>
+        <Pressable onPress={() =>{Alert.alert('Settings')}}>
           <CustomIcon name="ellipsis-vertical" size={25} color={staticColors.blancoLight} />
         </Pressable>
       </View>

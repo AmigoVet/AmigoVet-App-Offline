@@ -21,9 +21,15 @@ import { calcularEdad } from "../../lib/functions/CalcularEdad";
 import { setDataAnimal } from "../../lib/db/setDataAnimal";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
 import Separator from "../../components/global/Separator";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../Welcome";
+import { Header } from "../../components/global";
 
 
 const New: React.FC = () => {
+
+  const {canGoBack, goBack} = useNavigation<NavigationProp<RootStackParamList>>();
+
   const [nombre, setNombre] = useState<string>("");
   const [identificador, setIdentificador] = useState<string>("");
   const [especie, setEspecie] = useState<Especie | "Otro" | "">("");
@@ -169,8 +175,9 @@ const New: React.FC = () => {
 
 
   return (
-    <ScrollView style={newStyles.container}>
-      <Text style={newStyles.title}>Registrar Animal</Text>
+    <>
+      {canGoBack() && <Header title="Registrar animal" />}
+      <ScrollView style={newStyles.container}>
 
       {/* Selector de imagen */}
       <Text style={GlobalStyles.label}>Selecciona o toma una foto</Text>
@@ -274,6 +281,7 @@ const New: React.FC = () => {
       <CustomButton text="Guardar" onPress={handleSubmit} />
       <Separator  />
     </ScrollView>
+    </>
   );
 };
 

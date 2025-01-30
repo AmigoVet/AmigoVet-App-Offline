@@ -10,9 +10,11 @@ import { createTables } from '../lib/db/createTable';
 
 export type RootStackParamList = {
   Welcome: undefined;
+  Feed: undefined;
   Login: undefined;   
   Register: undefined;
   Home: undefined;
+  Nuevo: undefined;
   AnimalView: {id: string};
 
   Busqueda: undefined;
