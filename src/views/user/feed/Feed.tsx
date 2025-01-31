@@ -18,7 +18,7 @@ const Feed = () => {
   return (
     <ScrollView style={{backgroundColor: newColors.fondo_principal}}>
       <HeaderFeed userName={user!.nombre} />
-      <MiniAnimalList />
+      <MiniAnimalList userId={user!.userId} />
       <FilterBarFeed />
       <ProgramerFeed />
       <NoticesFeed />
