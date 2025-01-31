@@ -6,6 +6,8 @@ import FilterBarFeed from './components/FilterBarFeed';
 import ProgramerFeed from './components/ProgramerFeed';
 import NoticesFeed from './components/NoticesFeed';
 import useAuthStore from '../../../lib/store/authStore';
+import { ScrollView } from 'react-native-gesture-handler';
+import { newColors } from '../../../assets/styles/colors';
 
 const Feed = () => {
 
@@ -13,12 +15,12 @@ const Feed = () => {
   const user = useAuthStore((state) => state.user);
 
   return (
-    <View style={globalStyles.container}>
+    <ScrollView style={{backgroundColor: newColors.fondo_principal}}>
       <HeaderFeed userName={user?.nombre} />
       <FilterBarFeed />
       <ProgramerFeed />
       <NoticesFeed />
-    </View>
+    </ScrollView>
   )
 }
 
