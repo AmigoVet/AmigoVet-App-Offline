@@ -8,6 +8,7 @@ import NoticesFeed from './components/NoticesFeed';
 import useAuthStore from '../../../lib/store/authStore';
 import { ScrollView } from 'react-native-gesture-handler';
 import { newColors } from '../../../assets/styles/colors';
+import MiniAnimalList from './components/MiniAnimalList';
 
 const Feed = () => {
 
@@ -16,7 +17,8 @@ const Feed = () => {
 
   return (
     <ScrollView style={{backgroundColor: newColors.fondo_principal}}>
-      <HeaderFeed userName={user?.nombre} />
+      <HeaderFeed userName={user!.nombre} />
+      <MiniAnimalList />
       <FilterBarFeed />
       <ProgramerFeed />
       <NoticesFeed />

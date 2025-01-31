@@ -6,9 +6,10 @@ import { getDynamicColors, newColors, staticColors } from '../../../../assets/st
 import { CustomIcon } from '../../../../components/Customs';
 import { RootStackParamList } from '../../../Welcome';
 import LabelLogo from '../../../../assets/svgs/LabelLogoLight';
+import { obtenerPalabras } from '../../../../lib/functions/SeccionarNombre';
 
 interface HeaderFeedProps {
-  userName?: string;
+  userName: string;
 }
 
 const HeaderFeed = ({userName}: HeaderFeedProps) => {
@@ -16,12 +17,13 @@ const HeaderFeed = ({userName}: HeaderFeedProps) => {
   const { isDarkTheme } = useTheme(); 
   const colors = getDynamicColors(isDarkTheme); 
   const styles = createStyles(colors); 
+  const name = obtenerPalabras(userName);
 
   return (
     <View style={styles.container}>
       <View>
         <LabelLogo width={140} height={140} fill={newColors.fondo_principal} style={{marginTop: -50}} />
-        <Text style={{fontSize: 12, fontWeight: '300', color: newColors.fondo_principal, marginTop: -45}}>Bienvenido {userName}</Text>
+        <Text style={{fontSize: 12, fontWeight: '300', color: newColors.fondo_principal, marginTop: -45}}>Bienvenido {name}</Text>
       </View>
       <View style={styles.iconsContainer}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 5}}>
