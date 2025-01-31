@@ -104,10 +104,6 @@ export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Pro
     });
 };
 
-
-
-
-
 export const getDataAnimal = (ownerId: string): Promise<Animal[]> => {
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
@@ -173,10 +169,43 @@ export const getDataAnimalbyId = async (id: string): Promise<Animal | null> => {
     });
 };
 
-
 export const getLenghtAnimal = async (ownerId: string): Promise<number> => {
     const animals = await getDataAnimal(ownerId);
     const len = animals.length;
 
     return len
+};
+
+export const getLastFiveAnimals = (ownerId: string): Promise<{ nombre: string, especie: string, image: string }[]> => {
+    return new Promise((resolve, reject) => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                `SELECT nombre, especie, image AS image1 
+                 FROM Animal 
+                 WHERE ownerId = ? 
+                 ORDER BY created_at DESC 
+                 LIMIT 5`,
+                [ownerId],
+                (_, result) => {
+                    const len = result.rows.length;
+                    const animals = [];
+
+                    for (let i = 0; i < len; i++) {
+                        const item = result.rows.item(i);
+                        animals.push({
+                            nombre: item.nombre,
+                            especie: item.especie,
+                            image: item.image1 || ''
+                        });
+                    }
+                    resolve(animals);
+                },
+                (_, error) => {
+                    console.error('Error fetching last five animals:', error);
+                    reject(error);
+                    return false;
+                }
+            );
+        });
+    });
 };
