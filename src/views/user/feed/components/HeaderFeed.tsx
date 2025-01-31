@@ -7,7 +7,11 @@ import { CustomIcon } from '../../../../components/Customs';
 import { RootStackParamList } from '../../../Welcome';
 import LabelLogo from '../../../../assets/svgs/LabelLogoLight';
 
-const HeaderFeed = () => {
+interface HeaderFeedProps {
+  userName?: string;
+}
+
+const HeaderFeed = ({userName}: HeaderFeedProps) => {
   const {navigate, goBack, } = useNavigation<NavigationProp<RootStackParamList>>();
   const { isDarkTheme } = useTheme(); 
   const colors = getDynamicColors(isDarkTheme); 
@@ -16,7 +20,8 @@ const HeaderFeed = () => {
   return (
     <View style={styles.container}>
       <View>
-        <LabelLogo width={140} height={140} fill="#e9e3dc" />
+        <LabelLogo width={140} height={140} fill={newColors.fondo_principal} style={{marginTop: -50}} />
+        <Text style={{fontSize: 12, fontWeight: '300', color: newColors.fondo_principal, marginTop: -45}}>Bienvenido {userName}</Text>
       </View>
       <View style={styles.iconsContainer}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', gap: 5}}>
