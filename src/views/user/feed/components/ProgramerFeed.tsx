@@ -4,31 +4,55 @@ import { newColors } from '../../../../assets/styles/colors';
 import { constants } from '../../../../assets/styles/constants';
 import { CustomIcon } from '../../../../components/Customs';
 
-const ProgramerFeed = () => {
-  const timelineData = [
-    { id: 1, time: '08:30', message: 'El parto de V2345 sera ¡¡Hoy!!', active: true },
-    { id: 2, time: '12:30', message: 'V567 entrara en celo pronto', active: false }
-  ];
+interface Event {
+  fecha: string;
+  AnimalId: string;
+  animalName: string;
+  comentario: string;
+}
 
-  const getDaysArray = () => {
-    const today = new Date();
+interface DayObject {
+  day: number;
+  isCurrent: boolean;
+  hasEvent: boolean;
+}
+
+export interface ProgrammerEvent {
+  fecha: string;
+  AnimalId: string;
+  animalName: string;
+  comentario: string;
+}
+
+interface ProgramerFeedProps {
+  events: ProgrammerEvent[];
+}
+
+const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const getDaysArray = (): DayObject[] => {
     const currentDay = today.getDate();
-    const days = [];
+    const days: DayObject[] = [];
     
-    // Generamos 3 días antes y 3 días después del día actual
     for (let i = -3; i <= 3; i++) {
       const date = new Date(today);
       date.setDate(currentDay + i);
+      const formattedDate = date.toISOString().split('T')[0];
+      const hasEvent = events.some(event => event.fecha === formattedDate);
+      
       days.push({
         day: date.getDate(),
-        isCurrent: i === 0
+        isCurrent: i === 0,
+        hasEvent
       });
     }
     
     return days;
   };
 
-  const renderTimelineDays = () => {
+  const renderTimelineDays = (): JSX.Element => {
     const days = getDaysArray();
     return (
       <View style={styles.timelineContainer}>
@@ -48,62 +72,90 @@ const ProgramerFeed = () => {
             >
               {dayObj.day}
             </Text>
-            {dayObj.isCurrent && <View style={styles.currentDayDot} />}
+            {dayObj.hasEvent && <View style={styles.eventDot} />}
           </View>
         ))}
       </View>
     );
   };
 
+  const isToday = (dateString: string): boolean => {
+    const eventDate = new Date(dateString);
+    eventDate.setHours(0, 0, 0, 0);
+    return today.getTime() === eventDate.getTime();
+  };
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  const formatMessage = (event: Event): string => {
+    return isToday(event.fecha)
+      ? `${event.comentario} de ${event.animalName} será Hoy!`
+      : `${event.comentario} ${event.animalName} será ${formatDate(event.fecha)}`;
+  };
+
+  // Ordenar eventos
+  const sortedEvents = [...events].sort((a, b) => {
+    return new Date(a.fecha).getTime() - new Date(b.fecha).getTime();
+  });
+
+  const todayEvent = sortedEvents.find(event => isToday(event.fecha));
+  const nextEvent = sortedEvents.find(event => new Date(event.fecha) > today);
+
   return (
     <View style={{alignItems: 'center'}}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={[styles.iconContainer, styles.space]}>
+            <CustomIcon name="calendar-outline" size={26} color={newColors.verde_light} />
+          </View>
+          <Text style={[styles.title, styles.space]}>Programador</Text>
+          <View style={[styles.shareButtonContainer, styles.space]}>
+            <Text style={styles.shareButton}>compartir</Text>
+            <CustomIcon name="add-outline" size={24} color={newColors.gris} />
+          </View>
+        </View>
+        
+        <View style={styles.content}>
+          <View style={[{flexDirection: 'row', alignItems: 'center'}]}>
+            <Text style={styles.lotTitle}>Lote 1</Text>
+          </View>
 
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={[styles.iconContainer, styles.space]}>
-          <CustomIcon name="calendar-outline" size={26} color={newColors.verde_light} />
+          {renderTimelineDays()}
+          
+          <View style={styles.notificationsContainer}>
+            {todayEvent ? (
+              <View style={[styles.notification, styles.activeNotification]}>
+                <Text style={[styles.notificationText, styles.activeText]}>
+                  {formatMessage(todayEvent)}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.emptyNotification}>
+                <Text style={styles.notificationText}>No hay eventos para hoy</Text>
+              </View>
+            )}
+          </View>
         </View>
-        <Text style={[styles.title, styles.space]}>Programador</Text>
-        <View style={[styles.shareButtonContainer, styles.space]}>
-          <Text style={styles.shareButton}>compartir</Text>
-          <CustomIcon name="add-outline" size={24} color={newColors.gris} />
-        </View>
+
+        {nextEvent && (
+          <View style={[styles.notification, styles.inactiveNotification, styles.outsideNotification]}>
+            <Text style={[styles.notificationText, styles.inactiveText]}>
+              {formatMessage(nextEvent)}
+            </Text>
+          </View>
+        )}
       </View>
-      
-      <View style={styles.content}>
-        <Text style={styles.lotTitle}>Lote 1</Text>
-        
-        {renderTimelineDays()}
-        
-        <View style={styles.notificationsContainer}>
-          {timelineData.map((item) => (
-            <View
-              key={item.id}
-              style={[
-                styles.notification,
-                item.active ? styles.activeNotification : styles.inactiveNotification
-              ]}
-            >
-              <Text style={[
-                styles.notificationText,
-                item.active ? styles.activeText : styles.inactiveText
-              ]}>
-                {item.message}
-              </Text>
-              <Text style={[
-                styles.timeText,
-                item.active ? styles.activeText : styles.inactiveText
-              ]}>
-                {item.time}
-              </Text>
-            </View>
-          ))}
-        </View>
-      </View>
-    </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -123,7 +175,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 24,
     height: 24,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   icon: {
@@ -151,12 +202,17 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 8,
+    backgroundColor: newColors.gris_light,
+    borderRadius: constants.borderRadius,
+    paddingVertical: 8,
+    paddingHorizontal: 5,
   },
   lotTitle: {
-    color: 'white',
+    color: newColors.verde,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: 'bold',
     marginBottom: 12,
+    textAlign: 'center',
   },
   timelineContainer: {
     flexDirection: 'row',
@@ -169,23 +225,23 @@ const styles = StyleSheet.create({
     width: 30,
   },
   currentDayContainer: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: newColors.verde_light,
     borderRadius: 15,
     padding: 4,
   },
   timelineDay: {
-    color: '#888',
+    color: newColors.principal,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '900',
   },
   currentDayText: {
-    color: 'white',
-    fontWeight: '600',
+    color: newColors.verde,
+    fontWeight: '900',
   },
   currentDayDot: {
     width: 4,
     height: 4,
-    backgroundColor: 'white',
+    backgroundColor: newColors.verde,
     borderRadius: 2,
     marginTop: 2,
   },
@@ -198,10 +254,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   activeNotification: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: newColors.verde_light,
   },
   inactiveNotification: {
     backgroundColor: '#333',
+  },
+  outsideNotification: {
+    marginTop: 16,
   },
   notificationText: {
     fontSize: 14,
@@ -215,6 +274,19 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 12,
+  },
+  emptyNotification: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: newColors.gris_light,
+    alignItems: 'center',
+  },
+  eventDot: {
+    width: 6,
+    height: 6,
+    backgroundColor: newColors.verde,
+    borderRadius: 3,
+    marginTop: 2,
   },
 });
 

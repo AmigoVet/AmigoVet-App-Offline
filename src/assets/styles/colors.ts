@@ -13,6 +13,7 @@ export const newColors = {
   verde_light: '#7da96c',
 
   gris: '#888b8d',
+  gris_light: '#c0c0c0',
 }
 
 export const getDynamicColors  = (isDarkTheme: boolean) =>  {

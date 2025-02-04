@@ -9,6 +9,7 @@ import useAuthStore from '../../../lib/store/authStore';
 import { ScrollView } from 'react-native-gesture-handler';
 import { newColors } from '../../../assets/styles/colors';
 import MiniAnimalList from './components/MiniAnimalList';
+import { exampleEvents } from '../../../assets/texts/examplesDates';
 
 const Feed = () => {
 
@@ -20,7 +21,7 @@ const Feed = () => {
       <HeaderFeed userName={user!.nombre} />
       <MiniAnimalList userId={user!.userId} />
       <FilterBarFeed onChange={(value) => {console.log(value)}} />
-      <ProgramerFeed />
+      <ProgramerFeed events={exampleEvents} />
       <NoticesFeed />
     </ScrollView>
   )
