@@ -1,5 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
+import { newColors } from '../../../../assets/styles/colors';
+import { constants } from '../../../../assets/styles/constants';
+import { CustomIcon } from '../../../../components/Customs';
 
 const ProgramerFeed = () => {
   const timelineData = [
@@ -53,13 +56,18 @@ const ProgramerFeed = () => {
   };
 
   return (
+    <View style={{alignItems: 'center'}}>
+
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <View style={styles.icon} />
+        <View style={[styles.iconContainer, styles.space]}>
+          <CustomIcon name="calendar-outline" size={26} color={newColors.verde_light} />
         </View>
-        <Text style={styles.title}>Programador</Text>
-        <Text style={styles.shareButton}>compartir</Text>
+        <Text style={[styles.title, styles.space]}>Programador</Text>
+        <View style={[styles.shareButtonContainer, styles.space]}>
+          <Text style={styles.shareButton}>compartir</Text>
+          <CustomIcon name="add-outline" size={24} color={newColors.gris} />
+        </View>
       </View>
       
       <View style={styles.content}>
@@ -93,20 +101,24 @@ const ProgramerFeed = () => {
         </View>
       </View>
     </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1a1a1a',
-    borderRadius: 12,
+    backgroundColor: newColors.fondo_secundario,
+    borderRadius: constants.borderRadius,
     padding: 16,
-    width: '100%',
+    width: '97%',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
+  },
+  space:{
+    width: '33%',
   },
   iconContainer: {
     width: 24,
@@ -126,9 +138,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     flex: 1,
     marginLeft: 8,
+    textAlign: 'center',
+  },
+  shareButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   },
   shareButton: {
-    color: '#4CAF50',
+    color: newColors.gris,
     fontSize: 14,
   },
   content: {
