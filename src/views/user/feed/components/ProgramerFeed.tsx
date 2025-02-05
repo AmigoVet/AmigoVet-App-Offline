@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
 import { newColors } from '../../../../assets/styles/colors';
 import { constants } from '../../../../assets/styles/constants';
@@ -168,6 +168,9 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
             </Text>
           </View>
         )}
+        <Pressable onPress={() => console.log('hola')} style={styles.button}>
+          <Text style={styles.buttonText}>Ver mas...</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -179,8 +182,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: newColors.fondo_secundario,
     borderRadius: constants.borderRadius,
-    padding: 16,
     width: '97%',
+    paddingVertical: 6,
+    paddingHorizontal: 16,
   },
   header: {
     flexDirection: 'row',
@@ -307,4 +311,15 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginTop: 2,
   },
+  button:{
+    height: 40,
+    justifyContent: 'center',
+    width: '100%',
+  },
+  buttonText:{
+    color: newColors.verde_light,
+    fontSize: 14,
+    fontWeight: '200',
+    textAlign: 'right',
+  }
 });
