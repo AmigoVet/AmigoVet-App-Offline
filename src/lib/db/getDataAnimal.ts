@@ -195,6 +195,7 @@ export const getLastFiveAnimals = (ownerId: string): Promise<{ nombre: string, e
                         animals.push({
                             nombre: item.nombre,
                             especie: item.especie,
+                            descripcion: item.descripcion,
                             image: item.image1 || ''
                         });
                     }
