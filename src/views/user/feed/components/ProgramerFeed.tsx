@@ -135,7 +135,7 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
           <Text style={[styles.title, styles.space]}>Programador</Text>
           <View style={[styles.shareButtonContainer, styles.space]}>
             <Text style={styles.shareButton}>compartir</Text>
-            <CustomIcon name="add-outline" size={24} color={newColors.gris} />
+            <CustomIcon name="add-outline" size={24} color={newColors.gris_light} />
           </View>
         </View>
         
@@ -206,7 +206,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
   },
   space:{
     width: '33%',
@@ -234,12 +233,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   shareButton: {
-    color: newColors.gris,
+    color: newColors.gris_light,
     fontSize: 14,
   },
   content: {
     marginTop: 8,
-    backgroundColor: newColors.gris_light,
+    backgroundColor: newColors.gris,
     borderRadius: constants.borderRadius,
     paddingVertical: 8,
     paddingHorizontal: 5,
@@ -318,7 +317,7 @@ const styles = StyleSheet.create({
   emptyNotification: {
     padding: 12,
     borderRadius: 8,
-    backgroundColor: newColors.gris_light,
+    backgroundColor: newColors.verde_light,
     alignItems: 'center',
   },
   eventDot: {
