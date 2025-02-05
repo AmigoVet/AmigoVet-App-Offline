@@ -63,7 +63,7 @@ export default MiniAnimalList;
 const styles = StyleSheet.create({
     animalContainer: {
         alignItems: 'center',
-        marginHorizontal: 5,
+        marginHorizontal: 7,
         position: 'relative',
         marginTop: 9, 
     },
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     },
     overlay: {
         position: 'absolute',
-        top: -20,
+        top: -25,
         left: 0,
         right: 0,
         alignItems: 'center',
