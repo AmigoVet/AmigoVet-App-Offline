@@ -172,6 +172,9 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
           <Text style={styles.buttonText}>Ver mas...</Text>
         </Pressable>
       </View>
+      <View style={styles.containerExtra}>
+        <Text style={styles.containerExtraText}>!No te olvides de revisar tus eventos!</Text>
+      </View>
     </View>
   );
 };
@@ -185,6 +188,20 @@ const styles = StyleSheet.create({
     width: '97%',
     paddingVertical: 6,
     paddingHorizontal: 16,
+  },
+  containerExtra:{
+    marginTop: 16,
+    borderRadius: constants.borderRadius / 1.5,
+    width: '97%',
+    paddingVertical: 10,
+    borderWidth: 2,
+    borderColor: newColors.fondo_secundario,
+  },
+  containerExtraText:{
+    color: newColors.fondo_secundario,
+    fontSize: 19,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   header: {
     flexDirection: 'row',
