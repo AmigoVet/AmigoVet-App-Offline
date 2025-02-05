@@ -25,7 +25,6 @@ const Feed = () => {
       const data = await getLastFiveAnimals(user!.userId);
       setAnimals(data);
       setIsLoading(false);
-      console.info('Animals:', data);
     };
     loadAnimals();
   }, []);
