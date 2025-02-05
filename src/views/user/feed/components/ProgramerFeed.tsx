@@ -29,6 +29,7 @@ interface ProgramerFeedProps {
 }
 
 const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
+  // Create today's date at the start of the day in the local timezone
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -39,6 +40,7 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
     for (let i = -3; i <= 3; i++) {
       const date = new Date(today);
       date.setDate(currentDay + i);
+      // Format date in YYYY-MM-DD format for comparison
       const formattedDate = date.toISOString().split('T')[0];
       const hasEvent = events.some(event => event.fecha === formattedDate);
       
@@ -80,13 +82,13 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
   };
 
   const isToday = (dateString: string): boolean => {
-    const eventDate = new Date(dateString);
+    const eventDate = new Date(dateString + 'T00:00:00');
     eventDate.setHours(0, 0, 0, 0);
     return today.getTime() === eventDate.getTime();
   };
 
   const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
+    const date = new Date(dateString + 'T00:00:00');
     return date.toLocaleDateString('es-ES', {
       day: 'numeric',
       month: 'numeric',
@@ -97,16 +99,21 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
   const formatMessage = (event: Event): string => {
     return isToday(event.fecha)
       ? `${event.comentario} de ${event.animalName} será Hoy!`
-      : `${event.comentario} ${event.animalName} será ${formatDate(event.fecha)}`;
+      : `${event.comentario} de ${event.animalName} será ${formatDate(event.fecha)}`;
   };
 
-  // Ordenar eventos
+  // Ordenar eventos por fecha
   const sortedEvents = [...events].sort((a, b) => {
     return new Date(a.fecha).getTime() - new Date(b.fecha).getTime();
   });
 
+  // Encontrar el evento de hoy y el próximo evento
   const todayEvent = sortedEvents.find(event => isToday(event.fecha));
-  const nextEvent = sortedEvents.find(event => new Date(event.fecha) > today);
+  const nextEvent = sortedEvents.find(event => {
+    const eventDate = new Date(event.fecha + 'T00:00:00');
+    eventDate.setHours(0, 0, 0, 0);
+    return eventDate.getTime() > today.getTime();
+  });
 
   return (
     <View style={{alignItems: 'center'}}>
@@ -156,6 +163,7 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
   );
 };
 
+export default ProgramerFeed;
 
 const styles = StyleSheet.create({
   container: {
@@ -289,5 +297,3 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 });
-
-export default ProgramerFeed;

@@ -8,7 +8,7 @@ export const exampleEvents: ProgrammerEvent[] = [
     comentario: 'El parto'
   },
   {
-    fecha: '2025-02-03',
+    fecha: '2025-02-06',
     AnimalId: '567',
     animalName: 'V567',
     comentario: 'Temporada de celo'
