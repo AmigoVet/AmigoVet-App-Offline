@@ -49,6 +49,7 @@ export const HomeViewStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       searchContainer: {
         flexDirection: 'row',
         marginVertical: 10,
+        marginHorizontal: 10,
         gap: 10,
       },
       customSwitch: {
