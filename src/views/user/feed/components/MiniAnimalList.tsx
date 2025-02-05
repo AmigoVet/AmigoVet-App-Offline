@@ -6,21 +6,20 @@ import { constants } from '../../../../assets/styles/constants';
 import ArcoArribaCentro from '../../../../assets/svgs/components/ArcoArribaCentro';
 import ArcoArribaDerecha from '../../../../assets/svgs/components/ArcoArribaDerecha';
 import ArcoArribaIzquierda from '../../../../assets/svgs/components/ArcoArribaIzquierda';
+import { set } from 'date-fns';
 
 interface MiniAnimalListProps {
-  userId: string;
+    nombre: string;
+    especie: string;
+    image: string;
+}
+  
+interface MiniAnimalListComponentProps {
+    animals: MiniAnimalListProps[];
 }
 
-const MiniAnimalList = ({ userId }: MiniAnimalListProps) => {
-    const [animals, setAnimals] = useState<{ nombre: string, especie: string, image: string }[]>([]);
+const MiniAnimalList = ({ animals }: MiniAnimalListComponentProps) => {
 
-    useEffect(() => {
-        const loadAnimals = async () => {
-            const data = await getLastFiveAnimals(userId);
-            setAnimals(data);
-        };
-        loadAnimals();
-    }, []);
 
     return (
         <View style={{ marginTop: 0 }}>

@@ -176,11 +176,11 @@ export const getLenghtAnimal = async (ownerId: string): Promise<number> => {
     return len
 };
 
-export const getLastFiveAnimals = (ownerId: string): Promise<{ nombre: string, especie: string, image: string }[]> => {
+export const getLastFiveAnimals = (ownerId: string): Promise<{ nombre: string, especie: string, descripcion: string, image: string }[]> => {
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql(
-                `SELECT nombre, especie, image AS image1 
+                `SELECT nombre, especie, descripcion, image AS image1 
                  FROM Animal 
                  WHERE ownerId = ? 
                  ORDER BY created_at DESC 
