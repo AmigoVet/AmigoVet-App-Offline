@@ -2,11 +2,13 @@ import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { newColors } from '../../../../assets/styles/colors'
 import { constants } from '../../../../assets/styles/constants'
-import { getLastFiveAnimals } from '../../../../lib/db/getDataAnimal'
+import FeedCard from './FeedCard'
 
-interface MiniAnimalListProps {
+export interface MiniAnimalListProps {
+  id?: string;
   nombre: string;
   especie: string;
+  descripcion: string;
   image: string;
 }
 
@@ -21,6 +23,9 @@ const NoticesFeed = ({ animals }: MiniAnimalListComponentProps) => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Informacion</Text>
+        {animals.map((animal) => (
+          <FeedCard animal={animal} />
+        ))}
       </View>
     )
 }
