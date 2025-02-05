@@ -55,8 +55,6 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       backgroundColor: newColors.fondo_secundario,
-      borderBottomLeftRadius: 20,
-      borderBottomRightRadius: 20,
       zIndex: 10,
       paddingHorizontal: 20,
     },
