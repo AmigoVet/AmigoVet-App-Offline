@@ -8,9 +8,15 @@ export const exampleEvents: ProgrammerEvent[] = [
     comentario: 'El parto'
   },
   {
-    fecha: '2025-02-06',
+    fecha: '2025-02-05',
     AnimalId: '567',
     animalName: 'V567',
     comentario: 'Temporada de celo'
-  }
+  },
+  {
+    fecha: '2025-02-03',
+    AnimalId: '2345',
+    animalName: 'V2345',
+    comentario: 'El parto'
+  },
 ];

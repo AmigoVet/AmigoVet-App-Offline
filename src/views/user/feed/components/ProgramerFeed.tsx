@@ -74,7 +74,10 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
             >
               {dayObj.day}
             </Text>
-            {dayObj.hasEvent && <View style={styles.eventDot} />}
+            {dayObj.hasEvent && <View style={[
+              styles.eventDot,
+              dayObj.isCurrent && styles.currentDayDot
+            ]} />}
           </View>
         ))}
       </View>
@@ -96,11 +99,18 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
     });
   };
 
-  const formatMessage = (event: Event): string => {
-    return isToday(event.fecha)
-      ? `${event.comentario} de ${event.animalName} será Hoy!`
-      : `${event.comentario} de ${event.animalName} será ${formatDate(event.fecha)}`;
+  const formatMessage = (event: Event): JSX.Element => {
+    return isToday(event.fecha) ? (
+      <Text>
+        {event.comentario} de <Text style={{ color: newColors.principal }}>{event.animalName}</Text> será Hoy!
+      </Text>
+    ) : (
+      <Text>
+        {event.comentario} de <Text style={{ color: newColors.verde_light }}>{event.animalName}</Text> será el {formatDate(event.fecha)}
+      </Text>
+    );
   };
+  
 
   // Ordenar eventos por fecha
   const sortedEvents = [...events].sort((a, b) => {
@@ -181,15 +191,13 @@ const styles = StyleSheet.create({
     width: '33%',
   },
   iconContainer: {
-    width: 24,
-    height: 24,
+    width: 26,
+    height: 26,
     alignItems: 'center',
   },
   icon: {
-    width: 16,
-    height: 16,
-    backgroundColor: '#4CAF50',
-    borderRadius: 8,
+    width: 26,
+    height: 26,
   },
   title: {
     color: 'white',
@@ -214,12 +222,14 @@ const styles = StyleSheet.create({
     borderRadius: constants.borderRadius,
     paddingVertical: 8,
     paddingHorizontal: 5,
+    width: '100%',
   },
   lotTitle: {
     color: newColors.verde,
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 12,
+    width: '100%',
     textAlign: 'center',
   },
   timelineContainer: {
@@ -243,13 +253,13 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   currentDayText: {
-    color: newColors.verde,
+    color: newColors.fondo_secundario,
     fontWeight: '900',
   },
   currentDayDot: {
     width: 4,
     height: 4,
-    backgroundColor: newColors.verde,
+    backgroundColor: newColors.fondo_secundario,
     borderRadius: 2,
     marginTop: 2,
   },
@@ -258,14 +268,14 @@ const styles = StyleSheet.create({
   },
   notification: {
     padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
+    borderRadius: constants.borderRadius,
   },
   activeNotification: {
     backgroundColor: newColors.verde_light,
   },
   inactiveNotification: {
-    backgroundColor: '#333',
+    borderWidth: 2,
+    borderColor: newColors.principal,
   },
   outsideNotification: {
     marginTop: 16,
@@ -273,12 +283,13 @@ const styles = StyleSheet.create({
   notificationText: {
     fontSize: 14,
     marginBottom: 4,
+    fontWeight: 'bold'
   },
   activeText: {
-    color: 'white',
+    color: newColors.fondo_secundario,
   },
   inactiveText: {
-    color: '#888',
+    color: newColors.principal,
   },
   timeText: {
     fontSize: 12,
@@ -292,7 +303,7 @@ const styles = StyleSheet.create({
   eventDot: {
     width: 6,
     height: 6,
-    backgroundColor: newColors.verde,
+    backgroundColor: newColors.principal,
     borderRadius: 3,
     marginTop: 2,
   },
