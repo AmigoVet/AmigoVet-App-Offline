@@ -1,15 +1,9 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
 import { newColors } from '../../../../assets/styles/colors';
-import { constants } from '../../../../assets/styles/constants';
 import { CustomIcon } from '../../../../components/Customs';
-
-interface Event {
-  fecha: string;
-  AnimalId: string;
-  animalName: string;
-  comentario: string;
-}
+import { Events } from '../../../../lib/interfaces/events';
+import { ProgramerFeedStyles } from './ProgramerFeedStyles';
 
 interface DayObject {
   day: number;
@@ -57,26 +51,26 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
   const renderTimelineDays = (): JSX.Element => {
     const days = getDaysArray();
     return (
-      <View style={styles.timelineContainer}>
+      <View style={ProgramerFeedStyles.timelineContainer}>
         {days.map((dayObj, index) => (
           <View 
             key={index} 
             style={[
-              styles.dayContainer,
-              dayObj.isCurrent && styles.currentDayContainer
+              ProgramerFeedStyles.dayContainer,
+              dayObj.isCurrent && ProgramerFeedStyles.currentDayContainer
             ]}
           >
             <Text 
               style={[
-                styles.timelineDay,
-                dayObj.isCurrent && styles.currentDayText
+                ProgramerFeedStyles.timelineDay,
+                dayObj.isCurrent && ProgramerFeedStyles.currentDayText
               ]}
             >
               {dayObj.day}
             </Text>
             {dayObj.hasEvent && <View style={[
-              styles.eventDot,
-              dayObj.isCurrent && styles.currentDayDot
+              ProgramerFeedStyles.eventDot,
+              dayObj.isCurrent && ProgramerFeedStyles.currentDayDot
             ]} />}
           </View>
         ))}
@@ -99,7 +93,7 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
     });
   };
 
-  const formatMessage = (event: Event): JSX.Element => {
+  const formatMessage = (event: Events): JSX.Element => {
     return isToday(event.fecha) ? (
       <Text>
         {event.comentario} de <Text style={{ color: newColors.principal }}>{event.animalName}</Text> será Hoy!
@@ -127,53 +121,53 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
 
   return (
     <View style={{alignItems: 'center'}}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={[styles.iconContainer, styles.space]}>
+      <View style={ProgramerFeedStyles.container}>
+        <View style={ProgramerFeedStyles.header}>
+          <View style={[ProgramerFeedStyles.iconContainer, ProgramerFeedStyles.space]}>
             <CustomIcon name="calendar-outline" size={26} color={newColors.verde_light} />
           </View>
-          <Text style={[styles.title, styles.space]}>Programador</Text>
-          <View style={[styles.shareButtonContainer, styles.space]}>
-            <Text style={styles.shareButton}>compartir</Text>
+          <Text style={[ProgramerFeedStyles.title, ProgramerFeedStyles.space]}>Programador</Text>
+          <View style={[ProgramerFeedStyles.shareButtonContainer, ProgramerFeedStyles.space]}>
+            <Text style={ProgramerFeedStyles.shareButton}>compartir</Text>
             <CustomIcon name="add-outline" size={24} color={newColors.gris_light} />
           </View>
         </View>
         
-        <View style={styles.content}>
+        <View style={ProgramerFeedStyles.content}>
           <View style={[{flexDirection: 'row', alignItems: 'center'}]}>
-            <Text style={styles.lotTitle}>Lote 1</Text>
+            <Text style={ProgramerFeedStyles.lotTitle}>Lote 1</Text>
           </View>
 
           {renderTimelineDays()}
           
-          <View style={styles.notificationsContainer}>
+          <View style={ProgramerFeedStyles.notificationsContainer}>
             {todayEvent ? (
-              <View style={[styles.notification, styles.activeNotification]}>
-                <Text style={[styles.notificationText, styles.activeText]}>
+              <View style={[ProgramerFeedStyles.notification, ProgramerFeedStyles.activeNotification]}>
+                <Text style={[ProgramerFeedStyles.notificationText, ProgramerFeedStyles.activeText]}>
                   {formatMessage(todayEvent)}
                 </Text>
               </View>
             ) : (
-              <View style={styles.emptyNotification}>
-                <Text style={styles.notificationText}>No hay eventos para hoy</Text>
+              <View style={ProgramerFeedStyles.emptyNotification}>
+                <Text style={ProgramerFeedStyles.notificationText}>No hay eventos para hoy</Text>
               </View>
             )}
           </View>
         </View>
 
         {nextEvent && (
-          <View style={[styles.notification, styles.inactiveNotification, styles.outsideNotification]}>
-            <Text style={[styles.notificationText, styles.inactiveText]}>
+          <View style={[ProgramerFeedStyles.notification, ProgramerFeedStyles.inactiveNotification, ProgramerFeedStyles.outsideNotification]}>
+            <Text style={[ProgramerFeedStyles.notificationText, ProgramerFeedStyles.inactiveText]}>
               {formatMessage(nextEvent)}
             </Text>
           </View>
         )}
-        <Pressable onPress={() => console.log('hola')} style={styles.button}>
-          <Text style={styles.buttonText}>Ver mas...</Text>
+        <Pressable onPress={() => console.log('hola')} style={ProgramerFeedStyles.button}>
+          <Text style={ProgramerFeedStyles.buttonText}>Ver mas...</Text>
         </Pressable>
       </View>
-      <View style={styles.containerExtra}>
-        <Text style={styles.containerExtraText}>!No te olvides de revisar tus eventos!</Text>
+      <View style={ProgramerFeedStyles.containerExtra}>
+        <Text style={ProgramerFeedStyles.containerExtraText}>!No te olvides de revisar tus eventos!</Text>
       </View>
     </View>
   );
@@ -181,161 +175,4 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
 
 export default ProgramerFeed;
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: newColors.fondo_secundario,
-    borderRadius: constants.borderRadius,
-    width: '97%',
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-  },
-  containerExtra:{
-    marginTop: 16,
-    borderRadius: constants.borderRadius / 1.5,
-    width: '97%',
-    paddingVertical: 10,
-    borderWidth: 2,
-    borderColor: newColors.fondo_secundario,
-  },
-  containerExtraText:{
-    color: newColors.fondo_secundario,
-    fontSize: 19,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  space:{
-    width: '33%',
-  },
-  iconContainer: {
-    width: 26,
-    height: 26,
-    alignItems: 'center',
-  },
-  icon: {
-    width: 26,
-    height: 26,
-  },
-  title: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
-    flex: 1,
-    marginLeft: 8,
-    textAlign: 'center',
-  },
-  shareButtonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end'
-  },
-  shareButton: {
-    color: newColors.gris_light,
-    fontSize: 14,
-  },
-  content: {
-    marginTop: 8,
-    backgroundColor: newColors.gris,
-    borderRadius: constants.borderRadius,
-    paddingVertical: 8,
-    paddingHorizontal: 5,
-    width: '100%',
-  },
-  lotTitle: {
-    color: newColors.verde,
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    width: '100%',
-    textAlign: 'center',
-  },
-  timelineContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-    paddingHorizontal: 8,
-  },
-  dayContainer: {
-    alignItems: 'center',
-    width: 30,
-  },
-  currentDayContainer: {
-    backgroundColor: newColors.verde_light,
-    borderRadius: 15,
-    padding: 4,
-  },
-  timelineDay: {
-    color: newColors.principal,
-    fontSize: 14,
-    fontWeight: '900',
-  },
-  currentDayText: {
-    color: newColors.fondo_secundario,
-    fontWeight: '900',
-  },
-  currentDayDot: {
-    width: 4,
-    height: 4,
-    backgroundColor: newColors.fondo_secundario,
-    borderRadius: 2,
-    marginTop: 2,
-  },
-  notificationsContainer: {
-    marginTop: 8,
-  },
-  notification: {
-    padding: 12,
-    borderRadius: constants.borderRadius,
-  },
-  activeNotification: {
-    backgroundColor: newColors.verde_light,
-  },
-  inactiveNotification: {
-    borderWidth: 2,
-    borderColor: newColors.principal,
-  },
-  outsideNotification: {
-    marginTop: 16,
-  },
-  notificationText: {
-    fontSize: 14,
-    marginBottom: 4,
-    fontWeight: 'bold'
-  },
-  activeText: {
-    color: newColors.fondo_secundario,
-  },
-  inactiveText: {
-    color: newColors.principal,
-  },
-  timeText: {
-    fontSize: 12,
-  },
-  emptyNotification: {
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: newColors.verde_light,
-    alignItems: 'center',
-  },
-  eventDot: {
-    width: 6,
-    height: 6,
-    backgroundColor: newColors.principal,
-    borderRadius: 3,
-    marginTop: 2,
-  },
-  button:{
-    height: 40,
-    justifyContent: 'center',
-    width: '100%',
-  },
-  buttonText:{
-    color: newColors.verde_light,
-    fontSize: 14,
-    fontWeight: '200',
-    textAlign: 'right',
-  }
-});
+
