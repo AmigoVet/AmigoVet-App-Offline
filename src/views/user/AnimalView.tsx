@@ -36,6 +36,7 @@ import ContentModalSelecionaropcion from "../../components/modals/AnimalView/Con
 import ContentModalSelectImage from "../../components/modals/AnimalView/ContentModalSelectImage";
 import ButtonAddRegister from "../../components/AnimalDataView/ButtonAddRegister";
 import { set } from "date-fns";
+import ButtonAddEvent from "../../components/AnimalDataView/ButtonAddEvent";
 
 
 const AnimalView = () => {
@@ -216,6 +217,7 @@ const AnimalView = () => {
     <>
       <RequestGPTButton animal={animal} registers={registers} notes={notes} />
       <ButtonAddRegister onPress={handleOpenModal} />
+      <ButtonAddEvent />
       <SwipeListView
         style={styles.swipeListContainer}
         ListHeaderComponent={
