@@ -81,10 +81,11 @@ const createEventsTable = async () => {
             `CREATE TABLE IF NOT EXISTS Events (
                 id TEXT PRIMARY KEY NOT NULL,
                 animalId TEXT NOT NULL,
-                nota TEXT NOT NULL,
+                animalName TEXT NOT NULL,
+                comentario TEXT NOT NULL,
                 fecha TEXT NOT NULL,
                 created_at TEXT NOT NULL,
-                FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
+                FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE,
             )`,
             [],
             () => { console.log('Tabla Events creada correctamente'); },
