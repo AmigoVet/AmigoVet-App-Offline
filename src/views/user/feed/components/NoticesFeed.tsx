@@ -24,7 +24,7 @@ const NoticesFeed = ({ animals }: MiniAnimalListComponentProps) => {
       <View style={styles.container}>
         <Text style={styles.title}>Informacion</Text>
         {animals.map((animal) => (
-          <FeedCard animal={animal} />
+          <FeedCard key={animal.id} animal={animal} />
         ))}
       </View>
     )
