@@ -48,7 +48,7 @@ const createRegisterTable = () => {
                 comentario TEXT,
                 accion TEXT,
                 fecha TEXT,
-                FOREIGN KEY (animalId) REFERENCES Animal (id)
+                FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
             )`,
             [],
             () => { console.log('Register table created successfully'); },
@@ -65,6 +65,7 @@ const createNotesTable = () => {
                 nota TEXT NOT NULL,
                 fecha TEXT NOT NULL,
                 created_at TEXT NOT NULL
+                FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
             )`,
             [],
             () => { console.log('Tabla Notas creada correctamente'); },
@@ -83,7 +84,7 @@ const createEventsTable = async () => {
                 nota TEXT NOT NULL,
                 fecha TEXT NOT NULL,
                 created_at TEXT NOT NULL,
-                FOREIGN KEY (animalId) REFERENCES Animal (id)
+                FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
             )`,
             [],
             () => { console.log('Tabla Events creada correctamente'); },
