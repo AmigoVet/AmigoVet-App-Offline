@@ -217,7 +217,7 @@ const AnimalView = () => {
     <>
       <RequestGPTButton animal={animal} registers={registers} notes={notes} />
       <ButtonAddRegister onPress={handleOpenModal} />
-      <ButtonAddEvent />
+      <ButtonAddEvent animalId={animal!.id} animalName={animal!.nombre} />
       <SwipeListView
         style={styles.swipeListContainer}
         ListHeaderComponent={
