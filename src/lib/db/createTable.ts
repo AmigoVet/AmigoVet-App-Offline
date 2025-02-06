@@ -64,7 +64,7 @@ const createNotesTable = () => {
                 animalId TEXT NOT NULL,
                 nota TEXT NOT NULL,
                 fecha TEXT NOT NULL,
-                created_at TEXT NOT NULL
+                created_at TEXT NOT NULL,
                 FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
             )`,
             [],
@@ -85,7 +85,7 @@ const createEventsTable = async () => {
                 comentario TEXT NOT NULL,
                 fecha TEXT NOT NULL,
                 created_at TEXT NOT NULL,
-                FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE,
+                FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
             )`,
             [],
             () => { console.log('Tabla Events creada correctamente'); },
