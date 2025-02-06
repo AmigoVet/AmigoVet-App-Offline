@@ -6802,6 +6802,11 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
+react-native-date-picker@^5.0.10:
+  version "5.0.10"
+  resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-5.0.10.tgz#e3ff98dcdca5f88035cee9c133bd0be56e4dada9"
+  integrity sha512-W4AXcoFXXNFhG2fItRWp5UrgiU6PJM7bW06KDl+NeWPActSzunMQkQWjMuucOsrlyfCudTyV1n3hskHRGzDeow==
+
 react-native-drawer-layout@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/react-native-drawer-layout/-/react-native-drawer-layout-4.1.1.tgz#7fce1b3d3ddd9fc5d781c73d13b814d022b90114"
