@@ -39,7 +39,7 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
   StyleSheet.create({
     box: {
       width: 330,
-      height: 150,
+      height: 190,
       borderRadius: constants.borderRadius,
       overflow: 'hidden',
       position: 'relative',
