@@ -5,7 +5,7 @@ export const createTables = () => {
     createAnimalTable();
     createRegisterTable();
     createNotesTable();
-
+    createEventsTable();
 };
 
 const createAnimalTable = () => {
@@ -72,4 +72,22 @@ const createNotesTable = () => {
         );
     });
     
+}
+
+const createEventsTable = async () => {
+    db.transaction((tx) => {
+        tx.executeSql(
+            `CREATE TABLE IF NOT EXISTS Events (
+                id TEXT PRIMARY KEY NOT NULL,
+                animalId TEXT NOT NULL,
+                nota TEXT NOT NULL,
+                fecha TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (animalId) REFERENCES Animal (id)
+            )`,
+            [],
+            () => { console.log('Tabla Events creada correctamente'); },
+            (_, error) => { console.error('Error al crear la tabla Events:', error); }
+        );
+    });
 }
