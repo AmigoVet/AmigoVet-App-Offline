@@ -11,20 +11,21 @@ import { useTheme } from '../../lib/context/ThemeContext';
 import { createGlobalStyles } from '../../assets/styles/styles';
 
 // **Componentes locales**
-import { AnimalCard } from '../../components/AnimalDataView';
 import { CustomInput } from '../../components/Customs';
 
 // **Funciones utilitarias**
-import { searchAnimals } from '../../lib/utils/asyncStorage';
 import { Header } from '../../components/global';
 import { newColors } from '../../assets/styles/colors';
-import PrivateAnimalCard from '../../components/AnimalCard/PrivateAnimalCard';
 import FeedCard from './feed/components/FeedCard';
+import { searchAnimals } from '../../lib/db/getDataAnimal';
+import useAuthStore from '../../lib/store/authStore';
 
 
 const Busqueda = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<Animal[]>([]);
+  const user = useAuthStore((state) => state.user);
+
 
   const { isDarkTheme } = useTheme();
   const GlobalStyles = createGlobalStyles(isDarkTheme);
@@ -32,7 +33,7 @@ const Busqueda = () => {
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (query.trim().length > 0) {
-      const results = await searchAnimals(query);
+      const results = await searchAnimals(user!.userId, query);
       setSearchResults(results);
     } else {
       setSearchResults([]);
