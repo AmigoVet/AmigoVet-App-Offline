@@ -8,7 +8,7 @@ const ButtonAddEvent = () => {
   return (
     <>
       <View style={styles.btn}>
-        <CustomIcon name="add-outline" size={24} color={newColors.fondo_principal} />
+        <CustomIcon name="calendar-outline" size={24} color={newColors.fondo_principal} />
       </View>
     </>
   )
