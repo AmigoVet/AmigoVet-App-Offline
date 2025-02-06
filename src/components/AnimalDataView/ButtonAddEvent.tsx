@@ -1,10 +1,11 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { CustomIcon, CustomInput } from '../Customs';
 import { newColors } from '../../assets/styles/colors';
 import { Modalize } from 'react-native-modalize';
 import DatePicker from 'react-native-date-picker';
-
+import { Events } from '../../lib/interfaces/events';
+import { createDataEvent } from '../../lib/db/events/createDataEvent';
 
 interface Props {
     animalId: string;
@@ -12,8 +13,16 @@ interface Props {
 }
 
 const ButtonAddEvent = ({ animalId, animalName }: Props) => {
-    const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
-    const [comentary, setComentary] = useState<string>('');
+    // Estado para los datos del evento
+    const [eventData, setEventData] = useState<Events>({
+        id: Math.random().toString(36), 
+        animalId: animalId,
+        animalName: animalName,
+        comentario: '',
+        fecha: new Date().toISOString().split('T')[0], 
+        created_at: new Date().toISOString(),
+    });
+
     const modalRef = useRef<Modalize>(null);
 
     const openModal = () => {
@@ -22,38 +31,55 @@ const ButtonAddEvent = ({ animalId, animalName }: Props) => {
 
     const handleDateChange = (selectedDate: Date) => {
         const year = selectedDate.getFullYear();
-        const month = String(selectedDate.getMonth() + 1).padStart(2, '0'); 
+        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
         const day = String(selectedDate.getDate()).padStart(2, '0');
-    
         const formattedDate = `${year}-${month}-${day}`;
-        setDate(formattedDate);
+        setEventData({ ...eventData, fecha: formattedDate });
+        console.log('Fecha seleccionada:', formattedDate);
     };
-    
 
-    const handleCreateEvent = (animalId: string, animalName: string, date: string, comentary: string) => {
-        console.log(animalId, animalName, date, comentary);
-    }
+    const handleCommentChange = (text: string) => {
+        setEventData({ ...eventData, comentario: text });
+    };
+
+    const handleAddEvent = async () => {
+        if (!eventData.comentario.trim()) {
+            Alert.alert('Error', 'Por favor, ingresa un comentario para el evento.');
+            return;
+        }
+
+        try {
+            await createDataEvent(eventData);
+            console.log('Evento guardado correctamente:', eventData);
+            modalRef.current?.close(); 
+        } catch (error) {
+            console.error('Error al guardar el evento:', error);
+        }
+    };
 
     return (
         <>
+        {/* Botón flotante para abrir el modal */}
         <Pressable style={styles.btn} onPress={openModal}>
             <CustomIcon name="calendar-outline" size={24} color={newColors.fondo_principal} />
         </Pressable>
 
+        {/* Modal con contenido */}
         <Modalize ref={modalRef} modalHeight={600} modalStyle={styles.modal}>
             <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Rellena los datos del evento</Text>
+                
                 <CustomInput 
-                    label="Nombre del evento"
-                    placeholder="Nombre del evento"
-                    value={comentary}
-                    onChangeText={(text) => setComentary(text)}
+                    label="Comentario"
+                    placeholder="Descripción del evento"
+                    value={eventData.comentario}
+                    onChangeText={handleCommentChange}
                 />
 
                 <View style={styles.datePickerContainer}>
                     <DatePicker
                         mode="date"
-                        date={new Date(date)}
+                        date={new Date(eventData.fecha)}
                         onDateChange={handleDateChange}
                         theme="light"
                     />
@@ -63,7 +89,7 @@ const ButtonAddEvent = ({ animalId, animalName }: Props) => {
                     <Pressable style={[styles.modalButton, styles.cancelButton]} onPress={() => modalRef.current?.close()}>
                         <Text style={styles.buttonText}>Cancelar</Text>
                     </Pressable>
-                    <Pressable style={[styles.modalButton, styles.addButton]} onPress={() => handleCreateEvent(animalId, animalName, date, comentary)}>
+                    <Pressable style={[styles.modalButton, styles.addButton]} onPress={handleAddEvent}>
                         <Text style={[styles.buttonText]}>Agregar</Text>
                     </Pressable>
                 </View>
