@@ -11,15 +11,8 @@ interface DayObject {
   hasEvent: boolean;
 }
 
-export interface ProgrammerEvent {
-  fecha: string;
-  AnimalId: string;
-  animalName: string;
-  comentario: string;
-}
-
 interface ProgramerFeedProps {
-  events: ProgrammerEvent[];
+  events: Events[];
 }
 
 const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
