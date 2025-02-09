@@ -7,6 +7,7 @@ import { Animal, Notes } from '../../../lib/interfaces/animal';
 import { Register } from '@tanstack/react-query';
 import { Events } from '../../../lib/interfaces/events';
 import { ButtonAddEvent, ButtonAddRegister, ButtonEditData, ButtonRequestGPT } from './buttons';
+import { CustomImage } from '../../../components/Customs';
 
 export const defaultAnimal: Animal = {
   ownerId: "",
