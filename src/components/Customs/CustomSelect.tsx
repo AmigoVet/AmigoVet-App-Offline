@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useTheme } from "../../lib/context/ThemeContext";
-import { getDynamicColors } from "../../assets/styles/colors";
+import { getDynamicColors, newColors } from "../../assets/styles/colors";
 import { createGlobalStyles } from "../../assets/styles/styles";
 
 interface CustomSelectProps {
@@ -28,27 +28,33 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onVa
     label: {
       fontSize: fontSize,
       fontWeight: "500",
-      color: colors.blanco,
+      color: newColors.fondo_secundario,
       marginBottom: 5,
     },
     pickerContainer: {
       borderWidth: 1,
-      borderColor: colors.verdeLight,
+      borderColor: newColors.verde,
       borderRadius: 8,
       overflow: "hidden",
       backgroundColor: colors.fondo,
+      zIndex: 9999,
+      elevation: 1000,
     },
     picker: {
       height: 50,
       width: "100%",
+      color: newColors.fondo_secundario,
     },
     pickerItemDefault: {
-      color: colors.rowBgLight, // Color para el primer elemento
-      fontSize: fontSize,
+      color: newColors.fondo_principal,
+      fontSize: 16,
+      fontWeight: "bold",
+      textAlign: "center",
     },
     pickerItemOption: {
-      color: colors.blanco, // Color para el resto de opciones
+      color: newColors.fondo_principal, 
       fontSize: fontSize,
+      textAlign: "center",
     },
   });
 
@@ -63,19 +69,19 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onVa
           selectedValue={value}
           onValueChange={onValueChange}
           style={styles.picker}
-          dropdownIconColor={colors.blanco}
+          dropdownIconColor={newColors.verde}
         >
           <Picker.Item
             label={`Seleccione ${label.toLowerCase()}`}
             value=""
-            style={styles.pickerItemDefault} // Estilo para el primer elemento
+            style={styles.pickerItemDefault}
           />
           {options.map((option) => (
             <Picker.Item
               key={option}
               label={option}
               value={option}
-              style={styles.pickerItemOption} // Estilo para los demás elementos
+              style={styles.pickerItemOption}
             />
           ))}
         </Picker>
