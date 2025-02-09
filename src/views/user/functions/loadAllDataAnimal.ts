@@ -5,6 +5,7 @@ import { getDataNotas } from "../../../lib/db/notas/getDataNotas";
 import { getDataRegisters } from "../../../lib/db/registers/getDataRegister";
 import { Animal, Notes } from "../../../lib/interfaces/animal";
 import { Events } from "../../../lib/interfaces/events";
+import { defaultAnimal } from "../AnimalView/AnimalView";
 
 export interface AnimalAllData {
     animal: Animal | null;
@@ -15,24 +16,28 @@ export interface AnimalAllData {
 
 export const loadAllDataAnimal = async (id: string): Promise<AnimalAllData> => {
     try {
+
         const animal = await getDataAnimalbyId(id);
+
         const registers = await getDataRegisters(id);
+
         const notes = await getDataNotas(id);
+
         const events = await getDataEventByAnimalId(id);
 
         return {
-            animal,
-            registers,
-            notes,
-            events,
+            animal: animal || defaultAnimal, 
+            registers: registers || [],
+            notes: notes || [],
+            events: events || [],
         };
     } catch (error) {
-        console.error("Error al cargar los datos del animal:", error);
+        console.error("❌ Error al cargar los datos:", error);
         return {
-            animal: null,
-            registers: null,
-            notes: null,
-            events: null,
+            animal: defaultAnimal,
+            registers: [],
+            notes: [],
+            events: [],
         };
     }
 };
