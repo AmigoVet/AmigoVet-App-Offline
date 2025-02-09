@@ -1,43 +1,86 @@
-import { View, Text } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useRoute, RouteProp } from '@react-navigation/native'
-import { RootStackParamList } from '../../Welcome'
-import { loadAllDataAnimal } from '../functions/loadAllDataAnimal'
+import { View, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../Welcome';
+import { loadAllDataAnimal } from '../functions/loadAllDataAnimal';
 import { Animal, Notes } from '../../../lib/interfaces/animal';
-import { Register } from '@tanstack/react-query'
-import { Events } from '../../../lib/interfaces/events'
-import { ButtonAddEvent, ButtonAddRegister, ButtonEditData, ButtonRequestGPT } from './buttons'
+import { Register } from '@tanstack/react-query';
+import { Events } from '../../../lib/interfaces/events';
+import { ButtonAddEvent, ButtonAddRegister, ButtonEditData, ButtonRequestGPT } from './buttons';
+
+export const defaultAnimal: Animal = {
+  ownerId: "",
+  id: "",
+  identificador: "",
+  nombre: "Desconocido",
+  especie: "Desconocida",
+  raza: "Desconocida",
+  edad: "",
+  nacimiento: "",
+  genero: "Desconocido",
+  peso: "0",
+  color: "Desconocido",
+  descripcion: "Sin descripción",
+  image: "",
+  image2: "",
+  image3: "",
+  proposito: "No definido",
+  ubicacion: "No definida",
+  created_at: "",
+  updated_at: "",
+  embarazada: false,
+  celo: "",
+};
 
 const AnimalView = () => {
   const id = useRoute<RouteProp<RootStackParamList, "AnimalView">>().params.id;
-  
+
   const [animalData, setAnimalData] = useState<{
-    animal: Animal | null;
-    registers: Register[] | null;
-    notes: Notes[] | null;
-    events: Events[] | null;
+    animal: Animal;
+    registers: Register[];
+    notes: Notes[];
+    events: Events[];
   }>({
-    animal: null,
-    registers: null,
-    notes: null,
-    events: null,
+    animal: defaultAnimal,
+    registers: [],
+    notes: [],
+    events: [],
   });
+
   const fetchData = async () => {
-    const data = await loadAllDataAnimal(id);
-    setAnimalData(data);
+    try {
+      const data = await loadAllDataAnimal(id);
+      setAnimalData({
+        animal: data.animal || defaultAnimal, 
+        registers: data.registers || [],
+        notes: data.notes || [],
+        events: data.events || [],
+      });
+    } catch (error) {
+      console.error("Error cargando los datos:", error);
+      setAnimalData({
+        animal: defaultAnimal,
+        registers: [],
+        notes: [],
+        events: [],
+      });
+    }
   };
+
   useEffect(() => {
     fetchData();
   }, [id]);
 
+  console.log('🐾 AnimalDataView:', animalData);
+
   return (
     <>
-      <ButtonAddEvent animalId={id} animalName={animalData.animal?.nombre || "Animal"} onPress={fetchData} />
-      <ButtonEditData animal={animalData.animal!} onPress={fetchData} />
-      <ButtonAddRegister animal={animalData.animal!} onPress={fetchData} />
-      <ButtonRequestGPT animal={animalData.animal!} registers={animalData.registers!} notes={animalData.notes!} />
+      <ButtonAddEvent animalId={id} animalName={animalData.animal.nombre} onPress={() => {}} />
+      <ButtonEditData id={id} animal={animalData.animal} onPress={() => {}} />
+      <ButtonAddRegister animal={animalData.animal} onPress={() => {}} />
+      <ButtonRequestGPT animal={animalData.animal} registers={animalData.registers} notes={animalData.notes} />
     </>
-  )
-}
+  );
+};
 
 export default AnimalView;
