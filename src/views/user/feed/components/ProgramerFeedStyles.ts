@@ -137,7 +137,7 @@ export const ProgramerFeedStyles = StyleSheet.create({
     },
     emptyNotification: {
       padding: 12,
-      borderRadius: 8,
+      borderRadius: constants.borderRadius,
       backgroundColor: newColors.verde_light,
       alignItems: 'center',
     },
