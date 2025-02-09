@@ -136,7 +136,7 @@ export const getDataAnimal = (ownerId: string): Promise<Animal[]> => {
     });
 };
 
-export const getDataAnimalbyId = async (id: string): Promise<Animal | null> => {
+export const getDataAnimalbyId = async (id: string): Promise<Animal> => {
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql(

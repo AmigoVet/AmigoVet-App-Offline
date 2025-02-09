@@ -7,11 +7,11 @@ import useAuthStore from '../../lib/store/authStore';
 import Login from '../../views/auth/Login';
 import Welcome from '../../views/Welcome';
 import Register from '../../views/auth/Register';
-import AnimalView from '../../views/user/AnimalView';
 import Busqueda from '../../views/user/Busqueda';
 import ChangePasswordScreen from '../../views/user/ChangePassword';
 import { BottomTabsNavigator } from './BottomTabsNavigator';
 import New from '../../views/user/New';
+import AnimalView from '../../views/user/AnimalView/AnimalView';
 
 const Stack = createNativeStackNavigator();
 

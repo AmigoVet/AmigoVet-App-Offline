@@ -1,18 +1,19 @@
 import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import React, { useRef, useState } from 'react';
-import { CustomIcon, CustomInput } from '../Customs';
-import { newColors } from '../../assets/styles/colors';
 import { Modalize } from 'react-native-modalize';
 import DatePicker from 'react-native-date-picker';
-import { Events } from '../../lib/interfaces/events';
-import { createDataEvent } from '../../lib/db/events/createDataEvent';
+import { Events } from '../../../../lib/interfaces/events';
+import { newColors } from '../../../../assets/styles/colors';
+import { CustomIcon, CustomInput } from '../../../../components/Customs';
+import { createDataEvent } from '../../../../lib/db/events/createDataEvent';
 
 interface Props {
     animalId: string;
     animalName: string;
+    onPress: () => void;
 }
 
-const ButtonAddEvent = ({ animalId, animalName }: Props) => {
+const ButtonAddEvent = ({ animalId, animalName, onPress }: Props) => {
     // Estado para los datos del evento
     const [eventData, setEventData] = useState<Events>({
         id: Math.random().toString(36), 
@@ -56,6 +57,8 @@ const ButtonAddEvent = ({ animalId, animalName }: Props) => {
             console.error('Error al guardar el evento:', error);
         }
     };
+
+    onPress();
 
     return (
         <>
@@ -103,10 +106,10 @@ export default ButtonAddEvent;
 
 const styles = StyleSheet.create({
   btn: {
-    backgroundColor: newColors.verde_light,
+    backgroundColor: newColors.verde,
     position: 'absolute',
     zIndex: 10,
-    bottom: 140,
+    bottom: 200,
     right: 20,
     borderRadius: 50,
     padding: 10,

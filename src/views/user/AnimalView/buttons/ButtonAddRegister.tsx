@@ -1,30 +1,30 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native'
 import React from 'react'
-import { CustomIcon } from '../Customs';
-import { getDynamicColors } from '../../assets/styles/colors';
-import { useTheme } from '../../lib/context/ThemeContext';
+import { useTheme } from '../../../../lib/context/ThemeContext';
+import { getDynamicColors, newColors } from '../../../../assets/styles/colors';
+import { CustomIcon } from '../../../../components/Customs';
+import { Animal } from '../../../../lib/interfaces/animal';
 
 interface ButtonAddRegisterProps {
+    animal: Animal;
     onPress: () => void;
 }
 
-const ButtonAddRegister = ({onPress}: ButtonAddRegisterProps) => {
+const ButtonAddRegister = ({onPress, animal}: ButtonAddRegisterProps) => {
 
-    const { isDarkTheme } = useTheme();
-    const colors = getDynamicColors(isDarkTheme);
-    const styles = dynamicStyles(colors);
+    const styles = dynamicStyles();
 
     return (
         <Pressable style={styles.button} onPress={onPress}>
-            <CustomIcon name="book-outline" size={30} color={colors.verdeLight} />
+            <CustomIcon name="book-outline" size={30} color={newColors.fondo_principal} />
         </Pressable>
     )
 }
 
-const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+const dynamicStyles = () =>
   StyleSheet.create({
     button: {
-      backgroundColor: colors.verdeDark,
+      backgroundColor: newColors.verde,
       position: 'absolute',
       zIndex: 10,
       bottom: 80,

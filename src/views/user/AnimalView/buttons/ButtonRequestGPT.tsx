@@ -1,14 +1,14 @@
 import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import React, { useRef, useState, useEffect } from 'react';
-import { getDynamicColors } from '../../assets/styles/colors';
-import { useTheme } from '../../lib/context/ThemeContext';
-import { CustomButton, CustomIcon, CustomInput } from '../Customs';
 import { Modalize } from 'react-native-modalize';
-import { AnimalViewStyles } from '../../assets/styles/AnimalViewStyles';
-import { getAvailableRequests, manageDailyRequests } from '../../lib/utils/limitRequestGpt';
-import { gptRequest } from '../../lib/functions/gptRequest';
-import { Animal, Notes } from '../../lib/interfaces/animal';
 import { Register } from '@tanstack/react-query';
+import { AnimalViewStyles } from '../../../../assets/styles/AnimalViewStyles';
+import { getDynamicColors, newColors } from '../../../../assets/styles/colors';
+import { CustomIcon, CustomInput, CustomButton } from '../../../../components/Customs';
+import { gptRequest } from '../../../../lib/functions/gptRequest';
+import { Animal, Notes } from '../../../../lib/interfaces/animal';
+import { getAvailableRequests, manageDailyRequests } from '../../../../lib/utils/limitRequestGpt';
+import { useTheme } from '../../../../lib/context/ThemeContext';
 
 interface Props {
   animal: Animal;
@@ -16,7 +16,7 @@ interface Props {
   notes: Notes[];
 }
 
-const RequestGPTButton: React.FC<Props> = ({ animal, registers, notes }) => {
+const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
   const modalRefGpt = useRef<Modalize>(null);
   const [fieldPeticionGpt, setFieldPeticionGpt] = useState("");
   const [availableRequest, setAvailableRequest] = useState<number>(0);
@@ -65,7 +65,7 @@ const RequestGPTButton: React.FC<Props> = ({ animal, registers, notes }) => {
   return (
     <>
       <Pressable style={styles.button} onPress={() => modalRefGpt.current?.open()}>
-        <CustomIcon name="sparkles-sharp" size={30} color={colors.verdeLight} />
+        <CustomIcon name="sparkles-sharp" size={30} color={newColors.fondo_principal} />
       </Pressable>
       <Modalize ref={modalRefGpt} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
         <View style={modalStyles.modalContent}>
@@ -88,7 +88,7 @@ const RequestGPTButton: React.FC<Props> = ({ animal, registers, notes }) => {
 const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
   StyleSheet.create({
     button: {
-      backgroundColor: colors.verdeDark,
+      backgroundColor: newColors.verde,
       position: 'absolute',
       zIndex: 10,
       bottom: 20,
@@ -103,4 +103,4 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
     },
   });
 
-export default RequestGPTButton;
+export default ButtonRequestGPT;
