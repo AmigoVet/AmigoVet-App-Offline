@@ -3,7 +3,7 @@ import React from 'react'
 import { constants } from '../../assets/styles/constants';
 
 interface CustomImageProps {
-    source: string;
+    source: string | undefined;
     full?: boolean;
     style?: StyleProp<ImageStyle>;
 }
