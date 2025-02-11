@@ -8,6 +8,7 @@ import { pickImageFromGallery, takePhoto } from '../../../../utils/imagePickerUt
 import Separator from '../../../../components/global/Separator';
 import { updateAnimal } from '../../../../lib/db/animals/updateDataAnimal';
 import { EditDataEstyles } from './styles/EditDataStyles';
+import { setDataRegister } from '../../../../lib/db/registers/setDataRegister';
 
 interface ButtonEditDataProps {
     id: string;
@@ -98,11 +99,15 @@ const ButtonEditData = ({id,  onPress, animal }: ButtonEditDataProps) => {
                 return;
             }
 
-            await updateAnimal(id, {
-                [field]: value
+            await updateAnimal(id, { [field]: value});
+            await setDataRegister({
+                id: Math.random().toString(36).substr(2, 9),
+                animalId: id,
+                comentario: `Actualizado ${selectedValue} a ${value}`,
+                accion: "Actualizar datos",
+                fecha: new Date().toISOString()
             });
 
-            console.log('Actualización exitosa:', { field, value });
             modalRef.current?.close();
             if (onPress) onPress();
             
