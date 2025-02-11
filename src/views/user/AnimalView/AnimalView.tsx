@@ -72,7 +72,8 @@ const AnimalView = () => {
     fetchData();
   }, [id]);
 
-  console.log('🐾 AnimalDataView:', animalData);
+  console.log('🐾 AnimalDataView:', JSON.stringify(animalData, null, 2));
+
 
   return (
     <>
