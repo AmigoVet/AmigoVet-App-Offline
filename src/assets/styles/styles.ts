@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native';
-import { getDynamicColors } from './colors';
+import { getDynamicColors, newColors } from './colors';
 
-export const createGlobalStyles = (isDarkTheme: boolean) => {
-  const colors = getDynamicColors(isDarkTheme);
+export const createGlobalStyles = () => {
+  const colors = newColors
 
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors.fondo,
+      backgroundColor: colors.fondo_principal,
       width: "100%",
       display: 'flex',
       alignItems: 'center',
@@ -16,7 +16,13 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
     title: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: colors.blanco,
+      color: colors.fondo_principal,
+    },
+    titleModal: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 15,
     },
     subTitle: {
       fontSize: 18,
@@ -31,12 +37,12 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
     textWhite: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: colors.blanco,
+      color: colors.principal,
     },
     miniText: {
       fontSize: 12,
       fontWeight: 'medium',
-      color: colors.blanco,
+      color: colors.fondo_secundario,
     },
     label: {
       fontSize: 16,
@@ -48,13 +54,13 @@ export const createGlobalStyles = (isDarkTheme: boolean) => {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.fondo,
+      backgroundColor: colors.fondo_principal,
     },
     loadingContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.fondo,
+      backgroundColor: colors.fondo_principal,
     },
     error: {
       fontSize: 25,
