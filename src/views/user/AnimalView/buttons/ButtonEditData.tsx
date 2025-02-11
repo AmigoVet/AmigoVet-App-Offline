@@ -157,6 +157,7 @@ const ButtonEditData = ({id,  onPress, animal }: ButtonEditDataProps) => {
                         placeholder={valueLabel} 
                         value={valueLabel}
                         onChangeText={setValueLabel}
+                        multiline={selectedValue === 'Descripción'}
                     />
                 )
             )}
