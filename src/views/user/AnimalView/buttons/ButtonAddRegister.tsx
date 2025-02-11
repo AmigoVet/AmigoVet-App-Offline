@@ -6,6 +6,7 @@ import { Animal } from '../../../../lib/interfaces/animal';
 import { Modalize } from 'react-native-modalize';
 import { createGlobalStyles } from '../../../../assets/styles/styles';
 import { setDataRegister } from '../../../../lib/db/registers/setDataRegister';
+import { updateAnimal } from '../../../../lib/db/animals/updateDataAnimal';
 
 interface ButtonAddRegisterProps {
   animalId: string;
@@ -38,23 +39,41 @@ const ButtonAddRegister = ({ animalId, onPress, animal }: ButtonAddRegisterProps
     ];
 
     if (animal.genero === "Hembra") {
-        options.push(
-            { label: "Registrar preñez", value: "preñez" },
-            { label: "Registrar inseminación", value: "inseminacion" }
-        );
-        if (animal.embarazada) {
-            options.push({ label: "Registrar aborto", value: "aborto" });
-        }
+      if (!animal.embarazada) {
+          options.push(
+              { label: "Registrar preñez", value: "preñez" },
+              { label: "Registrar inseminación", value: "inseminacion" }
+          );
+      }
+      
+      if (animal.embarazada) {
+          options.push({ label: "Registrar aborto", value: "aborto" });
+      }
     }
+  
 
     const handleSave = async () => {
-        console.log({
-            id: Math.random().toString(36).substr(2, 9),
-            animalId: animalId,
-            comentario: comentario,
-            accion: 'Registro ' + selectedValue,
-            fecha: new Date().toISOString()
-        });
+        // await setDataRegister({
+        //     id: Math.random().toString(36).substr(2, 9),
+        //     animalId: animalId,
+        //     comentario: comentario,
+        //     accion: 'Registro ' + selectedValue,
+        //     fecha: new Date().toISOString()
+        // });
+
+        if(selectedValue === 'inseminacion' || selectedValue === 'preñez') {
+          await updateAnimal(animalId, { embarazada: true });
+
+        }
+        else if(selectedValue === 'aborto') {
+          await updateAnimal(animalId, { embarazada: false });
+
+        }
+        else if(selectedValue === 'tratamiento') {
+            console.log("Tratamiento")
+        }
+
+
         closeModal();
     }
 
