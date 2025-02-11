@@ -1,6 +1,6 @@
 import { Especie } from "../interfaces/animal";
 
-export const calculateDueDate = (species: Especie, inseminationDate: Date): string => {
+export const calcularFechaParto = (species: Especie, inseminationDate: Date): string => {
   const gestationPeriods: { [key in Especie]: number } = {
     Bovino: 283,
     Canino: 63,
@@ -22,14 +22,6 @@ export const calculateDueDate = (species: Especie, inseminationDate: Date): stri
   const dueDate = new Date(inseminationDate);
   dueDate.setDate(dueDate.getDate() + gestationDays);
 
-  // Formatear la fecha en estilo largo
-  const formatter = new Intl.DateTimeFormat("es-ES", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
-  return formatter.format(dueDate);
+  // Retornar la fecha en formato ISO 8601
+  return dueDate.toISOString();
 };
-
