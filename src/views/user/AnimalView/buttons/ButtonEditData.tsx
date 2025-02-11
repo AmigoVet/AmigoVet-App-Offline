@@ -160,6 +160,20 @@ const ButtonEditData = ({id,  onPress, animal }: ButtonEditDataProps) => {
                     />
                 )
             )}
+            <View style={styles.modalActions}>
+                <CustomButton 
+                    text="Guardar" 
+                    onPress={handleSave}
+                    disabled={isLoading} 
+                />
+                <CustomButton 
+                    text="Cancelar" 
+                    onPress={() => modalRef.current?.close()} 
+                    red 
+                    disabled={isLoading}
+                />       
+            </View>
+            <Separator />
         </>
     ), [selectedValue, image, valueLabel, propositoValue, handleSelectChange, handlePickImage, handleTakePhoto, options, animal.especie]);
 
@@ -180,20 +194,8 @@ const ButtonEditData = ({id,  onPress, animal }: ButtonEditDataProps) => {
                 withHandle={false}
             >
                 {modalContent}
-                <View style={styles.modalActions}>
-                    <CustomButton 
-                        text="Guardar" 
-                        onPress={handleSave}
-                        disabled={isLoading} 
-                    />
-                    <CustomButton 
-                        text="Cancelar" 
-                        onPress={() => modalRef.current?.close()} 
-                        red 
-                        disabled={isLoading}
-                    />       
-                </View>
-                <Separator />
+
+
             </Modalize>
         </>
     );
