@@ -198,7 +198,7 @@ const ButtonEditData = ({id,  onPress, animal }: ButtonEditDataProps) => {
                     keyboardShouldPersistTaps: "handled",
                     removeClippedSubviews: true
                 }}
-                withHandle={false}
+                withHandle={true}
             >
                 {modalContent}
 

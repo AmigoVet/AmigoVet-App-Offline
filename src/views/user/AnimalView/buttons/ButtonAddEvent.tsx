@@ -6,6 +6,8 @@ import { Events } from '../../../../lib/interfaces/events';
 import { newColors } from '../../../../assets/styles/colors';
 import { CustomIcon, CustomInput } from '../../../../components/Customs';
 import { createDataEvent } from '../../../../lib/db/events/createDataEvent';
+import { addEventStyles } from './styles/AddEventStyles';
+import Separator from '../../../../components/global/Separator';
 
 interface Props {
     animalId: string;
@@ -14,6 +16,7 @@ interface Props {
 }
 
 const ButtonAddEvent = ({ animalId, animalName, onPress }: Props) => {
+  const styles = addEventStyles;
     // Estado para los datos del evento
     const [eventData, setEventData] = useState<Events>({
         id: Math.random().toString(36), 
@@ -31,16 +34,12 @@ const ButtonAddEvent = ({ animalId, animalName, onPress }: Props) => {
     };
 
     const handleDateChange = (selectedDate: Date) => {
-        const year = selectedDate.getFullYear();
-        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-        const day = String(selectedDate.getDate()).padStart(2, '0');
-        const formattedDate = `${year}-${month}-${day}`;
-        setEventData({ ...eventData, fecha: formattedDate });
-        console.log('Fecha seleccionada:', formattedDate);
-    };
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      setEventData(prev => ({ ...prev, fecha: formattedDate }));
+  };
 
     const handleCommentChange = (text: string) => {
-        setEventData({ ...eventData, comentario: text });
+      setEventData(prev => ({ ...prev, comentario: text }));
     };
 
     const handleAddEvent = async () => {
@@ -68,7 +67,15 @@ const ButtonAddEvent = ({ animalId, animalName, onPress }: Props) => {
         </Pressable>
 
         {/* Modal con contenido */}
-        <Modalize ref={modalRef} modalHeight={600} modalStyle={styles.modal}>
+        <Modalize 
+          ref={modalRef} 
+          modalStyle={styles.modal}
+          adjustToContentHeight
+          scrollViewProps={{ 
+            keyboardShouldPersistTaps: "handled",
+            removeClippedSubviews: true
+        }}
+        >
             <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Rellena los datos del evento</Text>
                 
@@ -96,6 +103,7 @@ const ButtonAddEvent = ({ animalId, animalName, onPress }: Props) => {
                         <Text style={[styles.buttonText]}>Agregar</Text>
                     </Pressable>
                 </View>
+                <Separator />
             </View>
         </Modalize>
         </>
@@ -104,62 +112,3 @@ const ButtonAddEvent = ({ animalId, animalName, onPress }: Props) => {
 
 export default ButtonAddEvent;
 
-const styles = StyleSheet.create({
-  btn: {
-    backgroundColor: newColors.verde,
-    position: 'absolute',
-    zIndex: 10,
-    bottom: 200,
-    right: 20,
-    borderRadius: 50,
-    padding: 10,
-    height: 50,
-    width: 50,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modal: {
-    backgroundColor: newColors.fondo_principal,
-    padding: 20,
-  },
-  modalContent: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: newColors.fondo_secundario,
-    textAlign: 'center',
-  },
-  datePickerContainer: {
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 20,
-  },
-  modalActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-  },
-  modalButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    minWidth: 100,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: newColors.rojo,
-  },
-  addButton: {
-    backgroundColor: newColors.verde_light,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: newColors.fondo_principal,
-  },
-});
