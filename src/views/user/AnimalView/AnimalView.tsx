@@ -78,7 +78,7 @@ const AnimalView = () => {
     <>
       <ButtonAddEvent animalId={id} animalName={animalData.animal.nombre} onPress={() => {}} />
       <ButtonEditData id={id} animal={animalData.animal} onPress={() => {}} />
-      <ButtonAddRegister animal={animalData.animal} onPress={() => {}} />
+      <ButtonAddRegister animalId={id} animal={animalData.animal} onPress={() => {}} />
       <ButtonRequestGPT animal={animalData.animal} registers={animalData.registers} notes={animalData.notes} />
     </>
   );
