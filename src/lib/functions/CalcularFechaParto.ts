@@ -10,6 +10,7 @@ export const calculateDueDate = (species: Especie, inseminationDate: Date): stri
     Ovino: 152,
     Porcino: 114,
     Felino: 63,
+    Desconocida: 0,
   };
 
   if (!gestationPeriods[species]) {
