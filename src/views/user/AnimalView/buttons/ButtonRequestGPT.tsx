@@ -1,106 +1,81 @@
-import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
-import React, { useRef, useState, useEffect } from 'react';
+import { View, Text, Pressable, StyleSheet, FlatList } from 'react-native';
+import React, { useRef, useState } from 'react';
 import { Modalize } from 'react-native-modalize';
-import { Register } from '@tanstack/react-query';
-import { AnimalViewStyles } from '../../../../assets/styles/AnimalViewStyles';
-import { getDynamicColors, newColors } from '../../../../assets/styles/colors';
-import { CustomIcon, CustomInput, CustomButton } from '../../../../components/Customs';
-import { gptRequest } from '../../../../lib/functions/gptRequest';
+import { newColors } from '../../../../assets/styles/colors';
+import { CustomIcon } from '../../../../components/Customs';
 import { Animal, Notes } from '../../../../lib/interfaces/animal';
-import { getAvailableRequests, manageDailyRequests } from '../../../../lib/utils/limitRequestGpt';
-import { useTheme } from '../../../../lib/context/ThemeContext';
+import { requestGptStyles } from './styles/RequestGptStyles';
+import MessageInput from './components/MessageInput';
+import SendButton from './components/SendButton';
+import { Message } from '../../../../lib/interfaces/messages';
 
 interface Props {
   animal: Animal;
-  registers: Register[];
+  registers: any[]; 
   notes: Notes[];
 }
 
 const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
   const modalRefGpt = useRef<Modalize>(null);
-  const [fieldPeticionGpt, setFieldPeticionGpt] = useState("");
-  const [availableRequest, setAvailableRequest] = useState<number>(0);
+  const styles = requestGptStyles;
 
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
-  const styles = dynamicStyles(colors);
-  const modalStyles = AnimalViewStyles(colors);
+  const [message, setMessage] = useState<string>("");
+  const [messages, setMessages] = useState<Message[]>([]);
 
-  // Cargar la configuración inicial
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const availableRequests = await getAvailableRequests();
-        setAvailableRequest(availableRequests);
-      } catch (error) {
-        console.error("Error al cargar la configuración:", error);
-      }
+  const handleSendMessage = () => {
+    if (message.trim() === "") return;
+
+    const newMessage: Message = {
+      id: Math.random().toString(36).substr(2, 9), 
+      message: message,
+      owner: "User",
     };
-    loadSettings();
-  }, []);
 
-  // Petición GPT
-  const handleGPTRequest = async () => {
-    try {
-      if (!fieldPeticionGpt.trim()) {
-        Alert.alert("Error", "Por favor ingresa tu duda antes de enviar.");
-        return;
-      }
-
-      const canRequest = await manageDailyRequests();
-      if (canRequest) {
-        setAvailableRequest((prev) => prev - 1);
-        const response = await gptRequest(fieldPeticionGpt, animal, registers, notes);
-        console.log("Respuesta GPT:", response);
-        Alert.alert("Respuesta", response || "No se obtuvo una respuesta válida.");
-      } else {
-        Alert.alert("Límite alcanzado", "Has alcanzado el límite de solicitudes disponibles.");
-      }
-    } catch (error) {
-      console.error("Error al realizar la petición GPT:", error);
-      Alert.alert("Error", "No se pudo realizar la petición. Inténtalo nuevamente más tarde.");
-    }
+    setMessages([...messages, newMessage]);
+    setMessage("");
   };
+
 
   return (
     <>
       <Pressable style={styles.button} onPress={() => modalRefGpt.current?.open()}>
         <CustomIcon name="sparkles-sharp" size={30} color={newColors.fondo_principal} />
       </Pressable>
-      <Modalize ref={modalRefGpt} modalHeight={600} modalStyle={{ backgroundColor: colors.fondo }}>
-        <View style={modalStyles.modalContent}>
-          <Text>{availableRequest} solicitudes disponibles</Text>
-          <Text style={modalStyles.modalTitle}>Hazle tu pregunta a tu veterinario personal!</Text>
-          <CustomInput
-            label="Escribe aquí tu duda"
-            placeholder="Mi animal se siente mal..."
-            value={fieldPeticionGpt}
-            onChangeText={setFieldPeticionGpt}
-          />
-          <CustomButton text="Enviar" onPress={handleGPTRequest} />
-          <CustomButton text="Cancelar" onPress={() => modalRefGpt.current?.close()} red />
+      
+      <Modalize ref={modalRefGpt} adjustToContentHeight modalStyle={styles.modal}>
+
+        {/* Header del modal */}
+        <View style={styles.header}> 
+          <Text style={styles.headerTitle}>
+            Escribe tu pregunta a tu asistente personal
+          </Text>
+          <Pressable style={{ justifyContent: 'flex-end' }} onPress={() => modalRefGpt.current?.close()}>
+            <CustomIcon name="close-circle-outline" size={30} color={newColors.rojo} />
+          </Pressable>
         </View>
+
+        {/* Contenedor de mensajes */}
+        <View style={styles.container}>
+          <FlatList
+            data={messages}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={[styles.messageBubble, item.owner === "User" ? styles.userMessage : styles.gptMessage]}>
+                <Text style={[item.owner === "User" ? styles.userText : styles.gptText]}>{item.message}</Text>
+              </View>
+            )}
+          />
+        </View>
+
+        {/* Footer con input y opciones de envío */}
+        <View style={styles.footer}>
+          <MessageInput value={message} onChangeText={setMessage} />
+          <SendButton onPress={() => handleSendMessage()}/>
+        </View>
+
       </Modalize>
     </>
   );
 };
-
-const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
-  StyleSheet.create({
-    button: {
-      backgroundColor: newColors.verde,
-      position: 'absolute',
-      zIndex: 10,
-      bottom: 20,
-      right: 20,
-      borderRadius: 50,
-      padding: 10,
-      height: 50,
-      width: 50,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  });
 
 export default ButtonRequestGPT;
