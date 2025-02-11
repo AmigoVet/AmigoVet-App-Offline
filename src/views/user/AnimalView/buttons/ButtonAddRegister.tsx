@@ -7,6 +7,12 @@ import { Modalize } from 'react-native-modalize';
 import { createGlobalStyles } from '../../../../assets/styles/styles';
 import { setDataRegister } from '../../../../lib/db/registers/setDataRegister';
 import { updateAnimal } from '../../../../lib/db/animals/updateDataAnimal';
+import { setDataNotas } from '../../../../lib/db/notas/setDataNotas';
+import { getDataNotaByText } from '../../../../lib/db/notas/getDataNotaByText';
+import { formatearFecha } from '../../../../lib/functions/FormateraFecha';
+import { createDataEvent } from '../../../../lib/db/events/createDataEvent';
+import { calcularFechaParto } from '../../../../lib/functions/CalcularFechaParto';
+import { deleteDataEvent } from '../../../../lib/db/events/deleteDataEvent';
 
 interface ButtonAddRegisterProps {
   animalId: string;
@@ -53,24 +59,51 @@ const ButtonAddRegister = ({ animalId, onPress, animal }: ButtonAddRegisterProps
   
 
     const handleSave = async () => {
-        // await setDataRegister({
-        //     id: Math.random().toString(36).substr(2, 9),
-        //     animalId: animalId,
-        //     comentario: comentario,
-        //     accion: 'Registro ' + selectedValue,
-        //     fecha: new Date().toISOString()
-        // });
+        await setDataRegister({
+            id: Math.random().toString(36).substr(2, 9),
+            animalId: animalId,
+            comentario: comentario,
+            accion: 'Registro ' + selectedValue,
+            fecha: new Date().toISOString()
+        });
 
         if(selectedValue === 'inseminacion' || selectedValue === 'preñez') {
           await updateAnimal(animalId, { embarazada: true });
-
+          await setDataNotas({
+            id: Math.random().toString(36).substr(2, 9),
+            animalId: animalId,
+            nota: "Hubo una Preñez el" + formatearFecha(new Date().toISOString()) + ": " + comentario,
+            fecha: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          })
+          await createDataEvent({
+            id: Math.random().toString(36).substr(2, 9),
+            animalId: animalId,
+            animalName: animal.nombre,
+            comentario: "Posible fecha de parto",
+            fecha: calcularFechaParto(animal.especie, new Date()),
+            created_at: new Date().toISOString(),
+          })
         }
         else if(selectedValue === 'aborto') {
           await updateAnimal(animalId, { embarazada: false });
-
+          await setDataNotas({
+            id: Math.random().toString(36).substr(2, 9),
+            animalId: animalId,
+            nota: "Hubo un Aborto el " + formatearFecha(new Date().toISOString()) + ": " + comentario,
+            fecha: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          })
+          await deleteDataEvent("Posible fecha de parto");
         }
         else if(selectedValue === 'tratamiento') {
-            console.log("Tratamiento")
+          await setDataNotas({
+            id: Math.random().toString(36).substr(2, 9),
+            animalId: animalId,
+            nota: "Hubo un Tratamiento el " + formatearFecha(new Date().toISOString()) + ": " + comentario,
+            fecha: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          })
         }
 
 
