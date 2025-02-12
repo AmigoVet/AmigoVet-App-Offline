@@ -55,6 +55,7 @@ export const requestGptStyles = StyleSheet.create({
     maxWidth: '80%',
   },
   userMessage: {
+    fontSize: 12,
     alignSelf: 'flex-end',
     backgroundColor: newColors.verde_light,
   },
@@ -64,14 +65,14 @@ export const requestGptStyles = StyleSheet.create({
   },
   messageText: {
     color: newColors.fondo_secundario,
-    fontSize: 16,
+    fontSize: 12,
   },
   userText:{
     color: newColors.fondo_secundario,
-    fontSize: 16
+    fontSize: 14
   },
   gptText:{
     color: newColors.principal,
-    fontSize: 16
+    fontSize: 14
   }
 });
