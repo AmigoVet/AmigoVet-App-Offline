@@ -7,12 +7,27 @@ const openai = new OpenAI({
   apiKey: env.OPENAI_API_KEY,
 });
 
+export const testGptRequest = (message: string, animal: Animal, registers: any[], notes: Notes[]): Promise<string> => {
+  const response = `Dado que Kity ha presentado problemas recientes de aborto y diarrea, es esencial priorizar su salud y bienestar. Primero, asegúrate de que tenga acceso a agua fresca en todo momento, especialmente porque la diarrea puede llevar a la deshidratación.
+
+Para su alimentación, recomiendo ofrecerle una dieta suave y fácil de digerir. Puedes probar con un poco de arroz hervido mezclado con pollo o pescado cocido sin piel ni espinas, y aumentar gradualmente su dieta habitual.
+
+Además, asegúrate de que no tenga acceso a alimentos que puedan provocar más problemas digestivos, como lácteos o productos muy grasos. Mantén un registro de sus heces; si la diarrea persiste más de un día o se presenta sangre, será muy importante buscar atención veterinaria.
+
+Por último, evalúa el ambiente donde vive: asegúrate de que sea tranquilo y sin estrés, ya que esto puede influir en su salud general.`;
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(response);
+    }, 5000); // 5 segundos de delay
+  });
+};
+
 export const gptRequest = async (question: string, animal: Animal, registers: Register[], notas: Notes[]) => {
   // console.log(question);
   // console.log(animal);
   // console.log(registers);
   // console.log(notas);
-
   try {
     // Validar que la API Key esté configurada
     if (!env.OPENAI_API_KEY) {
