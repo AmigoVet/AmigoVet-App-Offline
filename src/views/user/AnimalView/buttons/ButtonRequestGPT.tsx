@@ -25,7 +25,6 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
   const [isLoadingRequest, setIsLoadingRequest] = useState(false);
 
   const splitResponseIntoParagraphs = (response: string): string[] => {
-    // Dividir por saltos de línea y filtrar líneas vacías
     return response
       .split('\n')
       .map(paragraph => paragraph.trim())
@@ -38,7 +37,6 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
     setIsLoadingRequest(true);
 
     try {
-      // Agregar mensaje del usuario
       const newMessage: Message = {
         id: Math.random().toString(36).substr(2, 9), 
         message: message,
@@ -47,13 +45,10 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
       setMessage("");
 
-      // Obtener respuesta de GPT
       const response = await testGptRequest(message, animal, registers, notes);
       
-      // Dividir la respuesta en párrafos
       const paragraphs = splitResponseIntoParagraphs(response);
 
-      // Agregar cada párrafo como un mensaje separado
       paragraphs.forEach((paragraph) => {
         const newMessageGpt: Message = {
           id: Math.random().toString(36).substr(2, 9), 
@@ -65,7 +60,6 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
 
     } catch (error) {
       console.error('Error al procesar el mensaje:', error);
-      // Opcional: Agregar un mensaje de error
       const errorMessage: Message = {
         id: Math.random().toString(36).substr(2, 9),
         message: "Lo siento, hubo un error al procesar tu mensaje.",
@@ -77,7 +71,6 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
     }
   };
 
-  // Verificar si el botón debe estar deshabilitado
   const isButtonDisabled = isLoadingRequest || message.trim() === "";
 
   return (
