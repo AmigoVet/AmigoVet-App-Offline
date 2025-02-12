@@ -74,5 +74,12 @@ export const requestGptStyles = StyleSheet.create({
   gptText:{
     color: newColors.principal,
     fontSize: 14
-  }
+  },
+  remainingRequests: {
+    color: newColors.fondo_secundario,
+    fontSize: 12,
+    marginTop: 10,
+    textAlign: 'center',
+    marginBottom: 20
+  },
 });
