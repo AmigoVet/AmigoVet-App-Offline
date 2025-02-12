@@ -1,5 +1,5 @@
 import { View, Text, Pressable, StyleSheet, FlatList, ScrollView } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Modalize } from 'react-native-modalize';
 import { newColors } from '../../../../assets/styles/colors';
 import { CustomIcon } from '../../../../components/Customs';
@@ -9,6 +9,8 @@ import MessageInput from './components/MessageInput';
 import SendButton from './components/SendButton';
 import { Message } from '../../../../lib/interfaces/messages';
 import { gptRequest, testGptRequest } from '../../../../lib/functions/gptRequest';
+import { getRemainingRequests, handleRequestLimit } from '../../../../lib/utils/asyncStorage';
+import { constants } from '../../../../assets/styles/constants';
 
 interface Props {
   animal: Animal;
@@ -31,11 +33,33 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
       .filter(paragraph => paragraph.length > 0);
   };
 
+  const [remainingRequests, setRemainingRequests] = useState<number>(constants.cantidadPosibleDePeticionesPorDia);
+
+  useEffect(() => {
+    const updateRemainingRequests = async () => {
+      const remaining = await getRemainingRequests();
+      setRemainingRequests(remaining);
+    };
+    
+    updateRemainingRequests();
+  }, [messages]); 
+
   const handleSendMessage = async () => {
     if (message.trim() === "") return;
     
     setIsLoadingRequest(true);
-
+    const canMakeRequest = await handleRequestLimit();
+    if (!canMakeRequest) {
+      // Mostrar mensaje de error o notificación
+      const errorMessage: Message = {
+        id: Math.random().toString(36).substr(2, 9),
+        message: "Has alcanzado el límite de peticiones por hoy. Por favor, intenta mañana.",
+        owner: "IA",
+      };
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
+      setIsLoadingRequest(false);
+      return;
+    }
     try {
       const newMessage: Message = {
         id: Math.random().toString(36).substr(2, 9), 
@@ -115,7 +139,7 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
               style={[
                 styles.messageBubble, 
                 item.owner === "User" ? styles.userMessage : styles.gptMessage,
-                index === messages.length - 1 && { marginBottom: 40 }
+                index === messages.length - 1 && { }
               ]}
             >
               <Text style={[
@@ -125,6 +149,9 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
               </Text>
             </View>
           ))}
+          <Text style={styles.remainingRequests}>
+            aun te quedan {remainingRequests} peticiones restantes hoy
+          </Text>
         </ScrollView>
 
         {/* Footer con input y opciones de envío */}
