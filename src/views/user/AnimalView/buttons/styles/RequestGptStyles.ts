@@ -36,7 +36,7 @@ export const requestGptStyles = StyleSheet.create({
   container: {
     flex: 1,
     minHeight: 300,
-    maxHeight: 350,
+    maxHeight: 600,
     borderWidth: 1,
     borderColor: newColors.verde,
     borderRadius: constants.borderRadius,
