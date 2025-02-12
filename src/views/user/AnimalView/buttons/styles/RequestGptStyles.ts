@@ -64,7 +64,7 @@ export const requestGptStyles = StyleSheet.create({
   },
   systemMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: newColors.rojo,
+    backgroundColor: newColors.gris,
   },
   messageText: {
     color: newColors.fondo_secundario,
