@@ -54,10 +54,11 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
       const errorMessage: Message = {
         id: Math.random().toString(36).substr(2, 9),
         message: "Has alcanzado el límite de peticiones por hoy. Por favor, intenta mañana.",
-        owner: "IA",
+        owner: "System",
       };
       setMessages(prevMessages => [...prevMessages, errorMessage]);
       setIsLoadingRequest(false);
+      setMessage("");
       return;
     }
     try {
@@ -138,16 +139,23 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
               key={item.id}
               style={[
                 styles.messageBubble, 
-                item.owner === "User" ? styles.userMessage : styles.gptMessage,
-                index === messages.length - 1 && { }
+                item.owner === "User" 
+                  ? styles.userMessage 
+                  : item.owner === "IA" 
+                    ? styles.gptMessage 
+                    : styles.systemMessage, // Para System
+                index === messages.length - 1 && {}
               ]}
             >
               <Text style={[
-                item.owner === "User" ? styles.userText : styles.gptText
+                item.owner === "User" 
+                  ? styles.userText 
+                  : styles.gptText // gptText se usa tanto para IA como para System
               ]}>
                 {item.message}
               </Text>
             </View>
+
           ))}
           <Text style={styles.remainingRequests}>
             aun te quedan {remainingRequests} peticiones restantes hoy
