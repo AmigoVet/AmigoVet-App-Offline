@@ -6,9 +6,10 @@ import { newColors } from '../../../../../assets/styles/colors'
 interface MessageInputProps {
   value: string;
   onChangeText: (text: string) => void;
+  editable: boolean;
 }
 
-const MessageInput = ({ value, onChangeText }: MessageInputProps) => {
+const MessageInput = ({ value, onChangeText, editable }: MessageInputProps) => {
   return (
     <TextInput 
       placeholder="Que consulta tienes?..."
@@ -17,6 +18,7 @@ const MessageInput = ({ value, onChangeText }: MessageInputProps) => {
       onChangeText={onChangeText}
       style={styles.input}
       placeholderTextColor={newColors.fondo_secundario}
+      editable={editable}
     />
   )
 }
