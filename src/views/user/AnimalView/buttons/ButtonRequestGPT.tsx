@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, FlatList } from 'react-native';
+import { View, Text, Pressable, StyleSheet, FlatList, ScrollView } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { Modalize } from 'react-native-modalize';
 import { newColors } from '../../../../assets/styles/colors';
@@ -8,6 +8,7 @@ import { requestGptStyles } from './styles/RequestGptStyles';
 import MessageInput from './components/MessageInput';
 import SendButton from './components/SendButton';
 import { Message } from '../../../../lib/interfaces/messages';
+import { gptRequest } from '../../../../lib/functions/gptRequest';
 
 interface Props {
   animal: Animal;
@@ -22,7 +23,9 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
+    const response = await gptRequest(message, animal, registers, notes);
+    console.log(response);
     if (message.trim() === "") return;
 
     const newMessage: Message = {
@@ -42,7 +45,13 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
         <CustomIcon name="sparkles-sharp" size={30} color={newColors.fondo_principal} />
       </Pressable>
       
-      <Modalize ref={modalRefGpt} adjustToContentHeight modalStyle={styles.modal}>
+      <Modalize
+        ref={modalRefGpt}
+        adjustToContentHeight
+        modalStyle={styles.modal}
+        scrollViewProps={{ keyboardShouldPersistTaps: 'handled' }}
+      >
+
 
         {/* Header del modal */}
         <View style={styles.header}> 
@@ -55,17 +64,23 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
         </View>
 
         {/* Contenedor de mensajes */}
-        <View style={styles.container}>
-          <FlatList
-            data={messages}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={[styles.messageBubble, item.owner === "User" ? styles.userMessage : styles.gptMessage]}>
-                <Text style={[item.owner === "User" ? styles.userText : styles.gptText]}>{item.message}</Text>
-              </View>
-            )}
-          />
-        </View>
+        <ScrollView style={styles.container}>
+          {messages.map((item) => (
+            <View 
+              key={item.id}
+              style={[
+                styles.messageBubble, 
+                item.owner === "User" ? styles.userMessage : styles.gptMessage
+              ]}
+            >
+              <Text style={[
+                item.owner === "User" ? styles.userText : styles.gptText
+              ]}>
+                {item.message}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
 
         {/* Footer con input y opciones de envío */}
         <View style={styles.footer}>
