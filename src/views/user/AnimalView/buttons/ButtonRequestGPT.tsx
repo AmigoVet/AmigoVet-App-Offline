@@ -8,7 +8,7 @@ import { requestGptStyles } from './styles/RequestGptStyles';
 import MessageInput from './components/MessageInput';
 import SendButton from './components/SendButton';
 import { Message } from '../../../../lib/interfaces/messages';
-import { gptRequest } from '../../../../lib/functions/gptRequest';
+import { gptRequest, testGptRequest } from '../../../../lib/functions/gptRequest';
 
 interface Props {
   animal: Animal;
@@ -22,22 +22,63 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
 
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoadingRequest, setIsLoadingRequest] = useState(false);
 
-  const handleSendMessage = async () => {
-    const response = await gptRequest(message, animal, registers, notes);
-    console.log(response);
-    if (message.trim() === "") return;
-
-    const newMessage: Message = {
-      id: Math.random().toString(36).substr(2, 9), 
-      message: message,
-      owner: "User",
-    };
-
-    setMessages([...messages, newMessage]);
-    setMessage("");
+  const splitResponseIntoParagraphs = (response: string): string[] => {
+    // Dividir por saltos de línea y filtrar líneas vacías
+    return response
+      .split('\n')
+      .map(paragraph => paragraph.trim())
+      .filter(paragraph => paragraph.length > 0);
   };
 
+  const handleSendMessage = async () => {
+    if (message.trim() === "") return;
+    
+    setIsLoadingRequest(true);
+
+    try {
+      // Agregar mensaje del usuario
+      const newMessage: Message = {
+        id: Math.random().toString(36).substr(2, 9), 
+        message: message,
+        owner: "User",
+      };
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+      setMessage("");
+
+      // Obtener respuesta de GPT
+      const response = await testGptRequest(message, animal, registers, notes);
+      
+      // Dividir la respuesta en párrafos
+      const paragraphs = splitResponseIntoParagraphs(response);
+
+      // Agregar cada párrafo como un mensaje separado
+      paragraphs.forEach((paragraph) => {
+        const newMessageGpt: Message = {
+          id: Math.random().toString(36).substr(2, 9), 
+          message: paragraph,
+          owner: "IA",
+        };
+        setMessages(prevMessages => [...prevMessages, newMessageGpt]);
+      });
+
+    } catch (error) {
+      console.error('Error al procesar el mensaje:', error);
+      // Opcional: Agregar un mensaje de error
+      const errorMessage: Message = {
+        id: Math.random().toString(36).substr(2, 9),
+        message: "Lo siento, hubo un error al procesar tu mensaje.",
+        owner: "IA",
+      };
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
+    } finally {
+      setIsLoadingRequest(false);
+    }
+  };
+
+  // Verificar si el botón debe estar deshabilitado
+  const isButtonDisabled = isLoadingRequest || message.trim() === "";
 
   return (
     <>
@@ -50,27 +91,38 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
         adjustToContentHeight
         modalStyle={styles.modal}
         scrollViewProps={{ keyboardShouldPersistTaps: 'handled' }}
+        closeOnOverlayTap={false} 
+        panGestureEnabled={false} 
       >
-
-
         {/* Header del modal */}
         <View style={styles.header}> 
           <Text style={styles.headerTitle}>
             Escribe tu pregunta a tu asistente personal
           </Text>
-          <Pressable style={{ justifyContent: 'flex-end' }} onPress={() => modalRefGpt.current?.close()}>
+          <Pressable 
+            style={{ justifyContent: 'flex-end' }} 
+            onPress={() => modalRefGpt.current?.close()}
+          >
             <CustomIcon name="close-circle-outline" size={30} color={newColors.rojo} />
           </Pressable>
         </View>
 
         {/* Contenedor de mensajes */}
-        <ScrollView style={styles.container}>
-          {messages.map((item) => (
+        <ScrollView 
+          style={[styles.container]}
+          ref={scrollViewRef => {
+            if (scrollViewRef) {
+              scrollViewRef.scrollToEnd({ animated: true });
+            }
+          }}
+        >
+          {messages.map((item, index) => (
             <View 
               key={item.id}
               style={[
                 styles.messageBubble, 
-                item.owner === "User" ? styles.userMessage : styles.gptMessage
+                item.owner === "User" ? styles.userMessage : styles.gptMessage,
+                index === messages.length - 1 && { marginBottom: 40 }
               ]}
             >
               <Text style={[
@@ -84,10 +136,17 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
 
         {/* Footer con input y opciones de envío */}
         <View style={styles.footer}>
-          <MessageInput value={message} onChangeText={setMessage} />
-          <SendButton onPress={() => handleSendMessage()}/>
+          <MessageInput 
+            value={message} 
+            onChangeText={setMessage}
+            editable={!isLoadingRequest}
+          />
+          <SendButton 
+            onPress={handleSendMessage} 
+            disable={isButtonDisabled}
+            isLoading={isLoadingRequest}
+          />
         </View>
-
       </Modalize>
     </>
   );
