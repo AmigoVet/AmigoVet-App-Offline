@@ -12,6 +12,7 @@ import Registers from './sections/Registers';
 import { Register } from '../../../lib/interfaces/registers';
 import ExtraData from './sections/ExtraData';
 import {default as NotesSection} from './sections/Notes';
+import { newColors } from '../../../assets/styles/colors';
 
 export const defaultAnimal: Animal = {
   ownerId: "",
@@ -81,8 +82,14 @@ const AnimalView = () => {
 
   return (
     <>
-      <View>
-        <Header />
+      <View style={{backgroundColor: newColors.fondo_principal, flex: 1}}>
+        <Header 
+          title={animalData.animal.nombre} 
+          id={animalData.animal.identificador} 
+          image1={animalData.animal.image} 
+          image2={animalData.animal.image2} 
+          image3={animalData.animal.image3}
+        />
         <BasicData />
         <ExtraData />
         <NotesSection />
