@@ -173,7 +173,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
   },
   dot: {
     height: 8,
