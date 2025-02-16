@@ -4,6 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 import { useTheme } from "../../lib/context/ThemeContext";
 import { getDynamicColors, newColors } from "../../assets/styles/colors";
 import { createGlobalStyles } from "../../assets/styles/styles";
+import { constants } from "../../assets/styles/constants";
 
 interface CustomSelectProps {
   label: string;
@@ -16,7 +17,7 @@ interface CustomSelectProps {
 const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onValueChange, miniText }) => {
   const { isDarkTheme } = useTheme();
   const colors = getDynamicColors(isDarkTheme);
-  const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const GlobalStyles = createGlobalStyles();
   const { width } = Dimensions.get("window");
 
   const fontSize = width * 0.04;
@@ -32,11 +33,10 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onVa
       marginBottom: 5,
     },
     pickerContainer: {
-      borderWidth: 1,
-      borderColor: newColors.verde,
-      borderRadius: 8,
+      borderWidth: 2,
+      borderColor: newColors.fondo_secundario,
+      borderRadius: constants.borderRadius / 2,
       overflow: "hidden",
-      backgroundColor: colors.fondo,
       zIndex: 9999,
       elevation: 1000,
     },
