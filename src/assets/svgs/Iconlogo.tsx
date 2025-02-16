@@ -4,8 +4,8 @@ import Svg, { SvgProps, Path } from "react-native-svg"
 const Iconlogo = (props: SvgProps) => {
   return (
     <Svg
-    x={0}
-    y={0}
+    height={40}
+    width={40}
     viewBox="0 0 1000 1000"
     {...props}
   >
