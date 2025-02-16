@@ -5,7 +5,7 @@ import { useTheme } from '../../../../lib/context/ThemeContext';
 import { getDynamicColors, newColors, staticColors } from '../../../../assets/styles/colors';
 import { CustomIcon } from '../../../../components/Customs';
 import { RootStackParamList } from '../../../Welcome';
-import LabelLogo from '../../../../assets/svgs/LabelLogoLight';
+import LabelLogo from '../../../../assets/svgs/LabelLogo';
 import { obtenerPalabras } from '../../../../lib/functions/SeccionarNombre';
 
 interface HeaderFeedProps {
