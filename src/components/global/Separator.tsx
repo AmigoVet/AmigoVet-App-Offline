@@ -1,9 +1,13 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Separator = () => {
+interface SeparatorProps {
+  height: number
+}
+
+const Separator = ({height = 100}: SeparatorProps) => {
   return (
-    <View style={{ height: 100 }} />
+    <View style={{ height: height }} />
   )
 }
 
