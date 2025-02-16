@@ -51,7 +51,7 @@ const New: React.FC = () => {
 
   const { isDarkTheme } = useTheme();
   const colors = getDynamicColors(isDarkTheme);
-  const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const GlobalStyles = createGlobalStyles();
   const newStyles = createNewStyles(isDarkTheme);
 
   
