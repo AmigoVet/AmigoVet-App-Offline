@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTheme } from "../../lib/context/ThemeContext";
-import { getDynamicColors } from "../../assets/styles/colors";
+import { getDynamicColors, newColors } from "../../assets/styles/colors";
 import CustomIcon from "./CustomIcon";
+import { constants } from "../../assets/styles/constants";
 
 interface CustomDatePickerProps {
   label: string;
@@ -29,7 +30,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 
   const { isDarkTheme } = useTheme();
   const colors = getDynamicColors(isDarkTheme);
-  const styles = createStyles(colors);
+  const styles = createStyles();
 
   // Calcular texto de la edad según la fecha seleccionada
   const calculateAgeText = (birthDate: Date | null): string => {
@@ -99,7 +100,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             <Text style={styles.dateText}>
               {value ? value.toISOString().split("T")[0] : "Selecciona una fecha"}
             </Text>
-            <CustomIcon name="calendar-outline" size={20} color={colors.verde} />
+            <CustomIcon name="calendar-outline" size={20} color={newColors.fondo_secundario} />
           </TouchableOpacity>
           {value && findAge && (
             <Text style={styles.ageLabel}>{`Edad aproximada: ${calculateAgeText(value)}`}</Text>
@@ -150,7 +151,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   );
 };
 
-const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+const createStyles = () =>
   StyleSheet.create({
     container: {
       marginVertical: 10,
@@ -159,41 +160,40 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       fontSize: 16,
       fontWeight: "500",
       marginBottom: 5,
-      color: colors.blanco,
+      color: newColors.fondo_secundario,
     },
     datePickerButton: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      borderColor: colors.verdeLight,
-      borderWidth: 1,
-      borderRadius: 5,
+      borderColor: newColors.fondo_secundario,
+      borderWidth: 2,
+      borderRadius: constants.borderRadius / 2,
       padding: 10,
-      backgroundColor: colors.fondo,
     },
     dateText: {
-      color: colors.blanco,
+      color: newColors.fondo_secundario,
+      fontWeight: "500",
     },
     switchButton: {
       marginTop: 10,
     },
     switchText: {
-      color: colors.verde,
+      color: newColors.fondo_secundario,
       fontSize: 14,
       textDecorationLine: "underline",
     },
     ageInput: {
-      borderColor: colors.verdeLight,
+      borderColor: newColors.verde_light,
       borderWidth: 1,
       borderRadius: 5,
       padding: 10,
-      color: colors.blancoLight,
-      backgroundColor: colors.fondo,
+      color: newColors.principal,
     },
     ageLabel: {
       marginTop: 5,
       fontSize: 14,
-      color: colors.blanco,
+      color: newColors.fondo_secundario,
     },
   });
 
