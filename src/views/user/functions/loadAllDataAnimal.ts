@@ -1,10 +1,10 @@
-import { Register } from "@tanstack/react-query";
 import { getDataEventByAnimalId } from "../../../lib/db/events/getDataEvent";
 import { getDataAnimalbyId } from "../../../lib/db/getDataAnimal";
 import { getDataNotas } from "../../../lib/db/notas/getDataNotas";
 import { getDataRegisters } from "../../../lib/db/registers/getDataRegister";
 import { Animal, Notes } from "../../../lib/interfaces/animal";
 import { Events } from "../../../lib/interfaces/events";
+import { Register } from "../../../lib/interfaces/registers";
 import { defaultAnimal } from "../AnimalView/AnimalView";
 
 export interface AnimalAllData {

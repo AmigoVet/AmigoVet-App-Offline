@@ -4,10 +4,12 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Welcome';
 import { loadAllDataAnimal } from '../functions/loadAllDataAnimal';
 import { Animal, Notes } from '../../../lib/interfaces/animal';
-import { Register } from '@tanstack/react-query';
 import { Events } from '../../../lib/interfaces/events';
 import { ButtonAddEvent, ButtonAddRegister, ButtonEditData, ButtonRequestGPT } from './buttons';
-import { CustomImage } from '../../../components/Customs';
+import Header from './sections/Header';
+import BasicData from './sections/BasicData';
+import Registers from './sections/Registers';
+import { Register } from '../../../lib/interfaces/registers';
 
 export const defaultAnimal: Animal = {
   ownerId: "",
@@ -72,11 +74,17 @@ const AnimalView = () => {
     fetchData();
   }, [id]);
 
-  console.log('🐾 AnimalDataView:', JSON.stringify(animalData, null, 2));
+  // console.log('🐾 AnimalDataView:', JSON.stringify(animalData, null, 2));
 
 
   return (
     <>
+      <View>
+        <Header />
+        <BasicData />
+        <Registers />
+      </View>
+
       <ButtonAddEvent animalId={id} animalName={animalData.animal.nombre} onPress={() => {}} />
       <ButtonEditData id={id} animal={animalData.animal} onPress={() => {}} />
       <ButtonAddRegister animalId={id} animal={animalData.animal} onPress={() => {}} />
