@@ -35,7 +35,7 @@ const Home = () => {
 
   const { isDarkTheme } = useTheme();
   const colors = getDynamicColors(isDarkTheme);
-  const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const GlobalStyles = createGlobalStyles();
   const styles = HomeViewStyles(colors);
 
   const [totalAnimals, setTotalAnimals] = useState<number>(0);
@@ -237,8 +237,13 @@ const Home = () => {
       />
       </View>
 
-      <Modalize ref={modalRef} modalHeight={200} modalStyle={{ backgroundColor: colors.fondo }}>
+      <Modalize 
+        ref={modalRef} 
+        adjustToContentHeight
+        modalStyle={{ backgroundColor: colors.fondo }}
+      >
         <ContentModalHome selectedAnimal={selectedAnimal} modalRef={modalRef} onPress={loadAnimal} />
+        <Separator height={50} />
       </Modalize>
     </>
   );
