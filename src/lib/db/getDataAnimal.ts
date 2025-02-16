@@ -34,9 +34,17 @@ export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Pro
                     N.fecha AS noteDate,
                     N.created_at AS noteCreatedAt
                 FROM Animal A
-                LEFT JOIN Notas N ON A.id = N.animalId
+                LEFT JOIN (
+                    SELECT N1.*
+                    FROM Notas N1
+                    WHERE N1.fecha = (
+                        SELECT MAX(N2.fecha)
+                        FROM Notas N2
+                        WHERE N1.animalId = N2.animalId
+                    )
+                ) N ON A.id = N.animalId
                 WHERE A.ownerId = ?
-                ORDER BY A.created_at DESC, N.fecha DESC
+                ORDER BY A.created_at DESC
                 `,
                 [ownerId],
                 (_, result) => {
@@ -46,56 +54,41 @@ export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Pro
                     for (let i = 0; i < len; i++) {
                         const item = result.rows.item(i);
 
-                        const existingAnimalIndex = data.findIndex(
-                            (animal) => animal.id === item.id
-                        );
-
-                        if (existingAnimalIndex >= 0) {
-                            if (item.noteId) {
-                                data[existingAnimalIndex].notes.push({
-                                    id: item.noteId,
-                                    nota: item.nota,
-                                    fecha: item.noteDate,
-                                    created_at: item.noteCreatedAt,
-                                });
-                            }
-                        } else {
-                            data.push({
-                                id: item.id,
-                                ownerId: item.ownerId,
-                                identificador: item.identificador,
-                                nombre: item.nombre,
-                                image: item.animalImage || '',
-                                ubicacion: item.ubicacion,
-                                genero: item.genero,
-                                embarazada: item.embarazada,
-                                celo: item.celo,
-                                especie: item.especie,
-                                raza: item.raza,
-                                nacimiento: item.nacimiento,
-                                peso: item.peso,
-                                color: item.color,
-                                descripcion: item.descripcion,
-                                proposito: item.proposito,
-                                created_at: item.animalCreatedAt,
-                                updated_at: item.animalUpdatedAt,
-                                notes: item.noteId
-                                    ? [
-                                          {
-                                              id: item.noteId,
-                                              nota: item.nota,
-                                              fecha: item.noteDate,
-                                              created_at: item.noteCreatedAt,
-                                          },
-                                      ]
-                                    : [],
-                            });
-                        }
+                        data.push({
+                            id: item.id,
+                            ownerId: item.ownerId,
+                            identificador: item.identificador,
+                            nombre: item.nombre,
+                            image: item.animalImage || '',
+                            ubicacion: item.ubicacion,
+                            genero: item.genero,
+                            embarazada: item.embarazada,
+                            celo: item.celo,
+                            especie: item.especie,
+                            raza: item.raza,
+                            nacimiento: item.nacimiento,
+                            peso: item.peso,
+                            color: item.color,
+                            descripcion: item.descripcion,
+                            proposito: item.proposito,
+                            created_at: item.animalCreatedAt,
+                            updated_at: item.animalUpdatedAt,
+                            notes: item.noteId
+                                ? [
+                                      {
+                                          id: item.noteId,
+                                          nota: item.nota,
+                                          fecha: item.noteDate,
+                                          created_at: item.noteCreatedAt,
+                                      },
+                                  ]
+                                : [],
+                        });
                     }
                     resolve(data);
                 },
                 (_, error) => {
-                    console.error('Error fetching animals with notes:', error);
+                    console.error('Error fetching animals with latest note:', error);
                     reject(error);
                     return false;
                 }
@@ -103,6 +96,7 @@ export const getSimplificatedDataAnimalsWithNotes = async (ownerId: string): Pro
         });
     });
 };
+
 
 export const getDataAnimal = (ownerId: string): Promise<Animal[]> => {
     return new Promise((resolve, reject) => {
