@@ -41,7 +41,7 @@ const ContentModalHome: React.FC<ContendModalProps> = ({ selectedAnimal, modalRe
           )}
           <View style={styles.modalActions}>
             <TouchableOpacity
-              style={[styles.modalButton, { backgroundColor: newColors.verde }]}
+              style={[styles.modalButton, { backgroundColor: newColors.verde_light }]}
               onPress={() => modalRef.current?.close()}
             >
               <Text style={[styles.modalButtonText, { color: newColors.fondo_principal }]}>Cancelar</Text>

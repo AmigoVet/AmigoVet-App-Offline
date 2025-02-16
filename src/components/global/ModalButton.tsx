@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { act } from 'react'
-import { staticColors } from '../../assets/styles/colors';
+import { newColors, staticColors } from '../../assets/styles/colors';
+import { constants } from '../../assets/styles/constants';
 
 interface ModalButtonProps {
     text: string;
@@ -17,8 +18,8 @@ const ModalButton = ({ text, onPress, actualData, red }: ModalButtonProps) => {
         paddingHorizontal: 10,
         marginVertical: 8,
         width: '70%',
-        backgroundColor: red ? staticColors.rojo : staticColors.verde,
-        borderRadius: 8,
+        backgroundColor: red ? staticColors.rojo : newColors.verde_light,
+        borderRadius: constants.borderRadius / 2,
       },
       modalOptionText: {
         fontSize: 16,

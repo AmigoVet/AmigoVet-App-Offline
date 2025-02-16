@@ -39,7 +39,7 @@ export const HomeViewStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       },
       modalButton: {
         padding: 10,
-        borderRadius: 5,
+        borderRadius: constants.borderRadius / 2,
         width: '40%',
         alignItems: 'center',
       },
