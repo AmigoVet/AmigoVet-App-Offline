@@ -10,6 +10,8 @@ import Header from './sections/Header';
 import BasicData from './sections/BasicData';
 import Registers from './sections/Registers';
 import { Register } from '../../../lib/interfaces/registers';
+import ExtraData from './sections/ExtraData';
+import {default as NotesSection} from './sections/Notes';
 
 export const defaultAnimal: Animal = {
   ownerId: "",
@@ -82,6 +84,8 @@ const AnimalView = () => {
       <View>
         <Header />
         <BasicData />
+        <ExtraData />
+        <NotesSection />
         <Registers />
       </View>
 
