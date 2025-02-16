@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
-import { staticColors } from '../../assets/styles/colors';
+import { newColors, staticColors } from '../../assets/styles/colors';
+import { constants } from '../../assets/styles/constants';
 
 interface CustomButtonProps {
   text: string | JSX.Element;
@@ -14,8 +15,8 @@ const CustomButton = ({ text, onPress, disabled = false, loading = false, red = 
   const backgroundColor = disabled
     ? staticColors.blanco
     : red
-    ? staticColors.rojo
-    : staticColors.verde;
+    ? newColors.rojo
+    : newColors.verde_light;
 
   const pressedStyle = disabled ? null : styles.pressedContainer;
 
@@ -45,13 +46,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     width: '80%',
-    borderRadius: 10,
+    borderRadius: constants.borderRadius / 2,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 50,
   },
   pressedContainer: {
-    backgroundColor: staticColors.verdeDark,
+    backgroundColor: newColors.verde,
   },
   text: {
     color: 'white',
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   disabledText: {
-    color: staticColors.negro,
+    color: newColors.gris,
   },
 });
 
