@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 
 interface SeparatorProps {
-  height: number
+  height?: number
 }
 
 const Separator = ({height = 100}: SeparatorProps) => {
