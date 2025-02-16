@@ -3,7 +3,8 @@ import { View, Text, TextInput, StyleSheet, KeyboardTypeOptions, Pressable, Dime
 
 import CustomIcon from './CustomIcon';
 import { useTheme } from '../../lib/context/ThemeContext';
-import { getDynamicColors } from '../../assets/styles/colors';
+import { getDynamicColors, newColors } from '../../assets/styles/colors';
+import { constants } from '../../assets/styles/constants';
 
 const { width } = Dimensions.get('window');
 
@@ -34,9 +35,6 @@ const CustomInput: React.FC<CustomInputProps> = ({
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(!password);
 
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme); // Obtén los colores dinámicos
-  const styles = createStyles(colors); // Genera estilos dinámicos
 
   const getKeyboardType = (): KeyboardTypeOptions => {
     switch (type) {
@@ -64,7 +62,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
           placeholder={placeholder}
           value={value}
           onChangeText={onChangeText}
-          placeholderTextColor={colors.rowBgLight}
+          placeholderTextColor={newColors.gris}
           secureTextEntry={password && !isPasswordVisible}
           multiline={multiline}
           keyboardType={getKeyboardType()}
@@ -79,7 +77,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
             <CustomIcon
               name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
               size={20}
-              color={colors.blancoLight}
+              color={newColors.fondo_secundario}
             />
           </Pressable>
         )}
@@ -89,8 +87,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
 };
 
 // Estilos dinámicos
-const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
-  StyleSheet.create({
+const styles =StyleSheet.create({
     container: {
       marginVertical: 10,
       width: '100%',
@@ -99,26 +96,26 @@ const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       fontSize: width * 0.04,
       fontWeight: '500',
       marginBottom: 5,
-      color: colors.blanco,
+      color: newColors.fondo_secundario,
     },
     miniText: {
       fontSize: width * 0.03,
-      color: colors.rowBgLight,
+      color: newColors.fondo_secundario,
     },
     inputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      borderColor: colors.verdeLight,
-      borderWidth: 1,
-      borderRadius: 5,
+      borderColor: newColors.fondo_secundario,
+      borderWidth: 2,
+      borderRadius: constants.borderRadius / 2,
       paddingHorizontal: 10,
-      backgroundColor: colors.fondo,
     },
     input: {
       flex: 1,
       minHeight: 40,
       fontSize: width * 0.04,
-      color: colors.blanco,
+      color: newColors.fondo_secundario,
+      fontWeight: '500',
     },
     multilineInput: {
       minHeight: 100,
