@@ -66,7 +66,7 @@ export const ProgramerFeedStyles = StyleSheet.create({
       width: '100%',
     },
     lotTitle: {
-      color: newColors.verde,
+      color: newColors.fondo_principal,
       fontSize: 16,
       fontWeight: 'bold',
       marginBottom: 12,

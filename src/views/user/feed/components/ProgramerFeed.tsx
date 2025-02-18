@@ -41,6 +41,16 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
     return days;
   };
 
+  const obtenerNombreMesActual = () => {
+    const fecha = new Date();
+    const nombresMeses = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+    return nombresMeses[fecha.getMonth()];
+  };
+  
+
   const renderTimelineDays = (): JSX.Element => {
     const days = getDaysArray();
     return (
@@ -128,7 +138,7 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
         
         <View style={ProgramerFeedStyles.content}>
           <View style={[{flexDirection: 'row', alignItems: 'center'}]}>
-            <Text style={ProgramerFeedStyles.lotTitle}>Lote 1</Text>
+            <Text style={ProgramerFeedStyles.lotTitle}>{obtenerNombreMesActual()}</Text>  
           </View>
 
           {renderTimelineDays()}
