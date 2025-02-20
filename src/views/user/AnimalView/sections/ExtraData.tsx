@@ -27,19 +27,19 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   containerContainer: {
-    backgroundColor: newColors.verde,
     width: '90%',
     borderRadius: constants.borderRadius,
     padding: 10,
     paddingHorizontal: 15,
     gap: 10,
+    borderWidth: constants.borderWidth,
   },
   title:{
     fontWeight: 'bold',
-    color: newColors.fondo_principal,
+    color: newColors.fondo_secundario,
   },
   info: {
-    color: newColors.principal,
+    color: newColors.fondo_secundario,
   }
 })
 
