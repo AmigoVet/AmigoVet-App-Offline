@@ -3,16 +3,21 @@ import React from 'react'
 import { newColors } from '../../../../assets/styles/colors'
 import { constants } from '../../../../assets/styles/constants'
 
-const ExtraData = () => {
+interface ExtraDataProps {
+  description: string;
+  ubicacion: string;
+}
+
+const ExtraData = ({description, ubicacion}: ExtraDataProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.containerContainer}>
         <Text style={styles.title}>Descripcion</Text>
-        <Text style={styles.info}>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non fuga facere sit! Iusto eligendi, esse aliquam voluptatem, itaque ab quos at molestiae officiis corporis dolores obcaecati deleniti distinctio. Ex, eaque.</Text>
+        <Text style={styles.info}>{description}</Text>
       </View>
       <View style={styles.containerContainer}>
         <Text  style={styles.title}>Ubicacion</Text>
-        <Text style={styles.info}>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non fuga facere sit! Iusto eligendi, esse aliquam voluptatem, itaque ab quos at molestiae officiis corporis dolores obcaecati deleniti distinctio. Ex, eaque.</Text>
+        <Text style={styles.info}>{ubicacion}</Text>
       </View>
     </View>
   )

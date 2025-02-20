@@ -93,7 +93,7 @@ const AnimalView = () => {
           image3={animalData.animal.image3}
         />
         <BasicData animal={animalData.animal} />
-        <ExtraData />
+        <ExtraData description={animalData.animal.descripcion} ubicacion={animalData.animal.ubicacion}/>
         <NotesSection />
         <Registers />
         <Separator height={500} />
