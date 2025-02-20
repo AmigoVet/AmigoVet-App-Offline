@@ -62,7 +62,7 @@ const BasicData = (animal: BasicDataProps) => {
         </View>
         <View style={styles2.element}>
           <View style={styles2.iconContainer}>
-            <CustomIcon color={newColors.verde} name="female-outline" size={30} />
+            <CustomIcon color={newColors.verde} name={animal.animal.genero === "Macho" ? "male-outline" : "female-outline"} size={30} />
             <Text style={styles2.textIcon}>Genero</Text>
           </View>
           <Text style={styles2.text}>{animal.animal.genero}</Text>
