@@ -70,7 +70,7 @@ const ButtonRequestGPT: React.FC<Props> = ({ animal, registers, notes }) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
       setMessage("");
 
-      const response = await testGptRequest(message, animal, registers, notes);
+      const response = await gptRequest(message, animal, registers, notes);
       
       const paragraphs = splitResponseIntoParagraphs(response);
 
