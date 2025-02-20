@@ -16,23 +16,23 @@ const BasicData = (animal: BasicDataProps) => {
     <View style={styles.container}>
       <View style={styles.containerContainer}>
         <View style={styles.data}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+          <View style={styles.dataTextContainer}>
             <CustomIcon color={newColors.fondo_secundario} name="paw-outline" size={20} />
             <Text style={styles.dataText}>Especie</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.dataTextContainer}>
             <CustomIcon color={newColors.fondo_secundario} name="paw-outline" size={20} />
             <Text style={styles.dataText}>Raza</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.dataTextContainer}>
             <CustomIcon color={newColors.fondo_secundario} name="color-palette-outline" size={20} />
             <Text style={styles.dataText}>Color</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.dataTextContainer}>
             <CustomIcon color={newColors.fondo_secundario} name="gift-outline" size={20} />
             <Text style={styles.dataText}>Preñes</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.dataTextContainer}>
             <CustomIcon color={newColors.fondo_secundario} name="today-outline" size={20} />
             <Text style={styles.dataText}>Nacimiento</Text>
           </View>
@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   element:{
-      backgroundColor: newColors.verde_light,
+      // backgroundColor: newColors.verde_light,
+      borderBottomWidth: 1,
       padding: 5,
       paddingHorizontal: 10,
       marginVertical: separation,
@@ -108,10 +109,16 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
   },
   data: {
-    backgroundColor: newColors.verde_light,
+    // backgroundColor: newColors.verde_light,
     borderRadius: constants.borderRadius,
     paddingHorizontal: 15,
 
+  },
+  dataTextContainer:{
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    borderBottomWidth: 1,
+    borderRadius: constants.borderRadius
   },
   dataText:{
     textAlign: 'center',
@@ -125,11 +132,12 @@ const styles2 = StyleSheet.create({
   containerContainer:{
     flexDirection: 'row',
     marginTop: 10,
+    marginHorizontal: 20,
   },
   element: {
     width: '23%', 
     alignItems: 'center',
-    marginHorizontal: 5,
+    marginHorizontal: 3,
   },
   
   iconContainer:{
