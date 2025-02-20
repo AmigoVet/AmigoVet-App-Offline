@@ -90,7 +90,7 @@ const AnimalView = () => {
           image2={animalData.animal.image2} 
           image3={animalData.animal.image3}
         />
-        <BasicData />
+        <BasicData animal={animalData.animal} />
         <ExtraData />
         <NotesSection />
         <Registers />

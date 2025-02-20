@@ -3,8 +3,15 @@ import React from 'react'
 import { newColors } from '../../../../assets/styles/colors'
 import { constants } from '../../../../assets/styles/constants'
 import { CustomIcon } from '../../../../components/Customs'
+import { Animal } from '../../../../lib/interfaces/animal'
+import { formatearFecha } from '../../../../lib/functions/FormateraFecha'
+import { calcularEdad } from '../../../../lib/functions/CalcularEdad'
 
-const BasicData = () => {
+interface BasicDataProps {
+  animal: Animal;
+}
+
+const BasicData = (animal: BasicDataProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.containerContainer}>
@@ -31,11 +38,11 @@ const BasicData = () => {
           </View>
         </View>
         <View>
-            <Text style={styles.element}>Felino</Text>
-            <Text style={styles.element}>Montes</Text>
-            <Text style={styles.element}>Negro</Text>
-            <Text style={styles.element}>No</Text>
-            <Text style={styles.element}>lun, 17 de marzo de 2022</Text>
+            <Text style={styles.element}>{animal.animal.especie}</Text>
+            <Text style={styles.element}>{animal.animal.raza}</Text>
+            <Text style={styles.element}>{animal.animal.color}</Text>
+            <Text style={styles.element}>{animal.animal.embarazada ? "Sí" : "No"}</Text>
+            <Text style={styles.element}>{formatearFecha(animal.animal.nacimiento!)}</Text>
         </View>
       </View>
       <View style={styles2.containerContainer}>
@@ -44,28 +51,28 @@ const BasicData = () => {
             <CustomIcon color={newColors.verde} name="fitness-outline" size={30} />
             <Text style={styles2.textIcon}>Peso</Text>
           </View>
-          <Text style={styles2.text}>510 Kg</Text>
+          <Text style={styles2.text}>{animal.animal.peso} Kg</Text>
         </View>
         <View style={styles2.element}>
           <View style={styles2.iconContainer}>
             <CustomIcon color={newColors.verde} name="clipboard-outline" size={30} />
             <Text style={styles2.textIcon}>Proposito</Text>
           </View>
-          <Text style={styles2.text}>Mascota</Text>
+          <Text style={styles2.text}>{animal.animal.proposito}</Text>
         </View>
         <View style={styles2.element}>
           <View style={styles2.iconContainer}>
             <CustomIcon color={newColors.verde} name="female-outline" size={30} />
             <Text style={styles2.textIcon}>Genero</Text>
           </View>
-          <Text style={styles2.text}>Hembra</Text>
+          <Text style={styles2.text}>{animal.animal.genero}</Text>
         </View>
         <View style={styles2.element}>
           <View style={styles2.iconContainer}>
             <CustomIcon color={newColors.verde} name="today-outline" size={30} />
             <Text style={styles2.textIcon}>Edad</Text>
           </View>
-          <Text style={styles2.text}>1 año</Text>
+          <Text style={styles2.text}>{calcularEdad(animal.animal.nacimiento)}</Text>
         </View>
       </View>
     </View>
@@ -93,7 +100,7 @@ const styles = StyleSheet.create({
   element:{
       backgroundColor: newColors.verde_light,
       padding: 5,
-      paddingHorizontal: 20,
+      paddingHorizontal: 10,
       marginVertical: separation,
       borderRadius: constants.borderRadius,
       width: '100%',
@@ -119,9 +126,12 @@ const styles2 = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
   },
-  element:{
+  element: {
+    width: '22%', 
+    alignItems: 'center',
     marginHorizontal: 5,
   },
+  
   iconContainer:{
     alignItems: 'center',
   },
