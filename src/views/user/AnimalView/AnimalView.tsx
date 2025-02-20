@@ -13,6 +13,8 @@ import { Register } from '../../../lib/interfaces/registers';
 import ExtraData from './sections/ExtraData';
 import {default as NotesSection} from './sections/Notes';
 import { newColors } from '../../../assets/styles/colors';
+import { ScrollView } from 'react-native-gesture-handler';
+import Separator from '../../../components/global/Separator';
 
 export const defaultAnimal: Animal = {
   ownerId: "",
@@ -82,7 +84,7 @@ const AnimalView = () => {
 
   return (
     <>
-      <View style={{backgroundColor: newColors.fondo_principal, flex: 1}}>
+      <ScrollView style={{backgroundColor: newColors.fondo_principal, flex: 1}}>
         <Header 
           title={animalData.animal.nombre} 
           id={animalData.animal.identificador} 
@@ -94,7 +96,8 @@ const AnimalView = () => {
         <ExtraData />
         <NotesSection />
         <Registers />
-      </View>
+        <Separator height={500} />
+      </ScrollView>
 
       <ButtonAddEvent animalId={id} animalName={animalData.animal.nombre} onPress={() => {}} />
       <ButtonEditData id={id} animal={animalData.animal} onPress={() => {}} />
