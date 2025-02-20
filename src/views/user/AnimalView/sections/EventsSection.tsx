@@ -2,10 +2,10 @@ import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { newColors } from '../../../../assets/styles/colors'
 
-const Registers = () => {
+const EventsSection = () => {
   return (
     <View style={styles.container}>
-      <Text>Registers</Text>
+      <Text>EventsSection</Text>
     </View>
   )
 }
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Registers
+export default EventsSection

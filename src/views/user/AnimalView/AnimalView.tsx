@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Welcome';
@@ -15,6 +15,7 @@ import {default as NotesSection} from './sections/Notes';
 import { newColors } from '../../../assets/styles/colors';
 import { ScrollView } from 'react-native-gesture-handler';
 import Separator from '../../../components/global/Separator';
+import EventsSection from './sections/EventsSection';
 
 export const defaultAnimal: Animal = {
   ownerId: "",
@@ -40,8 +41,11 @@ export const defaultAnimal: Animal = {
   celo: "",
 };
 
+type TabSection = 'events' | 'notes' | 'registers';
+
 const AnimalView = () => {
   const id = useRoute<RouteProp<RootStackParamList, "AnimalView">>().params.id;
+  const [activeTab, setActiveTab] = useState<TabSection>('events');
 
   const [animalData, setAnimalData] = useState<{
     animal: Animal;
@@ -79,8 +83,40 @@ const AnimalView = () => {
     fetchData();
   }, [id]);
 
-  // console.log('🐾 AnimalDataView:', JSON.stringify(animalData, null, 2));
+  const TabButton = ({ title, section }: { title: string; section: TabSection }) => (
+    <TouchableOpacity
+      onPress={() => setActiveTab(section)}
+      style={{
+        flex: 1,
+        padding: 12,
+        backgroundColor: activeTab === section ? newColors.fondo_secundario : newColors.fondo_principal,
+        marginHorizontal: 4,
+        alignItems: 'center',
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+      }}
+    >
+      <Text style={{
+        color: activeTab === section ? 'white' : newColors.fondo_secundario,
+        fontWeight: activeTab === section ? 'bold' : 'normal',
+      }}>
+        {title}
+      </Text>
+    </TouchableOpacity>
+  );
 
+  const renderActiveSection = () => {
+    switch (activeTab) {
+      case 'events':
+        return <EventsSection />;
+      case 'notes':
+        return <NotesSection />;
+      case 'registers':
+        return <Registers />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
@@ -94,8 +130,19 @@ const AnimalView = () => {
         />
         <BasicData animal={animalData.animal} />
         <ExtraData description={animalData.animal.descripcion} ubicacion={animalData.animal.ubicacion}/>
-        <NotesSection />
-        <Registers />
+        
+        {/* Tab Navigation */}
+        <View style={{
+          flexDirection: 'row',
+        }}>
+          <TabButton title="Eventos" section="events" />
+          <TabButton title="Notas" section="notes" />
+          <TabButton title="Registros" section="registers" />
+        </View>
+
+        {/* Active Section */}
+        {renderActiveSection()}
+        
         <Separator height={500} />
       </ScrollView>
 
@@ -106,5 +153,6 @@ const AnimalView = () => {
     </>
   );
 };
+
 
 export default AnimalView;
