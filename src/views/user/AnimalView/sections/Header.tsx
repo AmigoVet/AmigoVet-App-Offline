@@ -8,7 +8,7 @@ import Iconlogo from '../../../../assets/svgs/Iconlogo';
 import { constants } from '../../../../assets/styles/constants';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const ITEM_WIDTH = SCREEN_WIDTH * 0.85;
+const ITEM_WIDTH = SCREEN_WIDTH * 0.95;
 const ITEM_HEIGHT = 250;
 
 interface HeaderProps {
@@ -33,7 +33,7 @@ const Header = ({
 
   const renderItem = ({ item }: { item: string }) => (
     <View style={styles.imageWrapper}>
-      <CustomImage source={item} style={styles.image} />
+      <CustomImage source={item} style={styles.image}  />
     </View>
   );
 
@@ -92,20 +92,18 @@ const Header = ({
 
       {images.length > 0 && (
         <View style={styles.imageContainer}>
-          <View style={styles.imageContainerContainer}>
-            <FlatList
-              data={images}
-              renderItem={renderItem}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={ITEM_WIDTH}
-              decelerationRate="fast"
-              viewabilityConfig={viewabilityConfig}
-              ItemSeparatorComponent={() => <View style={{ width: 20 }} />}
-              onViewableItemsChanged={onViewableItemsChanged}
-              keyExtractor={(_, index) => index.toString()}
-            />
-          </View>
+          <FlatList
+            data={images}
+            renderItem={renderItem}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={ITEM_WIDTH}
+            decelerationRate="fast"
+            viewabilityConfig={viewabilityConfig}
+            onViewableItemsChanged={onViewableItemsChanged}
+            keyExtractor={(_, index) => index.toString()}
+            contentContainerStyle={styles.flatListContent}
+          />
           {renderDotIndicator()}
         </View>
       )}
@@ -147,22 +145,22 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     zIndex: 10,
-    marginTop: -40,
+    marginTop: -45,
+    width: '100%',
     height: ITEM_HEIGHT + 20,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  imageContainerContainer: {
-    width: ITEM_WIDTH,
-    height: ITEM_HEIGHT,
-    padding: 10,
-    backgroundColor: newColors.fondo_principal,
-    borderRadius: constants.borderRadius,
-    overflow: 'hidden',
+  flatListContent: {
+    paddingHorizontal: (SCREEN_WIDTH - ITEM_WIDTH) / 2,
   },
   imageWrapper: {
-    width: ITEM_WIDTH - 20,
-    height: ITEM_HEIGHT - 20,
+    width: ITEM_WIDTH,
+    height: ITEM_HEIGHT,
+    backgroundColor: newColors.fondo_principal,
+    borderRadius: constants.borderRadius,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     width: '100%',
@@ -173,6 +171,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 10,
   },
   dot: {
     height: 8,
