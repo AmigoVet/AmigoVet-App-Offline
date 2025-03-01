@@ -23,7 +23,8 @@ const HeaderFeed = ({ userName, animals }: HeaderFeedProps) => {
   // Determinar si centrar el contenido del FlatList
   const centerFlatList = animals.length <= 3;
   const marginTop = centerFlatList ? 0 : -40;
-  const styles = createStyles(marginTop);
+  const borderRadius = centerFlatList ? 80 : 40;
+  const styles = createStyles(marginTop, borderRadius);
 
   return (
     <View style={styles.rootContainer}>
@@ -58,7 +59,7 @@ const HeaderFeed = ({ userName, animals }: HeaderFeedProps) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={centerFlatList ? styles.centeredFlatList : null} // Centrar si hay <= 3 animales
+          contentContainerStyle={centerFlatList ? styles.centeredFlatList : null}
           renderItem={({ item }) => (
             <View style={styles.animalContainer}>
               <View style={styles.imageContainer}>
@@ -74,7 +75,7 @@ const HeaderFeed = ({ userName, animals }: HeaderFeedProps) => {
   );
 };
 
-const createStyles = (marginTop: number) =>
+const createStyles = (marginTop: number, borderRadius: number) =>
   StyleSheet.create({
     rootContainer: {
       zIndex: 1, 
@@ -88,8 +89,8 @@ const createStyles = (marginTop: number) =>
       paddingTop: 10,
       paddingBottom: 50,
       zIndex: 1, 
-      borderBottomLeftRadius: 80, 
-      borderBottomRightRadius: 80,
+      borderBottomLeftRadius: borderRadius, 
+      borderBottomRightRadius: borderRadius,
     },
     welcomeText: {
       fontSize: 12,
