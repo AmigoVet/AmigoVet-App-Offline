@@ -178,7 +178,7 @@ export const getLastFiveAnimals = (ownerId: string): Promise<{id: string, nombre
                  FROM Animal 
                  WHERE ownerId = ? 
                  ORDER BY created_at DESC 
-                 LIMIT 0`,
+                 LIMIT 5`,
                 [ownerId],
                 (_, result) => {
                     const len = result.rows.length;
