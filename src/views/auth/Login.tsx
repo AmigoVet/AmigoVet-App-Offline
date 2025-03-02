@@ -22,11 +22,13 @@ import { Modalize } from 'react-native-modalize';
 import { RootStackParamList } from '../Welcome';
 import { appFirebase, db } from '../../lib/utils/FirebaseConfig';
 import useAuthStore from '../../lib/store/authStore';
-import { useTheme } from '../../lib/context/ThemeContext';
-import { getDynamicColors } from '../../assets/styles/colors';
-import { createGlobalStyles } from '../../assets/styles/styles';
+import { newColors } from '../../assets/styles/colors';
 import { CustomInput, CustomButton } from '../../components/Customs';
-import { FromDevora, LogoContainer } from '../../components/global';
+import { FromDevora } from '../../components/global';
+import CatSvg from '../../assets/svgs/animals/CatSvg';
+import CowSvg from '../../assets/svgs/animals/CowSvg';
+import DogSvg from '../../assets/svgs/animals/DogSvg';
+import Iconlogo from '../../assets/svgs/Iconlogo';
 
 type User = {
   nombre: string;
@@ -42,16 +44,12 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [resetEmail, setResetEmail] = useState(''); // Estado para el correo de recuperación
+  const [resetEmail, setResetEmail] = useState('');
 
-  const modalizeRef = useRef<Modalize>(null); // Referencia para Modalize
+  const modalizeRef = useRef<Modalize>(null);
 
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
   const setUser = useAuthStore((state) => state.setUser);
-
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
-  const GlobalStyles = createGlobalStyles(isDarkTheme);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -93,81 +91,93 @@ const Login = () => {
     try {
       await sendPasswordResetEmail(auth, resetEmail);
       Alert.alert('Correo enviado', 'Se ha enviado un enlace para recuperar tu contraseña.');
-      modalizeRef.current?.close(); // Cierra el modal después de enviar el correo
+      modalizeRef.current?.close();
     } catch (error) {
       Alert.alert('Error', 'No se pudo enviar el correo. Revisa el correo ingresado.');
     }
   };
-
-  const styles = StyleSheet.create({
-    title: {
-      fontSize: width * 0.08,
-      textAlign: 'center',
-    },
-    formContainer: {
-      width: '100%',
-      padding: width * 0.05,
-      borderColor: colors.blanco,
-      borderWidth: 1,
-      borderRadius: 10,
-      alignItems: 'center',
-      marginVertical: height * 0.03,
-    },
-    linkText: {
-      color: colors.blanco,
-      fontSize: width * 0.045,
-      marginTop: height * 0.02,
-      textAlign: 'center',
-    },
-    modalContent: {
-      padding: 20,
-      alignItems: 'center',
-    },
-    modalTitle: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginBottom: 20,
-      color: colors.fondo,
-    },
-  });
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={[GlobalStyles.container, { alignItems: 'center' }]}>
-          <LogoContainer />
-          <Text style={[GlobalStyles.title, styles.title]}>Ingresa tu usuario</Text>
-          <View style={styles.formContainer}>
-            <CustomInput
-              label="Correo Electrónico"
-              placeholder="Correo electrónico"
-              value={email}
-              onChangeText={setEmail}
-            />
-            <CustomInput
-              label="Contraseña"
-              placeholder="Contraseña"
-              value={password}
-              onChangeText={setPassword}
-              password
-            />
-            <CustomButton 
-              onPress={handleLogin} 
-              text="Ingresar" 
-              loading={loading} 
-              disabled={loading || email.trim() === '' || password.trim() === ''}
-            />
-            <Pressable onPress={() => navigate('Register')}>
-              <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
-            </Pressable>
-            <Pressable onPress={() => modalizeRef.current?.open()}>
-              <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
-            </Pressable>
-          </View>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: newColors.fondo_principal,
+          alignItems: 'center', 
+          justifyContent: 'center',
+        }}
+      >
+        {/* Contenedor para los SVGs */}
+        <View style={styles.svgContainer}>
+          <Iconlogo 
+            style={{
+              height: width * 0.4,
+              width: width * 0.4,
+              position: 'absolute',
+              top: 0,
+              left: 30,
+            }}
+          />
+          <CatSvg
+            style={{
+              width: width * 0.5,
+              height: width * 0.5,
+              position: 'absolute',
+              top: 0,
+              right: -5,
+            }}
+          />
+          <CowSvg
+            style={{
+              width: width * 0.5,
+              height: width * 0.5,
+              position: 'absolute',
+              bottom: -25,
+              left: 0,
+            }}
+          />
+          <DogSvg
+            style={{
+              width: width * 0.5,
+              height: width * 0.5,
+              position: 'absolute',
+              bottom: -50,
+              right: -50,
+            }}
+          />
         </View>
+
+        {/* Formulario */}
+        <View style={styles.formContainer}>
+          <CustomInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            iconName="mail-outline"
+          />
+          <CustomInput
+            placeholder="Contraseña"
+            value={password}
+            onChangeText={setPassword}
+            password
+          />
+          <CustomButton
+            onPress={handleLogin}
+            text="Ingresar"
+            loading={loading}
+            disabled={loading || email.trim() === '' || password.trim() === ''}
+          />
+          <Pressable onPress={() => navigate('Register')}>
+            <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
+          </Pressable>
+          <Pressable onPress={() => modalizeRef.current?.open()}>
+            <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
+          </Pressable>
+        </View>
+
         <FromDevora />
       </ScrollView>
 
@@ -200,3 +210,34 @@ const Login = () => {
 };
 
 export default Login;
+
+const styles = StyleSheet.create({
+  svgContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%', 
+    zIndex: 0, 
+  },
+  formContainer: {
+    width: '100%',
+    padding: width * 0.05,
+    alignItems: 'center',
+    backgroundColor: newColors.fondo_principal, 
+    zIndex: 1, 
+  },
+  linkText: {
+    color: newColors.verde,
+    fontSize: width * 0.045,
+    marginTop: height * 0.02,
+    textAlign: 'center',
+  },
+  modalContent: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+});
