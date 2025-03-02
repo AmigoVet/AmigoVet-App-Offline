@@ -3,8 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Pressable,
-  Alert,
   Dimensions,
   ScrollView,
   KeyboardAvoidingView,
@@ -14,14 +12,13 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
-import { RootStackParamList } from '../Welcome';
 import { db } from '../../lib/utils/FirebaseConfig';
 import useAuthStore from '../../lib/store/authStore';
 import { newColors } from '../../assets/styles/colors';
 import { CustomInput, CustomButton } from '../../components/Customs';
 import Separator from '../../components/global/Separator';
-import { constants } from '../../assets/styles/constants';
 import AssetIcons from './AssetIcons';
+import { RootStackParamList } from '../../lib/interfaces/navigate';
 
 const auth = getAuth();
 const { width, height } = Dimensions.get('window');
@@ -34,6 +31,8 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string[] | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const setUser = useAuthStore((state) => state.setUser);
 
@@ -57,30 +56,28 @@ const Register = () => {
   };
 
   const handleRegister = async () => {
+    // Limpiar errores previos
+    setError(null);
+    setSuccess(null);
+    
     if (password !== confirmPassword) {
-      Alert.alert('Verifica las contraseñas', 'Las contraseñas no coinciden');
+      setError(['Las contraseñas no coinciden']);
       return;
     }
 
     const missingElements = validatePassword(password);
     if (missingElements.length > 0) {
-      Alert.alert(
-        'Contraseña no válida',
-        `La contraseña debe incluir ${missingElements.join(', ')}.`
-      );
+      setError([`La contraseña debe incluir ${missingElements.join(', ')}.`]);
       return;
     }
 
     if (!email || !password || !username || !phone) {
-      Alert.alert('Rellena todos los campos', 'Todos los campos son obligatorios');
+      setError(['Todos los campos son obligatorios']);
       return;
     }
 
     if (!validatePhone(phone)) {
-      Alert.alert(
-        'Número de teléfono no válido',
-        'El número de teléfono debe tener 10 dígitos y ser válido en Colombia.'
-      );
+      setError(['El número de teléfono debe tener 10 dígitos y ser válido en Colombia.']);
       return;
     }
 
@@ -89,30 +86,36 @@ const Register = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
+  
       const userData = {
         nombre: username,
         correo: email,
         telefono: phone,
         userId: user.uid,
       };
-
+  
       await setDoc(doc(db, 'users', user.uid), userData);
-
       setUser(userData);
-
-      Alert.alert('Registro exitoso', 'El usuario ha sido creado');
-      navigate('Home');
+      
+      // Mostrar mensaje de éxito y navegar después de un breve retraso
+      setSuccess('¡Registro exitoso! El usuario ha sido creado');
+      
+      // Navegar después de un breve retraso para que el usuario vea el mensaje de éxito
+      setTimeout(() => {
+        navigate('Home');
+      }, 1500);
+      
     } catch (error) {
+      console.error(error);
       if (typeof error === 'object' && error !== null && 'code' in error) {
         const firebaseError = error as { code: string };
         if (firebaseError.code === 'auth/email-already-in-use') {
-          Alert.alert('Ups..', 'El correo electrónico ya está en uso');
+          setError(['El correo electrónico ya está en uso']);
         } else {
-          Alert.alert('Error', 'Algo salió mal. Inténtalo de nuevo.');
+          setError(['Algo salió mal. Inténtalo de nuevo.']);
         }
       } else {
-        Alert.alert('Error', 'Se produjo un error desconocido.');
+        setError(['Se produjo un error desconocido.']);
       }
     } finally {
       setLoading(false);
@@ -124,7 +127,6 @@ const Register = () => {
       style={{ flex: 1, backgroundColor: newColors.fondo_principal }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-
       {/* ScrollView para el formulario */}
       <ScrollView
         contentContainerStyle={{
@@ -135,10 +137,11 @@ const Register = () => {
         }}
       >
         <AssetIcons />
-
+        
         {/* Formulario */}
         <View style={styles.formContainer}>
           <Separator height={90} />
+          
           {/* Encabezado */}
           <View style={{ width: '100%', alignItems: 'flex-start' }}>
             <Text style={styles.title}>¡Regístrate!</Text>
@@ -148,6 +151,20 @@ const Register = () => {
             <Text style={styles.minitext}>Estamos felices de tenerte aquí</Text>
           </View>
           <Text style={styles.minitext}>Completa el formulario para crear tu cuenta</Text>
+          {/* Mensajes de error o éxito */}
+          {error && (
+            <View style={styles.messageContainer}>
+              {error.map((err, index) => (
+                <Text key={index} style={styles.errorText}>{err}</Text>
+              ))}
+            </View>
+          )}
+          
+          {success && (
+            <View style={styles.messageContainer}>
+              <Text style={styles.successText}>{success}</Text>
+            </View>
+          )}
           <CustomInput
             placeholder="Nombre completo"
             value={username}
@@ -227,6 +244,26 @@ const styles = StyleSheet.create({
     padding: width * 0.05,
     alignItems: 'center',
     zIndex: 2,
+  },
+  messageContainer: {
+    width: '100%',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+    textAlign: 'left',
+    fontSize: width * 0.01,
+  },
+  errorText: {
+    color: newColors.rojo || '#ff0000',
+    fontSize: width * 0.03,
+    textAlign: 'left',
+    fontWeight: '300',
+  },
+  successText: {
+    color: '#4CAF50',
+    fontSize: width * 0.04,
+    textAlign: 'center',
+    fontWeight: '500',
   },
   minitext: {
     color: newColors.fondo_secundario,
