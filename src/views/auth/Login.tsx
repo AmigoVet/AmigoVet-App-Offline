@@ -31,6 +31,7 @@ import DogSvg from '../../assets/svgs/animals/DogSvg';
 import Iconlogo from '../../assets/svgs/Iconlogo';
 import AssetIcons from './AssetIcons';
 import Separator from '../../components/global/Separator';
+import { constants } from '../../assets/styles/constants';
 
 type User = {
   nombre: string;
@@ -180,24 +181,28 @@ const Login = () => {
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Recuperar Contraseña</Text>
           <CustomInput
-            label="Correo Electrónico"
             placeholder="Correo electrónico"
             value={resetEmail}
             onChangeText={setResetEmail}
+            iconName='mail-outline'
           />
+          <Separator height={40} />
           <CustomButton
             onPress={handleResetPassword}
             text="Enviar correo"
             loading={false}
             disabled={!resetEmail}
+            textColor={newColors.fondo_secundario}
           />
+          <Separator height={10} />
           <CustomButton
             onPress={() => modalizeRef.current?.close()}
             text="Cancelar"
             loading={false}
             backgroundColor={newColors.rojo}
-            textColor={newColors.fondo_principal}
           />
+          <Separator height={40} />
+
         </View>
       </Modalize>
     </KeyboardAvoidingView>
@@ -234,6 +239,8 @@ const styles = StyleSheet.create({
   modalContent: {
     padding: 20,
     alignItems: 'center',
+    backgroundColor: newColors.fondo_principal,
+    borderRadius: constants.borderRadius,
   },
   modalTitle: {
     fontSize: 20,
