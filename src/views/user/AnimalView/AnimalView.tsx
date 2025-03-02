@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../Welcome';
 import { loadAllDataAnimal } from '../functions/loadAllDataAnimal';
 import { Animal, Notes } from '../../../lib/interfaces/animal';
 import { Events } from '../../../lib/interfaces/events';
@@ -16,6 +15,7 @@ import { newColors } from '../../../assets/styles/colors';
 import { ScrollView } from 'react-native-gesture-handler';
 import Separator from '../../../components/global/Separator';
 import EventsSection from './sections/EventsSection';
+import { RootStackParamList } from '../../../lib/interfaces/navigate';
 
 export const defaultAnimal: Animal = {
   ownerId: "",
