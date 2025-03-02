@@ -5,6 +5,7 @@ import { getDynamicColors, newColors, staticColors } from '../../assets/styles/c
 import { CustomIcon } from '../Customs';
 import { RootStackParamList } from '../../lib/interfaces/navigate';
 import LabelLogo from '../../assets/svgs/LabelLogo';
+import Iconlogo from '../../assets/svgs/Iconlogo';
 
 interface HeaderProps {
   title?: string;
@@ -19,7 +20,7 @@ const Header = ({title}: HeaderProps) => {
         <CustomIcon name="chevron-back-outline" size={30} color={staticColors.blancoLight} />
       </Pressable>
       {title && <Text style={styles.title}>{title}</Text>}
-      <LabelLogo  />
+      <Iconlogo fill={newColors.fondo_principal} height={50} width={50} />
     </View>
   );
 };

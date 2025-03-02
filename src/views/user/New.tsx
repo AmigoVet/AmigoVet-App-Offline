@@ -182,10 +182,10 @@ const New: React.FC = () => {
         {image && <CustomImage source={image} style={{ height: 250 }} />}
         <View style={newStyles.imageButtonContainer}>
           <TouchableOpacity style={newStyles.imageButton} onPress={pickImageFromGallery}>
-            <CustomIcon name="image-outline" size={40} color={newColors.fondo_principal} />
+            <CustomIcon name="image-outline" size={40} color={newColors.fondo_secundario} />
           </TouchableOpacity>
           <TouchableOpacity style={newStyles.imageButton} onPress={takePhoto}>
-            <CustomIcon name="camera-outline" size={40} color={newColors.fondo_principal} />
+            <CustomIcon name="camera-outline" size={40} color={newColors.fondo_secundario} />
           </TouchableOpacity>
         </View>
       </View>

@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
       fontSize: 14,
       textAlign: 'left', 
       fontWeight: 400,
+      color: newColors.fondo_principal,
     },
     noteDate: {
       fontSize: 13,

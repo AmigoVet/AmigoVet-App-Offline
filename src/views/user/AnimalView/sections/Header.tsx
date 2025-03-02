@@ -3,9 +3,9 @@ import { View, StyleSheet, Pressable, Text, FlatList, Dimensions } from 'react-n
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { newColors } from '../../../../assets/styles/colors';
 import { CustomIcon, CustomImage } from '../../../../components/Customs';
-import { RootStackParamList } from '../../../Welcome';
 import Iconlogo from '../../../../assets/svgs/Iconlogo';
 import { constants } from '../../../../assets/styles/constants';
+import { RootStackParamList } from '../../../../lib/interfaces/navigate';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ITEM_WIDTH = SCREEN_WIDTH * 0.95;
@@ -33,7 +33,7 @@ const Header = ({
 
   const renderItem = ({ item }: { item: string }) => (
     <View style={styles.imageWrapper}>
-      <CustomImage source={item} style={styles.image}  />
+      <CustomImage source={item} style={styles.image} />
     </View>
   );
 
@@ -80,13 +80,13 @@ const Header = ({
           />
         </Pressable>
         
-        <View>
+        <View style={styles.textContainer}>
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
           <Text style={styles.subtitle}>{id}</Text>
         </View>
 
         <View style={styles.iconContainer}>
-          <Iconlogo fill={newColors.fondo_principal} />
+          <Iconlogo fill={newColors.fondo_principal} height={40} width={40} />
         </View>
       </View>
 
@@ -116,20 +116,25 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 100,
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    alignItems: 'flex-start', 
+    justifyContent: 'space-between', 
     backgroundColor: newColors.fondo_secundario,
     borderBottomLeftRadius: constants.borderRadius,
     borderBottomRightRadius: constants.borderRadius,
     zIndex: 10,
     paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingTop: 10, 
+    gap: 20, 
   },
   iconContainer: {
     width: 40,
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start', 
+  },
+  textContainer: {
+    flexShrink: 1, 
+    alignItems: 'center', 
   },
   title: {
     fontSize: 19,
