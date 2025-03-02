@@ -46,9 +46,9 @@ export const createGlobalStyles = () => {
     },
     label: {
       fontSize: 16,
-      fontWeight: '500',
+      fontWeight: 'bold',
       marginBottom: 5,
-      color: colors.verde,
+      color: colors.fondo_secundario,
     },
     errorContainer: {
       flex: 1,
