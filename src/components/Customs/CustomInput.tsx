@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, KeyboardTypeOptions, Pressable, Dimensions } from 'react-native';
-
 import CustomIcon from './CustomIcon';
-import { useTheme } from '../../lib/context/ThemeContext';
-import { getDynamicColors, newColors } from '../../assets/styles/colors';
+import { newColors } from '../../assets/styles/colors';
 import { constants } from '../../assets/styles/constants';
 
 const { width } = Dimensions.get('window');
 
 interface CustomInputProps {
-  label: string;
+  label?: string;
   miniText?: string;
   placeholder: string;
   value: string;
@@ -19,6 +17,7 @@ interface CustomInputProps {
   editable?: boolean;
   onFocus?: () => void;
   password?: boolean;
+  iconName?: string; // Nueva prop para el ícono personalizado
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -32,9 +31,9 @@ const CustomInput: React.FC<CustomInputProps> = ({
   onFocus = () => {},
   miniText,
   password = false,
+  iconName, // Añadimos la prop al destructuring
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(!password);
-
 
   const getKeyboardType = (): KeyboardTypeOptions => {
     switch (type) {
@@ -52,17 +51,19 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
   return (
     <View style={styles.container}>
+      {label && 
       <Text style={styles.label}>
         {label}
         <Text style={styles.miniText}>{miniText ? ` (${miniText})` : ''}</Text>
       </Text>
+      }
       <View style={styles.inputContainer}>
         <TextInput
           style={[styles.input, multiline && styles.multilineInput]}
           placeholder={placeholder}
           value={value}
           onChangeText={onChangeText}
-          placeholderTextColor={newColors.gris}
+          placeholderTextColor={newColors.fondo_secundario} 
           secureTextEntry={password && !isPasswordVisible}
           multiline={multiline}
           keyboardType={getKeyboardType()}
@@ -72,58 +73,67 @@ const CustomInput: React.FC<CustomInputProps> = ({
           autoCorrect={false}
           textAlignVertical="center"
         />
-        {password && (
-          <Pressable onPress={togglePasswordVisibility} style={styles.icon}>
+        {/* Renderizado condicional del ícono */}
+        {password || iconName ? (
+          <Pressable
+            onPress={password ? togglePasswordVisibility : undefined} 
+            style={styles.icon}
+          >
             <CustomIcon
-              name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
+              name={
+                password
+                  ? isPasswordVisible
+                    ? 'eye-off-outline'
+                    : 'eye-outline'
+                  : iconName || 'default-icon' 
+              }
               size={20}
               color={newColors.fondo_secundario}
             />
           </Pressable>
-        )}
+        ) : null}
       </View>
     </View>
   );
 };
 
 // Estilos dinámicos
-const styles =StyleSheet.create({
-    container: {
-      marginVertical: 10,
-      width: '100%',
-    },
-    label: {
-      fontSize: width * 0.04,
-      fontWeight: '500',
-      marginBottom: 5,
-      color: newColors.fondo_secundario,
-    },
-    miniText: {
-      fontSize: width * 0.03,
-      color: newColors.fondo_secundario,
-    },
-    inputContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderColor: newColors.fondo_secundario,
-      borderWidth: 2,
-      borderRadius: constants.borderRadius / 2,
-      paddingHorizontal: 10,
-    },
-    input: {
-      flex: 1,
-      minHeight: 40,
-      fontSize: width * 0.04,
-      color: newColors.fondo_secundario,
-      fontWeight: '500',
-    },
-    multilineInput: {
-      minHeight: 100,
-      textAlignVertical: 'top',
-    },
-    icon: {
-      marginLeft: 10,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 10,
+    width: '100%',
+  },
+  label: {
+    fontSize: width * 0.04,
+    fontWeight: '500',
+    marginBottom: 5,
+    color: newColors.fondo_secundario,
+  },
+  miniText: {
+    fontSize: width * 0.03,
+    color: newColors.fondo_secundario,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: newColors.fondo_secundario,
+    borderWidth: 2,
+    borderRadius: constants.borderRadius / 1.5,
+    paddingHorizontal: 10,
+  },
+  input: {
+    flex: 1,
+    minHeight: 50,
+    fontSize: width * 0.042,
+    fontWeight: 'bold',
+  },
+  multilineInput: {
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  icon: {
+    marginLeft: 10,
+  },
+});
 
 export default CustomInput;
