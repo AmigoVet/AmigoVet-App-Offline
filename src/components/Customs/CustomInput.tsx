@@ -100,7 +100,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
 // Estilos dinámicos
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
+    marginVertical: 5,
     width: '100%',
   },
   label: {

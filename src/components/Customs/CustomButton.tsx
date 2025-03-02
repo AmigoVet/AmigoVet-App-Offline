@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     borderRadius: constants.borderRadius,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 50,
   },
   pressedContainer: {
     backgroundColor: newColors.verde, 
