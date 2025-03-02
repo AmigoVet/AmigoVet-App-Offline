@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     width: '80%',
-    borderRadius: constants.borderRadius / 2,
+    borderRadius: constants.borderRadius,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 50,
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: 'bold',
     fontSize: 16,
+    paddingVertical: 2,
   },
 });
 
