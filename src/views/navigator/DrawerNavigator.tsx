@@ -1,30 +1,27 @@
 import { createDrawerNavigator, DrawerContent } from "@react-navigation/drawer";
-import { getDynamicColors } from "../../assets/styles/colors";
+import { getDynamicColors, newColors } from "../../assets/styles/colors";
 import { CustomIcon } from "../../components/Customs";
-import { HeaderDrawer } from "../../components/Navigations";
-import Embarazadas from "../../views/search/Embarazadas";
-import Hembras from "../../views/search/Hembras";
-import Jovenes from "../../views/search/Jovenes";
-import Machos from "../../views/search/Machos";
-import Home from "../../views/user/Home";
-import { useTheme } from "../context/ThemeContext";
+import Embarazadas from "../search/Embarazadas";
+import Hembras from "../search/Hembras";
+import Jovenes from "../search/Jovenes";
+import Machos from "../search/Machos";
+import Home from "../user/Home";
+import { HeaderDrawer } from "./components";
 
 
 const Drawer = createDrawerNavigator();
 
 export const HomeScreenWithDrawerNavigator = () => {
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
 
   return (
     <Drawer.Navigator
       initialRouteName="Principal"
       screenOptions={{
         header: () => <HeaderDrawer />,
-        drawerActiveTintColor: colors.verde, 
-        drawerInactiveTintColor: colors.blanco, 
+        drawerActiveTintColor: newColors.verde, 
+        drawerInactiveTintColor: newColors.fondo_principal, 
         drawerStyle: {
-          backgroundColor: colors.fondoDark, 
+          backgroundColor: newColors.fondo_secundario, 
         },
       }}
       drawerContent={(props) => <DrawerContent {...props} />}

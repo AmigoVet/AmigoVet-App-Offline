@@ -19,7 +19,6 @@ import {
 import { doc, getDoc } from 'firebase/firestore';
 import { Modalize } from 'react-native-modalize';
 
-import { RootStackParamList } from '../Welcome';
 import { appFirebase, db } from '../../lib/utils/FirebaseConfig';
 import useAuthStore from '../../lib/store/authStore';
 import { newColors } from '../../assets/styles/colors';
@@ -27,6 +26,7 @@ import { CustomInput, CustomButton } from '../../components/Customs';
 import AssetIcons from './AssetIcons';
 import Separator from '../../components/global/Separator';
 import { constants } from '../../assets/styles/constants';
+import { RootStackParamList } from '../../lib/interfaces/navigate';
 
 type User = {
   nombre: string;

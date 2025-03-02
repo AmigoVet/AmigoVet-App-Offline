@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { CustomInput, CustomButton } from '../../Customs'; // Asegúrate de importar estos componentes correctamente
-import { useTheme } from '../../../lib/context/ThemeContext';
+import { useTheme } from '../../../lib/context/';
 import { getDynamicColors } from '../../../assets/styles/colors';
 import { AnimalViewStyles } from '../../../assets/styles/AnimalViewStyles';
 

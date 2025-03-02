@@ -4,12 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getDynamicColors, newColors } from '../../assets/styles/colors';
 import { AnimalWithNotes } from '../../lib/interfaces/animal';
-import { RootStackParamList } from '../../views/Welcome';
-import { useTheme } from '../../lib/context/ThemeContext';
 import { CustomIcon, CustomImage } from '../Customs';
 import { constants } from '../../assets/styles/constants';
 import {  calcularProximaFechaCelo } from '../../lib/functions/CalcularFechaCelo';
 import { formatearFecha } from '../../lib/functions/FormateraFecha';
+import { RootStackParamList } from '../../lib/interfaces/navigate';
 
 interface PrivateAnimalCardProps {
   animal: AnimalWithNotes;
@@ -17,9 +16,6 @@ interface PrivateAnimalCardProps {
 
 const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
   const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
-  const styles = dynamicStyles(colors);
 
   return (
     <Pressable style={styles.box} onPress={() => navigate('AnimalView', { id: animal.id })}>
@@ -58,8 +54,7 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
   );
 };
 
-const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
-  StyleSheet.create({
+const styles = StyleSheet.create({
     box: {
       marginVertical: 5,
       height: 150, 
@@ -81,7 +76,6 @@ const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
       paddingLeft: 5,
     },
     text: {
-      color: colors.fondo,
       fontSize: 14,
       textAlign: 'left', 
       fontWeight: 400,

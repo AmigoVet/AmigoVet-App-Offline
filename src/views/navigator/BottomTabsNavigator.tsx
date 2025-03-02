@@ -1,20 +1,17 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { getDynamicColors, newColors } from "../../assets/styles/colors";
 import { CustomIcon } from "../../components/Customs";
-import HomePublic from "../../views/public/HomePublic";
-import Feed from "../../views/user/feed/Feed";
-import New from "../../views/user/New";
-import Profile from "../../views/user/Profile";
-import { useTheme } from "../context/ThemeContext";
-import { HomeScreenWithDrawerNavigator } from "./DrawerNavigator";
+import HomePublic from "../public/HomePublic";
+import Feed from "../user/feed/Feed";
+import New from "../user/New";
+import Profile from "../user/Profile";
 import CustomButtonTab from "./CustomButtonTab";
+import { HomeScreenWithDrawerNavigator } from "./DrawerNavigator";
 
 const Tab = createBottomTabNavigator();
 
 
 export const BottomTabsNavigator = () => {
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
 
   return (
     <Tab.Navigator

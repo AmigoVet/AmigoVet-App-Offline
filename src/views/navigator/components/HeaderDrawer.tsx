@@ -1,31 +1,26 @@
 import React from 'react';
 import { View, StyleSheet, Image, Pressable } from 'react-native';
 import { DrawerActions, NavigationProp, useNavigation } from '@react-navigation/native';
-import { useTheme } from '../../lib/context/ThemeContext';
-import { getDynamicColors, newColors, staticColors } from '../../assets/styles/colors';
-import { RootStackParamList } from '../../views/Welcome';
-import { CustomIcon } from '../Customs';
-import LogoSimple from '../global/LogoSimple';
+import { RootStackParamList } from '../../../lib/interfaces/navigate';
+import { newColors } from '../../../assets/styles/colors';
+import { CustomIcon } from '../../../components/Customs';
+import LabelLogo from '../../../assets/svgs/LabelLogo';
 
 
 const HeaderDrawer = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { isDarkTheme } = useTheme(); 
-  const colors = getDynamicColors(isDarkTheme); 
-  const styles = createStyles(colors); 
 
   return (
     <View style={styles.container}>
       <Pressable onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-        <CustomIcon name="chevron-forward-outline" size={30} color={staticColors.blancoLight} />
+        <CustomIcon name="chevron-forward-outline" size={30} color={newColors.fondo_principal} />
       </Pressable>
-      <LogoSimple estatico='light' />
+      <LabelLogo  />
     </View>
   );
 };
 
-const createStyles = (colors: ReturnType<typeof getDynamicColors>) =>
-  StyleSheet.create({
+const styles =StyleSheet.create({
     container: {
       width: '100%',
       height: 60,

@@ -1,6 +1,6 @@
 import { View, Text, ActivityIndicator } from 'react-native'
 import React from 'react'
-import { useTheme } from '../../lib/context/ThemeContext';
+import { useTheme } from '../../lib/context/';
 import { getDynamicColors } from '../../assets/styles/colors';
 
 const LoaderScreen = () => {

@@ -7,7 +7,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Animal } from '../../lib/interfaces/animal';
 
 // **Contexto y estilos**
-import { useTheme } from '../../lib/context/ThemeContext';
 import { createGlobalStyles } from '../../assets/styles/styles';
 
 // **Componentes locales**
@@ -27,8 +26,7 @@ const Busqueda = () => {
   const user = useAuthStore((state) => state.user);
 
 
-  const { isDarkTheme } = useTheme();
-  const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const GlobalStyles = createGlobalStyles();
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);

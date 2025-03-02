@@ -4,10 +4,8 @@ import { View, Text, Alert, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 // **Interfaces y tipos**
-import { RootStackParamList } from '../Welcome';
 
 // **Contexto y estilos**
-import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from '../../assets/styles/styles';
 
@@ -16,6 +14,7 @@ import { changePassword } from '../../lib/functions/changePassword ';
 
 // **Componentes locales**
 import { CustomInput, CustomButton } from '../../components/Customs';
+import { RootStackParamList } from '../../lib/interfaces/navigate';
 
 
 const ChangePasswordScreen = () => {
@@ -26,9 +25,7 @@ const ChangePasswordScreen = () => {
 
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
-  const GlobalStyles = createGlobalStyles(isDarkTheme);
+  const GlobalStyles = createGlobalStyles();
 
 
   const validatePassword = (password: string) => {

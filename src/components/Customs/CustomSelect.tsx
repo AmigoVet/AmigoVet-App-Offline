@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { useTheme } from "../../lib/context/ThemeContext";
 import { getDynamicColors, newColors } from "../../assets/styles/colors";
 import { createGlobalStyles } from "../../assets/styles/styles";
 import { constants } from "../../assets/styles/constants";
@@ -15,8 +14,6 @@ interface CustomSelectProps {
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({ label, value, options, onValueChange, miniText }) => {
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
   const GlobalStyles = createGlobalStyles();
   const { width } = Dimensions.get("window");
 

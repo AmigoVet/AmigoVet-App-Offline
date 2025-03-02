@@ -1,13 +1,12 @@
 import { View, Text, Pressable, StyleSheet, Alert, FlatList, Image } from 'react-native';
 import React from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { useTheme } from '../../../../lib/context/ThemeContext';
 import { getDynamicColors, newColors, staticColors } from '../../../../assets/styles/colors';
 import { CustomIcon } from '../../../../components/Customs';
-import { RootStackParamList } from '../../../Welcome';
 import LabelLogo from '../../../../assets/svgs/LabelLogo';
 import { obtenerPalabras } from '../../../../lib/functions/SeccionarNombre';
 import { constants } from '../../../../assets/styles/constants';
+import { RootStackParamList } from '../../../../lib/interfaces/navigate';
 
 interface HeaderFeedProps {
   userName: string;
@@ -16,8 +15,6 @@ interface HeaderFeedProps {
 
 const HeaderFeed = ({ userName, animals }: HeaderFeedProps) => {
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
   const name = obtenerPalabras(userName);
 
   // Determinar si centrar el contenido del FlatList

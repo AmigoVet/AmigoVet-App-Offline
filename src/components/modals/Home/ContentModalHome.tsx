@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Modalize } from "react-native-modalize";
 import { getDynamicColors, newColors } from "../../../assets/styles/colors";
-import { useTheme } from "../../../lib/context/ThemeContext";
 import { deleteDataAnimal } from "../../../lib/db/animals/deleteDataAnimal";
 import { Animal } from "../../../lib/interfaces/animal";
 import { HomeViewStyles } from "../../../assets/styles/HomeViewStyles";
@@ -12,9 +11,7 @@ interface ContendModalProps {
     onPress: () => void;
 }
 const ContentModalHome: React.FC<ContendModalProps> = ({ selectedAnimal, modalRef, onPress }) => {
-    const { isDarkTheme } = useTheme();
-    const colors = getDynamicColors(isDarkTheme);
-    const styles = HomeViewStyles(colors);
+    const styles = HomeViewStyles();
     
     const deleteAnimal = async () => {
         if (selectedAnimal) {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useTheme } from "../../lib/context/ThemeContext";
 import { getDynamicColors, newColors } from "../../assets/styles/colors";
 import CustomIcon from "./CustomIcon";
 import { constants } from "../../assets/styles/constants";
@@ -28,8 +27,6 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   const [showPicker, setShowPicker] = useState(false);
   const [showAgeInput, setShowAgeInput] = useState(false);
 
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
   const styles = createStyles();
 
   // Calcular texto de la edad según la fecha seleccionada
@@ -119,7 +116,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
           <TextInput
             style={styles.ageInput}
             placeholder="Ingresa la edad en años"
-            placeholderTextColor={colors.rowBgLight}
+            placeholderTextColor={newColors.gris}
             keyboardType="numeric"
             value={ageValue}
             onChangeText={(age) => {

@@ -4,15 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import useAuthStore from '../../lib/store/authStore';
 
 // Importa tus pantallas
-import Login from '../../views/auth/Login';
-import Welcome from '../../views/Welcome';
-import Register from '../../views/auth/Register';
-import Busqueda from '../../views/user/Busqueda';
-import ChangePasswordScreen from '../../views/user/ChangePassword';
+import Login from '../auth/Login';
+import Welcome from '../Welcome';
+import Register from '../auth/Register';
+import Busqueda from '../user/Busqueda';
+import ChangePasswordScreen from '../user/ChangePassword';
+import New from '../user/New';
+import AnimalView from '../user/AnimalView/AnimalView';
+import Calendar from '../calendar/Calendar';
 import { BottomTabsNavigator } from './BottomTabsNavigator';
-import New from '../../views/user/New';
-import AnimalView from '../../views/user/AnimalView/AnimalView';
-import Calendar from '../../views/calendar/Calendar';
 
 const Stack = createNativeStackNavigator();
 

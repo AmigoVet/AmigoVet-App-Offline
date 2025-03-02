@@ -2,8 +2,7 @@ import { StyleSheet } from "react-native";
 import { getDynamicColors, newColors } from "./colors";
 import { constants } from "./constants";
 
-export const createNewStyles = (isDarkTheme: boolean) => {
-  const colors = getDynamicColors(isDarkTheme); 
+export const createNewStyles = () => {
 
   return StyleSheet.create({
     container: {

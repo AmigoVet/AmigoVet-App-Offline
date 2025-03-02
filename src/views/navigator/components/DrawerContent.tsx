@@ -12,7 +12,7 @@ import { getDynamicColors } from '../../assets/styles/colors';
 import { formatPhoneNumber } from '../../lib/functions/FormaterNumberPhone';
 import useAuthStore from '../../lib/store/authStore';
 import { CustomIcon } from '../Customs';
-import { useTheme } from '../../lib/context/ThemeContext';
+import { useTheme } from '../../lib/context/';
 import LabelLogo from '../global/LabelLogo';
 
 

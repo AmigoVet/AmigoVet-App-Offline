@@ -1,6 +1,6 @@
 import { View, Text, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useTheme } from '../../../lib/context/ThemeContext';
+import { useTheme } from '../../../lib/context/';
 import { AnimalViewStyles } from '../../../assets/styles/AnimalViewStyles';
 import { getDynamicColors } from '../../../assets/styles/colors';
 import { createGlobalStyles } from '../../../assets/styles/styles';

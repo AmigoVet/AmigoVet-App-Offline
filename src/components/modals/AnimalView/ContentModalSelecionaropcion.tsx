@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
 import React from 'react';
-import { useTheme } from '../../../lib/context/ThemeContext';
+import { useTheme } from '../../../lib/context/';
 import { getDynamicColors } from '../../../assets/styles/colors';
 import { AnimalViewStyles } from '../../../assets/styles/AnimalViewStyles';
 import { ModalButton } from '../../global';

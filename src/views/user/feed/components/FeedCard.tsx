@@ -2,12 +2,11 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useTheme } from '../../../../lib/context/ThemeContext';
 import { getDynamicColors, newColors } from '../../../../assets/styles/colors';
 import { constants } from '../../../../assets/styles/constants';
 import { CustomImage } from '../../../../components/Customs';
-import { RootStackParamList } from '../../../Welcome';
 import { MiniAnimalListProps } from './NoticesFeed';
+import { RootStackParamList } from '../../../../lib/interfaces/navigate';
 
 interface FeedCardProps {
   animal: MiniAnimalListProps;
@@ -15,9 +14,6 @@ interface FeedCardProps {
 
 const FeedCard: React.FC<FeedCardProps> = ({ animal }) => {
   const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
-  const styles = dynamicStyles(colors);
 
   return (
     <Pressable style={styles.box} onPress={() => navigate('AnimalView', { id: animal.id! })}>
@@ -35,7 +31,7 @@ const FeedCard: React.FC<FeedCardProps> = ({ animal }) => {
   );
 };
 
-const dynamicStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+const styles =
   StyleSheet.create({
     box: {
       width: 330,

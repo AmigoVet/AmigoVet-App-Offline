@@ -7,7 +7,7 @@ import { getDynamicColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from '../../assets/styles/styles';
 import { Animal } from '../../lib/interfaces/animal';
 import { RootStackParamList } from '../../views/Welcome';
-import { useTheme } from '../../lib/context/ThemeContext';
+import { useTheme } from '../../lib/context/';
 
 // Usar una prop específica para pasar los datos
 interface PublicAnimalCardProps {

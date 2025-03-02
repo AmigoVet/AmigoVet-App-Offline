@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { getDynamicColors, newColors } from "./colors";
 import { constants } from "./constants";
 
-export const HomeViewStyles = (colors: ReturnType<typeof getDynamicColors>) =>
+export const HomeViewStyles = () =>
     StyleSheet.create({
       row: {
         height: 150,
@@ -14,7 +14,7 @@ export const HomeViewStyles = (colors: ReturnType<typeof getDynamicColors>) =>
         padding: 15,
         justifyContent: 'center',
         alignItems: 'flex-end',
-        backgroundColor: colors.rojo,
+        backgroundColor: newColors.rojo,
       },
       hiddenText: {
         color: 'white',

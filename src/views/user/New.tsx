@@ -8,8 +8,7 @@ import { especiesRazasMap, generos, propositosPorEspecie, Especie, Raza,} from "
 
 // **Contexto y estilos**
 import useAuthStore from "../../lib/store/authStore";
-import { useTheme } from "../../lib/context/ThemeContext";
-import { getDynamicColors } from "../../assets/styles/colors";
+import { getDynamicColors, newColors } from "../../assets/styles/colors";
 import { createGlobalStyles } from "../../assets/styles/styles";
 import { createNewStyles } from "../../assets/styles/NewStyles";
 
@@ -22,8 +21,8 @@ import { setDataAnimal } from "../../lib/db/setDataAnimal";
 import { saveImagePermanently } from "../../lib/functions/saveImage";
 import Separator from "../../components/global/Separator";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../Welcome";
 import { Header } from "../../components/global";
+import { RootStackParamList } from "../../lib/interfaces/navigate";
 
 
 const New: React.FC = () => {
@@ -49,10 +48,8 @@ const New: React.FC = () => {
 
   const user = useAuthStore((state) => state.user);
 
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
   const GlobalStyles = createGlobalStyles();
-  const newStyles = createNewStyles(isDarkTheme);
+  const newStyles = createNewStyles();
 
   
   const [totalAnimals, setTotalAnimals] = useState<number>(0);
@@ -185,10 +182,10 @@ const New: React.FC = () => {
         {image && <CustomImage source={image} style={{ height: 250 }} />}
         <View style={newStyles.imageButtonContainer}>
           <TouchableOpacity style={newStyles.imageButton} onPress={pickImageFromGallery}>
-            <CustomIcon name="image-outline" size={40} color={colors.blanco} />
+            <CustomIcon name="image-outline" size={40} color={newColors.fondo_principal} />
           </TouchableOpacity>
           <TouchableOpacity style={newStyles.imageButton} onPress={takePhoto}>
-            <CustomIcon name="camera-outline" size={40} color={colors.blanco} />
+            <CustomIcon name="camera-outline" size={40} color={newColors.fondo_principal} />
           </TouchableOpacity>
         </View>
       </View>

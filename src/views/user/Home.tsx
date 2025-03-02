@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, ActivityIndicator, Animated, TouchableOpacity } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import { useTheme } from '../../lib/context/ThemeContext';
 import { getDynamicColors, newColors } from '../../assets/styles/colors';
 import { createGlobalStyles } from '../../assets/styles/styles';
 import { Animal, AnimalWithNotes } from '../../lib/interfaces/animal';
@@ -33,10 +32,8 @@ const Home = () => {
     hiddenItem: Animated.Value;
   }[]>([]);
 
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
   const GlobalStyles = createGlobalStyles();
-  const styles = HomeViewStyles(colors);
+  const styles = HomeViewStyles();
 
   const [totalAnimals, setTotalAnimals] = useState<number>(0);
 
@@ -231,7 +228,7 @@ const Home = () => {
               <Text style={styles.loadingText}>Cargando animales...</Text>
             </View>
           ) : (
-            <Text style={[GlobalStyles.error, { color: colors.rojo }]}>No hay animales registrados</Text>
+            <Text style={[GlobalStyles.error, { color: newColors.rojo }]}>No hay animales registrados</Text>
           )
         }
       />
@@ -240,7 +237,7 @@ const Home = () => {
       <Modalize 
         ref={modalRef} 
         adjustToContentHeight
-        modalStyle={{ backgroundColor: colors.fondo }}
+        modalStyle={{ backgroundColor: newColors.fondo_principal }}
       >
         <ContentModalHome selectedAnimal={selectedAnimal} modalRef={modalRef} onPress={loadAnimal} />
         <Separator height={50} />

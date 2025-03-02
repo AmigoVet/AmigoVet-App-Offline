@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import useAuthStore from './lib/store/authStore';
-import { ThemeProvider } from './lib/context/ThemeContext';
-import AppNavigator from './lib/navigator/AppNavigator';
+import AppNavigator from './views/navigator/AppNavigator';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LogBox } from 'react-native'; 
 
@@ -22,13 +21,11 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <NavigationContainer>
             <AppNavigator />
           </NavigationContainer>
         </GestureHandlerRootView>
-      </ThemeProvider>
     </QueryClientProvider>
   );
 };
