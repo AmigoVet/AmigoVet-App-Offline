@@ -7,16 +7,20 @@ interface CustomButtonProps {
   text: string | JSX.Element;
   onPress: () => void;
   disabled?: boolean;
-  loading?: boolean; 
-  red?: boolean;
+  loading?: boolean;
+  backgroundColor?: string;
+  textColor?: string;      
 }
 
-const CustomButton = ({ text, onPress, disabled = false, loading = false, red = false }: CustomButtonProps) => {
-  const backgroundColor = disabled
-    ? staticColors.blanco
-    : red
-    ? newColors.rojo
-    : newColors.verde_light;
+const CustomButton = ({
+  text,
+  onPress,
+  disabled = false,
+  loading = false,
+  backgroundColor = newColors.verde_light,
+  textColor = 'white',                    
+}: CustomButtonProps) => {
+  const buttonBackgroundColor = disabled ? newColors.gris : backgroundColor;
 
   const pressedStyle = disabled ? null : styles.pressedContainer;
 
@@ -24,7 +28,7 @@ const CustomButton = ({ text, onPress, disabled = false, loading = false, red = 
     <Pressable
       style={({ pressed }) => [
         styles.container,
-        { backgroundColor },
+        { backgroundColor: buttonBackgroundColor },
         pressed && pressedStyle,
       ]}
       onPress={() => {
@@ -33,9 +37,11 @@ const CustomButton = ({ text, onPress, disabled = false, loading = false, red = 
       disabled={disabled || loading}
     >
       {loading ? (
-        <ActivityIndicator size="small" color={staticColors.negroDark} /> 
+        <ActivityIndicator size="small" color={staticColors.negroDark} />
       ) : (
-        <Text style={[styles.text, (disabled || loading) && styles.disabledText]}>{text}</Text>
+        <Text style={[styles.text, { color: disabled ? newColors.fondo_principal : textColor }]}>
+          {text}
+        </Text>
       )}
     </Pressable>
   );
@@ -52,15 +58,11 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   pressedContainer: {
-    backgroundColor: newColors.verde,
+    backgroundColor: newColors.verde, 
   },
   text: {
-    color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-  disabledText: {
-    color: newColors.gris,
   },
 });
 
