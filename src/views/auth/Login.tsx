@@ -29,6 +29,8 @@ import CatSvg from '../../assets/svgs/animals/CatSvg';
 import CowSvg from '../../assets/svgs/animals/CowSvg';
 import DogSvg from '../../assets/svgs/animals/DogSvg';
 import Iconlogo from '../../assets/svgs/Iconlogo';
+import AssetIcons from './AssetIcons';
+import Separator from '../../components/global/Separator';
 
 type User = {
   nombre: string;
@@ -99,48 +101,10 @@ const Login = () => {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: newColors.fondo_principal }} // Fondo en el contenedor raíz
+      style={{ flex: 1, backgroundColor: newColors.fondo_principal }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      {/* Contenedor para los SVGs */}
-      <View style={styles.svgContainer}>
-        <Iconlogo
-          height={width * 0.35}
-          width={width * 0.35}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-          }}
-        />
-        <CatSvg
-          style={{
-            width: width * 0.5,
-            height: width * 0.5,
-            position: 'absolute',
-            top: 0,
-            right: -5,
-          }}
-        />
-        <CowSvg
-          style={{
-            width: width * 0.5,
-            height: width * 0.5,
-            position: 'absolute',
-            bottom: -30,
-            left: 0,
-          }}
-        />
-        <DogSvg
-          style={{
-            width: width * 0.5,
-            height: width * 0.5,
-            position: 'absolute',
-            bottom: -80,
-            right: -50,
-          }}
-        />
-      </View>
+
 
       {/* ScrollView para el formulario */}
       <ScrollView
@@ -148,9 +112,11 @@ const Login = () => {
           flexGrow: 1,
           alignItems: 'center',
           justifyContent: 'center',
-          paddingVertical: height * 0.1,
+          minHeight: height      
         }}
       >
+              {/* Contenedor para los SVGs */}
+        <AssetIcons />
         {/* Formulario */}
         <View style={styles.formContainer}>
           {/* Encabezado */}
@@ -175,7 +141,9 @@ const Login = () => {
             password
           />
           <Pressable onPress={() => modalizeRef.current?.open()}>
-            <Text style={[styles.minitext, { paddingBottom: 10 }]}>¿Olvidaste tu contraseña?</Text>
+            <Text style={[styles.minitext, { marginBottom: 10, borderBottomColor: newColors.fondo_secundario, borderBottomWidth: 0.5 }]}>
+              ¿Olvidaste tu contraseña?
+            </Text>
           </Pressable>
           <CustomButton
             onPress={handleLogin}
@@ -243,7 +211,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    zIndex: 1, 
+    zIndex: 1,
   },
   formContainer: {
     width: '100%',
