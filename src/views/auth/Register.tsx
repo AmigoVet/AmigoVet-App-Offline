@@ -199,8 +199,8 @@ const Register = () => {
           />
           <View
             style={{
-              height: 3,
-              borderWidth: 2,
+              height: 2,
+              borderWidth: 1,
               borderColor: newColors.fondo_secundario,
               width: '100%',
               marginTop: 10,
