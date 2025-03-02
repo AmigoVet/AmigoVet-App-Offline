@@ -49,10 +49,6 @@ const styles = StyleSheet.create({
   },
   info: {
     color: newColors.fondo_secundario,
-    borderBottomWidth: 1,
-    borderColor: newColors.fondo_secundario,
-    borderRadius: constants.borderRadius,
-    alignSelf: 'flex-start',
   },
 });
 
