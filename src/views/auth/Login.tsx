@@ -99,59 +99,69 @@ const Login = () => {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: newColors.fondo_principal }} // Fondo en el contenedor raíz
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      {/* Contenedor para los SVGs */}
+      <View style={styles.svgContainer}>
+        <Iconlogo
+          height={width * 0.35}
+          width={width * 0.35}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+          }}
+        />
+        <CatSvg
+          style={{
+            width: width * 0.5,
+            height: width * 0.5,
+            position: 'absolute',
+            top: 0,
+            right: -5,
+          }}
+        />
+        <CowSvg
+          style={{
+            width: width * 0.5,
+            height: width * 0.5,
+            position: 'absolute',
+            bottom: -30,
+            left: 0,
+          }}
+        />
+        <DogSvg
+          style={{
+            width: width * 0.5,
+            height: width * 0.5,
+            position: 'absolute',
+            bottom: -80,
+            right: -50,
+          }}
+        />
+      </View>
+
+      {/* ScrollView para el formulario */}
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
-          backgroundColor: newColors.fondo_principal,
-          alignItems: 'center', 
+          alignItems: 'center',
           justifyContent: 'center',
+          paddingVertical: height * 0.1,
         }}
       >
-        {/* Contenedor para los SVGs */}
-        <View style={styles.svgContainer}>
-          <Iconlogo 
-            style={{
-              height: width * 0.4,
-              width: width * 0.4,
-              position: 'absolute',
-              top: 0,
-              left: 30,
-            }}
-          />
-          <CatSvg
-            style={{
-              width: width * 0.5,
-              height: width * 0.5,
-              position: 'absolute',
-              top: 0,
-              right: -5,
-            }}
-          />
-          <CowSvg
-            style={{
-              width: width * 0.5,
-              height: width * 0.5,
-              position: 'absolute',
-              bottom: -25,
-              left: 0,
-            }}
-          />
-          <DogSvg
-            style={{
-              width: width * 0.5,
-              height: width * 0.5,
-              position: 'absolute',
-              bottom: -50,
-              right: -50,
-            }}
-          />
-        </View>
-
         {/* Formulario */}
         <View style={styles.formContainer}>
+          {/* Encabezado */}
+          <View style={{ width: '100%', alignItems: 'flex-start' }}>
+            <Text style={styles.title}>¡Hola!</Text>
+            <Text style={[styles.title, { fontSize: width * 0.06 }]}>
+              Bienvenid@ a AmigoVet
+            </Text>
+            <Text style={styles.minitext}>Estamos felices de tenerte aquí</Text>
+          </View>
+          <Text style={styles.minitext}>Introduce tu correo electrónico y contraseña</Text>
           <CustomInput
             placeholder="Email"
             value={email}
@@ -164,21 +174,37 @@ const Login = () => {
             onChangeText={setPassword}
             password
           />
+          <Pressable onPress={() => modalizeRef.current?.open()}>
+            <Text style={[styles.minitext, { paddingBottom: 10 }]}>¿Olvidaste tu contraseña?</Text>
+          </Pressable>
           <CustomButton
             onPress={handleLogin}
-            text="Ingresar"
+            text="iniciar sesión"
             loading={loading}
+            textColor={newColors.fondo_secundario}
             disabled={loading || email.trim() === '' || password.trim() === ''}
           />
-          <Pressable onPress={() => navigate('Register')}>
-            <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
-          </Pressable>
-          <Pressable onPress={() => modalizeRef.current?.open()}>
-            <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
-          </Pressable>
+          <Text style={{ fontWeight: 'bold', fontSize: width * 0.05 }}>o</Text>
+          <Text style={styles.minitext}>¿No tienes cuenta?</Text>
+          <CustomButton
+            onPress={() => navigate('Register')}
+            text="Crear una cuenta"
+            loading={false}
+            disabled={false}
+            backgroundColor={newColors.fondo_secundario}
+          />
+          <View
+            style={{
+              height: 3,
+              borderWidth: 2,
+              borderColor: newColors.fondo_secundario,
+              width: '100%',
+              marginTop: 10,
+              borderRadius: 10,
+            }}
+          />
+          <Text style={styles.minitext}>Echo con 💚 por Juan Mera</Text>
         </View>
-
-        <FromDevora />
       </ScrollView>
 
       {/* Modalize para recuperación */}
@@ -201,7 +227,8 @@ const Login = () => {
             onPress={() => modalizeRef.current?.close()}
             text="Cancelar"
             loading={false}
-            red
+            backgroundColor={newColors.rojo}
+            textColor={newColors.fondo_principal}
           />
         </View>
       </Modalize>
@@ -215,21 +242,26 @@ const styles = StyleSheet.create({
   svgContainer: {
     position: 'absolute',
     width: '100%',
-    height: '100%', 
-    zIndex: 0, 
+    height: '100%',
+    zIndex: 1, 
   },
   formContainer: {
     width: '100%',
     padding: width * 0.05,
     alignItems: 'center',
-    backgroundColor: newColors.fondo_principal, 
-    zIndex: 1, 
+    zIndex: 2,
   },
-  linkText: {
-    color: newColors.verde,
-    fontSize: width * 0.045,
+  minitext: {
+    color: newColors.fondo_secundario,
+    fontSize: width * 0.04,
     marginTop: height * 0.02,
     textAlign: 'center',
+    fontWeight: '200',
+  },
+  title: {
+    fontSize: width * 0.1,
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
   modalContent: {
     padding: 20,
