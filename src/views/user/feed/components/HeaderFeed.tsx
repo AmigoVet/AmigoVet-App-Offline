@@ -1,7 +1,7 @@
 import { View, Text, Pressable, StyleSheet, Alert, FlatList, Image } from 'react-native';
 import React from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { getDynamicColors, newColors, staticColors } from '../../../../assets/styles/colors';
+import { newColors, staticColors } from '../../../../assets/styles/colors';
 import { CustomIcon } from '../../../../components/Customs';
 import LabelLogo from '../../../../assets/svgs/LabelLogo';
 import { obtenerPalabras } from '../../../../lib/functions/SeccionarNombre';
@@ -19,9 +19,7 @@ const HeaderFeed = ({ userName, animals }: HeaderFeedProps) => {
 
   // Determinar si centrar el contenido del FlatList
   const centerFlatList = animals.length <= 3;
-  const marginTop = centerFlatList ? 0 : -40;
-  const borderRadius = centerFlatList ? 80 : 40;
-  const styles = createStyles(marginTop, borderRadius);
+  const styles = createStyles(); // Eliminamos parámetros dinámicos
 
   return (
     <View style={styles.rootContainer}>
@@ -56,7 +54,7 @@ const HeaderFeed = ({ userName, animals }: HeaderFeedProps) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={centerFlatList ? styles.centeredFlatList : null}
+          contentContainerStyle={centerFlatList ? styles.centeredFlatList : styles.defaultFlatList}
           renderItem={({ item }) => (
             <View style={styles.animalContainer}>
               <View style={styles.imageContainer}>
@@ -72,10 +70,10 @@ const HeaderFeed = ({ userName, animals }: HeaderFeedProps) => {
   );
 };
 
-const createStyles = (marginTop: number, borderRadius: number) =>
+const createStyles = () =>
   StyleSheet.create({
     rootContainer: {
-      zIndex: 1, 
+      zIndex: 1,
     },
     container: {
       flexDirection: 'row',
@@ -85,9 +83,9 @@ const createStyles = (marginTop: number, borderRadius: number) =>
       paddingHorizontal: 20,
       paddingTop: 10,
       paddingBottom: 50,
-      zIndex: 1, 
-      borderBottomLeftRadius: borderRadius, 
-      borderBottomRightRadius: borderRadius,
+      zIndex: 1,
+      borderBottomLeftRadius: 40, // Valor fijo para consistencia
+      borderBottomRightRadius: 40,
     },
     welcomeText: {
       fontSize: 12,
@@ -100,12 +98,15 @@ const createStyles = (marginTop: number, borderRadius: number) =>
       gap: 10,
     },
     flatListContainer: {
-      marginTop: marginTop, 
-      zIndex: 2, 
+      marginTop: -40, // Valor fijo para superponer siempre
+      zIndex: 2,
     },
     centeredFlatList: {
       flexGrow: 1,
-      justifyContent: 'center',
+      justifyContent: 'center', // Centrar horizontalmente cuando hay <= 3 animales
+    },
+    defaultFlatList: {
+      // Estilo por defecto cuando hay más de 3 animales
     },
     animalContainer: {
       alignItems: 'center',
