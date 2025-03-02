@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import Svg, { Defs, G, Path, Ellipse, SvgProps } from 'react-native-svg'
+import { newColors } from '../../styles/colors'
 
 const CatSvg = (props: SvgProps) => {
   return (
@@ -20,7 +21,7 @@ const CatSvg = (props: SvgProps) => {
         cy={102.87}
         rx={26.72}
         ry={21.47}
-
+        fill={newColors.fondo_principal}
       />
       <Ellipse cx={111.79} cy={102.87}  rx={8.97} ry={19.05} />
     </G>

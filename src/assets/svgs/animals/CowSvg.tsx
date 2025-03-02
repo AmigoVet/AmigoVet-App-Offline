@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import Svg, { Defs, G, Path, Ellipse, SvgProps } from 'react-native-svg'
+import { newColors } from '../../styles/colors'
 
 const CowSvg = (props: SvgProps) => {
   return (
@@ -22,6 +23,7 @@ const CowSvg = (props: SvgProps) => {
         ry={17.94}
 
         transform="rotate(-84.54 140.944 68.956)"
+        fill={newColors.fondo_principal}
       />
       <Ellipse
         cx={147.49}
