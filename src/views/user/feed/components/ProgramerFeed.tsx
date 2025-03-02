@@ -4,6 +4,9 @@ import { newColors } from '../../../../assets/styles/colors';
 import { CustomIcon } from '../../../../components/Customs';
 import { Events } from '../../../../lib/interfaces/events';
 import { ProgramerFeedStyles } from './ProgramerFeedStyles';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../Welcome';
 
 interface DayObject {
   day: number;
@@ -19,6 +22,8 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
   // Create today's date at the start of the day in the local timezone
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  const {navigate} = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const getDaysArray = (): DayObject[] => {
     const currentDay = today.getDate();
@@ -165,7 +170,7 @@ const ProgramerFeed: React.FC<ProgramerFeedProps> = ({ events = [] }) => {
             </Text>
           </View>
         )}
-        <Pressable onPress={() => console.log('hola')} style={ProgramerFeedStyles.button}>
+        <Pressable onPress={() => navigate('Calendar')} style={ProgramerFeedStyles.button}>
           <Text style={ProgramerFeedStyles.buttonText}>Ver mas...</Text>
         </Pressable>
       </View>

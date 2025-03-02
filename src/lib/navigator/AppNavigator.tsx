@@ -12,6 +12,7 @@ import ChangePasswordScreen from '../../views/user/ChangePassword';
 import { BottomTabsNavigator } from './BottomTabsNavigator';
 import New from '../../views/user/New';
 import AnimalView from '../../views/user/AnimalView/AnimalView';
+import Calendar from '../../views/calendar/Calendar';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +52,7 @@ const AppNavigator = () => {
           <Stack.Screen name="Busqueda" component={Busqueda} />
           <Stack.Screen name="Nuevo" component={New} />
           <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+          <Stack.Screen name="Calendar" component={Calendar} />
           </>
       ) : (
         <>

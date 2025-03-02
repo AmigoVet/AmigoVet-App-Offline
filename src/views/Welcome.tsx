@@ -18,6 +18,7 @@ export type RootStackParamList = {
   AnimalView: {id: string};
 
   Busqueda: undefined;
+  Calendar: undefined;
   ChangePassword: undefined;
   AnimalesEmbarazados: undefined;
   AnimalesHembras: undefined;
