@@ -85,23 +85,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingVertical: 10,
   },
   containerContainer: {
     borderWidth: constants.borderWidth,
     borderColor: newColors.fondo_secundario,
     width: '90%',
     borderRadius: constants.borderRadius,
-    padding: 10,
+    paddingVertical: 10,
     flexDirection: 'row',
-    gap: 10,
   },
   element:{
-      // backgroundColor: newColors.verde_light,
       borderBottomWidth: 1,
       padding: 5,
-      paddingHorizontal: 10,
       marginVertical: separation,
       borderRadius: constants.borderRadius,
       width: '100%',
@@ -109,10 +104,8 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
   },
   data: {
-    // backgroundColor: newColors.verde_light,
     borderRadius: constants.borderRadius,
-    paddingHorizontal: 15,
-
+    paddingLeft: 15,
   },
   dataTextContainer:{
     flexDirection: 'row', 
@@ -150,7 +143,7 @@ const styles2 = StyleSheet.create({
   text:{
     backgroundColor: newColors.verde_light,
     borderRadius: constants.borderRadius / 3,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 5,
     fontWeight: '700',
     color: newColors.fondo_secundario,
