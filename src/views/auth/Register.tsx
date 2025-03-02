@@ -1,26 +1,30 @@
-// **Librerías externas**
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, ActivityIndicator } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Alert,
+  Dimensions,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
-// **Interfaces y tipos**
 import { RootStackParamList } from '../Welcome';
-
-// **Configuración y almacenamiento**
 import { db } from '../../lib/utils/FirebaseConfig';
 import useAuthStore from '../../lib/store/authStore';
-
-// **Contexto y estilos**
-import { useTheme } from '../../lib/context/ThemeContext';
-import { getDynamicColors } from '../../assets/styles/colors';
-import { createGlobalStyles } from '../../assets/styles/styles';
-
-// **Componentes locales**
+import { newColors } from '../../assets/styles/colors';
 import { CustomInput, CustomButton } from '../../components/Customs';
-import { FromDevora, LogoContainer } from '../../components/global';
+import Separator from '../../components/global/Separator';
+import { constants } from '../../assets/styles/constants';
+import AssetIcons from './AssetIcons';
+
+const auth = getAuth();
+const { width, height } = Dimensions.get('window');
 
 const Register = () => {
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
@@ -29,15 +33,8 @@ const Register = () => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false); // Estado para manejar el loading
+  const [loading, setLoading] = useState(false);
 
-  const { isDarkTheme } = useTheme();
-  const colors = getDynamicColors(isDarkTheme);
-  const GlobalStyles = createGlobalStyles(isDarkTheme);
-  const styles = dymanycStyles(colors);
-
-
-  const auth = getAuth();
   const setUser = useAuthStore((state) => state.setUser);
 
   const validatePassword = (password: string) => {
@@ -87,7 +84,7 @@ const Register = () => {
       return;
     }
 
-    setLoading(true); // Inicia el loading
+    setLoading(true);
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -118,87 +115,130 @@ const Register = () => {
         Alert.alert('Error', 'Se produjo un error desconocido.');
       }
     } finally {
-      setLoading(false); // Finaliza el loading
+      setLoading(false);
     }
   };
 
   return (
-    <ScrollView
-      style={styles.scrollView}
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: newColors.fondo_principal }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <LogoContainer />
-      <Text style={[GlobalStyles.title, { fontSize: 35 }]}>Rellena el formulario</Text>
-      <View style={styles.formContainer}>
-        <CustomInput
-          label="Nombre"
-          placeholder="Ingresa tu nombre completo"
-          value={username}
-          onChangeText={setUsername}
-        />
-        <CustomInput
-          label="Correo electrónico"
-          placeholder="ejemplo@ejemplo.com"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <CustomInput
-          label="Teléfono"
-          placeholder="+57 XXX XXX XXXX"
-          value={phone}
-          onChangeText={setPhone}
-          type="number"
-        />
-        <CustomInput
-          label="Contraseña"
-          placeholder="Contraseña"
-          value={password}
-          onChangeText={setPassword}
-          password
-        />
-        <CustomInput
-          label="Confirmar contraseña"
-          placeholder="Confirmar contraseña"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          password
-        />
-        <CustomButton
-          onPress={handleRegister}
-          text={loading ? <ActivityIndicator color="white" /> : 'Registrarse'}
-          disabled={loading} // Deshabilita el botón mientras carga
-        />
-        <Pressable onPress={() => navigate('Login')} style={styles.link}>
-          <Text style={{ color: colors.blanco }}>¿Ya tienes una cuenta?</Text>
-        </Pressable>
-      </View>
-      <FromDevora />
-    </ScrollView>
+
+      {/* ScrollView para el formulario */}
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: height,
+        }}
+      >
+        <AssetIcons />
+
+        {/* Formulario */}
+        <View style={styles.formContainer}>
+          <Separator height={90} />
+          {/* Encabezado */}
+          <View style={{ width: '100%', alignItems: 'flex-start' }}>
+            <Text style={styles.title}>¡Regístrate!</Text>
+            <Text style={[styles.title, { fontSize: width * 0.06 }]}>
+              Bienvenid@ a AmigoVet
+            </Text>
+            <Text style={styles.minitext}>Estamos felices de tenerte aquí</Text>
+          </View>
+          <Text style={styles.minitext}>Completa el formulario para crear tu cuenta</Text>
+          <CustomInput
+            placeholder="Nombre completo"
+            value={username}
+            onChangeText={setUsername}
+            iconName="person-outline"
+          />
+          <CustomInput
+            placeholder="Correo electrónico"
+            value={email}
+            onChangeText={setEmail}
+            iconName="mail-outline"
+          />
+          <CustomInput
+            placeholder="Teléfono (+57 XXX XXX XXXX)"
+            value={phone}
+            onChangeText={setPhone}
+            type="number"
+            iconName="call-outline"
+          />
+          <CustomInput
+            placeholder="Contraseña"
+            value={password}
+            onChangeText={setPassword}
+            password
+            iconName="lock-closed-outline"
+          />
+          <CustomInput
+            placeholder="Confirmar contraseña"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            password
+            iconName="lock-closed-outline"
+          />
+          <CustomButton
+            onPress={handleRegister}
+            text="Registrarse"
+            loading={loading}
+            textColor={newColors.fondo_secundario}
+            disabled={loading}
+          />
+          <Text style={{ fontWeight: 'bold', fontSize: width * 0.05 }}>o</Text>
+          <Text style={styles.minitext}>¿Ya tienes cuenta?</Text>
+          <CustomButton
+            onPress={() => navigate('Login')}
+            text="Iniciar sesión"
+            loading={false}
+            disabled={false}
+            backgroundColor={newColors.fondo_secundario}
+          />
+          <View
+            style={{
+              height: 3,
+              borderWidth: 2,
+              borderColor: newColors.fondo_secundario,
+              width: '100%',
+              marginTop: 10,
+              borderRadius: 10,
+            }}
+          />
+          <Text style={styles.minitext}>Echo con 💚 por Juan Mera</Text>
+        </View>
+        <Separator height={140} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
-const dymanycStyles = (colors: ReturnType<typeof getDynamicColors>) =>
-  StyleSheet.create({
-  scrollView: {
-    flex: 1,
-    backgroundColor: colors.fondo,
-  },
-  container: {
-    alignItems: 'center',
-    paddingBottom: 20,
+const styles = StyleSheet.create({
+  svgContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
   },
   formContainer: {
-    width: '90%',
-    marginTop: 20,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: colors.blanco,
-    borderRadius: 10,
+    width: '100%',
+    padding: width * 0.05,
+    alignItems: 'center',
+    zIndex: 2,
   },
-  link: {
-    alignSelf: 'center',
-    marginTop: 40,
+  minitext: {
+    color: newColors.fondo_secundario,
+    fontSize: width * 0.04,
+    marginTop: height * 0.02,
+    textAlign: 'center',
+    fontWeight: '200',
+  },
+  title: {
+    fontSize: width * 0.1,
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
 });
 
