@@ -7,7 +7,7 @@ import { Events } from '../../../lib/interfaces/events';
 import { ButtonAddEvent, ButtonAddRegister, ButtonEditData, ButtonRequestGPT } from './buttons';
 import Header from './sections/Header';
 import BasicData from './sections/BasicData';
-import Registers from './sections/Registers';
+import RegisterSection from './sections/Registers';
 import { Register } from '../../../lib/interfaces/registers';
 import ExtraData from './sections/ExtraData';
 import {default as NotesSection} from './sections/Notes';
@@ -108,11 +108,11 @@ const AnimalView = () => {
   const renderActiveSection = () => {
     switch (activeTab) {
       case 'events':
-        return <EventsSection />;
+        return <EventsSection events={animalData.events} />;
       case 'notes':
-        return <NotesSection />;
+        return <NotesSection notes={animalData.notes} />;
       case 'registers':
-        return <Registers />;
+        return <RegisterSection registers={animalData.registers} />;
       default:
         return null;
     }
