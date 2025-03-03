@@ -1,6 +1,6 @@
 export const constants = {
-    borderRadius: 30,
+    borderRadius: 10,
     borderWidth: 2.5,
     cantidadPosiblesAnimales: 30,
-    cantidadPosibleDePeticionesPorDia: 5,
+    cantidadPosibleDePeticionesPorDia: 3,
 }
