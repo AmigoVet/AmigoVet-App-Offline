@@ -6,13 +6,11 @@ export type RootStackParamList = {
   Register: undefined;
   Home: undefined;
   Nuevo: undefined;
+  Perfil: undefined;
   AnimalView: {id: string};
 
   Busqueda: undefined;
   Calendar: undefined;
   ChangePassword: undefined;
-  AnimalesEmbarazados: undefined;
-  AnimalesHembras: undefined;
-  AnimalesMachos: undefined;
-  AnimalesJovenes: undefined;
+  
 };
