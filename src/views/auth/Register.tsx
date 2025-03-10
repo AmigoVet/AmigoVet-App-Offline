@@ -19,6 +19,7 @@ import { CustomInput, CustomButton } from '../../components/Customs';
 import Separator from '../../components/global/Separator';
 import AssetIcons from './AssetIcons';
 import { RootStackParamList } from '../../lib/interfaces/navigate';
+import { verticalScale } from '../../lib/functions/scale';
 
 const auth = getAuth();
 const { width, height } = Dimensions.get('window');
@@ -140,7 +141,7 @@ const Register = () => {
         
         {/* Formulario */}
         <View style={styles.formContainer}>
-          <Separator height={90} />
+          <Separator height={verticalScale(110)} />
           
           {/* Encabezado */}
           <View style={{ width: '100%', alignItems: 'flex-start' }}>
@@ -224,7 +225,6 @@ const Register = () => {
               borderRadius: 10,
             }}
           />
-          <Text style={styles.minitext}>Echo con 💚 por Juan Mera</Text>
         </View>
         <Separator height={140} />
       </ScrollView>

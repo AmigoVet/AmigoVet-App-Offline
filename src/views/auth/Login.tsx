@@ -5,10 +5,11 @@ import {
   StyleSheet,
   Pressable,
   Alert,
-  Dimensions,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import {
@@ -27,6 +28,7 @@ import AssetIcons from './AssetIcons';
 import Separator from '../../components/global/Separator';
 import { constants } from '../../assets/styles/constants';
 import { RootStackParamList } from '../../lib/interfaces/navigate';
+import { FONT_SIZES, horizontalScale, verticalScale } from '../../lib/functions/scale';
 
 type User = {
   nombre: string;
@@ -36,7 +38,6 @@ type User = {
 };
 
 const auth = getAuth(appFirebase);
-const { width, height } = Dimensions.get('window');
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -96,91 +97,116 @@ const Login = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: newColors.fondo_principal }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-
-
-      {/* ScrollView para el formulario */}
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: height      
-        }}
-      >
-              {/* Contenedor para los SVGs */}
+    <SafeAreaView style={styles.container}>
+      {/* Fondo fijo con AssetIcons */}
+      <View style={styles.background}>
         <AssetIcons />
-        {/* Formulario */}
-        <View style={styles.formContainer}>
-          {/* Encabezado */}
-          <View style={{ width: '100%', alignItems: 'flex-start' }}>
-            <Text style={styles.title}>¡Hola!</Text>
-            <Text style={[styles.title, { fontSize: width * 0.06 }]}>
-              Bienvenid@ a AmigoVet
+      </View>
+
+      {/* Contenido desplazable */}
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Ajuste para Android
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : verticalScale(20)} // Offset adicional si es necesario
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Formulario */}
+          <View style={styles.formContainer}>
+            <Separator height={verticalScale(100)} />
+            {/* Encabezado */}
+            <View style={{ width: '100%', alignItems: 'flex-start' }}>
+              <Text style={[styles.title, { fontSize: FONT_SIZES.largeTitle *1.2 }]}>¡Hola!</Text>
+              <Text style={[styles.title,]}>
+                Bienvenid@ a AmigoVet
+              </Text>
+              <Text style={styles.minitext}>Estamos felices de tenerte aquí</Text>
+            </View>
+            <Text style={styles.minitext}>Introduce tu correo electrónico y contraseña</Text>
+            <CustomInput
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              iconName="mail-outline"
+            />
+            <CustomInput
+              placeholder="Contraseña"
+              value={password}
+              onChangeText={setPassword}
+              password
+            />
+            <Pressable onPress={() => modalizeRef.current?.open()}>
+              <Text
+                style={[
+                  styles.minitext,
+                  {
+                    marginBottom: verticalScale(10),
+                    borderBottomColor: newColors.fondo_secundario,
+                    borderBottomWidth: 0.5,
+                  },
+                ]}
+              >
+                ¿Olvidaste tu contraseña?
+              </Text>
+            </Pressable>
+            <CustomButton
+              onPress={handleLogin}
+              text="iniciar sesión"
+              loading={loading}
+              textColor={newColors.fondo_secundario}
+              disabled={loading || email.trim() === '' || password.trim() === ''}
+            />
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: FONT_SIZES.xxl,
+                marginVertical: verticalScale(10),
+              }}
+            >
+              o
             </Text>
-            <Text style={styles.minitext}>Estamos felices de tenerte aquí</Text>
+            <Text style={styles.minitext}>¿No tienes cuenta?</Text>
+            <CustomButton
+              onPress={() => navigate('Register')}
+              text="Crear una cuenta"
+              loading={false}
+              disabled={false}
+              backgroundColor={newColors.fondo_secundario}
+            />
+            <View
+              style={{
+                height: 2,
+                borderWidth: 1,
+                borderColor: newColors.fondo_secundario,
+                width: '100%',
+                marginTop: verticalScale(15),
+                borderRadius: 10,
+              }}
+            />
           </View>
-          <Text style={styles.minitext}>Introduce tu correo electrónico y contraseña</Text>
-          <CustomInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            iconName="mail-outline"
-          />
-          <CustomInput
-            placeholder="Contraseña"
-            value={password}
-            onChangeText={setPassword}
-            password
-          />
-          <Pressable onPress={() => modalizeRef.current?.open()}>
-            <Text style={[styles.minitext, { marginBottom: 10, borderBottomColor: newColors.fondo_secundario, borderBottomWidth: 0.5 }]}>
-              ¿Olvidaste tu contraseña?
-            </Text>
-          </Pressable>
-          <CustomButton
-            onPress={handleLogin}
-            text="iniciar sesión"
-            loading={loading}
-            textColor={newColors.fondo_secundario}
-            disabled={loading || email.trim() === '' || password.trim() === ''}
-          />
-          <Text style={{ fontWeight: 'bold', fontSize: width * 0.05 }}>o</Text>
-          <Text style={styles.minitext}>¿No tienes cuenta?</Text>
-          <CustomButton
-            onPress={() => navigate('Register')}
-            text="Crear una cuenta"
-            loading={false}
-            disabled={false}
-            backgroundColor={newColors.fondo_secundario}
-          />
-          <View
-            style={{
-              height: 2,
-              borderWidth: 1,
-              borderColor: newColors.fondo_secundario,
-              width: '100%',
-              marginTop: 10,
-              borderRadius: 10,
-            }}
-          />
-        </View>
-      </ScrollView>
+          {/* Espacio adicional al final para evitar que el teclado tape el contenido */}
+          <View style={{ height: verticalScale(100) }} />
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* Modalize para recuperación */}
-      <Modalize ref={modalizeRef} adjustToContentHeight>
+      <Modalize
+        ref={modalizeRef}
+        adjustToContentHeight
+        modalStyle={{ backgroundColor: newColors.fondo_principal }}
+      >
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Recuperar Contraseña</Text>
           <CustomInput
             placeholder="Correo electrónico"
             value={resetEmail}
             onChangeText={setResetEmail}
-            iconName='mail-outline'
+            iconName="mail-outline"
           />
-          <Separator height={40} />
+          <Separator height={verticalScale(40)} />
           <CustomButton
             onPress={handleResetPassword}
             text="Enviar correo"
@@ -188,57 +214,69 @@ const Login = () => {
             disabled={!resetEmail}
             textColor={newColors.fondo_secundario}
           />
-          <Separator height={10} />
+          <Separator height={verticalScale(10)} />
           <CustomButton
             onPress={() => modalizeRef.current?.close()}
             text="Cancelar"
             loading={false}
             backgroundColor={newColors.rojo}
           />
-          <Separator height={40} />
-
+          <Separator height={verticalScale(20)} />
         </View>
       </Modalize>
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 export default Login;
 
 const styles = StyleSheet.create({
-  svgContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: newColors.fondo_principal,
+  },
+  background: {
     position: 'absolute',
-    width: '100%',
-    height: '100%',
-    zIndex: 1,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    zIndex: 1, // Fondo detrás del contenido
+  },
+  keyboardAvoidingContainer: {
+    flex: 1,
+    zIndex: 1, 
+  },
+  scrollContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: verticalScale(20),
+    minHeight: Dimensions.get('window').height, 
   },
   formContainer: {
-    width: '100%',
-    padding: width * 0.05,
+    width: '90%',
+    padding: horizontalScale(20),
     alignItems: 'center',
-    zIndex: 2,
   },
   minitext: {
     color: newColors.fondo_secundario,
-    fontSize: width * 0.04,
-    marginTop: height * 0.02,
+    fontSize: FONT_SIZES.lg,
+    marginTop: verticalScale(15),
     textAlign: 'center',
     fontWeight: '200',
   },
   title: {
-    fontSize: width * 0.1,
+    fontSize: FONT_SIZES.title,
     fontWeight: 'bold',
     textAlign: 'left',
   },
   modalContent: {
-    padding: 20,
+    padding: horizontalScale(20),
     alignItems: 'center',
     backgroundColor: newColors.fondo_principal,
     borderRadius: constants.borderRadius,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: FONT_SIZES.xl,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
 });
