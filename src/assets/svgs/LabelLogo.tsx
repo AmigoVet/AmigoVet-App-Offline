@@ -3,6 +3,7 @@ import Svg, { SvgProps, G, Path } from "react-native-svg"
 const LabelLogo = (props: SvgProps) => (
     <Svg
     viewBox="0 0 1000 1000"
+    preserveAspectRatio="xMidYMid meet"
     {...props}
   >
       <Path

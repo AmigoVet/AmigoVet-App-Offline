@@ -167,7 +167,6 @@ const Login = () => {
               borderRadius: 10,
             }}
           />
-          <Text style={styles.minitext}>Echo con 💚 por Juan Mera</Text>
         </View>
       </ScrollView>
 
