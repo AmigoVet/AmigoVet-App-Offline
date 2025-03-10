@@ -36,7 +36,6 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
             animal.notes.map((note) => (
               <View key={note.id}>
                 <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>{note.nota}</Text>
-                <Text style={styles.noteDate}>{formatearFecha(note.fecha) || '-'}</Text>
               </View>
             ))
           ) : (
@@ -46,8 +45,7 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
         <View>
         {animal.embarazada && <Text style={styles.text}>En estado de preñez</Text>}
         {animal.genero === "Hembra" && <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>
-          Proxima fecha de celo: </Text>}
-        {animal.genero === "Hembra" && <Text style={styles.noteDate}>{calcularProximaFechaCelo(animal.celo!, animal.especie)}</Text>}
+          Proxima fecha de celo sera <Text style={styles.noteDate}>{calcularProximaFechaCelo(animal.celo!, animal.especie)}</Text></Text>}
         </View>
       </View>
     </Pressable>
