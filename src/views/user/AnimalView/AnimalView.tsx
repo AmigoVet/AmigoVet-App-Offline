@@ -38,7 +38,6 @@ export const defaultAnimal: Animal = {
   created_at: "",
   updated_at: "",
   embarazada: false,
-  celo: "",
 };
 
 type TabSection = 'events' | 'notes' | 'registers';

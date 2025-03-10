@@ -2,12 +2,10 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getDynamicColors, newColors } from '../../assets/styles/colors';
+import {  newColors } from '../../assets/styles/colors';
 import { AnimalWithNotes } from '../../lib/interfaces/animal';
 import { CustomIcon, CustomImage } from '../Customs';
 import { constants } from '../../assets/styles/constants';
-import {  calcularProximaFechaCelo } from '../../lib/functions/CalcularFechaCelo';
-import { formatearFecha } from '../../lib/functions/FormateraFecha';
 import { RootStackParamList } from '../../lib/interfaces/navigate';
 
 interface PrivateAnimalCardProps {
@@ -44,8 +42,6 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
         </View>
         <View>
         {animal.embarazada && <Text style={styles.text}>En estado de preñez</Text>}
-        {animal.genero === "Hembra" && <Text style={[styles.text, {fontWeight: 200, fontSize: 12}]}>
-          Proxima fecha de celo sera <Text style={styles.noteDate}>{calcularProximaFechaCelo(animal.celo!, animal.especie)}</Text></Text>}
         </View>
       </View>
     </Pressable>

@@ -31,7 +31,6 @@ const createAnimalTable = () => {
                 created_at TEXT,
                 updated_at TEXT,
                 embarazada INTEGER DEFAULT 0,
-                celo TEXT
             )`,
             [],
             () => { console.log('Animal table created successfully'); },
