@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Alert, Text, View, Pressable } from 'react-native';
 import { useAuthStore } from '../../../../lib/store/authStore';
 import { User } from '../../../../lib/interfaces/User';
+import GlobalContainer from '../../../components/GlobalContainer';
+import HeaderLogin from './sections/HeaderLogin';
+import { newColors } from '../../../styles/colors';
+import CustomInput from '../../../components/customs/CustomImput';
+import CustomButton from '../../../components/customs/CustomButton';
+import { useNavigation } from '@react-navigation/native';
+import { AuthStackParamList } from '../../../navigator/navigationTypes';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
 const Login = () => {
+  const navigation = useNavigation<LoginScreenNavigationProp>();
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,68 +30,74 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Iniciar Sesión</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Pressable style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Iniciar Sesión</Text>
-      </Pressable>
-    </SafeAreaView>
+    <GlobalContainer>
+      <HeaderLogin />
+      <Text style={styles.text}>Introduce tu correo electronico y contraseña</Text>
+      <View style={styles.form}>
+        <CustomInput
+          placeholder="Correo electronico"
+          value={email}
+          onChangeText={setEmail}
+          iconName="mail-outline"
+        />
+        <CustomInput
+          placeholder="Contraseña"
+          value={password}
+          onChangeText={setPassword}
+          password
+        />
+        <Pressable style={styles.pressable} onPress={() => Alert.alert('JAJA webon')}>
+          <Text style={[styles.text, styles.centeredText]}>¿Olvidaste tu contraseña?</Text>
+        </Pressable>
+        <CustomButton
+          text="Iniciar sesión"
+          onPress={handleLogin}
+          textColor={newColors.fondo_secundario}
+        />
+        <Text style={[styles.text, styles.centeredText]}>¿No tienes una cuenta? Registrate</Text>
+        <CustomButton
+          text="Registrate"
+          onPress={() => navigation.navigate('Register')}
+          textColor={newColors.fondo_principal}
+          backgroundColor={newColors.fondo_secundario}
+        />
+      </View>
+    </GlobalContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    padding: 20,
+  text: {
+    marginLeft: 30,
+    fontSize: 16,
+    color: newColors.fondo_secundario,
+    fontFamily: 'Chillax-Extralight',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+  centeredText: {
+    textAlign: 'center', 
+    marginLeft: 0, 
+    width: '100%', 
+    paddingVertical: 10,
+  },
+  form: {
+    flexDirection: 'column',
+    paddingHorizontal: 20,
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    width: '100%', 
   },
   input: {
-    width: '100%',
-    padding: 12,
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    backgroundColor: '#fff',
+    width: '100%', 
+    marginVertical: 10, 
   },
   button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    marginTop: 20,
+    width: '100%',
+    marginVertical: 10, 
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+  pressable: {
+    width: '100%', 
+    alignItems: 'center', 
+    marginVertical: 10, 
   },
 });
 
