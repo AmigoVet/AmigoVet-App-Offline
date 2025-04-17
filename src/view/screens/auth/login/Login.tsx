@@ -10,6 +10,9 @@ import CustomButton from '../../../components/customs/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from '../../../navigator/navigationTypes';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { ScrollView } from 'react-native-gesture-handler';
+import WithLove from '../../../components/WithLove';
+import FooterLogin from './sections/FooterLogin';
 
 type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -31,8 +34,11 @@ const Login = () => {
 
   return (
     <GlobalContainer>
+      <ScrollView>
       <HeaderLogin />
+      
       <Text style={styles.text}>Introduce tu correo electronico y contraseña</Text>
+
       <View style={styles.form}>
         <CustomInput
           placeholder="Correo electronico"
@@ -61,7 +67,13 @@ const Login = () => {
           textColor={newColors.fondo_principal}
           backgroundColor={newColors.fondo_secundario}
         />
+        <View style={{height: 2, width: '100%', backgroundColor: newColors.fondo_secundario, marginVertical: 10}} />
+        <WithLove />
       </View>
+
+      <FooterLogin />
+
+      </ScrollView>
     </GlobalContainer>
   );
 };

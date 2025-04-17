@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import Svg, { Defs, G, Path, Ellipse, SvgProps } from 'react-native-svg'
-import { newColors } from '../../styles/colors'
+import { newColors } from '../../../styles/colors'
 
 const CowSvg = (props: SvgProps) => {
   return (
