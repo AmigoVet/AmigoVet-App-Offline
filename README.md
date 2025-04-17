@@ -1,93 +1,97 @@
+This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+# Getting Started
+
+> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+
+## Step 1: Start Metro
+
+First, you will need to run **Metro**, the JavaScript build tool for React Native.
+
+To start the Metro dev server, run the following command from the root of your React Native project:
+
+```sh
+# Using npm
+npm start
+
+# OR using Yarn
+yarn start
 ```
-██████╗ ███████╗██╗   ██╗ ██████╗ ██████╗  █████╗     ██╗ ███╗   ██╗ ██████╗ 
-██╔══██╗██╔════╝██║   ██║██╔═══██╗██╔══██╗██╔══██╗    ██║ ████╗  ██║██╔═══██╗
-██║  ██║█████╗  ██║   ██║██║   ██║██████╔╝███████║    ██║ ██╔██╗ ██║██║   
-██║  ██║██╔══╝  ╚██╗ ██╔╝██║   ██║██║█║═╝ ██╔══██║    ██║ ██║╚██╗██║██║   ██║
-██████╔╝███████╗ ╚████╔╝ ╚██████╔╝██║ ██║ ██║  ██║    ██║ ██║ ╚████║╚██████╔╝
-╚═════╝ ╚══════╝  ╚═══╝   ╚═════╝ ╚═╝ ╚═╝ ╚═╝  ╚═╝    ╚═╝ ╚═╝  ╚═══╝ ╚═════╝
+
+## Step 2: Build and run your app
+
+With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+
+### Android
+
+```sh
+# Using npm
+npm run android
+
+# OR using Yarn
+yarn android
 ```
-# Devora Inc - AmigoVet App
 
-**AmigoVet** es una aplicación diseñada para simplificar la gestión de la salud animal, permitiendo a los usuarios llevar un registro eficiente de información veterinaria para sus mascotas o animales de granja.
+### iOS
 
-## Características principales
-- Gestión de perfiles de animales (nombre, edad, salud, ubicación).
-- Seguimiento de vacunas, embarazos y tratamientos médicos.
-- Funcionalidades de búsqueda avanzada por categorías.
-- Diseño intuitivo y adaptable a cualquier dispositivo móvil.
+For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
 
----
+The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
 
-## Despliegue de la Aplicación
-A continuación, se explica cómo instalar y ejecutar el proyecto localmente utilizando **Yarn**.
+```sh
+bundle install
+```
 
-### **Requisitos previos**
-Asegúrate de tener instalados:
-- [Node.js](https://nodejs.org/) (versión recomendada: 16 o superior)
-- [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/) (última versión)
+Then, and every time you update your native dependencies, run:
 
-### **Pasos para desplegar**
+```sh
+bundle exec pod install
+```
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/tu_usuario/amigovet.git
-   cd amigovet
-   ```
+For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
 
-2. **Instalar las dependencias:**
-   ```bash
-   yarn install
-   ```
+```sh
+# Using npm
+npm run ios
 
-3. **Configurar variables de entorno:**
-   Crea un archivo `.env` en la raíz del proyecto y agrega las siguientes variables:
-   ```plaintext
-   API_URL=https://api.amigovet.com
-   DATABASE_URL=mongodb://localhost:27017/amigovet
-   ```
+# OR using Yarn
+yarn ios
+```
 
-4. **Ejecutar el proyecto:**
-   ```bash
-   yarn start
-   ```
+If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
 
-5. **Acceder a la aplicación:**
-   Abre un navegador y ve a `http://localhost:3000`.
+This is one way to run your app — you can also build it directly from Android Studio or Xcode.
 
----
+## Step 3: Modify your app
 
-## Scripts Disponibles
+Now that you have successfully run the app, let's make changes!
 
-- `yarn start`: Inicia la aplicación en modo de desarrollo.
-- `yarn build`: Crea una versión optimizada para producción.
-- `yarn test`: Ejecuta pruebas unitarias.
-- `yarn lint`: Analiza el código en busca de errores y mejores prácticas.
+Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
 
----
+When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
 
-## Contribución
-Si deseas contribuir al desarrollo de **AmigoVet**, sigue estos pasos:
-1. Haz un fork del repositorio.
-2. Crea una nueva rama con tu característica o corrección:
-   ```bash
-   git checkout -b feature/nueva-funcionalidad
-   ```
-3. Realiza los cambios y haz un commit:
-   ```bash
-   git commit -m "Agregada nueva funcionalidad"
-   ```
-4. Envía un pull request al repositorio principal.
+- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
+- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
 
----
+## Congratulations! :tada:
 
-## Licencia
-**AmigoVet** está bajo la [AmigoVet License](./LICENSE). Consulta el archivo para más detalles sobre el uso y distribución del código.
+You've successfully run and modified your React Native App. :partying_face:
 
----
+### Now what?
 
-## Contacto
-**Autor:** Juan José Mera Barrera  
-**Correo:** juan1mera2barrera@gmail.com  
+- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
+- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
 
-"Si puedes imaginarlo, puedo programarlo."
+# Troubleshooting
+
+If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+
+# Learn More
+
+To learn more about React Native, take a look at the following resources:
+
+- [React Native Website](https://reactnative.dev) - learn more about React Native.
+- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
+- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
+- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
+- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
