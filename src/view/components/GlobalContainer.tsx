@@ -1,13 +1,14 @@
-import { View, StyleSheet, StatusBar, Platform } from 'react-native';
+import { View, StyleSheet, StatusBar, Platform, StyleProp, ViewStyle } from 'react-native';
 import React, { useEffect } from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { newColors } from '../styles/colors';
 
 interface GlobalContainerProps {
   children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
 }
 
-const GlobalContainer = ({ children }: GlobalContainerProps) => {
+const GlobalContainer = ({ children, style }: GlobalContainerProps) => {
   useEffect(() => {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor(newColors.fondo_secundario);
@@ -16,13 +17,13 @@ const GlobalContainer = ({ children }: GlobalContainerProps) => {
   }, []);
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider >
       <View style={styles.fullScreenContainer}>
         <StatusBar
           backgroundColor={newColors.fondo_secundario}
           barStyle={Platform.OS === 'ios' ? 'dark-content' : 'dark-content'}
         />
-        <SafeAreaView style={styles.safeAreaContainer}>
+        <SafeAreaView style={[styles.safeAreaContainer, style]}>
           {children}
         </SafeAreaView>
       </View>

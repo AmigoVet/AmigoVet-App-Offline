@@ -6,6 +6,8 @@ import { AuthStackParamList } from '../../navigator/navigationTypes';
 import CustomButton from '../../components/customs/CustomButton';
 import GlobalContainer from '../../components/GlobalContainer';
 import { newColors } from '../../styles/colors';
+import { GlobalStyles } from '../../styles/GlobalStyles';
+import Separator from '../../components/Separator';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Welcome'>;
 
@@ -13,16 +15,21 @@ const Welcome = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
   return (
-    <GlobalContainer>
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>Bienvenido a AmigoVet</Text>
-        <Text style={styles.subtitle}>Bienvenido a AmigoVet</Text>
+    <GlobalContainer style={styles.contentContainer}>
+        <Text style={styles.subtitle}>Bienvenido</Text>
+        <Text style={styles.subtitle}>a</Text>
+        <Text style={[styles.title]}>AmigoVet</Text>
         <CustomButton
-          text="Ir a Registro"
+          text="Iniciar Sesión"
+          onPress={() => navigation.navigate('Login')}
+          backgroundColor={newColors.fondo_secundario}
+        />
+        <Separator height={10} />
+        <CustomButton
+          text="Registrate"
           onPress={() => navigation.navigate('Register')}
           backgroundColor={newColors.fondo_secundario}
         />
-      </View>
     </GlobalContainer>
   );
 };
@@ -32,17 +39,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 45,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 68,
     fontWeight: '600',
     fontFamily: 'Chillax',
+    textAlign: 'left',
+    width: '107%',
+    color: newColors.verde_light,
   },
   subtitle: {
-    fontSize: 16,
-    marginBottom: 20,
+    fontSize: 34,
     fontFamily: 'Synonym-Regular',
+    textAlign: 'left',
+    width: '100%',
+    fontWeight: '600',
   },
 });
 
