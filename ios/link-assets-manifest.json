@@ -1,0 +1,53 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Chillax-Bold.otf",
+      "sha1": "4f70676c1bfc60537eb24833f942e6cc80e58d46"
+    },
+    {
+      "path": "assets/fonts/Chillax-Extralight.otf",
+      "sha1": "16cc819d6b9f7cd023f0dfa779b4b662198a3bf5"
+    },
+    {
+      "path": "assets/fonts/Chillax-Light.otf",
+      "sha1": "50b2bca674c8b4ab6f3eda86ef3b478074f623b0"
+    },
+    {
+      "path": "assets/fonts/Chillax-Medium.otf",
+      "sha1": "5296bf828bfb7cae636892b1cee9ee7ddeb8d5aa"
+    },
+    {
+      "path": "assets/fonts/Chillax-Regular.otf",
+      "sha1": "bbff9cfa4be9a961c824964d52f8d293dcb0c636"
+    },
+    {
+      "path": "assets/fonts/Chillax-Semibold.otf",
+      "sha1": "11d9fffe8e50bc271bc9a2df02325afd74482759"
+    },
+    {
+      "path": "assets/fonts/Synonym-Bold.otf",
+      "sha1": "91e34edf9a2421395f375ce9d3a67a77091596ab"
+    },
+    {
+      "path": "assets/fonts/Synonym-Extralight.otf",
+      "sha1": "b146fad142f90fd4f72dd6c171c5656a869f2f59"
+    },
+    {
+      "path": "assets/fonts/Synonym-Light.otf",
+      "sha1": "84735beb6dcc4ac96ecb54750da5ba512d2cf1dc"
+    },
+    {
+      "path": "assets/fonts/Synonym-Medium.otf",
+      "sha1": "e4a40f0884a4929f8dd642ea8e08f7fa2d765dcb"
+    },
+    {
+      "path": "assets/fonts/Synonym-Regular.otf",
+      "sha1": "468c95a1bb7cb552d81406bc2c4e21191bccb980"
+    },
+    {
+      "path": "assets/fonts/Synonym-Semibold.otf",
+      "sha1": "b9122f4cf8a35ca4d2cac08614191d3b2c7c8c2b"
+    }
+  ]
+}
