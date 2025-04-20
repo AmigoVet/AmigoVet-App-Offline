@@ -1,11 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import GlobalContainer from '../../../components/GlobalContainer'
 
 const Local = () => {
   return (
-    <View>
+    <GlobalContainer>
       <Text>Local</Text>
-    </View>
+    </GlobalContainer>
   )
 }
 

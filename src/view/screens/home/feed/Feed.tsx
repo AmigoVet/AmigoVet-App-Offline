@@ -1,11 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import GlobalContainer from '../../../components/GlobalContainer'
 
 const Feed = () => {
   return (
-    <View>
+    <GlobalContainer>
       <Text>Feed</Text>
-    </View>
+    </GlobalContainer>
   )
 }
 

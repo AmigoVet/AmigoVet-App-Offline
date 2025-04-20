@@ -11,6 +11,7 @@ import Icon from '@react-native-vector-icons/ionicons';
 import Home from '../screens/home/Home';
 import Feed from '../screens/home/feed/Feed';
 import Local from '../screens/home/local/Local';
+import { Platform } from 'react-native';
 
 const Tab = createBottomTabNavigator<MainTabsParamList>();
 
@@ -42,10 +43,13 @@ const MainTabs = () => {
         tabBarInactiveTintColor: newColors.principal,
         tabBarStyle: {
           backgroundColor: 'transparent',
-          height: 65,
+          height: Platform.OS === 'ios' ? 65 : 65, // Mantener la altura consistente
           borderTopWidth: 0,
           position: 'absolute',
           elevation: 0,
+          shadowOpacity: 0,
+          // Para iOS, ajustar el padding si es necesario
+          paddingBottom: Platform.OS === 'ios' ? 20 : 0,
         },
       })}
     >
