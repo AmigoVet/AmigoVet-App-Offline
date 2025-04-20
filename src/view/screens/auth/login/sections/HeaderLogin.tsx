@@ -10,7 +10,7 @@ const HeaderLogin = () => {
   return (
     <>
     <View style={styles.container}>
-      <View style={{height: 2, width: 20}} />
+      <View style={{height: 2, width: 30}} />
       <Iconlogo fill={newColors.fondo_secundario} height={150} width={150} />
       <CatSvg fill={newColors.fondo_secundario} height={240} width={240} />
     </View>
@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent:'space-between',
+    marginRight: -5
   },
   miniContainer: {
     flexDirection: 'column',
