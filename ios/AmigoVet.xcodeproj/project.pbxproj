@@ -31,24 +31,24 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = AmigoVet/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = AmigoVet/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = AmigoVet/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		1D01BD91BE8E4DB9834989D5 /* Synonym-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Light.otf"; path = "../assets/fonts/Synonym-Light.otf"; sourceTree = "<group>"; };
-		2801D07075144D4BB66CA410 /* Synonym-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Regular.otf"; path = "../assets/fonts/Synonym-Regular.otf"; sourceTree = "<group>"; };
-		28C97F4A452641A1812DF2F1 /* Chillax-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Regular.otf"; path = "../assets/fonts/Chillax-Regular.otf"; sourceTree = "<group>"; };
-		2A7FA3BD3AEB4E50BFCE64DB /* Chillax-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Medium.otf"; path = "../assets/fonts/Chillax-Medium.otf"; sourceTree = "<group>"; };
+		1D01BD91BE8E4DB9834989D5 /* Synonym-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Light.otf"; path = "../assets/fonts/Synonym-Light.otf"; sourceTree = "<group>"; };
+		2801D07075144D4BB66CA410 /* Synonym-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Regular.otf"; path = "../assets/fonts/Synonym-Regular.otf"; sourceTree = "<group>"; };
+		28C97F4A452641A1812DF2F1 /* Chillax-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Regular.otf"; path = "../assets/fonts/Chillax-Regular.otf"; sourceTree = "<group>"; };
+		2A7FA3BD3AEB4E50BFCE64DB /* Chillax-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Medium.otf"; path = "../assets/fonts/Chillax-Medium.otf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-AmigoVet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmigoVet.debug.xcconfig"; path = "Target Support Files/Pods-AmigoVet/Pods-AmigoVet.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-AmigoVet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmigoVet.release.xcconfig"; path = "Target Support Files/Pods-AmigoVet/Pods-AmigoVet.release.xcconfig"; sourceTree = "<group>"; };
-		57BFFA59BAE34F8BA4BD4116 /* Chillax-Semibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Semibold.otf"; path = "../assets/fonts/Chillax-Semibold.otf"; sourceTree = "<group>"; };
+		57BFFA59BAE34F8BA4BD4116 /* Chillax-Semibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Semibold.otf"; path = "../assets/fonts/Chillax-Semibold.otf"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-AmigoVet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AmigoVet.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		64A12FAFFBBD4602990D51ED /* Synonym-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Bold.otf"; path = "../assets/fonts/Synonym-Bold.otf"; sourceTree = "<group>"; };
-		6ECE77D6DC164F7194981982 /* Synonym-Extralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Extralight.otf"; path = "../assets/fonts/Synonym-Extralight.otf"; sourceTree = "<group>"; };
+		64A12FAFFBBD4602990D51ED /* Synonym-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Bold.otf"; path = "../assets/fonts/Synonym-Bold.otf"; sourceTree = "<group>"; };
+		6ECE77D6DC164F7194981982 /* Synonym-Extralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Extralight.otf"; path = "../assets/fonts/Synonym-Extralight.otf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = AmigoVet/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AmigoVet/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		91970BF3008C46FE900611B7 /* Chillax-Extralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Extralight.otf"; path = "../assets/fonts/Chillax-Extralight.otf"; sourceTree = "<group>"; };
-		A6716973FEB144F0815C1BA4 /* Synonym-Semibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Semibold.otf"; path = "../assets/fonts/Synonym-Semibold.otf"; sourceTree = "<group>"; };
-		E37A9D4D216041D0A76B5893 /* Chillax-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Light.otf"; path = "../assets/fonts/Chillax-Light.otf"; sourceTree = "<group>"; };
+		91970BF3008C46FE900611B7 /* Chillax-Extralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Extralight.otf"; path = "../assets/fonts/Chillax-Extralight.otf"; sourceTree = "<group>"; };
+		A6716973FEB144F0815C1BA4 /* Synonym-Semibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Semibold.otf"; path = "../assets/fonts/Synonym-Semibold.otf"; sourceTree = "<group>"; };
+		E37A9D4D216041D0A76B5893 /* Chillax-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Light.otf"; path = "../assets/fonts/Chillax-Light.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F801D4C2C56A494C9D01DC4C /* Synonym-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Medium.otf"; path = "../assets/fonts/Synonym-Medium.otf"; sourceTree = "<group>"; };
-		F862E347CE0E4FED8BB647BC /* Chillax-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Bold.otf"; path = "../assets/fonts/Chillax-Bold.otf"; sourceTree = "<group>"; };
+		F801D4C2C56A494C9D01DC4C /* Synonym-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Synonym-Medium.otf"; path = "../assets/fonts/Synonym-Medium.otf"; sourceTree = "<group>"; };
+		F862E347CE0E4FED8BB647BC /* Chillax-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Chillax-Bold.otf"; path = "../assets/fonts/Chillax-Bold.otf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,7 +131,6 @@
 				A6716973FEB144F0815C1BA4 /* Synonym-Semibold.otf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -248,9 +247,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AmigoVet/Pods-AmigoVet-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AmigoVet/Pods-AmigoVet-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -287,9 +290,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AmigoVet/Pods-AmigoVet-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AmigoVet/Pods-AmigoVet-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -317,6 +324,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4YA7X3UU84;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = AmigoVet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -345,6 +353,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4YA7X3UU84;
 				INFOPLIST_FILE = AmigoVet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -433,10 +442,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -505,10 +511,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
