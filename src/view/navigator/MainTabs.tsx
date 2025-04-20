@@ -1,50 +1,87 @@
-// MainTabs.tsx
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { newColors } from '../styles/colors'; // Asegúrate de que la ruta sea correcta
 import { MainTabsParamList } from './navigationTypes';
 
-// Importar pantallas principales
-import Home from '../screens/home/Home';
+// Importar pantallas
 import New from '../screens/home/new/New';
 import Profile from '../screens/home/profile/Profile';
 import CustomButtonTab from './components/CustomButtonTab';
-
-// Importar componentes para las pestañas
+import Icon from '@react-native-vector-icons/ionicons';
+import Home from '../screens/home/Home';
+import Feed from '../screens/home/feed/Feed';
+import Local from '../screens/home/local/Local';
 
 const Tab = createBottomTabNavigator<MainTabsParamList>();
 
 const MainTabs = () => {
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarShowLabel: false,
-        tabBarStyle: {
-          backgroundColor: '#ffffff',
-          height: 60,
-          borderTopWidth: 0,
+        tabBarIcon: ({ color, size, focused }) => {
+          let iconName : any;
+
+          if (route.name === 'Local') {
+            iconName = 'archive-outline';
+          } else if (route.name === 'Profile') {
+            iconName = 'person-outline';
+          } else if (route.name === 'New') {
+            iconName = 'add-circle-outline';
+          } else if (route.name === 'Feed') {
+            iconName = 'storefront-outline';
+          } else if (route.name === 'Home') {
+            iconName = 'home-outline';
+          } else {
+            iconName = 'alert-circle-outline';
+          }
+          return <Icon name={iconName} size={26} color={color} />;
         },
-      }}
+        tabBarLabel: () => null,
+        tabBarActiveTintColor: newColors.fondo_secundario,
+        tabBarInactiveTintColor: newColors.principal,
+        tabBarStyle: {
+          backgroundColor: 'transparent',
+          height: 65,
+          borderTopWidth: 0,
+          position: 'absolute',
+          elevation: 0,
+        },
+      })}
     >
       <Tab.Screen
         name="Home"
         component={Home}
         options={{
-          tabBarButton: (props) => <CustomButtonTab route="Home" {...props} />,
+          tabBarButton: (props) => <CustomButtonTab route="Inicio" {...props} />,
+        }}
+      />
+      <Tab.Screen
+        name="Local"
+        component={Local}
+        options={{
+          tabBarButton: (props) => <CustomButtonTab route="Local" {...props} />,
         }}
       />
       <Tab.Screen
         name="New"
         component={New}
         options={{
-          tabBarButton: (props) => <CustomButtonTab route="New" {...props} />,
+          tabBarButton: (props) => <CustomButtonTab route="Agregar" {...props} />,
+        }}
+      />
+      <Tab.Screen
+        name="Feed"
+        component={Feed}
+        options={{
+          tabBarButton: (props) => <CustomButtonTab route="Web" {...props} />,
         }}
       />
       <Tab.Screen
         name="Profile"
         component={Profile}
         options={{
-          tabBarButton: (props) => <CustomButtonTab route="Profile" {...props} />,
+          tabBarButton: (props) => <CustomButtonTab route="Perfil" {...props} />,
         }}
       />
     </Tab.Navigator>

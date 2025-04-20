@@ -1,11 +1,13 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import GlobalContainer from '../../components/GlobalContainer'
+import { newColors } from '../../styles/colors'
 
 const Home = () => {
   return (
-    <View>
-      <Text>Home</Text>
-    </View>
+    <GlobalContainer>
+      <Text style={{color: newColors.fondo_secundario}}>Home</Text>
+    </GlobalContainer>
   )
 }
 

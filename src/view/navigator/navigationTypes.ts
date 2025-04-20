@@ -1,7 +1,9 @@
 export type MainTabsParamList = {
   Home: undefined;
+  Feed: undefined;
   New: undefined;
   Profile: undefined;
+  Local: undefined;
 };
 
 export type AuthStackParamList = {
