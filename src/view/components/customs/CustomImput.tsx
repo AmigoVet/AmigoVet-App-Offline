@@ -8,6 +8,7 @@ import CustomIonicIcon from './CustomIonicIcon';
 const { width } = Dimensions.get('window');
 
 interface CustomInputProps {
+  keyboardType?: KeyboardTypeOptions;
   label?: string;
   miniText?: string;
   placeholder: string;
@@ -33,6 +34,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   miniText,
   password = false,
   iconName, // Añadimos la prop al destructuring
+  keyboardType,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(!password);
 

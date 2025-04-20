@@ -1,78 +1,79 @@
 import React, { useState } from 'react';
-import { StyleSheet, Alert, Text, View, Pressable } from 'react-native';
-import { useAuthStore } from '../../../../lib/store/authStore';
-import { User } from '../../../../lib/interfaces/User';
-import GlobalContainer from '../../../components/GlobalContainer';
-import HeaderLogin from './sections/HeaderLogin';
-import { newColors } from '../../../styles/colors';
-import CustomInput from '../../../components/customs/CustomImput';
-import CustomButton from '../../../components/customs/CustomButton';
-import { useNavigation } from '@react-navigation/native';
-import { AuthStackParamList } from '../../../navigator/navigationTypes';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { ScrollView } from 'react-native-gesture-handler';
-import WithLove from '../../../components/WithLove';
-import FooterLogin from './sections/FooterLogin';
+import { StyleSheet, Alert, Text, View, Pressable, ScrollView } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>;
+import FooterLogin from './sections/FooterLogin';
+import { useAuthStore } from '../../../../lib/store/authStore';
+import CustomButton from '../../../components/customs/CustomButton';
+import CustomInput from '../../../components/customs/CustomImput';
+import GlobalContainer from '../../../components/GlobalContainer';
+import WithLove from '../../../components/WithLove';
+import { AuthStackParamList } from '../../../navigator/navigationTypes';
+import { newColors } from '../../../styles/colors';
+import HeaderLogin from './sections/HeaderLogin';
+
+type LoginScreenNavigationProp = NavigationProp<AuthStackParamList, 'Login'>;
 
 const Login = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
-  
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const login = useAuthStore((state) => state.login);
+  const { login, loading, error } = useAuthStore();
 
   const handleLogin = async () => {
-    if (name && email && password) {
-      await login({ name, email, password } as User);
-    } else {
-      Alert.alert('Por favor, completa todos los campos.');
+    try {
+      await login(email, password);
+      Alert.alert('Iniciado sesión', 'Bienvenido');
+    } catch {
+      if (error) {
+        Alert.alert('Error', error.join('\n'));
+      }
     }
   };
 
   return (
     <GlobalContainer>
       <ScrollView>
-      <HeaderLogin />
-      
-      <Text style={styles.text}>Introduce tu correo electronico y contraseña</Text>
-
-      <View style={styles.form}>
-        <CustomInput
-          placeholder="Correo electronico"
-          value={email}
-          onChangeText={setEmail}
-          iconName="mail-outline"
-        />
-        <CustomInput
-          placeholder="Contraseña"
-          value={password}
-          onChangeText={setPassword}
-          password
-        />
-        <Pressable style={styles.pressable} onPress={() => Alert.alert('JAJA webon')}>
-          <Text style={[styles.text, styles.centeredText]}>¿Olvidaste tu contraseña?</Text>
-        </Pressable>
-        <CustomButton
-          text="Iniciar sesión"
-          onPress={handleLogin}
-          textColor={newColors.fondo_secundario}
-        />
-        <Text style={[styles.text, styles.centeredText]}>¿No tienes una cuenta? Registrate</Text>
-        <CustomButton
-          text="Registrate"
-          onPress={() => navigation.navigate('Register')}
-          textColor={newColors.fondo_principal}
-          backgroundColor={newColors.fondo_secundario}
-        />
-        <View style={{height: 2, width: '100%', backgroundColor: newColors.fondo_secundario, marginVertical: 10}} />
-        <WithLove />
-      </View>
-
-      <FooterLogin />
-
+        <HeaderLogin />
+        <Text style={styles.text}>Introduce tu correo electrónico y contraseña</Text>
+        {error && (
+          <View style={styles.errorContainer}>
+            {error.map((err, index) => (
+              <Text key={index} style={styles.errorText}>{err}</Text>
+            ))}
+          </View>
+        )}
+        <View style={styles.form}>
+          <CustomInput
+            placeholder="Correo electrónico"
+            value={email}
+            onChangeText={setEmail}
+            iconName="mail-outline"
+          />
+          <CustomInput
+            placeholder="Contraseña"
+            value={password}
+            onChangeText={setPassword}
+            password
+            iconName="lock-closed-outline"
+          />
+          <CustomButton
+            text="Iniciar sesión"
+            onPress={handleLogin}
+            textColor={newColors.fondo_secundario}
+            disabled={loading}
+          />
+          <Text style={[styles.text, styles.centeredText]}>¿No tienes una cuenta? Regístrate</Text>
+          <CustomButton
+            text="Regístrate"
+            onPress={() => navigation.navigate('Register')}
+            textColor={newColors.fondo_principal}
+            backgroundColor={newColors.fondo_secundario}
+          />
+          <View style={{ height: 2, width: '100%', backgroundColor: newColors.fondo_secundario, marginVertical: 10 }} />
+          <WithLove />
+        </View>
+        <FooterLogin />
       </ScrollView>
     </GlobalContainer>
   );
@@ -86,30 +87,32 @@ const styles = StyleSheet.create({
     fontFamily: 'Chillax-Extralight',
   },
   centeredText: {
-    textAlign: 'center', 
-    marginLeft: 0, 
-    width: '100%', 
+    textAlign: 'center',
+    marginLeft: 0,
+    width: '100%',
     paddingVertical: 10,
   },
   form: {
     flexDirection: 'column',
     paddingHorizontal: 20,
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    width: '100%', 
-  },
-  input: {
-    width: '100%', 
-    marginVertical: 10, 
-  },
-  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
-    marginVertical: 10, 
   },
   pressable: {
-    width: '100%', 
-    alignItems: 'center', 
-    marginVertical: 10, 
+    width: '100%',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  errorContainer: {
+    width: '100%',
+    padding: 10,
+    marginLeft: 30,
+  },
+  errorText: {
+    color: newColors.rojo || '#ff0000',
+    fontSize: 14,
+    fontFamily: 'Chillax-Extralight',
   },
 });
 
