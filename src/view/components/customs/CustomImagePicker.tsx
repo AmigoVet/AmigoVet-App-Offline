@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } from 'react-native-image-picker';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import Icon from '@react-native-vector-icons/ionicons';
@@ -8,6 +8,7 @@ import { newStyles } from '../../screens/home/new/styles';
 import { newColors } from '../../styles/colors';
 import { GlobalStyles } from '../../styles/GlobalStyles';
 import CustomImage from './CustomImage';
+import { constants } from '../../styles/constants';
 
 interface CustomImagePickerProps {
   onImageSelected: (uri: string) => void; // Callback para pasar la URI de la imagen seleccionada
@@ -102,13 +103,13 @@ const CustomImagePicker: React.FC<CustomImagePickerProps> = ({ onImageSelected }
   return (
     <>
       <Text style={GlobalStyles.subtitle}>Selecciona o toma una foto</Text>
-      <View style={newStyles.imageContainer}>
+      <View style={styles.imageContainer}>
         {image && <CustomImage source={image} style={{ height: 250 }} />}
-        <View style={newStyles.imageButtonContainer}>
-          <TouchableOpacity style={newStyles.imageButton} onPress={pickImageFromGallery}>
+        <View style={styles.imageButtonContainer}>
+          <TouchableOpacity style={styles.imageButton} onPress={pickImageFromGallery}>
             <Icon name="image-outline" size={40} color={newColors.fondo_secundario} />
           </TouchableOpacity>
-          <TouchableOpacity style={newStyles.imageButton} onPress={takePhoto}>
+          <TouchableOpacity style={styles.imageButton} onPress={takePhoto}>
             <Icon name="camera-outline" size={40} color={newColors.fondo_secundario} />
           </TouchableOpacity>
         </View>
@@ -116,5 +117,26 @@ const CustomImagePicker: React.FC<CustomImagePickerProps> = ({ onImageSelected }
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  imageContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+    borderColor: newColors.fondo_secundario,
+    borderWidth: 2,
+    borderRadius: constants.borderRadius / 2,
+    paddingHorizontal: 5,
+    paddingVertical: 15,
+  },
+  imageButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  imageButton: {
+    marginHorizontal: 20,
+    padding: 10,
+    borderRadius: 5,
+  },
+})
 
 export default CustomImagePicker;
