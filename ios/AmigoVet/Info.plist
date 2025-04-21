@@ -27,12 +27,18 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<false/>
+		<true/> <!-- Permitir conexiones HTTP para pruebas; cámbialo a dominios específicos en producción -->
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>Esta aplicación necesita acceso a la ubicación para [razón específica].</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Esta aplicación necesita acceso a la cámara para tomar fotos de animales.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Esta aplicación necesita acceso a la galería para seleccionar fotos de animales.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Esta aplicación necesita permiso para guardar fotos en tu galería.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
