@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     minHeight: 50,
-    fontSize: width * 0.03,
-    fontWeight: '100',
+    fontSize: 14,
+    fontWeight: '400',
     fontFamily: constants.FontText
   },
   multilineInput: {

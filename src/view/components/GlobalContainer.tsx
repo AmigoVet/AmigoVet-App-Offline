@@ -11,12 +11,6 @@ interface GlobalContainerProps {
 const GlobalContainer = ({ children, style }: GlobalContainerProps) => {
   const insets = useSafeAreaInsets();
   
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor(newColors.fondo_secundario);
-      StatusBar.setTranslucent(false);
-    }
-  }, []);
 
   return (
     <SafeAreaProvider>

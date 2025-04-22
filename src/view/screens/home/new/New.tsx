@@ -11,13 +11,12 @@ import Separator from '../../../components/Separator';
 import CustomDatePicker from '../../../components/customs/CustomDatePicker';
 import { calculateOld } from '../../../../lib/functions/CalculateOld';
 import CustomInput from '../../../components/customs/CustomImput';
-import ModalSelectOptions from '../../../components/ModalSelectOptions';
 
 const New = () => {
   const [image, setImage] = useState<string | null>(null);
   const [nombre, setNombre] = useState<string>('');
   const [identificador, setIdentificador] = useState<string>('');
-  const [especie, setEspecie] = useState<Especie | 'Otro' | ''>('');
+  const [especie, setEspecie] = useState<string>(''); // Simplified type
   const [customEspecie, setCustomEspecie] = useState<string>('');
   const [raza, setRaza] = useState<string>('');
   const [customRaza, setCustomRaza] = useState<string>('');
@@ -30,22 +29,16 @@ const New = () => {
   const [customProposito, setCustomProposito] = useState<string>('');
   const [ubicacion, setUbicacion] = useState<string>('');
   const [descripcion, setDescripcion] = useState<string>('');
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [modalOptions, setModalOptions] = useState<string[]>([]);
-  const [modalOnSelect, setModalOnSelect] = useState<(value: string) => void>(() => {});
 
-  const razasDisponibles = especie && especie !== 'Otro' ? especiesRazasMap[especie] : [];
-  const propositosDisponibles = especie && especie !== 'Otro' ? propositosPorEspecie[especie] : [];
-
-  const openModal = (options: string[], onSelect: (value: string) => void) => {
-    setModalOptions(options);
-    setModalOnSelect(() => onSelect);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  // Ensure razasDisponibles and propositosDisponibles are always arrays
+  const razasDisponibles =
+    especie && especie !== 'Otro' && especiesRazasMap[especie as Especie]
+      ? especiesRazasMap[especie as Especie]
+      : [];
+  const propositosDisponibles =
+    especie && especie !== 'Otro' && propositosPorEspecie[especie as Especie]
+      ? propositosPorEspecie[especie as Especie]
+      : [];
 
   return (
     <GlobalContainer>
@@ -57,7 +50,6 @@ const New = () => {
         style={{ padding: 20 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        scrollEnabled={!isModalOpen}
       >
         <CustomImagePicker onImageSelected={(uri) => setImage(uri)} />
 
@@ -81,12 +73,13 @@ const New = () => {
           label="Especie"
           value={especie}
           options={[...Object.keys(especiesRazasMap), 'Otro']}
-          onOpenModal={(options) => openModal(options, (value) => {
-            setEspecie(value as Especie | 'Otro');
+          onChange={(value) => {
+            console.log('Especie selected:', value); // Debug
+            setEspecie(value);
             setCustomEspecie('');
             setRaza('');
             setProposito('Otro');
-          })}
+          }}
         />
         {especie === 'Otro' && (
           <CustomInput
@@ -102,7 +95,10 @@ const New = () => {
           label="Raza"
           value={raza}
           options={[...razasDisponibles, 'Otro']}
-          onOpenModal={(options) => openModal(options, setRaza)}
+          onChange={(value) => {
+            console.log('Raza selected:', value); // Debug
+            setRaza(value);
+          }}
         />
         {raza === 'Otro' && (
           <CustomInput
@@ -117,7 +113,10 @@ const New = () => {
           label="Propósito"
           value={proposito}
           options={[...propositosDisponibles, 'Otro']}
-          onOpenModal={(options) => openModal(options, setProposito)}
+          onChange={(value) => {
+            console.log('Propósito selected:', value); // Debug
+            setProposito(value);
+          }}
         />
         {proposito === 'Otro' && (
           <CustomInput
@@ -132,7 +131,10 @@ const New = () => {
           label="Género"
           value={genero}
           options={generos}
-          onOpenModal={(options) => openModal(options, setGenero)}
+          onChange={(value) => {
+            console.log('Género selected:', value); // Debug
+            setGenero(value);
+          }}
         />
 
         <CustomDatePicker
@@ -187,13 +189,6 @@ const New = () => {
         <CustomButton text="Guardar" onPress={() => Alert.alert('IDK')} />
         <Separator height={200} />
       </ScrollView>
-
-      <ModalSelectOptions
-        isOpen={isModalOpen}
-        options={modalOptions}
-        onSelect={modalOnSelect}
-        onClose={closeModal}
-      />
     </GlobalContainer>
   );
 };
