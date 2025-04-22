@@ -74,7 +74,6 @@ const New = () => {
           value={especie}
           options={[...Object.keys(especiesRazasMap), 'Otro']}
           onChange={(value) => {
-            console.log('Especie selected:', value); // Debug
             setEspecie(value);
             setCustomEspecie('');
             setRaza('');
@@ -96,7 +95,6 @@ const New = () => {
           value={raza}
           options={[...razasDisponibles, 'Otro']}
           onChange={(value) => {
-            console.log('Raza selected:', value); // Debug
             setRaza(value);
           }}
         />
@@ -114,7 +112,6 @@ const New = () => {
           value={proposito}
           options={[...propositosDisponibles, 'Otro']}
           onChange={(value) => {
-            console.log('Propósito selected:', value); // Debug
             setProposito(value);
           }}
         />
@@ -132,7 +129,6 @@ const New = () => {
           value={genero}
           options={generos}
           onChange={(value) => {
-            console.log('Género selected:', value); // Debug
             setGenero(value);
           }}
         />

@@ -73,7 +73,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
   // Handle option selection
   const handleSelectOption = (option: string) => {
-    console.log('Option selected:', option); // Debug
+    // console.log('Option selected:', option); // Debug
     setIsSelecting(true);
     setInputText(option);
     setIsDropdownOpen(false);
