@@ -7,7 +7,6 @@ export interface Animal {
     nombre: string;
     especie: Especie | "Desconocida";
     raza: Raza | "Desconocida";
-    edad?: string;
     nacimiento?: string;
     genero: Genero | "Desconocido";
     peso: string;

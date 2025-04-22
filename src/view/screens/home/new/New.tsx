@@ -4,7 +4,7 @@ import GlobalContainer from '../../../components/GlobalContainer';
 import Header from '../../../components/Header';
 import { ScrollView } from 'react-native-gesture-handler';
 import CustomImagePicker from '../../../components/customs/CustomImagePicker';
-import { Especie, especiesRazasMap, generos, propositosPorEspecie } from '../../../../lib/interfaces/Animal';
+import { Especie, especiesRazasMap, generos, propositosPorEspecie, Animal, Raza } from '../../../../lib/interfaces/Animal';
 import CustomSelect from '../../../components/customs/CustomSelect';
 import CustomButton from '../../../components/customs/CustomButton';
 import Separator from '../../../components/Separator';
@@ -12,32 +12,89 @@ import CustomDatePicker from '../../../components/customs/CustomDatePicker';
 import { calculateOld } from '../../../../lib/functions/CalculateOld';
 import CustomInput from '../../../components/customs/CustomImput';
 
+// Extend Animal interface to include temporary form fields
+interface FormData extends Partial<Animal> {
+  customEspecie?: string;
+  customRaza?: string;
+  customProposito?: string;
+  edad?: string;
+  fechaNacimiento?: Date | null;
+  especieSeleccionada?: string;
+  razaSeleccionada?: string;
+}
+
 const New = () => {
-  const [image, setImage] = useState<string | null>(null);
-  const [nombre, setNombre] = useState<string>('');
-  const [identificador, setIdentificador] = useState<string>('');
-  const [especie, setEspecie] = useState<string>(''); // Simplified type
-  const [customEspecie, setCustomEspecie] = useState<string>('');
-  const [raza, setRaza] = useState<string>('');
-  const [customRaza, setCustomRaza] = useState<string>('');
-  const [genero, setGenero] = useState<string>('');
-  const [peso, setPeso] = useState<string>('');
-  const [edad, setEdad] = useState<string>('');
-  const [fechaNacimiento, setFechaNacimiento] = useState<Date | null>(null);
-  const [color, setColor] = useState<string>('');
-  const [proposito, setProposito] = useState<string>('Otro');
-  const [customProposito, setCustomProposito] = useState<string>('');
-  const [ubicacion, setUbicacion] = useState<string>('');
-  const [descripcion, setDescripcion] = useState<string>('');
+  const [formData, setFormData] = useState<FormData>({
+    nombre: '',
+    identificador: '',
+    especie: undefined,
+    especieSeleccionada: '',
+    customEspecie: '',
+    raza: undefined,
+    razaSeleccionada: '',
+    customRaza: '',
+    genero: undefined,
+    peso: '',
+    edad: '',
+    fechaNacimiento: null,
+    color: '',
+    proposito: '',
+    customProposito: '',
+    ubicacion: '',
+    descripcion: '',
+    image: '',
+    ownerId: '',
+    id: '',
+    created_at: '',
+    updated_at: '',
+    embarazada: false,
+  });
+
+  // Generic handler for updating form fields
+  const handleChange = (field: keyof FormData, value: string | Date | null) => {
+    setFormData((prev) => {
+      const newFormData = { ...prev, [field]: value };
+
+      // Handle especie and especieSeleccionada
+      if (field === 'especieSeleccionada') {
+        newFormData.especie = value === 'Otro' || value === 'Desconocida' ? 'Desconocida' : (value as Especie);
+        newFormData.customEspecie = '';
+        newFormData.raza = undefined;
+        newFormData.razaSeleccionada = '';
+        newFormData.proposito = '';
+      }
+      // Handle raza and razaSeleccionada
+      if (field === 'razaSeleccionada') {
+        newFormData.raza = value === 'Otro' || value === 'Desconocida' ? 'Desconocida' : (value as Raza);
+        newFormData.customRaza = '';
+      }
+      // Reset customProposito when proposito changes
+      if (field === 'proposito' && value !== 'Otro') {
+        newFormData.customProposito = '';
+      }
+      // Update edad and nacimiento when fechaNacimiento changes
+      if (field === 'fechaNacimiento' && value instanceof Date) {
+        newFormData.edad = calculateOld(value);
+        newFormData.nacimiento = value.toISOString();
+      }
+      // Clear fechaNacimiento and nacimiento when edad is manually set
+      if (field === 'edad') {
+        newFormData.fechaNacimiento = null;
+        newFormData.nacimiento = undefined;
+      }
+
+      return newFormData;
+    });
+  };
 
   // Ensure razasDisponibles and propositosDisponibles are always arrays
   const razasDisponibles =
-    especie && especie !== 'Otro' && especiesRazasMap[especie as Especie]
-      ? especiesRazasMap[especie as Especie]
+    formData.especie && formData.especie !== 'Desconocida' && especiesRazasMap[formData.especie as Especie]
+      ? especiesRazasMap[formData.especie as Especie]
       : [];
   const propositosDisponibles =
-    especie && especie !== 'Otro' && propositosPorEspecie[especie as Especie]
-      ? propositosPorEspecie[especie as Especie]
+    formData.especie && formData.especie !== 'Desconocida' && propositosPorEspecie[formData.especie as Especie]
+      ? propositosPorEspecie[formData.especie as Especie]
       : [];
 
   return (
@@ -51,40 +108,37 @@ const New = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <CustomImagePicker onImageSelected={(uri) => setImage(uri)} />
+        <CustomImagePicker
+          onImageSelected={(uri) => handleChange('image', uri || '')}
+        />
 
         <CustomInput
           required
           label="Nombre"
-          value={nombre}
-          onChangeText={setNombre}
+          value={formData.nombre || ''}
+          onChangeText={(value) => handleChange('nombre', value)}
           placeholder="Nombre del animal"
         />
 
         <CustomInput
           label="Identificador"
-          value={identificador}
-          onChangeText={setIdentificador}
+          value={formData.identificador || ''}
+          onChangeText={(value) => handleChange('identificador', value)}
           placeholder="Identificador único"
         />
 
         <CustomSelect
           required
           label="Especie"
-          value={especie}
+          value={formData.especieSeleccionada || ''}
           options={[...Object.keys(especiesRazasMap), 'Otro']}
-          onChange={(value) => {
-            setEspecie(value);
-            setCustomEspecie('');
-            setRaza('');
-            setProposito('Otro');
-          }}
+          onChange={(value) => handleChange('especieSeleccionada', value)}
         />
-        {especie === 'Otro' && (
+        {formData.especieSeleccionada === 'Otro' && (
           <CustomInput
             label="Especie Personalizada"
-            value={customEspecie}
-            onChangeText={setCustomEspecie}
+            value={formData.customEspecie || ''}
+            onChangeText={(value) => handleChange('customEspecie', value)}
             placeholder="Escribe la especie"
           />
         )}
@@ -92,98 +146,96 @@ const New = () => {
         <CustomSelect
           required
           label="Raza"
-          value={raza}
+          value={formData.razaSeleccionada || ''}
           options={[...razasDisponibles, 'Otro']}
-          onChange={(value) => {
-            setRaza(value);
-          }}
+          onChange={(value) => handleChange('razaSeleccionada', value)}
         />
-        {raza === 'Otro' && (
+        {formData.razaSeleccionada === 'Otro' && (
           <CustomInput
             label="Raza Personalizada"
-            value={customRaza}
-            onChangeText={setCustomRaza}
+            value={formData.customRaza || ''}
+            onChangeText={(value) => handleChange('customRaza', value)}
             placeholder="Escribe la raza"
           />
         )}
 
         <CustomSelect
+        required
           label="Propósito"
-          value={proposito}
+          value={formData.proposito || ''}
           options={[...propositosDisponibles, 'Otro']}
-          onChange={(value) => {
-            setProposito(value);
-          }}
+          onChange={(value) => handleChange('proposito', value)}
         />
-        {proposito === 'Otro' && (
+        {formData.proposito === 'Otro' && (
           <CustomInput
+            required
             label="Propósito Personalizado"
-            value={customProposito}
-            onChangeText={setCustomProposito}
+            value={formData.customProposito || ''}
+            onChangeText={(value) => handleChange('customProposito', value)}
             placeholder="Escribe el propósito"
           />
         )}
 
         <CustomSelect
+          required
           label="Género"
-          value={genero}
+          value={formData.genero || ''}
           options={generos}
-          onChange={(value) => {
-            setGenero(value);
-          }}
+          onChange={(value) => handleChange('genero', value)}
         />
 
         <CustomDatePicker
           label="Fecha de Nacimiento"
-          value={fechaNacimiento}
-          onDateChange={(date) => {
-            setFechaNacimiento(date);
-            if (date) {
-              setEdad(calculateOld(date));
-            }
-          }}
-          onAgeChange={(age) => {
-            setEdad(age);
-            setFechaNacimiento(null);
-          }}
-          onBirthDateCalculated={(birthDate) => {
-            setFechaNacimiento(birthDate);
-          }}
-          ageValue={edad}
+          value={formData.fechaNacimiento || null}
+          onDateChange={(date) => handleChange('fechaNacimiento', date)}
+          onAgeChange={(age) => handleChange('edad', age)}
+          onBirthDateCalculated={(birthDate) => handleChange('fechaNacimiento', birthDate)}
+          ageValue={formData.edad || ''}
         />
 
         <CustomInput
           required
           label="Peso"
-          value={peso}
-          onChangeText={setPeso}
+          value={formData.peso || ''}
+          onChangeText={(value) => handleChange('peso', value)}
           placeholder="Peso en kg"
           type="number"
         />
         <CustomInput
           required
           label="Color"
-          value={color}
-          onChangeText={setColor}
+          value={formData.color || ''}
+          onChangeText={(value) => handleChange('color', value)}
           placeholder="Color del animal"
         />
         <CustomInput
-          required
           label="Ubicación"
-          value={ubicacion}
-          onChangeText={setUbicacion}
+          value={formData.ubicacion || ''}
+          onChangeText={(value) => handleChange('ubicacion', value)}
           placeholder="Ubicación del animal"
         />
         <CustomInput
           label="Descripción"
-          value={descripcion}
-          onChangeText={setDescripcion}
+          value={formData.descripcion || ''}
+          onChangeText={(value) => handleChange('descripcion', value)}
           placeholder="Descripción adicional"
           multiline
         />
 
-        <CustomButton text="Guardar" onPress={() => Alert.alert('IDK')} />
-        <Separator height={200} />
+        <CustomButton
+          text="Guardar"
+          onPress={() => {
+            if (!formData.nombre || !formData.especieSeleccionada || !formData.razaSeleccionada || !formData.peso || !formData.color || !formData.ubicacion) {
+              Alert.alert('Error', 'Por favor completa todos los campos obligatorios');
+              return;
+            }
+
+
+            console.log('Animal data:', formData);
+            Alert.alert('Formulario enviado', JSON.stringify(formData, null, 2));
+          }}
+        />
+        <Separator height={400} />
       </ScrollView>
     </GlobalContainer>
   );
