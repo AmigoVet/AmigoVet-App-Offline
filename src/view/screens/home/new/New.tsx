@@ -4,13 +4,14 @@ import GlobalContainer from '../../../components/GlobalContainer';
 import Header from '../../../components/Header';
 import { ScrollView } from 'react-native-gesture-handler';
 import CustomImagePicker from '../../../components/customs/CustomImagePicker';
-import CustomInput from '../../../components/customs/CustomImput';
 import { Especie, especiesRazasMap, generos, propositosPorEspecie } from '../../../../lib/interfaces/Animal';
 import CustomSelect from '../../../components/customs/CustomSelect';
 import CustomButton from '../../../components/customs/CustomButton';
 import Separator from '../../../components/Separator';
 import CustomDatePicker from '../../../components/customs/CustomDatePicker';
 import { calculateOld } from '../../../../lib/functions/CalculateOld';
+import CustomInput from '../../../components/customs/CustomImput';
+import ModalSelectOptions from '../../../components/ModalSelectOptions';
 
 const New = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -30,11 +31,21 @@ const New = () => {
   const [ubicacion, setUbicacion] = useState<string>('');
   const [descripcion, setDescripcion] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalOptions, setModalOptions] = useState<string[]>([]);
+  const [modalOnSelect, setModalOnSelect] = useState<(value: string) => void>(() => {});
 
-  const razasDisponibles =
-    especie && especie !== 'Otro' ? especiesRazasMap[especie] : [];
-  const propositosDisponibles =
-    especie && especie !== 'Otro' ? propositosPorEspecie[especie] : [];
+  const razasDisponibles = especie && especie !== 'Otro' ? especiesRazasMap[especie] : [];
+  const propositosDisponibles = especie && especie !== 'Otro' ? propositosPorEspecie[especie] : [];
+
+  const openModal = (options: string[], onSelect: (value: string) => void) => {
+    setModalOptions(options);
+    setModalOnSelect(() => onSelect);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <GlobalContainer>
@@ -70,14 +81,12 @@ const New = () => {
           label="Especie"
           value={especie}
           options={[...Object.keys(especiesRazasMap), 'Otro']}
-          onValueChange={(value) => {
+          onOpenModal={(options) => openModal(options, (value) => {
             setEspecie(value as Especie | 'Otro');
             setCustomEspecie('');
             setRaza('');
             setProposito('Otro');
-          }}
-          onModalOpen={() => setIsModalOpen(true)}
-          onModalClose={() => setIsModalOpen(false)}
+          })}
         />
         {especie === 'Otro' && (
           <CustomInput
@@ -93,9 +102,7 @@ const New = () => {
           label="Raza"
           value={raza}
           options={[...razasDisponibles, 'Otro']}
-          onValueChange={(value) => setRaza(value)}
-          onModalOpen={() => setIsModalOpen(true)}
-          onModalClose={() => setIsModalOpen(false)}
+          onOpenModal={(options) => openModal(options, setRaza)}
         />
         {raza === 'Otro' && (
           <CustomInput
@@ -110,9 +117,7 @@ const New = () => {
           label="Propósito"
           value={proposito}
           options={[...propositosDisponibles, 'Otro']}
-          onValueChange={(value) => setProposito(value)}
-          onModalOpen={() => setIsModalOpen(true)}
-          onModalClose={() => setIsModalOpen(false)}
+          onOpenModal={(options) => openModal(options, setProposito)}
         />
         {proposito === 'Otro' && (
           <CustomInput
@@ -127,9 +132,7 @@ const New = () => {
           label="Género"
           value={genero}
           options={generos}
-          onValueChange={(value) => setGenero(value)}
-          onModalOpen={() => setIsModalOpen(true)}
-          onModalClose={() => setIsModalOpen(false)}
+          onOpenModal={(options) => openModal(options, setGenero)}
         />
 
         <CustomDatePicker
@@ -184,6 +187,13 @@ const New = () => {
         <CustomButton text="Guardar" onPress={() => Alert.alert('IDK')} />
         <Separator height={200} />
       </ScrollView>
+
+      <ModalSelectOptions
+        isOpen={isModalOpen}
+        options={modalOptions}
+        onSelect={modalOnSelect}
+        onClose={closeModal}
+      />
     </GlobalContainer>
   );
 };
