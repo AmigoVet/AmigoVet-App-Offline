@@ -4,13 +4,13 @@ import { newColors } from '../../styles/colors';
 import { constants } from '../../styles/constants';
 import Icon from '@react-native-vector-icons/ionicons';
 import CustomIonicIcon from './CustomIonicIcon';
+import { GlobalStyles } from '../../styles/GlobalStyles';
 
 const { width } = Dimensions.get('window');
 
 interface CustomInputProps {
   keyboardType?: KeyboardTypeOptions;
   label?: string;
-  miniText?: string;
   placeholder: string;
   value: string;
   onChangeText?: (text: string) => void;
@@ -20,6 +20,7 @@ interface CustomInputProps {
   onFocus?: () => void;
   password?: boolean;
   iconName?: string; // Nueva prop para el ícono personalizado
+  required?: boolean;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -31,10 +32,10 @@ const CustomInput: React.FC<CustomInputProps> = ({
   multiline = false,
   editable = true,
   onFocus = () => {},
-  miniText,
   password = false,
   iconName, // Añadimos la prop al destructuring
   keyboardType,
+  required = false,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(!password);
 
@@ -55,9 +56,9 @@ const CustomInput: React.FC<CustomInputProps> = ({
   return (
     <View style={styles.container}>
       {label && 
-      <Text style={styles.label}>
+      <Text style={GlobalStyles.subtitle}>
         {label}
-        <Text style={styles.miniText}>{miniText ? ` (${miniText})` : ''}</Text>
+        {required && <Text style={{color: newColors.rojo}}>*</Text>}
       </Text>
       }
       <View style={styles.inputContainer}>
@@ -75,6 +76,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
           autoCapitalize="none"
           autoCorrect={false}
           textAlignVertical="center"
+          
         />
         {/* Renderizado condicional del ícono */}
         {password || iconName ? (
@@ -106,16 +108,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     width: '100%',
   },
-  label: {
-    fontSize: width * 0.04,
-    fontWeight: '500',
-    marginBottom: 5,
-    color: newColors.fondo_secundario,
-  },
-  miniText: {
-    fontSize: width * 0.03,
-    color: newColors.fondo_secundario,
-  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -127,8 +119,9 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     minHeight: 50,
-    fontSize: width * 0.042,
-    fontWeight: 'bold',
+    fontSize: width * 0.03,
+    fontWeight: '100',
+    fontFamily: constants.FontText
   },
   multilineInput: {
     minHeight: 100,

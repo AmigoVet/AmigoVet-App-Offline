@@ -3,4 +3,6 @@ export const constants = {
     borderWidth: 2.5,
     cantidadPosiblesAnimales: 10,
     cantidadPosibleDePeticionesPorDia: 3,
+    FontText: 'Synonym',
+    FontTitle: 'Chillax',
 }

@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { newColors } from "./colors";
+import { constants } from "./constants";
 
 export const GlobalStyles = StyleSheet.create({
     title:{
@@ -9,7 +10,8 @@ export const GlobalStyles = StyleSheet.create({
     },
     subtitle:{
         fontSize: 16,
-        fontFamily: 'Synonym-Regular'
+        fontFamily: constants.FontText,
+        fontWeight: '500',
     },
     miniText: {
         fontSize: 12,

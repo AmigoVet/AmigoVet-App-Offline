@@ -102,7 +102,7 @@ const CustomImagePicker: React.FC<CustomImagePickerProps> = ({ onImageSelected }
 
   return (
     <>
-      <Text style={GlobalStyles.subtitle}>Selecciona o toma una foto</Text>
+      <Text style={GlobalStyles.subtitle}>Selecciona o toma una foto <Text style={{color: newColors.rojo}}>*</Text> </Text>
       <View style={styles.imageContainer}>
         {image && <CustomImage source={image} style={{ height: 250 }} />}
         <View style={styles.imageButtonContainer}>

@@ -20,7 +20,7 @@ const CustomButton = ({
   backgroundColor = newColors.verde_light,
   textColor = 'white',                    
 }: CustomButtonProps) => {
-  const buttonBackgroundColor = disabled ? newColors.gris : backgroundColor;
+  const buttonBackgroundColor = disabled ? newColors.verde : backgroundColor;
 
   const pressedStyle = disabled ? null : styles.pressedContainer;
 
