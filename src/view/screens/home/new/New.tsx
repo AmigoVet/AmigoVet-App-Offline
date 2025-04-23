@@ -21,30 +21,33 @@ interface FormData extends Partial<Animal> {
   fechaNacimiento?: Date | null;
 }
 
+// Define initial form data
+const initialFormData: FormData = {
+  nombre: '',
+  identificador: '',
+  especie: undefined,
+  raza: undefined,
+  genero: undefined,
+  peso: '',
+  edad: '',
+  fechaNacimiento: null,
+  color: '',
+  proposito: '',
+  ubicacion: '',
+  descripcion: '',
+  image: '',
+  ownerId: '',
+  id: '',
+  created_at: '',
+  updated_at: '',
+  embarazada: false,
+};
+
 const New = () => {
   const { user } = useAuthStore();
   const { addAnimal, loadAnimals } = useAnimalStore();
 
-  const [formData, setFormData] = useState<FormData>({
-    nombre: '',
-    identificador: '',
-    especie: undefined,
-    raza: undefined,
-    genero: undefined,
-    peso: '',
-    edad: '',
-    fechaNacimiento: null,
-    color: '',
-    proposito: '',
-    ubicacion: '',
-    descripcion: '',
-    image: '',
-    ownerId: '',
-    id: '',
-    created_at: '',
-    updated_at: '',
-    embarazada: false,
-  });
+  const [formData, setFormData] = useState<FormData>(initialFormData);
 
   // Load animals when the component mounts
   useEffect(() => {
@@ -125,7 +128,7 @@ const New = () => {
     try {
       await addAnimal(animalData);
       Alert.alert('Éxito', 'Animal guardado correctamente');
-      setFormData({})
+      setFormData(initialFormData); // Reset form to initial state
     } catch (error) {
       Alert.alert('Error', 'No se pudo guardar el animal');
     }

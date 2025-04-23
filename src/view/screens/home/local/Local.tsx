@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import GlobalContainer from '../../../components/GlobalContainer'
 import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
 import CustomImage from '../../../components/customs/CustomImage';
+import Separator from '../../../components/Separator';
 
 const Local = () => {
   const { animals, loadAnimals } = useAnimalStore();
