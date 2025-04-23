@@ -14,13 +14,8 @@ import CustomInput from '../../../components/customs/CustomImput';
 
 // Extend Animal interface to include temporary form fields
 interface FormData extends Partial<Animal> {
-  customEspecie?: string;
-  customRaza?: string;
-  customProposito?: string;
   edad?: string;
   fechaNacimiento?: Date | null;
-  especieSeleccionada?: string;
-  razaSeleccionada?: string;
 }
 
 const New = () => {
@@ -28,18 +23,13 @@ const New = () => {
     nombre: '',
     identificador: '',
     especie: undefined,
-    especieSeleccionada: '',
-    customEspecie: '',
     raza: undefined,
-    razaSeleccionada: '',
-    customRaza: '',
     genero: undefined,
     peso: '',
     edad: '',
     fechaNacimiento: null,
     color: '',
     proposito: '',
-    customProposito: '',
     ubicacion: '',
     descripcion: '',
     image: '',
@@ -55,22 +45,10 @@ const New = () => {
     setFormData((prev) => {
       const newFormData = { ...prev, [field]: value };
 
-      // Handle especie and especieSeleccionada
-      if (field === 'especieSeleccionada') {
-        newFormData.especie = value === 'Otro' || value === 'Desconocida' ? 'Desconocida' : (value as Especie);
-        newFormData.customEspecie = '';
+      // Reset raza and proposito when especie changes
+      if (field === 'especie') {
         newFormData.raza = undefined;
-        newFormData.razaSeleccionada = '';
         newFormData.proposito = '';
-      }
-      // Handle raza and razaSeleccionada
-      if (field === 'razaSeleccionada') {
-        newFormData.raza = value === 'Otro' || value === 'Desconocida' ? 'Desconocida' : (value as Raza);
-        newFormData.customRaza = '';
-      }
-      // Reset customProposito when proposito changes
-      if (field === 'proposito' && value !== 'Otro') {
-        newFormData.customProposito = '';
       }
       // Update edad and nacimiento when fechaNacimiento changes
       if (field === 'fechaNacimiento' && value instanceof Date) {
@@ -89,11 +67,11 @@ const New = () => {
 
   // Ensure razasDisponibles and propositosDisponibles are always arrays
   const razasDisponibles =
-    formData.especie && formData.especie !== 'Desconocida' && especiesRazasMap[formData.especie as Especie]
+    formData.especie && especiesRazasMap[formData.especie as Especie]
       ? especiesRazasMap[formData.especie as Especie]
       : [];
   const propositosDisponibles =
-    formData.especie && formData.especie !== 'Desconocida' && propositosPorEspecie[formData.especie as Especie]
+    formData.especie && propositosPorEspecie[formData.especie as Especie]
       ? propositosPorEspecie[formData.especie as Especie]
       : [];
 
@@ -130,51 +108,26 @@ const New = () => {
         <CustomSelect
           required
           label="Especie"
-          value={formData.especieSeleccionada || ''}
-          options={[...Object.keys(especiesRazasMap), 'Otro']}
-          onChange={(value) => handleChange('especieSeleccionada', value)}
+          value={formData.especie || ''}
+          options={Object.keys(especiesRazasMap)}
+          onChange={(value) => handleChange('especie', value)}
         />
-        {formData.especieSeleccionada === 'Otro' && (
-          <CustomInput
-            label="Especie Personalizada"
-            value={formData.customEspecie || ''}
-            onChangeText={(value) => handleChange('customEspecie', value)}
-            placeholder="Escribe la especie"
-          />
-        )}
 
         <CustomSelect
           required
           label="Raza"
-          value={formData.razaSeleccionada || ''}
-          options={[...razasDisponibles, 'Otro']}
-          onChange={(value) => handleChange('razaSeleccionada', value)}
+          value={formData.raza || ''}
+          options={razasDisponibles}
+          onChange={(value) => handleChange('raza', value)}
         />
-        {formData.razaSeleccionada === 'Otro' && (
-          <CustomInput
-            label="Raza Personalizada"
-            value={formData.customRaza || ''}
-            onChangeText={(value) => handleChange('customRaza', value)}
-            placeholder="Escribe la raza"
-          />
-        )}
 
         <CustomSelect
-        required
+          required
           label="Propósito"
           value={formData.proposito || ''}
-          options={[...propositosDisponibles, 'Otro']}
+          options={propositosDisponibles}
           onChange={(value) => handleChange('proposito', value)}
         />
-        {formData.proposito === 'Otro' && (
-          <CustomInput
-            required
-            label="Propósito Personalizado"
-            value={formData.customProposito || ''}
-            onChangeText={(value) => handleChange('customProposito', value)}
-            placeholder="Escribe el propósito"
-          />
-        )}
 
         <CustomSelect
           required
@@ -209,6 +162,7 @@ const New = () => {
           placeholder="Color del animal"
         />
         <CustomInput
+          required
           label="Ubicación"
           value={formData.ubicacion || ''}
           onChangeText={(value) => handleChange('ubicacion', value)}
@@ -225,17 +179,47 @@ const New = () => {
         <CustomButton
           text="Guardar"
           onPress={() => {
-            if (!formData.nombre || !formData.especieSeleccionada || !formData.razaSeleccionada || !formData.peso || !formData.color || !formData.ubicacion) {
+            if (
+              !formData.nombre ||
+              !formData.especie ||
+              !formData.raza ||
+              !formData.proposito ||
+              !formData.genero ||
+              !formData.peso ||
+              !formData.color ||
+              !formData.ubicacion
+            ) {
               Alert.alert('Error', 'Por favor completa todos los campos obligatorios');
               return;
             }
 
+            const animalData: Animal = {
+              ownerId: formData.ownerId || '',
+              id: formData.id || '',
+              identificador: formData.identificador || '',
+              nombre: formData.nombre || '',
+              especie: formData.especie,
+              raza: formData.raza,
+              nacimiento: formData.nacimiento,
+              genero: formData.genero,
+              peso: formData.peso || '',
+              color: formData.color || '',
+              descripcion: formData.descripcion || '',
+              image: formData.image || '',
+              image2: formData.image2,
+              image3: formData.image3,
+              proposito: formData.proposito || '',
+              ubicacion: formData.ubicacion || '',
+              created_at: formData.created_at || '',
+              updated_at: formData.updated_at || '',
+              embarazada: formData.embarazada || false,
+            };
 
-            console.log('Animal data:', formData);
-            Alert.alert('Formulario enviado', JSON.stringify(formData, null, 2));
+            console.log('Animal data:', animalData);
+            Alert.alert('Formulario enviado', JSON.stringify(animalData, null, 2));
           }}
         />
-        <Separator height={400} />
+        <Separator height={200} />
       </ScrollView>
     </GlobalContainer>
   );

@@ -5,10 +5,10 @@ export interface Animal {
     id: string;
     identificador: string;
     nombre: string;
-    especie: Especie | "Desconocida";
-    raza: Raza | "Desconocida";
+    especie: Especie; 
+    raza: Raza; 
     nacimiento?: string;
-    genero: Genero | "Desconocido";
+    genero: Genero;
     peso: string;
     color: string;
     descripcion: string;
@@ -32,15 +32,15 @@ export interface Notes {
     nota: string;
     fecha: string;
     created_at: string;
-
 }
-export type Image = string
-export type PropositosDomesticos = "Mascota" | "Cuidados" | "Animal de compañía" ;
+
+export type Image = string;
+export type PropositosDomesticos = "Mascota" | "Cuidados" | "Animal de compañía";
 export type PropositosRurales = "Leche" | "Carne" | "Doble Propósito";
 
-export const generos: Genero[] = ["Macho", "Hembra", "Desconocida"];
+export const generos: Genero[] = ["Macho", "Hembra"];
 
-export type Genero = "Macho" | "Hembra" | "Desconocida";
+export type Genero = "Macho" | "Hembra";
 
 export type Especie =
     | "Bovino"
@@ -50,9 +50,7 @@ export type Especie =
     | "Caprino"
     | "Ovino"
     | "Porcino"
-    | "Felino"
-    | "Desconocida"
-    ;
+    | "Felino";
 
 export type Raza =
     | "Holstein"
@@ -90,47 +88,42 @@ export type Raza =
     | "Siamés"
     | "Maine Coon"
     | "Bengalí"
-    | "Angora"
-    | "Desconocida"
-    ;
+    | "Angora";
 
-    export const especiesRazasMap: Record<Especie, Raza[]> = {
-        Bovino: ["Holstein", "Jersey", "Angus", "Hereford", "Brahman", "Desconocida"],
-        Canino: ["Labrador Retriever", "Pastor Alemán", "Golden Retriever", "Chihuahua", "Beagle", "Desconocida"],
-        Aviar: ["Gallina Leghorn", "Rhode Island Red", "Plymouth Rock", "Sussex", "Desconocida"],
-        Equino: ["Árabe", "Percherón", "Mustang", "Cuarto de Milla", "Appaloosa", "Desconocida"],
-        Caprino: ["Boer", "Nubian", "Saanen", "Toggenburg", "Desconocida"],
-        Ovino: ["Merino", "Suffolk", "Dorper", "Rambouillet", "Desconocida"],
-        Porcino: ["Yorkshire", "Landrace", "Duroc", "Hampshire", "Desconocida"],
-        Felino: ["Persa", "Siamés", "Maine Coon", "Bengalí", "Angora", "Desconocida"],
-        Desconocida: ["Desconocida"], // ✅ Se agrega la clave faltante
-    };
-    
-    export const propositosPorEspecie: Record<Especie, string[]> = {
-        Bovino: ["Leche", "Carne", "Doble Propósito", "Desconocida"],
-        Canino: ["Mascota", "Animal de compañía", "Cuidados", "Desconocida"],
-        Felino: ["Mascota", "Animal de compañía", "Cuidados", "Desconocida"],
-        Aviar: ["Producción de huevos", "Carne", "Desconocida"],
-        Equino: ["Trabajo", "Deporte", "Desconocida"],
-        Caprino: ["Leche", "Carne", "Desconocida"],
-        Ovino: ["Carne", "Lana", "Desconocida"],
-        Porcino: ["Carne", "Reproducción", "Desconocida"],
-        Desconocida: ["Desconocida"], // ✅ Se agrega la clave faltante
-    };
-    
+export const especiesRazasMap: Record<Especie, Raza[]> = {
+    Bovino: ["Holstein", "Jersey", "Angus", "Hereford", "Brahman"],
+    Canino: ["Labrador Retriever", "Pastor Alemán", "Golden Retriever", "Chihuahua", "Beagle"],
+    Aviar: ["Gallina Leghorn", "Rhode Island Red", "Plymouth Rock", "Sussex"],
+    Equino: ["Árabe", "Percherón", "Mustang", "Cuarto de Milla", "Appaloosa"],
+    Caprino: ["Boer", "Nubian", "Saanen", "Toggenburg"],
+    Ovino: ["Merino", "Suffolk", "Dorper", "Rambouillet"],
+    Porcino: ["Yorkshire", "Landrace", "Duroc", "Hampshire"],
+    Felino: ["Persa", "Siamés", "Maine Coon", "Bengalí", "Angora"],
+};
+
+export const propositosPorEspecie: Record<Especie, string[]> = {
+    Bovino: ["Leche", "Carne", "Doble Propósito"],
+    Canino: ["Mascota", "Animal de compañía", "Cuidados"],
+    Felino: ["Mascota", "Animal de compañía", "Cuidados"],
+    Aviar: ["Producción de huevos", "Carne"],
+    Equino: ["Trabajo", "Deporte"],
+    Caprino: ["Leche", "Carne"],
+    Ovino: ["Carne", "Lana"],
+    Porcino: ["Carne", "Reproducción"],
+};
 
 export interface PregnancyRegister extends Register {
-    fechaPartoEstimada?: string; // Fecha estimada de parto
+    fechaPartoEstimada?: string;
 }
 
 export interface TreatmentRegister extends Register {
-    tipoTratamiento?: string; // Tipo de tratamiento
+    tipoTratamiento?: string;
 }
 
 export interface InseminationRegister extends Register {
-    semenProveedor?: string; // Proveedor del semen
+    semenProveedor?: string;
 }
 
 export interface AbortoRegister extends Register {
-    fechaAborto?: string; // Proveedor del semen
+    fechaAborto?: string;
 }
