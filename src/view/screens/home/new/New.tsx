@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
-import { v4 as uuidv4 } from 'uuid'; // Import uuid for generating unique IDs
+import { v4 as uuidv4 } from 'uuid';
 import GlobalContainer from '../../../components/GlobalContainer';
 import Header from '../../../components/Header';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -13,6 +13,7 @@ import CustomDatePicker from '../../../components/customs/CustomDatePicker';
 import { calculateOld } from '../../../../lib/functions/CalculateOld';
 import CustomInput from '../../../components/customs/CustomImput';
 import { useAuthStore } from '../../../../lib/store/authStore';
+import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
 
 // Extend Animal interface to include temporary form fields
 interface FormData extends Partial<Animal> {
@@ -22,6 +23,7 @@ interface FormData extends Partial<Animal> {
 
 const New = () => {
   const { user } = useAuthStore();
+  const { addAnimal, loadAnimals } = useAnimalStore();
 
   const [formData, setFormData] = useState<FormData>({
     nombre: '',
@@ -43,6 +45,14 @@ const New = () => {
     updated_at: '',
     embarazada: false,
   });
+
+  // Load animals when the component mounts
+  useEffect(() => {
+    loadAnimals().catch((error) => {
+      console.error('[ERROR] Error al cargar animales:', error);
+      Alert.alert('Error', 'No se pudieron cargar los animales');
+    });
+  }, [loadAnimals]);
 
   // Generic handler for updating form fields
   const handleChange = (field: keyof FormData, value: string | Date | null) => {
@@ -67,6 +77,58 @@ const New = () => {
 
       return newFormData;
     });
+  };
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    if (
+      !formData.nombre ||
+      !formData.especie ||
+      !formData.raza ||
+      !formData.proposito ||
+      !formData.genero ||
+      !formData.peso ||
+      !formData.color ||
+      !formData.ubicacion
+    ) {
+      Alert.alert('Error', 'Por favor completa todos los campos obligatorios');
+      return;
+    }
+
+    if (!user?.id) {
+      Alert.alert('Error', 'Usuario no autenticado');
+      return;
+    }
+
+    const animalData: Animal = {
+      ownerId: user.id,
+      id: uuidv4(),
+      identificador: formData.identificador || '',
+      nombre: formData.nombre || '',
+      especie: formData.especie,
+      raza: formData.raza,
+      nacimiento: formData.nacimiento,
+      genero: formData.genero,
+      peso: formData.peso || '',
+      color: formData.color || '',
+      descripcion: formData.descripcion || '',
+      image: formData.image || '',
+      image2: '',
+      image3: '',
+      proposito: formData.proposito || '',
+      ubicacion: formData.ubicacion || '',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      embarazada: false,
+    };
+
+    try {
+      await addAnimal(animalData);
+      Alert.alert('Éxito', 'Animal guardado correctamente');
+      setFormData({})
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo guardar el animal');
+    }
   };
 
   // Ensure razasDisponibles and propositosDisponibles are always arrays
@@ -180,49 +242,7 @@ const New = () => {
           multiline
         />
 
-        <CustomButton
-          text="Guardar"
-          onPress={() => {
-            if (
-              !formData.nombre ||
-              !formData.especie ||
-              !formData.raza ||
-              !formData.proposito ||
-              !formData.genero ||
-              !formData.peso ||
-              !formData.color ||
-              !formData.ubicacion
-            ) {
-              Alert.alert('Error', 'Por favor completa todos los campos obligatorios');
-              return;
-            }
-
-            const animalData: Animal = {
-              ownerId: user.id,
-              id: uuidv4(),
-              identificador: formData.identificador || '',
-              nombre: formData.nombre || '',
-              especie: formData.especie,
-              raza: formData.raza,
-              nacimiento: formData.nacimiento,
-              genero: formData.genero,
-              peso: formData.peso || '',
-              color: formData.color || '',
-              descripcion: formData.descripcion || '',
-              image: formData.image || '',
-              image2: '',
-              image3: '',
-              proposito: formData.proposito || '',
-              ubicacion: formData.ubicacion || '',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              embarazada: false,
-            };
-
-            console.log('Animal data:', animalData);
-            Alert.alert('Formulario enviado', JSON.stringify(animalData, null, 2));
-          }}
-        />
+        <CustomButton text="Guardar" onPress={handleSubmit} />
         <Separator height={200} />
       </ScrollView>
     </GlobalContainer>

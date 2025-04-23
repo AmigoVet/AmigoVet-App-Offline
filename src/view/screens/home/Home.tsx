@@ -1,9 +1,10 @@
 import { View, Text } from 'react-native';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import GlobalContainer from '../../components/GlobalContainer';
 import { newColors } from '../../styles/colors';
 import CustomButton from '../../components/customs/CustomButton';
 import { Modalize } from 'react-native-modalize';
+import { createTables } from '../../../lib/db/createTables';
 
 const Home = () => {
   const modalizeRef = useRef<Modalize>(null);
@@ -17,6 +18,8 @@ const Home = () => {
     console.log('Closing modal'); // Depuración
     modalizeRef.current?.close();
   };
+
+
 
   return (
     <GlobalContainer>

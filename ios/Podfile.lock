@@ -1433,6 +1433,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-sqlite-storage (6.0.1):
+    - React-Core
   - react-native-vector-icons (11.0.0):
     - DoubleConversion
     - glog
@@ -2070,6 +2072,7 @@ DEPENDENCIES:
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-sqlite-storage (from `../node_modules/react-native-sqlite-storage`)
   - "react-native-vector-icons (from `../node_modules/@react-native-vector-icons/common`)"
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-oscompat (from `../node_modules/react-native/ReactCommon/oscompat`)
@@ -2200,6 +2203,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-sqlite-storage:
+    :path: "../node_modules/react-native-sqlite-storage"
   react-native-vector-icons:
     :path: "../node_modules/@react-native-vector-icons/common"
   React-NativeModulesApple:
@@ -2325,6 +2330,7 @@ SPEC CHECKSUMS:
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-image-picker: fba7ab3cefce56618bc646269f22f02df3fcc375
   react-native-safe-area-context: 562163222d999b79a51577eda2ea8ad2c32b4d06
+  react-native-sqlite-storage: 0c84826214baaa498796c7e46a5ccc9a82e114ed
   react-native-vector-icons: 9bc211082d39578babf726855c2f7f01ae3e9834
   React-NativeModulesApple: 8a465be9a58afc56f48c1322331ffbdecd3d4877
   React-oscompat: 74eb4badd12e93899f37a5dbb03d8a638011a292
@@ -2370,4 +2376,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 9f2c2fbad69ddeb837b78c7dcfb1c67f09c1f17d
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2
