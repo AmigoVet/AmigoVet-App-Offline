@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -8,11 +8,16 @@ import GlobalContainer from '../../components/GlobalContainer';
 import { newColors } from '../../styles/colors';
 import { GlobalStyles } from '../../styles/GlobalStyles';
 import Separator from '../../components/Separator';
+import { createTables } from '../../../lib/db/createTables';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Welcome'>;
 
 const Welcome = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
+
+  useEffect(() => {
+    createTables();
+  }, []);
 
   return (
     <GlobalContainer style={styles.contentContainer}>
