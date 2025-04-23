@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
+import { v4 as uuidv4 } from 'uuid'; // Import uuid for generating unique IDs
 import GlobalContainer from '../../../components/GlobalContainer';
 import Header from '../../../components/Header';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -11,6 +12,7 @@ import Separator from '../../../components/Separator';
 import CustomDatePicker from '../../../components/customs/CustomDatePicker';
 import { calculateOld } from '../../../../lib/functions/CalculateOld';
 import CustomInput from '../../../components/customs/CustomImput';
+import { useAuthStore } from '../../../../lib/store/authStore';
 
 // Extend Animal interface to include temporary form fields
 interface FormData extends Partial<Animal> {
@@ -19,6 +21,8 @@ interface FormData extends Partial<Animal> {
 }
 
 const New = () => {
+  const { user } = useAuthStore();
+
   const [formData, setFormData] = useState<FormData>({
     nombre: '',
     identificador: '',
@@ -194,8 +198,8 @@ const New = () => {
             }
 
             const animalData: Animal = {
-              ownerId: formData.ownerId || '',
-              id: formData.id || '',
+              ownerId: user.id,
+              id: uuidv4(),
               identificador: formData.identificador || '',
               nombre: formData.nombre || '',
               especie: formData.especie,
@@ -206,13 +210,13 @@ const New = () => {
               color: formData.color || '',
               descripcion: formData.descripcion || '',
               image: formData.image || '',
-              image2: formData.image2,
-              image3: formData.image3,
+              image2: '',
+              image3: '',
               proposito: formData.proposito || '',
               ubicacion: formData.ubicacion || '',
-              created_at: formData.created_at || '',
-              updated_at: formData.updated_at || '',
-              embarazada: formData.embarazada || false,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              embarazada: false,
             };
 
             console.log('Animal data:', animalData);

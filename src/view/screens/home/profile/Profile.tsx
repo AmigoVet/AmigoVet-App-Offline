@@ -23,6 +23,8 @@ const Profile = () => {
         <Text style={styles.title}>Perfil de Usuario</Text>
         {user ? (
           <View style={styles.infoContainer}>
+            <Text style={styles.label}>ID Completo:</Text>
+            <Text style={styles.value}>{user.id}</Text>
             <Text style={styles.label}>Nombre Completo:</Text>
             <Text style={styles.value}>{user.fullName}</Text>
             <Text style={styles.label}>Correo Electrónico:</Text>
