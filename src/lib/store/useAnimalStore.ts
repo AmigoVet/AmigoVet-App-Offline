@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { Transaction, SQLError } from 'react-native-sqlite-storage';
 import { setDataAnimal } from '../db/animals/setDataAnimal';
-import { db } from '../db/db';
+import { db, getStoragePath } from '../db/db'; // Importar getStoragePath
 import { Animal } from '../interfaces/Animal';
+import RNFS from 'react-native-fs';
 
 interface AnimalStore {
   animals: Animal[];
@@ -23,10 +24,26 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
         tx.executeSql(
           `SELECT * FROM Animal`,
           [],
-          (_, { rows }) => {
+          async (_, { rows }) => {
             const animals: Animal[] = [];
             for (let i = 0; i < rows.length; i++) {
               const item = rows.item(i);
+              
+              // Normalizar la ruta de la imagen
+              let imagePath = item.image || '';
+              if (imagePath && !imagePath.startsWith('file://')) {
+                // Asumir que la ruta es relativa al directorio de almacenamiento
+                imagePath = `file://${getStoragePath()}/animals/${item.image}`;
+              }
+              
+              // Verificar existencia del archivo
+              if (imagePath) {
+                const fileExists = await RNFS.exists(imagePath.replace('file://', ''));
+                if (!fileExists) {
+                  imagePath = ''; // Establecer como vacío si el archivo no existe
+                }
+              }
+              
               animals.push({
                 id: item.id,
                 ownerId: item.ownerId,
@@ -39,14 +56,14 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                 peso: item.peso,
                 color: item.color,
                 descripcion: item.descripcion,
-                image: item.image,
+                image: imagePath,
                 image2: item.image2,
                 image3: item.image3,
                 proposito: item.proposito,
                 ubicacion: item.ubicacion,
                 created_at: item.created_at,
                 updated_at: item.updated_at,
-                embarazada: !!item.embarazada, // Convert INTEGER to boolean
+                embarazada: !!item.embarazada,
               });
             }
             set({ animals });
@@ -65,7 +82,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   // Add a new animal
   addAnimal: async (animal: Animal) => {
     try {
-      await setDataAnimal(animal); // Persist to database
+      await setDataAnimal(animal); // Persistir en la base de datos
       set((state) => ({
         animals: [...state.animals, animal],
       }));

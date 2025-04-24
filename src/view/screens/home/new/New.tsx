@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { v4 as uuidv4 } from 'uuid';
+import RNFS from 'react-native-fs';
 import GlobalContainer from '../../../components/GlobalContainer';
 import Header from '../../../components/Header';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -58,7 +59,7 @@ const New = () => {
   }, [loadAnimals]);
 
   // Generic handler for updating form fields
-  const handleChange = (field: keyof FormData, value: string | Date | null) => {
+  const handleChange = async (field: keyof FormData, value: string | Date | null) => {
     setFormData((prev) => {
       const newFormData = { ...prev, [field]: value };
 
@@ -103,6 +104,15 @@ const New = () => {
       return;
     }
 
+    // Extraer solo el nombre del archivo de la URI
+    let imageFileName = '';
+    if (formData.image) {
+      const exists = await RNFS.exists(formData.image.replace('file://', ''));
+      if (exists) {
+        imageFileName = formData.image.split('/').pop() || '';
+      }
+    }
+
     const animalData: Animal = {
       ownerId: user.id,
       id: uuidv4(),
@@ -115,7 +125,7 @@ const New = () => {
       peso: formData.peso || '',
       color: formData.color || '',
       descripcion: formData.descripcion || '',
-      image: formData.image || '',
+      image: imageFileName, // Guardar solo el nombre del archivo
       image2: '',
       image3: '',
       proposito: formData.proposito || '',
@@ -128,8 +138,9 @@ const New = () => {
     try {
       await addAnimal(animalData);
       Alert.alert('Éxito', 'Animal guardado correctamente');
-      setFormData(initialFormData); // Reset form to initial state
+      setFormData(initialFormData);
     } catch (error) {
+      console.error('[ERROR] Error al guardar animal:', error);
       Alert.alert('Error', 'No se pudo guardar el animal');
     }
   };
@@ -156,7 +167,7 @@ const New = () => {
         keyboardShouldPersistTaps="handled"
       >
         <CustomImagePicker
-          onImageSelected={(uri) => handleChange('image', uri || '')}
+          onImageSelected={(uri) => handleChange('image', uri)}
         />
 
         <CustomInput
