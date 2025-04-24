@@ -4,6 +4,7 @@ import { RootStackParamList } from './navigationTypes';
 import AuthStack from './AuthStack';
 import MainTabs from './MainTabs';
 import { useAuthStore } from '../../lib/store/authStore';
+import AnimalView from '../screens/home/animalView/AnimalView';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -17,7 +18,10 @@ const AppNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {user ? (
-        <Stack.Screen name="MainApp" component={MainTabs} />
+        <>
+          <Stack.Screen name="MainApp" component={MainTabs} />
+          <Stack.Screen name="AnimalView" component={AnimalView} />
+        </>
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />
       )}

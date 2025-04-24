@@ -15,4 +15,6 @@ export type AuthStackParamList = {
 export type RootStackParamList = {
   MainApp: undefined;
   Auth: undefined;
+
+  AnimalView: { animalId: string };
 };

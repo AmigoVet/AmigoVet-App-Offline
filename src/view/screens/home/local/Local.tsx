@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import GlobalContainer from '../../../components/GlobalContainer'
 import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
 import CustomImage from '../../../components/customs/CustomImage';
+import PrivateAnimalCard from './components/PrivateAnimalCard';
 
 const Local = () => {
   const { animals, loadAnimals } = useAnimalStore();
@@ -15,17 +16,14 @@ const Local = () => {
 
   return (
     <GlobalContainer>
-      <Text>Lista de Animales</Text>
       <FlatList
+        ListHeaderComponent={() => (
+          <Text>Animales en la base de datos</Text>
+        )}
         data={animals}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View>
-            <CustomImage source={item.image} />
-            <Text>{item.nombre} ({item.especie})</Text>
-            <Text>Raza: {item.image}</Text>
-            <Text>Género: {item.genero}</Text>
-          </View>
+          <PrivateAnimalCard animal={item} />
         )}
       />
     </GlobalContainer>
