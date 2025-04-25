@@ -1,8 +1,14 @@
 import { create } from 'zustand';
 import { Transaction, SQLError } from 'react-native-sqlite-storage';
-import { setDataAnimal } from '../db/animals/setDataAnimal';
-import { db, getStoragePath } from '../db/db'; // Importar getStoragePath
+import { setDataAnimal, getDataAnimal } from '../db/animals';
+import { setDataNote, getNotesByAnimalId, updateNote, deleteNote } from '../db/notes';
+import { setDataRegister, getRegistersByAnimalId, updateRegister, deleteRegister } from '../db/registers';
+import { setDataEvent, getEventsByAnimalId, updateEvent, deleteEvent } from '../db/events';
+import { db, getStoragePath } from '../db/db';
 import { Animal } from '../interfaces/Animal';
+import { Notes } from '../interfaces/Notes';
+import { Register } from '../interfaces/Register';
+import { Events } from '../interfaces/Events';
 import RNFS from 'react-native-fs';
 
 interface AnimalStore {
@@ -11,13 +17,20 @@ interface AnimalStore {
   addAnimal: (animal: Animal) => Promise<void>;
   updateAnimal: (animal: Animal) => Promise<void>;
   deleteAnimal: (id: string) => Promise<void>;
+  addNote: (note: Notes) => Promise<void>;
+  updateNote: (note: Notes) => Promise<void>;
+  deleteNote: (id: string) => Promise<void>;
+  addRegister: (register: Register) => Promise<void>;
+  updateRegister: (register: Register) => Promise<void>;
+  deleteRegister: (id: string) => Promise<void>;
+  addEvent: (event: Events) => Promise<void>;
+  updateEvent: (event: Events) => Promise<void>;
+  deleteEvent: (id: string) => Promise<void>;
 }
 
-// Create the Zustand store
 export const useAnimalStore = create<AnimalStore>((set) => ({
   animals: [],
 
-  // Load animals from the database
   loadAnimals: async () => {
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
@@ -32,7 +45,6 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
               // Normalizar la ruta de la imagen
               let imagePath = item.image || '';
               if (imagePath && !imagePath.startsWith('file://')) {
-                // Asumir que la ruta es relativa al directorio de almacenamiento
                 imagePath = `file://${getStoragePath()}/animals/${item.image}`;
               }
               
@@ -40,10 +52,15 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
               if (imagePath) {
                 const fileExists = await RNFS.exists(imagePath.replace('file://', ''));
                 if (!fileExists) {
-                  imagePath = ''; // Establecer como vacío si el archivo no existe
+                  imagePath = '';
                 }
               }
-              
+
+              // Obtener notas, registros y eventos
+              const notes = await getNotesByAnimalId(item.id);
+              const registers = await getRegistersByAnimalId(item.id);
+              const events = await getEventsByAnimalId(item.id);
+
               animals.push({
                 id: item.id,
                 ownerId: item.ownerId,
@@ -64,6 +81,9 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                 created_at: item.created_at,
                 updated_at: item.updated_at,
                 embarazada: !!item.embarazada,
+                notes,
+                registers,
+                events,
               });
             }
             set({ animals });
@@ -79,12 +99,11 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     });
   },
 
-  // Add a new animal
   addAnimal: async (animal: Animal) => {
     try {
-      await setDataAnimal(animal); // Persistir en la base de datos
+      await setDataAnimal(animal);
       set((state) => ({
-        animals: [...state.animals, animal],
+        animals: [...state.animals, { ...animal, notes: [], registers: [], events: [] }],
       }));
     } catch (error) {
       console.error('[ERROR] Error al agregar animal:', error);
@@ -92,7 +111,6 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     }
   },
 
-  // Update an existing animal
   updateAnimal: async (updatedAnimal: Animal) => {
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
@@ -127,7 +145,9 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
           () => {
             set((state) => ({
               animals: state.animals.map((animal) =>
-                animal.id === updatedAnimal.id ? updatedAnimal : animal
+                animal.id === updatedAnimal.id
+                  ? { ...updatedAnimal, notes: animal.notes, registers: animal.registers, events: animal.events }
+                  : animal
               ),
             }));
             resolve();
@@ -142,7 +162,6 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     });
   },
 
-  // Delete an animal
   deleteAnimal: async (id: string) => {
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
@@ -163,5 +182,161 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
         );
       });
     });
+  },
+
+  addNote: async (note: Notes) => {
+    try {
+      await setDataNote(note);
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === note.animalId
+            ? { ...animal, notes: [...(animal.notes || []), note] }
+            : animal
+        ),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al agregar nota:', error);
+      throw error;
+    }
+  },
+
+  updateNote: async (updatedNote: Notes) => {
+    try {
+      await updateNote(updatedNote);
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === updatedNote.animalId
+            ? {
+                ...animal,
+                notes: animal.notes?.map((note) =>
+                  note.id === updatedNote.id ? updatedNote : note
+                ),
+              }
+            : animal
+        ),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al actualizar nota:', error);
+      throw error;
+    }
+  },
+
+  deleteNote: async (id: string) => {
+    try {
+      await deleteNote(id);
+      set((state) => ({
+        animals: state.animals.map((animal) => ({
+          ...animal,
+          notes: animal.notes?.filter((note) => note.id !== id),
+        })),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al eliminar nota:', error);
+      throw error;
+    }
+  },
+
+  addRegister: async (register: Register) => {
+    try {
+      await setDataRegister(register);
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === register.animalId
+            ? { ...animal, registers: [...(animal.registers || []), register] }
+            : animal
+        ),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al agregar registro:', error);
+      throw error;
+    }
+  },
+
+  updateRegister: async (updatedRegister: Register) => {
+    try {
+      await updateRegister(updatedRegister);
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === updatedRegister.animalId
+            ? {
+                ...animal,
+                registers: animal.registers?.map((reg) =>
+                  reg.id === updatedRegister.id ? updatedRegister : reg
+                ),
+              }
+            : animal
+        ),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al actualizar registro:', error);
+      throw error;
+    }
+  },
+
+  deleteRegister: async (id: string) => {
+    try {
+      await deleteRegister(id);
+      set((state) => ({
+        animals: state.animals.map((animal) => ({
+          ...animal,
+          registers: animal.registers?.filter((reg) => reg.id !== id),
+        })),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al eliminar registro:', error);
+      throw error;
+    }
+  },
+
+  addEvent: async (event: Events) => {
+    try {
+      await setDataEvent(event);
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === event.animalId
+            ? { ...animal, events: [...(animal.events || []), event] }
+            : animal
+        ),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al agregar evento:', error);
+      throw error;
+    }
+  },
+
+  updateEvent: async (updatedEvent: Events) => {
+    try {
+      await updateEvent(updatedEvent);
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === updatedEvent.animalId
+            ? {
+                ...animal,
+                events: animal.events?.map((evt) =>
+                  evt.id === updatedEvent.id ? updatedEvent : evt
+                ),
+              }
+            : animal
+        ),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al actualizar evento:', error);
+      throw error;
+    }
+  },
+
+  deleteEvent: async (id: string) => {
+    try {
+      await deleteEvent(id);
+      set((state) => ({
+        animals: state.animals.map((animal) => ({
+          ...animal,
+          events: animal.events?.filter((evt) => evt.id !== id),
+        })),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al eliminar evento:', error);
+      throw error;
+    }
   },
 }));

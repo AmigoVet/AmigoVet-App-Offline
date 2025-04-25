@@ -1,4 +1,6 @@
 import { Register } from "./Register";
+import { Notes } from "./Notes";
+import { Events } from "./Events";
 
 export interface Animal {
     ownerId: string;
@@ -20,18 +22,13 @@ export interface Animal {
     created_at: string;
     updated_at: string;
     embarazada: boolean;
+    notes?: Notes[];
+    registers?: Register[];
+    events?: Events[];
 }
 
 export interface AnimalWithNotes extends Animal {
     notes: Notes[];
-}
-
-export interface Notes {
-    id: string;
-    animalId: string;
-    nota: string;
-    fecha: string;
-    created_at: string;
 }
 
 export type Image = string;
