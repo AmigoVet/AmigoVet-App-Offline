@@ -102,7 +102,10 @@ const styles = StyleSheet.create({
       borderRadius: constants.borderRadius,
       width: '100%',
       color: newColors.fondo_secundario,
-      fontWeight: 'bold',
+      fontWeight: '600',
+      fontFamily: constants.FontText,
+      minHeight: 30,
+      maxHeight: 40,
   },
   data: {
     borderRadius: constants.borderRadius,
@@ -112,7 +115,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     alignItems: 'center', 
     borderBottomWidth: 1,
-    borderRadius: constants.borderRadius
+    borderRadius: constants.borderRadius,
+    minHeight: 30,
+    maxHeight: 40,
   },
   dataText:{
     textAlign: 'center',
@@ -120,6 +125,7 @@ const styles = StyleSheet.create({
     padding: 5,
     color: newColors.fondo_secundario,
     fontWeight: 'bold',
+    fontFamily: constants.FontTitle
   }
 })
 const styles2 = StyleSheet.create({
@@ -140,14 +146,16 @@ const styles2 = StyleSheet.create({
   textIcon:{
     fontWeight: '700',
     color: newColors.verde,
+    fontFamily: constants.FontTitle,
   },
   text:{
     backgroundColor: newColors.verde_light,
     borderRadius: constants.borderRadius / 3,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    fontWeight: '700',
+    fontWeight: '500',
     color: newColors.fondo_secundario,
+    fontFamily: constants.FontText,
   }
 })
 

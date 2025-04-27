@@ -142,12 +142,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: newColors.fondo_principal,
     textAlign: 'center',
+    fontFamily: constants.FontTitle
   },
   subtitle: {
     fontSize: 12,
     fontWeight: '300',
     color: newColors.fondo_principal,
     textAlign: 'center',
+    fontFamily: constants.FontTitle
   },
   imageContainer: {
     zIndex: 10,

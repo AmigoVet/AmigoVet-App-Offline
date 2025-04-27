@@ -46,9 +46,11 @@ const styles = StyleSheet.create({
     borderColor: newColors.fondo_secundario,
     borderRadius: constants.borderRadius,
     alignSelf: 'flex-start',
+    fontFamily: constants.FontTitle,
   },
   info: {
     color: newColors.fondo_secundario,
+    fontFamily: constants.FontText,
   },
 });
 
