@@ -1,3 +1,4 @@
+import { Animal } from '../../lib/interfaces/Animal';
 import Busqueda from '../screens/home/busqueda/Busqueda';
 export type MainTabsParamList = {
   Home: undefined;
@@ -17,6 +18,6 @@ export type RootStackParamList = {
   MainApp: undefined;
   Auth: undefined;
 
-  AnimalView: { animalId: string };
+  AnimalView: { animal: Animal };
   Busqueda: undefined;
 };

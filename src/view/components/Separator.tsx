@@ -3,11 +3,12 @@ import React from 'react'
 
 interface SeparatorProps {
   height?: number
+  bg? : string
 }
 
-const Separator = ({ height }: SeparatorProps) => {
+const Separator = ({ height, bg }: SeparatorProps) => {
   return (
-    <View  style={{height: height, width: '100%'}} />
+    <View  style={{height: height, width: '100%', backgroundColor: bg}} />
   )
 }
 

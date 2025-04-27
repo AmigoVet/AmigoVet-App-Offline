@@ -17,7 +17,7 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
   const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
-    <Pressable style={styles.box} onPress={() => navigate('AnimalView', { animalId: animal.id })}>
+    <Pressable style={styles.box} onPress={() => navigate('AnimalView', { animal: animal })}>
       <View style={styles.imageContainer}>
         <CustomImage source={animal.image} style={{height: '100%'}} />
       </View>
