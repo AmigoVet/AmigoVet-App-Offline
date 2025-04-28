@@ -31,6 +31,7 @@ interface AnimalStore {
 export const useAnimalStore = create<AnimalStore>((set) => ({
   animals: [],
 
+  // Animales 
   loadAnimals: async () => {
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
@@ -184,6 +185,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     });
   },
 
+  // Notas
   addNote: async (note: Notes) => {
     try {
       await setDataNote(note);
@@ -236,6 +238,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     }
   },
 
+  // Registros
   addRegister: async (register: Register) => {
     try {
       await setDataRegister(register);
@@ -288,8 +291,10 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     }
   },
 
+  // Eventos
   addEvent: async (event: Events) => {
     try {
+      console.log('Intentando agregar evento:', event);
       await setDataEvent(event);
       set((state) => ({
         animals: state.animals.map((animal) =>
@@ -298,9 +303,9 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             : animal
         ),
       }));
-    } catch (error) {
-      console.error('[ERROR] Error al agregar evento:', error);
-      throw error;
+    } catch (error: any) {
+      console.error('[ERROR] Error al agregar evento:', error.message || error);
+      throw new Error(`No se pudo agregar el evento: ${error.message || 'Error desconocido'}`);
     }
   },
 

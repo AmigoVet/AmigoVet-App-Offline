@@ -1,197 +1,192 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { newColors } from "../../styles/colors";
-import { constants } from "../../styles/constants";
-import Icon from "@react-native-vector-icons/ionicons";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, Platform, Modal } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { newColors } from '../../styles/colors';
+import { constants } from '../../styles/constants';
+import Icon from '@react-native-vector-icons/ionicons';
 
 interface CustomDatePickerProps {
   label: string;
   value: Date | null;
   onDateChange: (date: Date | null) => void;
-  onAgeChange?: (age: string) => void;
-  onBirthDateCalculated?: (birthDate: Date | null) => void;
-  ageValue?: string;
-  findAge?: boolean;
+  allowFutureDates?: boolean; // Nueva prop para permitir fechas futuras
+  allowPastDates?: boolean; // Nueva prop para permitir fechas pasadas
 }
 
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   label,
   value,
   onDateChange,
-  onAgeChange,
-  onBirthDateCalculated,
-  ageValue = "",
-  findAge = false,
+  allowFutureDates = true,
+  allowPastDates = true,
 }) => {
   const [showPicker, setShowPicker] = useState(false);
-  const [showAgeInput, setShowAgeInput] = useState(false);
+  const [inputText, setInputText] = useState<string>(
+    value
+      ? value.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      : ''
+  );
 
-  const styles = createStyles();
+  const parseDate = (text: string): Date | null => {
+    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    if (!regex.test(text)) return null;
 
-  // Calcular texto de la edad según la fecha seleccionada
-  const calculateAgeText = (birthDate: Date | null): string => {
-    if (!birthDate) return "";
-    const now = new Date();
-    const diffMs = now.getTime() - birthDate.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    if (diffDays < 7) return `${diffDays} días`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} semanas`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} meses`;
-    return `${Math.floor(diffDays / 365)} años`;
-  };
+    const [day, month, year] = text.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
 
-  // Calcular fecha aproximada de nacimiento según la edad ingresada
-  const approximateBirthDate = (): string => {
-    if (!ageValue) return "";
-    const now = new Date();
-    const yearsAgo = parseInt(ageValue, 10);
-    if (isNaN(yearsAgo)) return "";
-    const approxDate = new Date();
-    approxDate.setFullYear(now.getFullYear() - yearsAgo);
-    return approxDate.toISOString().split("T")[0];
-  };
-
-  // Calcular la fecha de nacimiento solo si se ingresa una edad manualmente
-  useEffect(() => {
-    if (showAgeInput && onBirthDateCalculated && ageValue) {
-      const yearsAgo = parseInt(ageValue, 10);
-      if (!isNaN(yearsAgo)) {
-        const now = new Date();
-        const birthDate = new Date();
-        birthDate.setFullYear(now.getFullYear() - yearsAgo);
-        onBirthDateCalculated(birthDate);
-      } else {
-        onBirthDateCalculated(null);
-      }
+    if (
+      date.getDate() === day &&
+      date.getMonth() === month - 1 &&
+      date.getFullYear() === year
+    ) {
+      const now = new Date();
+      if (!allowFutureDates && date > now) return null;
+      if (!allowPastDates && date < now) return null;
+      return date;
     }
-  }, [ageValue, onBirthDateCalculated, showAgeInput]);
+    return null;
+  };
 
-  const handleDateChange = (selectedDate: Date | null) => {
-    if (selectedDate && (!value || selectedDate.getTime() !== value.getTime())) {
+  const handleInputChange = (text: string) => {
+    const cleanedText = text.replace(/[^0-9/]/g, '');
+    let formattedText = cleanedText;
+
+    // Autoformatear mientras se escribe
+    if (cleanedText.length === 2 || cleanedText.length === 5) {
+      formattedText = `${cleanedText}/`;
+    }
+    if (cleanedText.length > 2 && cleanedText[2] !== '/') {
+      formattedText = `${cleanedText.slice(0, 2)}/${cleanedText.slice(2)}`;
+    }
+    if (cleanedText.length > 5 && cleanedText[5] !== '/') {
+      formattedText = `${cleanedText.slice(0, 5)}/${cleanedText.slice(5)}`;
+    }
+    if (formattedText.length > 10) {
+      formattedText = formattedText.slice(0, 10);
+    }
+
+    setInputText(formattedText);
+
+    const parsedDate = parseDate(formattedText);
+    onDateChange(parsedDate);
+  };
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowPicker(false); // Cerrar el picker después de seleccionar o cancelar
+    if (selectedDate) {
+      const formattedText = selectedDate.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+      setInputText(formattedText);
       onDateChange(selectedDate);
+    } else if (event.type === 'dismissed' || !selectedDate) {
+      // Mantener el valor actual si se cancela
+      setInputText(
+        value
+          ? value.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          : ''
+      );
+      onDateChange(value);
     }
   };
 
-  const handleSwitchMode = () => {
-    setShowAgeInput((prev) => !prev);
-    if (!showAgeInput) {
-      onDateChange(null); // Limpiar la fecha al cambiar a modo de edad manual
-    } else if (onAgeChange) {
-      onAgeChange("");
-    }
+  const openPicker = () => {
+    setShowPicker(true);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>
-        {showAgeInput ? "Ingresa la edad aproximada en años" : label}
-      </Text>
-
-      {!showAgeInput && (
-        <>
-          <TouchableOpacity
-            style={styles.datePickerButton}
-            onPress={() => setShowPicker(true)}
-          >
-            <Text style={styles.dateText}>
-              {value ? value.toISOString().split("T")[0] : "Selecciona una fecha"}
-            </Text>
-            <Icon name="calendar-outline" size={20} color={newColors.fondo_secundario} />
-          </TouchableOpacity>
-          {value && findAge && (
-            <Text style={styles.ageLabel}>{`Edad aproximada: ${calculateAgeText(value)}`}</Text>
-          )}
-          {findAge && 
-          <TouchableOpacity style={styles.switchButton} onPress={handleSwitchMode}>
-            <Text style={styles.switchText}>No sé la fecha exacta</Text>
-          </TouchableOpacity>
-          }
-          
-        </>
-      )}
-
-      {showAgeInput && onAgeChange && (
-        <>
-          <TextInput
-            style={styles.ageInput}
-            placeholder="Ingresa la edad en años"
-            placeholderTextColor={newColors.gris}
-            keyboardType="numeric"
-            value={ageValue}
-            onChangeText={(age) => {
-              if (age !== ageValue) onAgeChange(age);
-            }}
-          />
-          {ageValue && (
-            <Text style={styles.ageLabel}>{`Fecha aproximada de nacimiento: ${approximateBirthDate()}`}</Text>
-          )}
-          <TouchableOpacity style={styles.switchButton} onPress={handleSwitchMode}>
-            <Text style={styles.switchText}>Seleccionar fecha</Text>
-          </TouchableOpacity>
-        </>
-      )}
-
-      {showPicker && (
-        <DateTimePicker
-          value={value ?? new Date()}
-          mode="date"
-          display="default"
-          maximumDate={new Date()}
-          onChange={(event, selectedDate) => {
-            setShowPicker(false);
-            handleDateChange(selectedDate || null);
-          }}
+      <Text style={styles.label}>{label}</Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.dateInput}
+          value={inputText}
+          onChangeText={handleInputChange}
+          placeholder="dd/mm/aaaa"
+          placeholderTextColor={newColors.gris}
+          keyboardType="numeric"
+          maxLength={10}
         />
+        <TouchableOpacity style={styles.iconButton} onPress={openPicker}>
+          <Icon name="calendar-outline" size={20} color={newColors.fondo_secundario} />
+        </TouchableOpacity>
+      </View>
+      {showPicker && (
+        <Modal transparent animationType="fade" visible={showPicker}>
+          <View style={styles.modalContainer}>
+            <View style={styles.pickerContainer}>
+              <DateTimePicker
+                value={value ?? new Date()}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                maximumDate={allowFutureDates ? undefined : new Date()}
+                minimumDate={allowPastDates ? undefined : new Date()}
+                onChange={handleDateChange}
+              />
+              {Platform.OS === 'ios' && (
+                <TouchableOpacity style={styles.closeButton} onPress={() => setShowPicker(false)}>
+                  <Text style={styles.closeButtonText}>Cerrar</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </Modal>
       )}
     </View>
   );
 };
 
-const createStyles = () =>
-  StyleSheet.create({
-    container: {
-      marginVertical: 10,
-    },
-    label: {
-      fontSize: 16,
-      fontWeight: "500",
-      marginBottom: 5,
-      color: newColors.fondo_secundario,
-    },
-    datePickerButton: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      borderColor: newColors.fondo_secundario,
-      borderWidth: 2,
-      borderRadius: constants.borderRadius / 2,
-      padding: 10,
-    },
-    dateText: {
-      color: newColors.fondo_secundario,
-      fontWeight: "500",
-    },
-    switchButton: {
-      marginTop: 10,
-    },
-    switchText: {
-      color: newColors.fondo_secundario,
-      fontSize: 14,
-      textDecorationLine: "underline",
-    },
-    ageInput: {
-      borderColor: newColors.verde_light,
-      borderWidth: 1,
-      borderRadius: 5,
-      padding: 10,
-      color: newColors.principal,
-    },
-    ageLabel: {
-      marginTop: 5,
-      fontSize: 14,
-      color: newColors.fondo_secundario,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 5,
+    color: newColors.fondo_secundario,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: newColors.fondo_secundario,
+    borderWidth: 2,
+    borderRadius: constants.borderRadius / 2,
+    paddingHorizontal: 10,
+  },
+  dateInput: {
+    flex: 1,
+    paddingVertical: 10,
+    color: newColors.fondo_secundario,
+    fontWeight: '500',
+  },
+  iconButton: {
+    padding: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pickerContainer: {
+    backgroundColor: newColors.fondo_principal,
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  closeButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: newColors.fondo_secundario,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});
 
 export default CustomDatePicker;

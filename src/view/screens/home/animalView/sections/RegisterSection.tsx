@@ -3,6 +3,7 @@ import React from 'react';
 import { Register } from '../../../../../lib/interfaces/Register';
 import { newColors } from '../../../../styles/colors';
 import { styleSections } from './styles';
+import MiniButton from '../../../../components/MiniButton';
 
 interface RegistersProps {
   registers: Register[];
@@ -11,7 +12,10 @@ interface RegistersProps {
 const RegisterSection = ({ registers }: RegistersProps) => {
   return (
     <View style={styleSections.container}>
-      <Text style={styleSections.title}>Registros</Text>
+      <View style={styleSections.header}>
+        <Text style={styleSections.title}>Registros</Text>
+        <MiniButton text='Agregar' icon='add-outline' onPress={() => {}} />
+      </View>
       {registers.length === 0 ? (
         <Text style={styleSections.noDataText}>No hay registros</Text>
       ) : (

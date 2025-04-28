@@ -3,6 +3,7 @@ import React from 'react';
 import { Notes } from '../../../../../lib/interfaces/Notes';
 import { newColors } from '../../../../styles/colors';
 import { styleSections } from './styles';
+import MiniButton from '../../../../components/MiniButton';
 
 interface NotesProps {
   notes: Notes[];
@@ -11,7 +12,10 @@ interface NotesProps {
 const NoteSection = ({ notes }: NotesProps) => {
   return (
     <View style={styleSections.container}>
-      <Text style={styleSections.title}>Notas</Text>
+      <View style={styleSections.header}>
+        <Text style={styleSections.title}>Notas</Text>
+        <MiniButton text='Agregar' icon='add-outline' onPress={() => {}} />
+      </View>
       {notes.length === 0 ? (
         <Text style={styleSections.noDataText}>No hay notas</Text>
       ) : (

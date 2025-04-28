@@ -221,9 +221,6 @@ const New = () => {
           label="Fecha de Nacimiento"
           value={formData.fechaNacimiento || null}
           onDateChange={(date) => handleChange('fechaNacimiento', date)}
-          onAgeChange={(age) => handleChange('edad', age)}
-          onBirthDateCalculated={(birthDate) => handleChange('fechaNacimiento', birthDate)}
-          ageValue={formData.edad || ''}
         />
 
         <CustomInput

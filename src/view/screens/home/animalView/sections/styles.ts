@@ -10,6 +10,13 @@ container: {
   backgroundColor: newColors.fondo_secundario,
   paddingVertical: 10,
 },
+header: {
+  width: '100%',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingHorizontal: 20,
+},
 title: {
   fontSize: 16,
   fontWeight: 'bold',

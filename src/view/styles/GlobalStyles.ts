@@ -17,5 +17,25 @@ export const GlobalStyles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'medium',
         color: newColors.fondo_secundario,
-      },
+    },
+    modalContainer: {
+        backgroundColor: newColors.fondo_principal,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        padding: 20,
+        minHeight: 400,
+        maxHeight: '80%',
+    },
+    modalHeader: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        alignContent: 'center',
+        alignItems: 'center',
+        borderBottomColor: newColors.fondo_secundario,
+        borderBottomWidth: 1,
+        paddingBottom: 10,
+        borderRadius: constants.borderRadius,
+    }
 });

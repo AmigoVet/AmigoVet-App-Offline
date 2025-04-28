@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     width: '80%',
-    borderRadius: constants.borderRadius,
+    borderRadius: constants.borderRadius / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
