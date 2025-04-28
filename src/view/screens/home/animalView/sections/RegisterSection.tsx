@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 import { Register } from '../../../../../lib/interfaces/Register';
 import { newColors } from '../../../../styles/colors';
+import { styleSections } from './styles';
 
 interface RegistersProps {
   registers: Register[];
@@ -9,13 +10,13 @@ interface RegistersProps {
 
 const RegisterSection = ({ registers }: RegistersProps) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Registros</Text>
+    <View style={styleSections.container}>
+      <Text style={styleSections.title}>Registros</Text>
       {registers.length === 0 ? (
-        <Text style={styles.noDataText}>No hay registros</Text>
+        <Text style={styleSections.noDataText}>No hay registros</Text>
       ) : (
         registers.map((register) => (
-          <View key={register.id} style={styles.itemContainer}>
+          <View key={register.id} style={styleSections.itemContainer}>
             <Text style={styles.itemText}>{register.comentario}</Text>
             <Text style={styles.itemDate}>{register.fecha}</Text>
           </View>
@@ -26,35 +27,6 @@ const RegisterSection = ({ registers }: RegistersProps) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    backgroundColor: newColors.fondo_secundario,
-    paddingVertical: 10,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: newColors.fondo_principal,
-    borderBottomWidth: 1,
-    borderColor: newColors.fondo_principal,
-    alignSelf: 'center', // Centra el título horizontalmente
-    marginBottom: 10,
-  },
-  noDataText: {
-    fontSize: 14,
-    color: newColors.fondo_principal,
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  itemContainer: {
-    width: '90%',
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: newColors.fondo_principal,
-    borderRadius: 5,
-  },
   itemText: {
     fontSize: 14,
     color: newColors.fondo_secundario,

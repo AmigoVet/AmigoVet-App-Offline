@@ -13,6 +13,7 @@ import Register from '../../auth/register/Register';
 import RegisterSection from './sections/RegisterSection';
 import { newColors } from '../../../styles/colors';
 import Separator from '../../../components/Separator';
+import { constants } from '../../../styles/constants';
 
 type AnimalViewRouteProp = RouteProp<RootStackParamList, 'AnimalView'>;
 type TabSection = 'events' | 'notes' | 'registers';
@@ -38,6 +39,7 @@ const AnimalView = () => {
       <Text style={{
         color: activeTab === section ? 'white' : newColors.fondo_secundario,
         fontWeight: activeTab === section ? 'bold' : 'normal',
+        fontFamily: constants.FontTitle
       }}>
         {title}
       </Text>
