@@ -1,12 +1,12 @@
 import { Notes } from "../../interfaces/Notes";
 import { db } from "../db";
 
-export const getNotesByAnimalId = (animalId: string): Promise<Notes[]> => {
+export const getNotesByAnimalId = (animalId: string, page: number = 1, limit: number = 10): Promise<Notes[]> => {
     return new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql(
-                `SELECT * FROM Notas WHERE animalId = ?`,
-                [animalId],
+                `SELECT * FROM Notas WHERE animalId = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+                [animalId, limit, (page - 1) * limit],
                 (_, { rows }) => {
                     const notes: Notes[] = [];
                     for (let i = 0; i < rows.length; i++) {

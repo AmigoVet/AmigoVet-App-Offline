@@ -14,7 +14,8 @@ import { updateAnimal } from '../db/animals/updateAnimal';
 
 interface AnimalStore {
   animals: Animal[];
-  loadAnimals: () => Promise<void>;
+  totalAnimals: number;
+  loadAnimals: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
   addAnimal: (animal: Animal) => Promise<void>;
   updateAnimal: (animal: Animal) => Promise<void>;
   deleteAnimal: (id: string) => Promise<void>;
@@ -32,68 +33,126 @@ interface AnimalStore {
 
 export const useAnimalStore = create<AnimalStore>((set) => ({
   animals: [],
+  totalAnimals: 0,
 
   // Animales 
-  loadAnimals: async () => {
+  loadAnimals: async (page = 1, limit = 10, filters = {}) => {
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
+        // Build WHERE clause and ORDER BY based on filters
+        let whereClause = '';
+        const filterParams: (string | number)[] = [];
+        const filterConditions: string[] = [];
+        let orderBy = 'created_at DESC';
+
+        if (filters.Género) {
+          filterConditions.push('genero = ?');
+          filterParams.push(String(filters.Género));
+        }
+        if (filters.Especie) {
+          filterConditions.push('especie = ?');
+          filterParams.push(String(filters.Especie));
+        }
+        if (filters.Raza) {
+          filterConditions.push('raza = ?');
+          filterParams.push(String(filters.Raza));
+        }
+        if (filters.Propósito) {
+          filterConditions.push('proposito = ?');
+          filterParams.push(String(filters.Propósito));
+        }
+        if (filters.Edad) {
+          const edadFiltro = Number(filters.Edad);
+          if (edadFiltro === 10) {
+            filterConditions.push("strftime('%Y', 'now') - strftime('%Y', nacimiento) >= 10");
+          } else {
+            filterConditions.push("strftime('%Y', 'now') - strftime('%Y', nacimiento) = ?");
+            filterParams.push(edadFiltro);
+          }
+        }
+        if (filters.Reciente === true) {
+          orderBy = 'created_at DESC';
+        }
+        if (filters.Antiguo === true) {
+          orderBy = 'created_at ASC';
+        }
+
+        if (filterConditions.length > 0) {
+          whereClause = `WHERE ${filterConditions.join(' AND ')}`;
+        }
+
+        // First, get the total count of animals
         tx.executeSql(
-          `SELECT * FROM Animal`,
-          [],
-          async (_, { rows }) => {
-            const animals: Animal[] = [];
-            for (let i = 0; i < rows.length; i++) {
-              const item = rows.item(i);
-              
-              // Normalizar la ruta de la imagen
-              let imagePath = item.image || '';
-              if (imagePath && !imagePath.startsWith('file://')) {
-                imagePath = `file://${getStoragePath()}/animals/${item.image}`;
-              }
-              
-              // Verificar existencia del archivo
-              if (imagePath) {
-                const fileExists = await RNFS.exists(imagePath.replace('file://', ''));
-                if (!fileExists) {
-                  imagePath = '';
+          `SELECT COUNT(*) as count FROM Animal ${whereClause}`,
+          filterParams,
+          (_, { rows }) => {
+            const totalAnimals = rows.item(0).count;
+            
+            // Then, fetch paginated animals
+            tx.executeSql(
+              `SELECT * FROM Animal ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+              [...filterParams, limit, (page - 1) * limit],
+              async (_, { rows }) => {
+                const animals: Animal[] = [];
+                for (let i = 0; i < rows.length; i++) {
+                  const item = rows.item(i);
+                  
+                  // Normalizar la ruta de la imagen
+                  let imagePath = item.image || '';
+                  if (imagePath && !imagePath.startsWith('file://')) {
+                    imagePath = `file://${getStoragePath()}/animals/${item.image}`;
+                  }
+                  
+                  // Verificar existencia del archivo
+                  if (imagePath) {
+                    const fileExists = await RNFS.exists(imagePath.replace('file://', ''));
+                    if (!fileExists) {
+                      imagePath = '';
+                    }
+                  }
+
+                  // Obtener notas, registros y eventos
+                  const notes = await getNotesByAnimalId(item.id, 1, 10);
+                  const registers = await getRegistersByAnimalId(item.id, 1, 10);
+                  const events = await getEventsByAnimalId(item.id, 1, 10);
+
+                  animals.push({
+                    id: item.id,
+                    ownerId: item.ownerId,
+                    identificador: item.identificador,
+                    nombre: item.nombre,
+                    especie: item.especie,
+                    raza: item.raza,
+                    nacimiento: item.nacimiento,
+                    genero: item.genero,
+                    peso: item.peso,
+                    color: item.color,
+                    descripcion: item.descripcion,
+                    image: imagePath,
+                    image2: item.image2,
+                    image3: item.image3,
+                    proposito: item.proposito,
+                    ubicacion: item.ubicacion,
+                    created_at: item.created_at,
+                    updated_at: item.updated_at,
+                    embarazada: !!item.embarazada,
+                    notes,
+                    registers,
+                    events,
+                  });
                 }
+                set({ animals, totalAnimals });
+                resolve();
+              },
+              (_, error: SQLError) => {
+                console.error('[ERROR] Error al cargar animales:', error);
+                reject(error);
+                return false;
               }
-
-              // Obtener notas, registros y eventos
-              const notes = await getNotesByAnimalId(item.id);
-              const registers = await getRegistersByAnimalId(item.id);
-              const events = await getEventsByAnimalId(item.id);
-
-              animals.push({
-                id: item.id,
-                ownerId: item.ownerId,
-                identificador: item.identificador,
-                nombre: item.nombre,
-                especie: item.especie,
-                raza: item.raza,
-                nacimiento: item.nacimiento,
-                genero: item.genero,
-                peso: item.peso,
-                color: item.color,
-                descripcion: item.descripcion,
-                image: imagePath,
-                image2: item.image2,
-                image3: item.image3,
-                proposito: item.proposito,
-                ubicacion: item.ubicacion,
-                created_at: item.created_at,
-                updated_at: item.updated_at,
-                embarazada: !!item.embarazada,
-                notes,
-                registers,
-                events,
-              });
-            }
-            set({ animals });
-            resolve();
+            );
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al cargar animales:', error);
+            console.error('[ERROR] Error al contar animales:', error);
             reject(error);
             return false;
           }
@@ -106,7 +165,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     try {
       await setDataAnimal(animal);
       set((state) => ({
-        animals: [...state.animals, { ...animal, notes: [], registers: [], events: [] }],
+        animals: [{ ...animal, notes: [], registers: [], events: [] }, ...state.animals.slice(0, 9)],
+        totalAnimals: state.totalAnimals + 1,
       }));
     } catch (error) {
       console.error('[ERROR] Error al agregar animal:', error);
@@ -174,6 +234,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
           () => {
             set((state) => ({
               animals: state.animals.filter((animal) => animal.id !== id),
+              totalAnimals: state.totalAnimals - 1,
             }));
             resolve();
           },
@@ -189,7 +250,6 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
 
   updateAnimalPregnancy: async (animalId: string, embarazada: boolean) => {
     try {
-      // Asumimos una función updateAnimal en la base de datos
       await updateAnimal(animalId, { embarazada });
       set((state) => ({
         animals: state.animals.map((animal) =>
@@ -209,7 +269,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
       set((state) => ({
         animals: state.animals.map((animal) =>
           animal.id === note.animalId
-            ? { ...animal, notes: [...(animal.notes || []), note] }
+            ? { ...animal, notes: [note, ...(animal.notes || []).slice(0, 9)] }
             : animal
         ),
       }));
@@ -262,7 +322,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
       set((state) => ({
         animals: state.animals.map((animal) =>
           animal.id === register.animalId
-            ? { ...animal, registers: [...(animal.registers || []), register] }
+            ? { ...animal, registers: [register, ...(animal.registers || []).slice(0, 9)] }
             : animal
         ),
       }));
@@ -316,7 +376,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
       set((state) => ({
         animals: state.animals.map((animal) =>
           animal.id === event.animalId
-            ? { ...animal, events: [...(animal.events || []), event] }
+            ? { ...animal, events: [event, ...(animal.events || []).slice(0, 9)] }
             : animal
         ),
       }));

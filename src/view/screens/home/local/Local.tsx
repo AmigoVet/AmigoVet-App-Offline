@@ -1,93 +1,90 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import GlobalContainer from '../../../components/GlobalContainer'
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import GlobalContainer from '../../../components/GlobalContainer';
 import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
-import CustomImage from '../../../components/customs/CustomImage';
 import PrivateAnimalCard from './components/PrivateAnimalCard';
 import CustomSwitch from '../../../components/customs/CustomSwitch';
 import SearchButton from '../../../components/SearchButton';
 import FilterBar from './components/FilterBar';
-import { calculateOldYears } from '../../../../lib/functions/CalculateOldYears';
 import Header from '../../../components/Header';
+import { newColors } from '../../../styles/colors';
 
 const Local = () => {
-  const { animals, loadAnimals } = useAnimalStore();
-  const originalAnimals = animals;
-  const [filters, setFilters] = useState<Record<string, string | undefined>>({});
+  const { animals, totalAnimals, loadAnimals } = useAnimalStore();
+  const [filters, setFilters] = useState<Record<string, string | number | boolean | undefined>>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 2;
 
-  const handleFilterChange = (filterValues: Record<string, string | number | boolean | undefined>) => {
-    // const stringFilterValues: Record<string, string | undefined> = {};
-    // for (const key in filterValues) {
-    //   if (filterValues[key] !== undefined) {
-    //     stringFilterValues[key] = String(filterValues[key]);
-    //   } else {
-    //     stringFilterValues[key] = undefined;
-    //   }
-    // }
-  
-    // setFilters(stringFilterValues);
-    // applyFilters(stringFilterValues);
-  };
-
-  const applyFilters = (filterValues: Record<string, string | undefined>) => {
-    // const filteredAnimals = originalAnimals.filter((animal) => {
-    //   const { Especie, Raza, Género, Propósito, Edad } = filterValues;
-  
-    //   if (Especie && animal.especie !== Especie) return false;
-    //   if (Raza && animal.raza !== Raza) return false;
-    //   if (Género && animal.genero !== Género) return false;
-    //   if (Propósito && animal.proposito !== Propósito) return false;
-  
-    //   if (Edad) {
-    //     const animalEdad = animal.nacimiento ? calculateOldYears(animal.nacimiento) : undefined;
-    //     const edadFiltro = parseInt(Edad, 10);
-  
-    //     if (edadFiltro === 1) {
-    //       if (animalEdad === undefined || animalEdad > 1) return false;
-    //     } else if (edadFiltro === 10) {
-    //       if (animalEdad === undefined || animalEdad < 10) return false;
-    //     } else {
-    //       if (animalEdad !== edadFiltro) return false;
-    //     }
-    //   }
-  
-    //   return true;
-    // });
-  }
-
-  useEffect(() => {
-    loadAnimals().catch((error) => {
+  const handleFilterChange = useCallback((filterValues: Record<string, string | number | boolean | undefined>) => {
+    setFilters(filterValues);
+    setCurrentPage(1);
+    loadAnimals(1, limit, filterValues).catch((error) => {
       console.error('[ERROR] Error al cargar animales:', error);
     });
-  }, [loadAnimals]);
+  }, [loadAnimals, limit]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= Math.ceil(totalAnimals / limit)) {
+      setCurrentPage(newPage);
+      loadAnimals(newPage, limit, filters).catch((error) => {
+        console.error('[ERROR] Error al cargar animales:', error);
+      });
+    }
+  };
+
+  useEffect(() => {
+    loadAnimals(1, limit, filters).catch((error) => {
+      console.error('[ERROR] Error al cargar animales:', error);
+    });
+  }, []); // Run only on mount
 
   return (
     <GlobalContainer>
-      <Header title="Animales"  onPress={() => {}} />
+      <Header title="Animales" onPress={() => {}} />
       <FlatList
         ListHeaderComponent={() => (
           <>
-          <View style={styles.searchContainer}>
-            <View style={styles.customSwitch}>
-              <CustomSwitch option1="Privado" option2="Público" onSwitch={() => {}} />
+            <View style={styles.searchContainer}>
+              <View style={styles.customSwitch}>
+                <CustomSwitch option1="Privado" option2="Público" onSwitch={() => {}} />
+              </View>
+              <View style={styles.searchButton}>
+                <SearchButton />
+              </View>
             </View>
-            <View style={styles.searchButton}>
-              <SearchButton />
-            </View>
-          </View>
-          <FilterBar onChange={(selectedValues) => handleFilterChange(selectedValues)} />
-        </>
+            <FilterBar onChange={handleFilterChange} />
+          </>
         )}
         data={animals}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <PrivateAnimalCard animal={item} />
         )}
+        ListFooterComponent={() => (
+          <View style={styles.paginationContainer}>
+            <TouchableOpacity
+              style={[styles.paginationButton, currentPage === 1 && styles.disabledButton]}
+              onPress={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <Text style={styles.paginationText}>Anterior</Text>
+            </TouchableOpacity>
+            <Text style={styles.pageInfo}>
+              Página {currentPage} de {Math.ceil(totalAnimals / limit)}
+            </Text>
+            <TouchableOpacity
+              style={[styles.paginationButton, currentPage === Math.ceil(totalAnimals / limit) && styles.disabledButton]}
+              onPress={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === Math.ceil(totalAnimals / limit)}
+            >
+              <Text style={styles.paginationText}>Siguiente</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       />
     </GlobalContainer>
-  )
-}
-
+  );
+};
 
 const styles = StyleSheet.create({
   searchContainer: {
@@ -102,6 +99,31 @@ const styles = StyleSheet.create({
   searchButton: {
     flex: 1,
   },
-})
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    marginVertical: 10,
+  },
+  paginationButton: {
+    backgroundColor: newColors.fondo_secundario,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+  },
+  disabledButton: {
+    backgroundColor: newColors.fondo_principal,
+    opacity: 0.5,
+  },
+  paginationText: {
+    color: newColors.fondo_principal,
+    fontSize: 14,
+  },
+  pageInfo: {
+    fontSize: 14,
+    color: newColors.fondo_secundario,
+  },
+});
 
-export default Local
+export default Local;

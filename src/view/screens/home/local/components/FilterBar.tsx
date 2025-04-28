@@ -1,11 +1,10 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Dimensions } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { generos, especiesRazasMap, propositosPorEspecie } from '../../../../../lib/interfaces/Animal';
 import { newColors } from '../../../../styles/colors';
 import { constants } from '../../../../styles/constants';
 import Icon from '@react-native-vector-icons/ionicons';
 import CustomButton from '../../../../components/customs/CustomButton';
-
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -34,21 +33,23 @@ const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
   const [selectedFilter, setSelectedFilter] = useState<Filter | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  useEffect(() => {
-    const selectedValues = filters.reduce((acc, filter) => {
-      acc[filter.label] = filter.selectedOption;
-      return acc;
-    }, {} as { [key: string]: string | number | boolean | undefined });
-    onChange(selectedValues);
-  }, [filters]);
-
   const openModal = (filter: Filter) => {
     if (filter.label === 'Reciente' || filter.label === 'Antiguo') {
-      setFilters((prevFilters) =>
-        prevFilters.map((f) =>
-          f.id === filter.id ? { ...f, selectedOption: !f.selectedOption } : f
-        )
-      );
+      setFilters((prevFilters) => {
+        const newFilters = prevFilters.map((f) =>
+          f.id === filter.id
+            ? { ...f, selectedOption: !f.selectedOption }
+            : f.label === (filter.label === 'Reciente' ? 'Antiguo' : 'Reciente')
+            ? { ...f, selectedOption: false }
+            : f
+        );
+        const selectedValues = newFilters.reduce((acc, filter) => {
+          acc[filter.label] = filter.selectedOption;
+          return acc;
+        }, {} as { [key: string]: string | number | boolean | undefined });
+        onChange(selectedValues);
+        return newFilters;
+      });
     } else {
       setSelectedFilter(filter);
       setIsModalVisible(true);
@@ -69,21 +70,33 @@ const FilterBar: React.FC<FilterBarProps> = ({ onChange }) => {
           ? undefined
           : option;
 
-      setFilters((prevFilters) =>
-        prevFilters.map((filter) =>
+      setFilters((prevFilters) => {
+        const newFilters = prevFilters.map((filter) =>
           filter.id === selectedFilter.id
             ? { ...filter, selectedOption: parsedOption }
             : filter
-        )
-      );
+        );
+        const selectedValues = newFilters.reduce((acc, filter) => {
+          acc[filter.label] = filter.selectedOption;
+          return acc;
+        }, {} as { [key: string]: string | number | boolean | undefined });
+        onChange(selectedValues);
+        return newFilters;
+      });
       closeModal();
     }
   };
 
   const resetFilters = () => {
-    setFilters((prevFilters) =>
-      prevFilters.map((filter) => ({ ...filter, selectedOption: undefined }))
-    );
+    setFilters((prevFilters) => {
+      const newFilters = prevFilters.map((filter) => ({ ...filter, selectedOption: undefined }));
+      const selectedValues = newFilters.reduce((acc, filter) => {
+        acc[filter.label] = filter.selectedOption;
+        return acc;
+      }, {} as { [key: string]: string | number | boolean | undefined });
+      onChange(selectedValues);
+      return newFilters;
+    });
   };
 
   const renderFilterItem = ({ item }: { item: Filter }) => (
@@ -196,7 +209,6 @@ const styles = StyleSheet.create({
     borderRadius: constants.borderRadius,
     padding: 20,
     width: '80%',
-
   },
   modalTitle: {
     fontSize: 18,
@@ -208,7 +220,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 0.5,
     borderBottomColor: newColors.fondo_secundario,
-
   },
   optionText: {
     fontSize: 16,
@@ -226,11 +237,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     alignItems: 'center',
-  },
-  closeButtonText: {
-    color: newColors.principal,
-    fontSize: 16,
-    fontWeight: '600',
   },
 });
 
