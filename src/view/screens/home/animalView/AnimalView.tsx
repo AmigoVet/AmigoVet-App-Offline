@@ -9,12 +9,12 @@ import BasicDataAnimalView from './components/BasicDataAnimalView';
 import ExtraDataAnimalView from './components/ExtraDataAnimalView';
 import EventSection from './sections/EventSection';
 import NoteSection from './sections/NoteSection';
-import RegisterSection from './sections/RegisterSection';
 import { newColors } from '../../../styles/colors';
 import Separator from '../../../components/Separator';
 import { constants } from '../../../styles/constants';
 import CustomScrollView from '../../../components/customs/CustomScrollView';
 import { createTables } from '../../../../lib/db/createTables';
+import RegisterSection from './sections/RegisterSection';
 
 type AnimalViewRouteProp = RouteProp<RootStackParamList, 'AnimalView'>;
 type TabSection = 'events' | 'notes' | 'registers';
@@ -57,7 +57,7 @@ const AnimalView = () => {
       case 'notes':
         return <NoteSection notes={animal.notes!} animalId={animal.id} animalName={animal.nombre}  />;
       case 'registers':
-        return <RegisterSection registers={animal.registers!} />;
+        return <RegisterSection registers={animal.registers!} animalId={animal.id} animalName={animal.nombre} genero={animal.genero} embarazada={animal.embarazada}  />;
       default:
         return null;
     }

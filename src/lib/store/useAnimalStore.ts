@@ -10,6 +10,7 @@ import { Notes } from '../interfaces/Notes';
 import { Register } from '../interfaces/Register';
 import { Events } from '../interfaces/Events';
 import RNFS from 'react-native-fs';
+import { updateAnimal } from '../db/animals/updateAnimal';
 
 interface AnimalStore {
   animals: Animal[];
@@ -26,6 +27,7 @@ interface AnimalStore {
   addEvent: (event: Events) => Promise<void>;
   updateEvent: (event: Events) => Promise<void>;
   deleteEvent: (id: string) => Promise<void>;
+  updateAnimalPregnancy: (animalId: string, embarazada: boolean) => Promise<void>;
 }
 
 export const useAnimalStore = create<AnimalStore>((set) => ({
@@ -183,6 +185,21 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
         );
       });
     });
+  },
+
+  updateAnimalPregnancy: async (animalId: string, embarazada: boolean) => {
+    try {
+      // Asumimos una función updateAnimal en la base de datos
+      await updateAnimal(animalId, { embarazada });
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === animalId ? { ...animal, embarazada } : animal
+        ),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al actualizar estado de embarazo:', error);
+      throw error;
+    }
   },
 
   // Notas
