@@ -118,6 +118,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
           <View style={styles.modalContainer}>
             <View style={styles.pickerContainer}>
               <DateTimePicker
+                textColor={newColors.fondo_secundario}
                 value={value ?? new Date()}
                 mode="date"
                 display={Platform.OS === 'ios' ? 'spinner' : 'default'}
@@ -170,6 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: constants.borderRadius
   },
   pickerContainer: {
     backgroundColor: newColors.fondo_principal,

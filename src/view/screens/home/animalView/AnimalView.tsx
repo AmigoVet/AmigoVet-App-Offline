@@ -20,14 +20,10 @@ type AnimalViewRouteProp = RouteProp<RootStackParamList, 'AnimalView'>;
 type TabSection = 'events' | 'notes' | 'registers';
 
 const AnimalView = () => {
-  useEffect(() => {
-    createTables();
-  }
-  , []);
+
   const route = useRoute<AnimalViewRouteProp>();
   const { animal } = route.params;
   const [activeTab, setActiveTab] = useState<TabSection>('events');
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal
 
   const TabButton = ({ title, section }: { title: string; section: TabSection }) => (
     <TouchableOpacity
@@ -59,7 +55,7 @@ const AnimalView = () => {
       case 'events':
         return <EventSection events={animal.events!} animalId={animal.id} animalName={animal.nombre} />;
       case 'notes':
-        return <NoteSection notes={animal.notes!} />;
+        return <NoteSection notes={animal.notes!} animalId={animal.id} animalName={animal.nombre}  />;
       case 'registers':
         return <RegisterSection registers={animal.registers!} />;
       default:
