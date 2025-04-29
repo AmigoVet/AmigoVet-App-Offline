@@ -17,6 +17,13 @@ header: {
   alignItems: 'center',
   paddingHorizontal: 20,
 },
+content:{
+  width: '100%',
+  flex: 1,
+  alignItems: 'flex-start',
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+},
 title: {
   fontSize: 16,
   fontWeight: 'bold',

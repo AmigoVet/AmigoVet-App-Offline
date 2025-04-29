@@ -15,9 +15,10 @@ import { constants } from '../../../styles/constants';
 import CustomScrollView from '../../../components/customs/CustomScrollView';
 import { createTables } from '../../../../lib/db/createTables';
 import RegisterSection from './sections/RegisterSection';
+import ExtraSection from './sections/ExtraSection';
 
 type AnimalViewRouteProp = RouteProp<RootStackParamList, 'AnimalView'>;
-type TabSection = 'events' | 'notes' | 'registers';
+type TabSection = 'events' | 'notes' | 'registers' | 'extra';
 
 const AnimalView = () => {
 
@@ -58,6 +59,8 @@ const AnimalView = () => {
         return <NoteSection notes={animal.notes!} animalId={animal.id} animalName={animal.nombre}  />;
       case 'registers':
         return <RegisterSection registers={animal.registers!} animalId={animal.id} animalName={animal.nombre} genero={animal.genero} embarazada={animal.embarazada}  />;
+      case 'extra':
+        return <ExtraSection animal={animal}  />;
       default:
         return null;
     }
@@ -81,6 +84,7 @@ const AnimalView = () => {
           <TabButton title="Eventos" section="events" />
           <TabButton title="Notas" section="notes" />
           <TabButton title="Registros" section="registers" />
+          <TabButton title="..." section="extra" />
         </View>
 
         {/* Active Section */}
