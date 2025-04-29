@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, FlatList, Text } from 'react-native';
+import { Alert, FlatList, Text, View } from 'react-native';
 import GlobalContainer from '../../../components/GlobalContainer';
 import { Modalize } from 'react-native-modalize';
 import CustomScrollView from '../../../components/customs/CustomScrollView';
@@ -55,6 +55,13 @@ const Home = () => {
     <GlobalContainer style={{ backgroundColor: newColors.fondo_secundario }}>
       <CustomScrollView>
         <HeaderHome userName={user?.fullName ?? 'Usuario'} animals={animals} />
+        {animals.length === 0 ? (
+          <View>
+            <Text style={{ fontSize: 16, color: '#888', textAlign: 'center', marginTop: 60 }}>
+              No tienes animales registrados.
+            </Text>
+          </View>
+          ): <Separator height={0} />}
         <FilterBarHome onChange={() => {}} />
 
         <ProgramerHome events={events} />
