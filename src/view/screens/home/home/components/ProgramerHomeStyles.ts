@@ -11,7 +11,7 @@ export const ProgramerHomeStyles = StyleSheet.create({
       paddingHorizontal: 16,
     },
     containerExtra:{
-      marginTop: 16,
+      marginTop: 10,
       borderRadius: constants.borderRadius / 1.5,
       width: '97%',
       paddingVertical: 10,

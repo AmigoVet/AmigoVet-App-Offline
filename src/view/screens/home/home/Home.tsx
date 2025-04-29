@@ -66,7 +66,7 @@ const Home = () => {
 
         <ProgramerHome events={events} />
 
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: newColors.fondo_principal, margin: 10 }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: newColors.fondo_principal, margin: 0 }}>
           Animales Favoritos
         </Text>
         {favoriteAnimals.length === 0 ? (
