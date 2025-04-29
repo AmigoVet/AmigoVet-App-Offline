@@ -23,7 +23,10 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
       </View>
       <View style={styles.textContainer}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-        <Text style={[styles.text, { fontWeight: 'bold', fontFamily: constants.FontTitle }]}>{animal.nombre }</Text>
+        <Text style={[styles.text, { fontWeight: 'bold', fontFamily: constants.FontTitle }]}>
+          {animal.favorito && <Icon name="star" size={15} color={newColors.principal} style={{marginHorizontal: 20}} />}
+          {animal.nombre }
+        </Text>
         <Text style={styles.text}>{animal.identificador || 'Sin Identificador'}</Text>
       </View>
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-start' }}>
