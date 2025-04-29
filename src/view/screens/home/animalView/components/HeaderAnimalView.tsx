@@ -7,6 +7,7 @@ import { RootStackParamList } from '../../../../navigator/navigationTypes';
 import { newColors } from '../../../../styles/colors';
 import { constants } from '../../../../styles/constants';
 import Icon from '@react-native-vector-icons/ionicons';
+import { getStoragePath } from '../../../../../lib/db/db';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ITEM_WIDTH = SCREEN_WIDTH * 0.95;
@@ -30,7 +31,24 @@ const HeaderAnimalView = ({
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [activeIndex, setActiveIndex] = useState(0);
   
-  const images = [image1, image2, image3].filter((img): img is string => Boolean(img));
+  // Reconstruct full URIs for images
+  const reconstructUri = (image: string | undefined): string => {
+    if (!image) return '';
+    // If already a full URI, return as is
+    if (image.startsWith('file://')) {
+      console.log('[DEBUG] Image already a full URI:', image);
+      return image;
+    }
+    // Reconstruct URI from filename
+    const fullUri = `file://${getStoragePath()}/animals/${image}`;
+    console.log('[DEBUG] Reconstructed URI:', fullUri);
+    return fullUri;
+  };
+
+  // Process images, ensuring valid URIs
+  const images = [image1, image2, image3]
+    .map(reconstructUri)
+    .filter((img): img is string => Boolean(img));
 
   const renderItem = ({ item }: { item: string }) => (
     <View style={styles.imageWrapper}>

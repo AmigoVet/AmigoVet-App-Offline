@@ -23,7 +23,6 @@ export const GlobalStyles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         padding: 20,
-        minHeight: 400,
         maxHeight: '80%',
     },
     modalHeader: {
