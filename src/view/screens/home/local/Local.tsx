@@ -13,7 +13,7 @@ const Local = () => {
   const { animals, totalAnimals, loadAnimals } = useAnimalStore();
   const [filters, setFilters] = useState<Record<string, string | number | boolean | undefined>>({});
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 2;
+  const limit = 10;
 
   const handleFilterChange = useCallback((filterValues: Record<string, string | number | boolean | undefined>) => {
     setFilters(filterValues);

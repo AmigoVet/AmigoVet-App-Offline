@@ -20,4 +20,6 @@ export type RootStackParamList = {
 
   AnimalView: { animal: Animal };
   Busqueda: undefined;
+  New: undefined;
+  Calendar: undefined;
 };

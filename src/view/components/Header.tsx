@@ -6,7 +6,7 @@ import Iconlogo from '../assets/svgs/Iconlogo';
 
 interface HeaderProps {
   title?: string;
-  onPress: () => void;
+  onPress?: () => void;
   iconOnPress?: any;
 }
 

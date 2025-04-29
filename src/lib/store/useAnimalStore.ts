@@ -15,7 +15,16 @@ import { updateAnimal } from '../db/animals/updateAnimal';
 interface AnimalStore {
   animals: Animal[];
   totalAnimals: number;
+  events: Events[];
+  totalEvents: number;
+  notes: Notes[];
+  totalNotes: number;
+  registers: Register[];
+  totalRegisters: number;
   loadAnimals: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
+  loadEvents: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
+  loadNotes: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
+  loadRegisters: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
   addAnimal: (animal: Animal) => Promise<void>;
   updateAnimal: (animal: Animal) => Promise<void>;
   deleteAnimal: (id: string) => Promise<void>;
@@ -29,17 +38,22 @@ interface AnimalStore {
   updateEvent: (event: Events) => Promise<void>;
   deleteEvent: (id: string) => Promise<void>;
   updateAnimalPregnancy: (animalId: string, embarazada: boolean) => Promise<void>;
+  updateAnimalFavorite: (animalId: string, favorito: boolean) => Promise<void>;
 }
 
 export const useAnimalStore = create<AnimalStore>((set) => ({
   animals: [],
   totalAnimals: 0,
+  events: [],
+  totalEvents: 0,
+  notes: [],
+  totalNotes: 0,
+  registers: [],
+  totalRegisters: 0,
 
-  // Animales 
   loadAnimals: async (page = 1, limit = 10, filters = {}) => {
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
-        // Build WHERE clause and ORDER BY based on filters
         let whereClause = '';
         const filterParams: (string | number)[] = [];
         const filterConditions: string[] = [];
@@ -81,14 +95,12 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
           whereClause = `WHERE ${filterConditions.join(' AND ')}`;
         }
 
-        // First, get the total count of animals
         tx.executeSql(
           `SELECT COUNT(*) as count FROM Animal ${whereClause}`,
           filterParams,
           (_, { rows }) => {
             const totalAnimals = rows.item(0).count;
-            
-            // Then, fetch paginated animals
+
             tx.executeSql(
               `SELECT * FROM Animal ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
               [...filterParams, limit, (page - 1) * limit],
@@ -96,14 +108,12 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                 const animals: Animal[] = [];
                 for (let i = 0; i < rows.length; i++) {
                   const item = rows.item(i);
-                  
-                  // Normalizar la ruta de la imagen
+
                   let imagePath = item.image || '';
                   if (imagePath && !imagePath.startsWith('file://')) {
                     imagePath = `file://${getStoragePath()}/animals/${item.image}`;
                   }
-                  
-                  // Verificar existencia del archivo
+
                   if (imagePath) {
                     const fileExists = await RNFS.exists(imagePath.replace('file://', ''));
                     if (!fileExists) {
@@ -111,7 +121,6 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     }
                   }
 
-                  // Obtener notas, registros y eventos
                   const notes = await getNotesByAnimalId(item.id, 1, 10);
                   const registers = await getRegistersByAnimalId(item.id, 1, 10);
                   const events = await getEventsByAnimalId(item.id, 1, 10);
@@ -136,6 +145,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     created_at: item.created_at,
                     updated_at: item.updated_at,
                     embarazada: !!item.embarazada,
+                    favorito: !!item.favorito,
                     notes,
                     registers,
                     events,
@@ -145,14 +155,207 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                 resolve();
               },
               (_, error: SQLError) => {
-                console.error('[ERROR] Error al cargar animales:', error);
+                console.error('[ERROR] Error al cargar animales:', error.message || error);
                 reject(error);
                 return false;
               }
             );
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al contar animales:', error);
+            console.error('[ERROR] Error al contar animales:', error.message || error);
+            reject(error);
+            return false;
+          }
+        );
+      });
+    });
+  },
+
+  loadEvents: async (page = 1, limit = 10, filters = {}) => {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx: Transaction) => {
+        let whereClause = '';
+        const filterParams: (string | number)[] = [];
+        const filterConditions: string[] = [];
+        let orderBy = 'created_at DESC';
+
+        if (filters.animalId) {
+          filterConditions.push('animalId = ?');
+          filterParams.push(String(filters.animalId));
+        }
+        if (filters.Reciente === true) {
+          orderBy = 'created_at DESC';
+        }
+        if (filters.Antiguo === true) {
+          orderBy = 'created_at ASC';
+        }
+
+        if (filterConditions.length > 0) {
+          whereClause = `WHERE ${filterConditions.join(' AND ')}`;
+        }
+
+        tx.executeSql(
+          `SELECT COUNT(*) as count FROM Events ${whereClause}`,
+          filterParams,
+          (_, { rows }) => {
+            const totalEvents = rows.item(0).count;
+
+            tx.executeSql(
+              `SELECT * FROM Events ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+              [...filterParams, limit, (page - 1) * limit],
+              (_, { rows }) => {
+                const events: Events[] = [];
+                for (let i = 0; i < rows.length; i++) {
+                  const item = rows.item(i);
+                  events.push({
+                    id: item.id,
+                    animalId: item.animalId,
+                    animalName: item.animalName,
+                    comentario: item.comentario,
+                    fecha: item.fecha,
+                    created_at: item.created_at,
+                  });
+                }
+                set({ events, totalEvents });
+                resolve();
+              },
+              (_, error: SQLError) => {
+                console.error('[ERROR] Error al cargar eventos:', error.message || error);
+                reject(error);
+                return false;
+              }
+            );
+          },
+          (_, error: SQLError) => {
+            console.error('[ERROR] Error al contar eventos:', error.message || error);
+            reject(error);
+            return false;
+          }
+        );
+      });
+    });
+  },
+
+  loadNotes: async (page = 1, limit = 10, filters = {}) => {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx: Transaction) => {
+        let whereClause = '';
+        const filterParams: (string | number)[] = [];
+        const filterConditions: string[] = [];
+        let orderBy = 'created_at DESC';
+
+        if (filters.animalId) {
+          filterConditions.push('animalId = ?');
+          filterParams.push(String(filters.animalId));
+        }
+        if (filters.Reciente === true) {
+          orderBy = 'created_at DESC';
+        }
+        if (filters.Antiguo === true) {
+          orderBy = 'created_at ASC';
+        }
+
+        if (filterConditions.length > 0) {
+          whereClause = `WHERE ${filterConditions.join(' AND ')}`;
+        }
+
+        tx.executeSql(
+          `SELECT COUNT(*) as count FROM Notas ${whereClause}`,
+          filterParams,
+          (_, { rows }) => {
+            const totalNotes = rows.item(0).count;
+
+            tx.executeSql(
+              `SELECT * FROM Notas ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+              [...filterParams, limit, (page - 1) * limit],
+              (_, { rows }) => {
+                const notes: Notes [] = [];
+                for (let i = 0; i < rows.length; i++) {
+                  const item = rows.item(i);
+                  notes.push({
+                    id: item.id,
+                    animalId: item.animalId,
+                    nota: item.nota,
+                    fecha: item.fecha,
+                    created_at: item.created_at,
+                  });
+                }
+                set({ notes, totalNotes });
+                resolve();
+              },
+              (_, error: SQLError) => {
+                console.error('[ERROR] Error al cargar notas:', error.message || error);
+                reject(error);
+                return false;
+              }
+            );
+          },
+          (_, error: SQLError) => {
+            console.error('[ERROR] Error al contar notas:', error.message || error);
+            reject(error);
+            return false;
+          }
+        );
+      });
+    });
+  },
+
+  loadRegisters: async (page = 1, limit = 10, filters = {}) => {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx: Transaction) => {
+        let whereClause = '';
+        const filterParams: (string | number)[] = [];
+        const filterConditions: string[] = [];
+        let orderBy = 'created_at DESC';
+
+        if (filters.animalId) {
+          filterConditions.push('animalId = ?');
+          filterParams.push(String(filters.animalId));
+        }
+        if (filters.Reciente === true) {
+          orderBy = 'created_at DESC';
+        }
+        if (filters.Antiguo === true) {
+          orderBy = 'created_at ASC';
+        }
+
+        if (filterConditions.length > 0) {
+          whereClause = `WHERE ${filterConditions.join(' AND ')}`;
+        }
+
+        tx.executeSql(
+          `SELECT COUNT(*) as count FROM Register ${whereClause}`,
+          filterParams,
+          (_, { rows }) => {
+            const totalRegisters = rows.item(0).count;
+
+            tx.executeSql(
+              `SELECT * FROM Register ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+              [...filterParams, limit, (page - 1) * limit],
+              (_, { rows }) => {
+                const registers: Register[] = [];
+                for (let i = 0; i < rows.length; i++) {
+                  const item = rows.item(i);
+                  registers.push({
+                    id: item.id,
+                    animalId: item.animalId,
+                    comentario: item.comentario,
+                    accion: item.accion,
+                    fecha: item.fecha,
+                  });
+                }
+                set({ registers, totalRegisters });
+                resolve();
+              },
+              (_, error: SQLError) => {
+                console.error('[ERROR] Error al cargar registros:', error.message || error);
+                reject(error);
+                return false;
+              }
+            );
+          },
+          (_, error: SQLError) => {
+            console.error('[ERROR] Error al contar registros:', error.message || error);
             reject(error);
             return false;
           }
@@ -182,7 +385,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             ownerId = ?, identificador = ?, nombre = ?, especie = ?, raza = ?,
             nacimiento = ?, genero = ?, peso = ?, color = ?, descripcion = ?,
             image = ?, image2 = ?, image3 = ?, proposito = ?, ubicacion = ?,
-            created_at = ?, updated_at = ?, embarazada = ?
+            created_at = ?, updated_at = ?, embarazada = ?, favorito = ?
             WHERE id = ?`,
           [
             updatedAnimal.ownerId,
@@ -203,6 +406,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             updatedAnimal.created_at,
             updatedAnimal.updated_at,
             updatedAnimal.embarazada ? 1 : 0,
+            updatedAnimal.favorito ? 1 : 0,
             updatedAnimal.id,
           ],
           () => {
@@ -216,7 +420,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             resolve();
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al actualizar animal:', error);
+            console.error('[ERROR] Error al actualizar animal:', error.message || error);
             reject(error);
             return false;
           }
@@ -239,7 +443,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             resolve();
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al eliminar animal:', error);
+            console.error('[ERROR] Error al eliminar animal:', error.message || error);
             reject(error);
             return false;
           }
@@ -262,7 +466,20 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     }
   },
 
-  // Notas
+  updateAnimalFavorite: async (animalId: string, favorito: boolean) => {
+    try {
+      await updateAnimal(animalId, { favorito });
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === animalId ? { ...animal, favorito } : animal
+        ),
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al actualizar estado de favorito:', error);
+      throw error;
+    }
+  },
+
   addNote: async (note: Notes) => {
     try {
       await setDataNote(note);
@@ -272,6 +489,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             ? { ...animal, notes: [note, ...(animal.notes || []).slice(0, 9)] }
             : animal
         ),
+        notes: [note, ...state.notes.slice(0, 9)],
+        totalNotes: state.totalNotes + 1,
       }));
     } catch (error) {
       console.error('[ERROR] Error al agregar nota:', error);
@@ -293,6 +512,9 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
               }
             : animal
         ),
+        notes: state.notes.map((note) =>
+          note.id === updatedNote.id ? updatedNote : note
+        ),
       }));
     } catch (error) {
       console.error('[ERROR] Error al actualizar nota:', error);
@@ -308,6 +530,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
           ...animal,
           notes: animal.notes?.filter((note) => note.id !== id),
         })),
+        notes: state.notes.filter((note) => note.id !== id),
+        totalNotes: state.totalNotes - 1,
       }));
     } catch (error) {
       console.error('[ERROR] Error al eliminar nota:', error);
@@ -315,7 +539,6 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     }
   },
 
-  // Registros
   addRegister: async (register: Register) => {
     try {
       await setDataRegister(register);
@@ -325,6 +548,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             ? { ...animal, registers: [register, ...(animal.registers || []).slice(0, 9)] }
             : animal
         ),
+        registers: [register, ...state.registers.slice(0, 9)],
+        totalRegisters: state.totalRegisters + 1,
       }));
     } catch (error) {
       console.error('[ERROR] Error al agregar registro:', error);
@@ -346,6 +571,9 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
               }
             : animal
         ),
+        registers: state.registers.map((reg) =>
+          reg.id === updatedRegister.id ? updatedRegister : reg
+        ),
       }));
     } catch (error) {
       console.error('[ERROR] Error al actualizar registro:', error);
@@ -361,6 +589,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
           ...animal,
           registers: animal.registers?.filter((reg) => reg.id !== id),
         })),
+        registers: state.registers.filter((reg) => reg.id !== id),
+        totalRegisters: state.totalRegisters - 1,
       }));
     } catch (error) {
       console.error('[ERROR] Error al eliminar registro:', error);
@@ -368,10 +598,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     }
   },
 
-  // Eventos
   addEvent: async (event: Events) => {
     try {
-      console.log('Intentando agregar evento:', event);
       await setDataEvent(event);
       set((state) => ({
         animals: state.animals.map((animal) =>
@@ -379,6 +607,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             ? { ...animal, events: [event, ...(animal.events || []).slice(0, 9)] }
             : animal
         ),
+        events: [event, ...state.events.slice(0, 9)],
+        totalEvents: state.totalEvents + 1,
       }));
     } catch (error: any) {
       console.error('[ERROR] Error al agregar evento:', error.message || error);
@@ -400,6 +630,9 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
               }
             : animal
         ),
+        events: state.events.map((evt) =>
+          evt.id === updatedEvent.id ? updatedEvent : evt
+        ),
       }));
     } catch (error) {
       console.error('[ERROR] Error al actualizar evento:', error);
@@ -415,6 +648,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
           ...animal,
           events: animal.events?.filter((evt) => evt.id !== id),
         })),
+        events: state.events.filter((evt) => evt.id !== id),
+        totalEvents: state.totalEvents - 1,
       }));
     } catch (error) {
       console.error('[ERROR] Error al eliminar evento:', error);

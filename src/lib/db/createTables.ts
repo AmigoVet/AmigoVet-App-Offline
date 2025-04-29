@@ -1,6 +1,6 @@
 import { db } from './db';
 import { create } from 'zustand';
-import { SQLiteDatabase, Transaction, SQLError } from 'react-native-sqlite-storage'; // Asegúrate de importar estos tipos
+import { SQLiteDatabase, Transaction, SQLError } from 'react-native-sqlite-storage';
 
 export const createTables = () => {
     createAnimalTable();
@@ -31,7 +31,8 @@ const createAnimalTable = () => {
                 ubicacion TEXT,
                 created_at TEXT,
                 updated_at TEXT,
-                embarazada INTEGER DEFAULT 0
+                embarazada INTEGER DEFAULT 0,
+                favorito INTEGER DEFAULT 0
             )`,
             [],
             () => { 
@@ -44,7 +45,7 @@ const createAnimalTable = () => {
                     code: error.code,
                     sql: 'CREATE TABLE IF NOT EXISTS Animal ...'
                 }); 
-                return false; // Indica que la transacción falló
+                return false;
             }
         );
     });
@@ -135,13 +136,12 @@ const createEventsTable = () => {
     });
 };
 
-// Función para verificar si una tabla existe y mostrar su información
 const verifyTableExists = (tableName: string) => {
     db.transaction((tx: Transaction) => {
         tx.executeSql(
             `SELECT name FROM sqlite_master WHERE type='table' AND name=?`,
             [tableName],
-            (_: Transaction, { rows }: { rows: any }) => { // Aquí rows es un tipo genérico, podrías tiparlo mejor si quieres
+            (_: Transaction, { rows }: { rows: any }) => {
                 if (rows.length > 0) {
                     console.log(`[INFO] La tabla ${tableName} existe en la base de datos`);
                     tx.executeSql(

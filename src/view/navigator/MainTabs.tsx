@@ -8,7 +8,7 @@ import New from '../screens/home/new/New';
 import Profile from '../screens/home/profile/Profile';
 import CustomButtonTab from './components/CustomButtonTab';
 import Icon from '@react-native-vector-icons/ionicons';
-import Home from '../screens/home/Home';
+import Home from '../screens/home/home/Home';
 import Feed from '../screens/home/feed/Feed';
 import Local from '../screens/home/local/Local';
 import { Platform } from 'react-native';
