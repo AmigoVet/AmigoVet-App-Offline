@@ -121,6 +121,24 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     }
                   }
 
+                  const image2Path = item.image2 && !item.image2.startsWith('file://') 
+                    ? `file://${getStoragePath()}/animals/${item.image2}` 
+                    : item.image2 || '';
+                  const image3Path = item.image3 && !item.image3.startsWith('file://') 
+                    ? `file://${getStoragePath()}/animals/${item.image3}` 
+                    : item.image3 || '';
+
+                  if (image2Path && image2Path.startsWith('file://')) {
+                    const fileExists = await RNFS.exists(image2Path.replace('file://', ''));
+                    if (!fileExists) {
+                    }
+                  }
+                  if (image3Path && image3Path.startsWith('file://')) {
+                    const fileExists = await RNFS.exists(image3Path.replace('file://', ''));
+                    if (!fileExists) {
+                    }
+                  }
+
                   const notes = await getNotesByAnimalId(item.id, 1, 10);
                   const registers = await getRegistersByAnimalId(item.id, 1, 10);
                   const events = await getEventsByAnimalId(item.id, 1, 10);
@@ -138,8 +156,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     color: item.color,
                     descripcion: item.descripcion,
                     image: imagePath,
-                    image2: item.image2,
-                    image3: item.image3,
+                    image2: image2Path,
+                    image3: image3Path,
                     proposito: item.proposito,
                     ubicacion: item.ubicacion,
                     created_at: item.created_at,
@@ -269,7 +287,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
               `SELECT * FROM Notas ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
               [...filterParams, limit, (page - 1) * limit],
               (_, { rows }) => {
-                const notes: Notes [] = [];
+                const notes: Notes[] = [];
                 for (let i = 0; i < rows.length; i++) {
                   const item = rows.item(i);
                   notes.push({
@@ -432,18 +450,61 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   deleteAnimal: async (id: string) => {
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
+        // Delete from Notas
         tx.executeSql(
-          `DELETE FROM Animal WHERE id = ?`,
+          `DELETE FROM Notas WHERE animalId = ?`,
           [id],
           () => {
-            set((state) => ({
-              animals: state.animals.filter((animal) => animal.id !== id),
-              totalAnimals: state.totalAnimals - 1,
-            }));
-            resolve();
+            // Delete from Register
+            tx.executeSql(
+              `DELETE FROM Register WHERE animalId = ?`,
+              [id],
+              () => {
+                // Delete from Events
+                tx.executeSql(
+                  `DELETE FROM Events WHERE animalId = ?`,
+                  [id],
+                  () => {
+                    // Delete from Animal
+                    tx.executeSql(
+                      `DELETE FROM Animal WHERE id = ?`,
+                      [id],
+                      () => {
+                        set((state) => ({
+                          animals: state.animals.filter((animal) => animal.id !== id),
+                          totalAnimals: state.totalAnimals - 1,
+                          notes: state.notes.filter((note) => note.animalId !== id),
+                          totalNotes: state.totalNotes - state.notes.filter((note) => note.animalId === id).length,
+                          registers: state.registers.filter((reg) => reg.animalId !== id),
+                          totalRegisters: state.totalRegisters - state.registers.filter((reg) => reg.animalId === id).length,
+                          events: state.events.filter((evt) => evt.animalId !== id),
+                          totalEvents: state.totalEvents - state.events.filter((evt) => evt.animalId === id).length
+                        }));
+                        resolve();
+                      },
+                      (_, error: SQLError) => {
+                        console.error('[ERROR] Error al eliminar animal:', error.message || error);
+                        reject(error);
+                        return false;
+                      }
+                    );
+                  },
+                  (_, error: SQLError) => {
+                    console.error('[ERROR] Error al eliminar eventos:', error.message || error);
+                    reject(error);
+                    return false;
+                  }
+                );
+              },
+              (_, error: SQLError) => {
+                console.error('[ERROR] Error al eliminar registros:', error.message || error);
+                reject(error);
+                return false;
+              }
+            );
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al eliminar animal:', error.message || error);
+            console.error('[ERROR] Error al eliminar notas:', error.message || error);
             reject(error);
             return false;
           }
