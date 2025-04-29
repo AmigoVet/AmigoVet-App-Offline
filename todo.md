@@ -28,4 +28,9 @@
 - moverme entre meses anteriores y sigiuentes
 
 ## Datos
-- Agregar mas razas por especie
+- Agregar razas de bovinos
+- Agregar razas de porcionos
+- Agregar razas de Felinos
+- Agregar razas de Ovinos
+- Agregar razas de Caprinos
+- Agregar razas de aviares
