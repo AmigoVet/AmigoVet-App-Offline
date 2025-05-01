@@ -18,7 +18,7 @@ import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/n
 import { RootStackParamList } from '../../../../navigator/navigationTypes';
 import RNFS from 'react-native-fs';
 import { getStoragePath } from '../../../../../lib/db/db';
-import { createAnimal, createEvent, createNote, createRegister, updateAnimalApi } from '../../../../../lib/api/publications';
+// import { createAnimal, createEvent, createNote, createRegister, updateAnimalApi } from '../../../../../lib/api/publications';
 
 interface ExtraSectionProps {
   animal: Animal;
@@ -28,7 +28,6 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
   const modalizeRef = useRef<Modalize>(null);
   const { deleteAnimal, updateAnimalFavorite, updateAnimal, animals, loadAnimals } = useAnimalStore();
   const { goBack } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [isRespalding, setIsRespalding] = useState(false);
 
   // Find the current animal from the store for real-time updates
   const currentAnimal = animals.find(a => a.id === animal.id) || animal;
@@ -181,66 +180,64 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
     }
   };
 
-  const syncAnimalToCloud = async () => {
-    setIsRespalding(true);
-    try {
-      let updatedAnimal = { ...currentAnimal };
+  // const syncAnimalToCloud = async () => {
+  //   try {
+  //     let updatedAnimal = { ...currentAnimal };
 
-      if (!currentAnimal.isRespalded) {
-        // Create new animal in the cloud
-        await createAnimal({
-          ...currentAnimal,
-          isRespalded: true,
-          isChanged: false,
-        });
-        updatedAnimal = {
-          ...currentAnimal,
-          isRespalded: true,
-          isChanged: false,
-        };
-        await updateAnimal(updatedAnimal);
-      } else if (currentAnimal.isChanged) {
-        // Update existing animal in the cloud
-        await updateAnimalApi({
-          ...currentAnimal,
-          isChanged: false,
-        });
-        updatedAnimal = {
-          ...currentAnimal,
-          isChanged: false,
-        };
-        await updateAnimal(updatedAnimal);
-      }
+  //     if (!currentAnimal.isRespalded) {
+  //       // Create new animal in the cloud
+  //       await createAnimal({
+  //         ...currentAnimal,
+  //         isRespalded: true,
+  //         isChanged: false,
+  //       });
+  //       updatedAnimal = {
+  //         ...currentAnimal,
+  //         isRespalded: true,
+  //         isChanged: false,
+  //       };
+  //       await updateAnimal(updatedAnimal);
+  //     } else if (currentAnimal.isChanged) {
+  //       // Update existing animal in the cloud
+  //       await updateAnimalApi({
+  //         ...currentAnimal,
+  //         isChanged: false,
+  //       });
+  //       updatedAnimal = {
+  //         ...currentAnimal,
+  //         isChanged: false,
+  //       };
+  //       await updateAnimal(updatedAnimal);
+  //     }
 
-      // Sync notes
-      if (currentAnimal.notes && currentAnimal.notes.length > 0) {
-        for (const note of currentAnimal.notes) {
-          await createNote(note);
-        }
-      }
+  //     // Sync notes
+  //     if (currentAnimal.notes && currentAnimal.notes.length > 0) {
+  //       for (const note of currentAnimal.notes) {
+  //         await createNote(note);
+  //       }
+  //     }
 
-      // Sync registers
-      if (currentAnimal.registers && currentAnimal.registers.length > 0) {
-        for (const register of currentAnimal.registers) {
-          await createRegister(register);
-        }
-      }
+  //     // Sync registers
+  //     if (currentAnimal.registers && currentAnimal.registers.length > 0) {
+  //       for (const register of currentAnimal.registers) {
+  //         await createRegister(register);
+  //       }
+  //     }
 
-      // Sync events
-      if (currentAnimal.events && currentAnimal.events.length > 0) {
-        for (const event of currentAnimal.events) {
-          await createEvent(event);
-        }
-      }
+  //     // Sync events
+  //     if (currentAnimal.events && currentAnimal.events.length > 0) {
+  //       for (const event of currentAnimal.events) {
+  //         await createEvent(event);
+  //       }
+  //     }
 
-      await loadAnimals();
-      Alert.alert('Éxito', currentAnimal.isRespalded ? 'Animal actualizado en la nube' : 'Animal respaldado en la nube');
-    } catch (error) {
-      console.error('[ERROR] Error al sincronizar animal:', error);
-      Alert.alert('Error', 'No se pudo sincronizar el animal con la nube');
-    }
-    setIsRespalding(false);
-  };
+  //     await loadAnimals();
+  //     Alert.alert('Éxito', currentAnimal.isRespalded ? 'Animal actualizado en la nube' : 'Animal respaldado en la nube');
+  //   } catch (error) {
+  //     console.error('[ERROR] Error al sincronizar animal:', error);
+  //     Alert.alert('Error', 'No se pudo sincronizar el animal con la nube');
+  //   }
+  // };
 
   return (
     <>
@@ -259,7 +256,15 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
             text={currentAnimal.favorito ? 'En favoritos' : 'No favorito'}
             icon={currentAnimal.favorito ? 'star' : 'star-outline'}
             onPress={toggleFavorite}
-            bg={currentAnimal.favorito ? newColors.verde_light : newColors.gris}
+            backgroundColor={newColors.verde_light}
+            color={newColors.fondo_principal}
+          />
+          <Separator height={20} />
+          <MiniButton
+            text={'Consulta un Veterinario'}
+            icon={'fitness-outline'}
+            onPress={() => Alert.alert('Funcionalidad no disponible', 'Pronto podras contactar directamente a un veterinario')}
+            backgroundColor={newColors.gris}
             color={newColors.fondo_principal}
           />
           <Separator height={20} />
@@ -267,17 +272,17 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
           <MiniButton
             text={currentAnimal.isRespalded ? 'Información Respaldada' : 'Respaldar Información'}
             icon={currentAnimal.isRespalded ? 'checkmark-outline' : 'cloud-upload-outline'}
-            onPress={syncAnimalToCloud}
-            bg={currentAnimal.isRespalded ? newColors.verde_light : newColors.gris}
+            // onPress={syncAnimalToCloud}
+            onPress={() => Alert.alert('Funcionalidad no disponible', 'Pronto podras respaldar la informacion de tus mascotas')}
+            backgroundColor={newColors.gris}
             color={newColors.fondo_principal}
-            disabled={isRespalding}
           />
           <Separator height={20} />
           <MiniButton
             text="Eliminar Animal"
             onPress={handleDeleteAnimal}
             icon="trash-outline"
-            bg={newColors.rojo}
+            backgroundColor={newColors.rojo}
             color={newColors.fondo_principal}
           />
         </View>
@@ -297,7 +302,7 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
           <MiniButton
             text="Cerrar"
             icon="close-outline"
-            bg={newColors.rojo}
+            backgroundColor={newColors.rojo}
             onPress={closeModal}
             color={newColors.fondo_principal}
           />

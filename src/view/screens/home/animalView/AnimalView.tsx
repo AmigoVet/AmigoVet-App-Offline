@@ -14,6 +14,7 @@ import CustomScrollView from '../../../components/customs/CustomScrollView';
 import RegisterSection from './sections/RegisterSection';
 import ExtraSection from './sections/ExtraSection';
 import { useState } from 'react';
+import GptRequest from './components/GptRequest';
 
 type AnimalViewRouteProp = RouteProp<RootStackParamList, 'AnimalView'>;
 type TabSection = 'events' | 'notes' | 'registers' | 'extra';
@@ -76,7 +77,7 @@ const AnimalView = () => {
         />
         <BasicDataAnimalView animal={animal} />
         <ExtraDataAnimalView description={animal.descripcion} ubicacion={animal.ubicacion} />
-
+        <GptRequest animal={animal} />
         {/* Tab Navigation */}
         <View style={{ flexDirection: 'row' }}>
           <TabButton title="Eventos" section="events" />

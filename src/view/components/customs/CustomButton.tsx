@@ -1,48 +1,52 @@
-import React, { JSX } from 'react';
-import { Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import React from 'react';
+import { Pressable, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
 import { newColors } from '../../styles/colors';
 import { constants } from '../../styles/constants';
+import Icon from '@react-native-vector-icons/ionicons';
 
 interface CustomButtonProps {
-  text: string | JSX.Element;
+  text: string;
+  icon?: any;
   onPress: () => void;
   disabled?: boolean;
   loading?: boolean;
   backgroundColor?: string;
-  textColor?: string;      
+  textColor?: string;
 }
 
-const CustomButton = ({
+const CustomButton: React.FC<CustomButtonProps> = ({
   text,
+  icon,
   onPress,
   disabled = false,
   loading = false,
   backgroundColor = newColors.verde_light,
-  textColor = 'white',                    
-}: CustomButtonProps) => {
+  textColor = 'white',
+}) => {
   const buttonBackgroundColor = disabled ? newColors.verde : backgroundColor;
-
-  const pressedStyle = disabled ? null : styles.pressedContainer;
+  const contentColor = disabled ? newColors.fondo_principal : textColor;
 
   return (
     <Pressable
       style={({ pressed }) => [
         styles.container,
         { backgroundColor: buttonBackgroundColor },
-        pressed && pressedStyle,
+        pressed && !disabled && !loading && styles.pressedContainer,
       ]}
-      onPress={() => {
-        if (!disabled && !loading) onPress();
-      }}
+      onPress={onPress}
       disabled={disabled || loading}
+      accessibilityLabel={text}
     >
-      {loading ? (
-        <ActivityIndicator size="small" color={newColors.fondo_secundario} />
-      ) : (
-        <Text style={[styles.text, { color: disabled ? newColors.fondo_principal : textColor }]}>
-          {text}
-        </Text>
-      )}
+      <View style={styles.content}>
+        {loading ? (
+          <ActivityIndicator size="small" color={newColors.fondo_secundario} />
+        ) : (
+          <>
+            {icon && <Icon name={icon} size={20} color={contentColor} style={styles.icon} />}
+            <Text style={[styles.text, { color: contentColor }]}>{text}</Text>
+          </>
+        )}
+      </View>
     </Pressable>
   );
 };
@@ -57,7 +61,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pressedContainer: {
-    backgroundColor: newColors.verde, 
+    backgroundColor: newColors.verde,
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    marginRight: 8,
   },
   text: {
     fontWeight: 'bold',
