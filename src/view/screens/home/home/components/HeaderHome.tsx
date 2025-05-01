@@ -8,11 +8,12 @@ import Icon from '@react-native-vector-icons/ionicons';
 import { newColors } from '../../../../styles/colors';
 import { RootStackParamList } from '../../../../navigator/navigationTypes';
 import { constants } from '../../../../styles/constants';
+import { Animal } from '../../../../../lib/interfaces/Animal';
 
 
 interface HeaderHomeProps {
   userName: string;
-  animals: { nombre: string; especie: string; image: string }[];
+  animals: Animal[];
 }
 
 const HeaderHome = ({ userName, animals }: HeaderHomeProps) => {
@@ -61,11 +62,13 @@ const HeaderHome = ({ userName, animals }: HeaderHomeProps) => {
           contentContainerStyle={centerFlatList ? styles.centeredFlatList : styles.defaultFlatList}
           renderItem={({ item }) => (
             <View style={styles.animalContainer}>
+              <Pressable onPress={() => navigate('AnimalView', { animal: item })}>
               <View style={styles.imageContainer}>
                 <Image source={{ uri: item.image }} style={styles.circle} />
               </View>
               <Text style={styles.text}>{item.nombre}</Text>
               <Text style={styles.text2}>{item.especie}</Text>
+              </Pressable>
             </View>
           )}
         />
@@ -96,7 +99,7 @@ const createStyles = () =>
       fontWeight: '500',
       color: newColors.fondo_principal,
       marginTop: -45,
-      fontFamily: constants.FontTitle
+      fontFamily: constants.FontTitle,
     },
     iconsContainer: {
       flexDirection: 'row',
