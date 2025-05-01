@@ -264,6 +264,7 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
           />
           <Separator height={20} />
           <MiniButton
+            {/* TODO: Hacer que funcione correctamente la actualizacion(Actualmente solo puede crearse pero no se actualizan los datos, trata de crearlos) */}
             text={currentAnimal.isRespalded ? 'Información Respaldada' : 'Respaldar Información'}
             icon={currentAnimal.isRespalded ? 'checkmark-outline' : 'cloud-upload-outline'}
             onPress={syncAnimalToCloud}
