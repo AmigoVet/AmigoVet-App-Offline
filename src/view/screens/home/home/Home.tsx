@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, Text, View } from 'react-native';
 import GlobalContainer from '../../../components/GlobalContainer';
-import { Modalize } from 'react-native-modalize';
 import CustomScrollView from '../../../components/customs/CustomScrollView';
 import HeaderHome from './components/HeaderHome';
 import { useAuthStore } from '../../../../lib/store/authStore';
@@ -10,26 +9,18 @@ import FilterBarHome from './components/FilterBarHome';
 import ProgramerHome from './components/ProgramerHome';
 import { newColors } from '../../../styles/colors';
 import Separator from '../../../components/Separator';
-import NoticesHome from './components/NoticesHome';
 import PrivateAnimalCard from '../local/components/PrivateAnimalCard';
-import { migrateAnimalTable } from '../../../../lib/db/animals/migrateAnimalTable';
-import { createTables } from '../../../../lib/db/createTables';
 
 const Home = () => {
-  const modalizeRef = useRef<Modalize>(null);
   const { user } = useAuthStore();
   const {
     animals,
     events,
-    notes,
-    totalNotes,
-    registers,
     loadAnimals,
     loadEvents,
     loadNotes,
     loadRegisters,
   } = useAnimalStore();
-  const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
 
   useEffect(() => {
@@ -38,7 +29,7 @@ const Home = () => {
         await Promise.all([
           loadAnimals(1, limit),
           loadEvents(1, limit, { Reciente: true }),
-          loadNotes(currentPage, limit, { Reciente: true }),
+          loadNotes(1, limit, { Reciente: true }),
           loadRegisters(1, limit, { Reciente: true }),
         ]);
       } catch (error) {
@@ -47,7 +38,7 @@ const Home = () => {
       }
     };
     loadData();
-  }, [currentPage, loadAnimals, loadEvents, loadNotes, loadRegisters]);
+  }, [ loadAnimals, loadEvents, loadNotes, loadRegisters]);
 
   const favoriteAnimals = animals.filter((animal) => animal.favorito);
 
@@ -61,7 +52,7 @@ const Home = () => {
               No tienes animales registrados.
             </Text>
           </View>
-          ): <Separator height={0} />}
+          ) : <Separator height={0} />}
         <FilterBarHome onChange={() => {}} />
 
         <ProgramerHome events={events} />
