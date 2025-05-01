@@ -1,6 +1,5 @@
 import { db } from './db';
-import { create } from 'zustand';
-import { SQLiteDatabase, Transaction, SQLError } from 'react-native-sqlite-storage';
+import { Transaction, SQLError } from 'react-native-sqlite-storage';
 
 export const createTables = () => {
     createAnimalTable();
@@ -9,48 +8,50 @@ export const createTables = () => {
     createEventsTable();
 };
 
-const createAnimalTable = () => {
+export const createAnimalTable = () => {
     db.transaction((tx: Transaction) => {
-        tx.executeSql(
-            `CREATE TABLE IF NOT EXISTS Animal (
-                id TEXT PRIMARY KEY,
-                ownerId TEXT,
-                identificador TEXT,
-                nombre TEXT,
-                especie TEXT,
-                raza TEXT,
-                nacimiento TEXT,
-                genero TEXT,
-                peso TEXT,
-                color TEXT,
-                descripcion TEXT,
-                image TEXT,
-                image2 TEXT,
-                image3 TEXT,
-                proposito TEXT,
-                ubicacion TEXT,
-                created_at TEXT,
-                updated_at TEXT,
-                embarazada INTEGER DEFAULT 0,
-                favorito INTEGER DEFAULT 0
-            )`,
-            [],
-            () => { 
-                console.log('[SUCCESS] Tabla Animal creada exitosamente'); 
-                verifyTableExists('Animal');
-            },
-            (_: Transaction, error: SQLError) => { 
-                console.error('[ERROR] Error al crear la tabla Animal:', {
-                    message: error.message,
-                    code: error.code,
-                    sql: 'CREATE TABLE IF NOT EXISTS Animal ...'
-                }); 
-                return false;
-            }
-        );
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS Animal (
+          id TEXT PRIMARY KEY,
+          ownerId TEXT,
+          identificador TEXT,
+          nombre TEXT,
+          especie TEXT,
+          raza TEXT,
+          nacimiento TEXT,
+          genero TEXT,
+          peso TEXT,
+          color TEXT,
+          descripcion TEXT,
+          image TEXT,
+          image2 TEXT,
+          image3 TEXT,
+          proposito TEXT,
+          ubicacion TEXT,
+          created_at TEXT,
+          updated_at TEXT,
+          embarazada INTEGER DEFAULT 0,
+          favorito INTEGER DEFAULT 0,
+          isPublic INTEGER DEFAULT 0,
+          isRespalded INTEGER DEFAULT 0,
+          isChanged INTEGER DEFAULT 0
+        )`,
+        [],
+        () => {
+          console.log('[SUCCESS] Tabla Animal creada exitosamente');
+          verifyTableExists('Animal');
+        },
+        (_: Transaction, error: SQLError) => {
+          console.error('[ERROR] Error al crear la tabla Animal:', {
+            message: error.message,
+            code: error.code,
+            sql: 'CREATE TABLE IF NOT EXISTS Animal ...',
+          });
+          return false;
+        }
+      );
     });
-};
-
+  };
 const createRegisterTable = () => {
     db.transaction((tx: Transaction) => {
         tx.executeSql(

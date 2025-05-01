@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Transaction, SQLError } from 'react-native-sqlite-storage';
-import { setDataAnimal, getDataAnimal } from '../db/animals';
+import { setDataAnimal } from '../db/animals';
 import { setDataNote, getNotesByAnimalId, updateNote, deleteNote } from '../db/notes';
 import { setDataRegister, getRegistersByAnimalId, updateRegister, deleteRegister } from '../db/registers';
 import { setDataEvent, getEventsByAnimalId, updateEvent, deleteEvent } from '../db/events';
@@ -11,6 +11,8 @@ import { Register } from '../interfaces/Register';
 import { Events } from '../interfaces/Events';
 import RNFS from 'react-native-fs';
 import { updateAnimal } from '../db/animals/updateAnimal';
+
+
 
 interface AnimalStore {
   animals: Animal[];

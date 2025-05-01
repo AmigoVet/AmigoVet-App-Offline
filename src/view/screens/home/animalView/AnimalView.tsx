@@ -1,10 +1,8 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../../navigator/navigationTypes';
 import HeaderAnimalView from './components/HeaderAnimalView';
 import GlobalContainer from '../../../components/GlobalContainer';
-import { ScrollView } from 'react-native-gesture-handler';
 import BasicDataAnimalView from './components/BasicDataAnimalView';
 import ExtraDataAnimalView from './components/ExtraDataAnimalView';
 import EventSection from './sections/EventSection';
@@ -13,9 +11,9 @@ import { newColors } from '../../../styles/colors';
 import Separator from '../../../components/Separator';
 import { constants } from '../../../styles/constants';
 import CustomScrollView from '../../../components/customs/CustomScrollView';
-import { createTables } from '../../../../lib/db/createTables';
 import RegisterSection from './sections/RegisterSection';
 import ExtraSection from './sections/ExtraSection';
+import { useState } from 'react';
 
 type AnimalViewRouteProp = RouteProp<RootStackParamList, 'AnimalView'>;
 type TabSection = 'events' | 'notes' | 'registers' | 'extra';

@@ -1,23 +1,24 @@
-import { View, Text, Alert } from 'react-native'
-import React, { useRef, useState } from 'react'
-import { styleSections } from './styles'
-import MiniButton from '../../../../components/MiniButton'
-import { Modalize } from 'react-native-modalize'
-import CustomSelect from '../../../../components/customs/CustomSelect'
-import CustomInput from '../../../../components/customs/CustomImput'
-import CustomImagePicker from '../../../../components/customs/CustomImagePicker'
-import Separator from '../../../../components/Separator'
-import CustomButton from '../../../../components/customs/CustomButton'
-import { newColors } from '../../../../styles/colors'
-import { GlobalStyles } from '../../../../styles/GlobalStyles'
-import { useAnimalStore } from '../../../../../lib/store/useAnimalStore'
-import { Animal } from '../../../../../lib/interfaces/Animal'
-import { useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
-import { RootStackParamList } from '../../../../navigator/navigationTypes'
-import RNFS from 'react-native-fs'
-import { getStoragePath } from '../../../../../lib/db/db'
-import CustomImage from '../../../../components/customs/CustomImage'
+import { View, Text, Alert } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { styleSections } from './styles';
+import MiniButton from '../../../../components/MiniButton';
+import { Modalize } from 'react-native-modalize';
+import CustomSelect from '../../../../components/customs/CustomSelect';
+import CustomInput from '../../../../components/customs/CustomImput';
+import CustomImagePicker from '../../../../components/customs/CustomImagePicker';
+import Separator from '../../../../components/Separator';
+import CustomButton from '../../../../components/customs/CustomButton';
+import CustomImage from '../../../../components/customs/CustomImage';
+import { newColors } from '../../../../styles/colors';
+import { GlobalStyles } from '../../../../styles/GlobalStyles';
+import { useAnimalStore } from '../../../../../lib/store/useAnimalStore';
+import { Animal } from '../../../../../lib/interfaces/Animal';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
+import { RootStackParamList } from '../../../../navigator/navigationTypes';
+import RNFS from 'react-native-fs';
+import { getStoragePath } from '../../../../../lib/db/db';
+import { createAnimal, createEvent, createNote, createRegister, updateAnimalApi } from '../../../../../lib/api/publications';
 
 interface ExtraSectionProps {
   animal: Animal;
@@ -27,7 +28,8 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
   const modalizeRef = useRef<Modalize>(null);
   const { deleteAnimal, updateAnimalFavorite, updateAnimal, animals, loadAnimals } = useAnimalStore();
   const { goBack } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  
+  const [isRespalding, setIsRespalding] = useState(false);
+
   // Find the current animal from the store for real-time updates
   const currentAnimal = animals.find(a => a.id === animal.id) || animal;
 
@@ -99,6 +101,11 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
   const toggleFavorite = async () => {
     try {
       await updateAnimalFavorite(currentAnimal.id, !currentAnimal.favorito);
+      // Mark as changed
+      await updateAnimal({
+        ...currentAnimal,
+        favorito: !currentAnimal.favorito,
+      });
     } catch (error) {
       Alert.alert('Error', 'No se pudo actualizar el estado de favorito');
     }
@@ -116,17 +123,13 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
       const imagePath = currentAnimal[imageField];
       let fullPath = '';
       if (imagePath) {
-        fullPath = `file://${getStoragePath()}/animals/${imagePath}`;
-        // Verify file exists
+        fullPath = imagePath.startsWith('file://') ? imagePath : `file://${getStoragePath()}/animals/${imagePath}`;
         const exists = await RNFS.exists(fullPath.replace('file://', ''));
-        console.log('[DEBUG] Image exists for', field, ':', exists, 'at path:', fullPath);
         if (!exists) {
-          console.warn('[WARN] Image file does not exist:', fullPath);
-          fullPath = ''; // Don't set invalid path
+          fullPath = '';
         }
       }
       setInputValue(fullPath);
-      console.log('[DEBUG] Setting image inputValue for', field, ':', fullPath);
     }
   };
 
@@ -139,34 +142,25 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
     try {
       let updateData: Partial<Animal> = {};
       if (['image', 'image2', 'image3'].includes(selectedField)) {
-        // Handle image update
         let imageFileName = '';
         if (inputValue && inputValue.startsWith('file://')) {
-          console.log('[DEBUG] Saving image for', selectedField, ', inputValue:', inputValue);
           const path = inputValue.replace('file://', '');
           const exists = await RNFS.exists(path);
-          console.log('[DEBUG] Image exists:', exists, 'at path:', path);
           if (exists) {
             imageFileName = inputValue.split('/').pop() || '';
-            console.log('[DEBUG] Image filename:', imageFileName);
-            // Verify the file is in the correct directory
             const expectedDir = `${getStoragePath()}/animals`;
             const isInCorrectDir = path.includes(expectedDir);
-            console.log('[DEBUG] Image in correct directory:', isInCorrectDir, 'expected:', expectedDir);
             if (!isInCorrectDir) {
-              console.warn('[WARN] Image is not in the expected directory:', path);
               Alert.alert('Error', 'La imagen no está en el directorio correcto');
               return;
             }
           } else {
-            console.warn('[WARN] Image file does not exist:', inputValue);
             Alert.alert('Error', 'La imagen seleccionada no es válida');
             return;
           }
         }
         updateData[selectedField] = imageFileName;
       } else {
-        // Handle text fields
         updateData[selectedField] = inputValue;
       }
 
@@ -174,11 +168,10 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
         ...currentAnimal,
         ...updateData,
         updated_at: new Date().toISOString(),
+        isChanged: true, // Mark as changed
       };
 
-      console.log('[DEBUG] Updating animal with data:', updateData);
       await updateAnimal(updatedAnimal);
-      // Reload animals to ensure store and UI are in sync
       await loadAnimals();
       Alert.alert('Éxito', 'Datos actualizados correctamente');
       closeModal();
@@ -188,18 +181,79 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
     }
   };
 
+  const syncAnimalToCloud = async () => {
+    setIsRespalding(true);
+    try {
+      let updatedAnimal = { ...currentAnimal };
+
+      if (!currentAnimal.isRespalded) {
+        // Create new animal in the cloud
+        await createAnimal({
+          ...currentAnimal,
+          isRespalded: true,
+          isChanged: false,
+        });
+        updatedAnimal = {
+          ...currentAnimal,
+          isRespalded: true,
+          isChanged: false,
+        };
+        await updateAnimal(updatedAnimal);
+      } else if (currentAnimal.isChanged) {
+        // Update existing animal in the cloud
+        await updateAnimalApi({
+          ...currentAnimal,
+          isChanged: false,
+        });
+        updatedAnimal = {
+          ...currentAnimal,
+          isChanged: false,
+        };
+        await updateAnimal(updatedAnimal);
+      }
+
+      // Sync notes
+      if (currentAnimal.notes && currentAnimal.notes.length > 0) {
+        for (const note of currentAnimal.notes) {
+          await createNote(note);
+        }
+      }
+
+      // Sync registers
+      if (currentAnimal.registers && currentAnimal.registers.length > 0) {
+        for (const register of currentAnimal.registers) {
+          await createRegister(register);
+        }
+      }
+
+      // Sync events
+      if (currentAnimal.events && currentAnimal.events.length > 0) {
+        for (const event of currentAnimal.events) {
+          await createEvent(event);
+        }
+      }
+
+      await loadAnimals();
+      Alert.alert('Éxito', currentAnimal.isRespalded ? 'Animal actualizado en la nube' : 'Animal respaldado en la nube');
+    } catch (error) {
+      console.error('[ERROR] Error al sincronizar animal:', error);
+      Alert.alert('Error', 'No se pudo sincronizar el animal con la nube');
+    }
+    setIsRespalding(false);
+  };
+
   return (
     <>
       <View style={styleSections.container}>
         <View style={styleSections.header}>
           <Text style={styleSections.title}>Editar Datos</Text>
-          <MiniButton 
-            text="Editar datos del animal" 
-            icon="create-outline" 
-            onPress={openModal} 
+          <MiniButton
+            text="Editar datos del animal"
+            icon="create-outline"
+            onPress={openModal}
           />
         </View>
-        
+
         <View style={styleSections.content}>
           <MiniButton
             text={currentAnimal.favorito ? 'En favoritos' : 'No favorito'}
@@ -208,11 +262,20 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
             bg={currentAnimal.favorito ? newColors.verde_light : newColors.gris}
             color={newColors.fondo_principal}
           />
-          <Separator height={50} />
+          <Separator height={20} />
           <MiniButton
-            text='Eliminar Animal'
+            text={currentAnimal.isRespalded ? 'Información Respaldada' : 'Respaldar Información'}
+            icon={currentAnimal.isRespalded ? 'checkmark-outline' : 'cloud-upload-outline'}
+            onPress={syncAnimalToCloud}
+            bg={currentAnimal.isRespalded ? newColors.verde_light : newColors.gris}
+            color={newColors.fondo_principal}
+            disabled={isRespalding}
+          />
+          <Separator height={20} />
+          <MiniButton
+            text="Eliminar Animal"
             onPress={handleDeleteAnimal}
-            icon='trash-outline'
+            icon="trash-outline"
             bg={newColors.rojo}
             color={newColors.fondo_principal}
           />
@@ -262,11 +325,9 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
             <View>
               <CustomImagePicker
                 onImageSelected={(uri) => {
-                  console.log('[DEBUG] Image selected in CustomImagePicker for', selectedField, ':', uri);
                   setInputValue(uri);
                 }}
               />
-              {/* Display current or selected image */}
               {inputValue && (
                 <CustomImage
                   source={inputValue}
@@ -283,7 +344,7 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
         </View>
       </Modalize>
     </>
-  )
-}
+  );
+};
 
-export default ExtraSection
+export default ExtraSection;

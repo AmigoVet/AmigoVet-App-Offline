@@ -26,6 +26,10 @@ export interface Animal {
     notes?: Notes[];
     registers?: Register[];
     events?: Events[];
+
+    isPublic?: boolean;
+    isRespalded?: boolean;
+    isChanged?: boolean;
 }
 
 export interface AnimalWithNotes extends Animal {
