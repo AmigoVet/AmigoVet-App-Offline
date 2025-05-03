@@ -7,10 +7,10 @@ export interface Animal {
     id: string;
     identificador: string;
     nombre: string;
-    especie: Especie;
-    raza: Raza;
+    especie: Especie | undefined;
+    raza: Raza | undefined;
     nacimiento?: string;
-    genero: Genero;
+    genero: Genero | undefined;
     peso: string;
     color: string;
     descripcion: string;

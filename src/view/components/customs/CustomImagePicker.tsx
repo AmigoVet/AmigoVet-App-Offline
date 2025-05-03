@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } from 'react-native-image-picker';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import RNFS from 'react-native-fs';
 import Icon from '@react-native-vector-icons/ionicons';
 import { Platform } from 'react-native';
-import { newStyles } from '../../screens/home/new/styles';
 import { newColors } from '../../styles/colors';
 import { GlobalStyles } from '../../styles/GlobalStyles';
 import CustomImage from './CustomImage';
@@ -15,20 +14,40 @@ import { getStoragePath } from '../../../lib/db/db';
 
 interface CustomImagePickerProps {
   onImageSelected: (uri: string) => void;
+  initialImage?: string;
+  label?: string;
 }
 
-const CustomImagePicker: React.FC<CustomImagePickerProps> = ({ onImageSelected }) => {
+const CustomImagePicker: React.FC<CustomImagePickerProps> = ({
+  onImageSelected,
+  initialImage = null,
+  label = 'Selecciona o toma una foto',
+}) => {
   const [image, setImage] = useState<string | null>(null);
+
+  // Cargar imagen inicial
+  useEffect(() => {
+    if (initialImage) {
+      // Verificar si es una URI completa o solo un nombre de archivo
+      if (initialImage.startsWith('file://') || initialImage.startsWith('http')) {
+        setImage(initialImage);
+      } else {
+        // Si es solo un nombre de archivo, construir la ruta completa
+        const fullPath = `${getStoragePath()}/animals/${initialImage}`;
+        setImage(`file://${fullPath}`);
+      }
+    }
+  }, [initialImage]);
 
   // Normalize URI and copy to persistent directory
   const normalizeUri = async (uri: string): Promise<string> => {
     const fileName = `${uuidv4()}.jpg`;
-    const destPath = `${getStoragePath()}/animals/${fileName}`; // Usar getStoragePath
-    
+    const destPath = `${getStoragePath()}/animals/${fileName}`;
+
     try {
-      // Crear directorio persistente
+      // Crear directorio persistente si no existe
       await RNFS.mkdir(`${getStoragePath()}/animals`);
-      
+
       // Manejar diferentes esquemas de URI
       let sourcePath = uri;
       if (uri.startsWith('file://')) {
@@ -151,10 +170,18 @@ const CustomImagePicker: React.FC<CustomImagePickerProps> = ({ onImageSelected }
   return (
     <>
       <Text style={GlobalStyles.subtitle}>
-        Selecciona o toma una foto <Text style={{ color: newColors.rojo }}>*</Text>
+        {label} {label.includes('*') ? '' : <Text style={{ color: newColors.rojo }}>*</Text>}
       </Text>
       <View style={styles.imageContainer}>
-        {image && <CustomImage source={image} style={{ height: 250 }} />}
+        {image ? (
+          <CustomImage source={image} style={{ height: 250 }} />
+        ) : (
+          <View style={{ height: 250, justifyContent: 'center' }}>
+            <Text style={{ textAlign: 'center', color: newColors.fondo_secundario }}>
+              No hay imagen seleccionada
+            </Text>
+          </View>
+        )}
         <View style={styles.imageButtonContainer}>
           <TouchableOpacity style={styles.imageButton} onPress={pickImageFromGallery}>
             <Icon name="image-outline" size={40} color={newColors.fondo_secundario} />

@@ -1,5 +1,4 @@
 import { Animal } from '../../lib/interfaces/Animal';
-import Busqueda from '../screens/home/busqueda/Busqueda';
 export type MainTabsParamList = {
   Home: undefined;
   Feed: undefined;
@@ -21,5 +20,6 @@ export type RootStackParamList = {
   AnimalView: { animal: Animal };
   Busqueda: undefined;
   New: undefined;
+  Update: { animal: Animal };
   Calendar: undefined;
 };

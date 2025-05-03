@@ -7,6 +7,7 @@ import { useAuthStore } from '../../lib/store/authStore';
 import AnimalView from '../screens/home/animalView/AnimalView';
 import Busqueda from '../screens/home/busqueda/Busqueda';
 import Calendar from '../screens/home/calendar/Calendar';
+import Update from '../screens/home/update/Update';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -25,6 +26,7 @@ const AppNavigator = () => {
           <Stack.Screen name="AnimalView" component={AnimalView} />
           <Stack.Screen name="Busqueda" component={Busqueda} />
           <Stack.Screen name="Calendar" component={Calendar} />
+          <Stack.Screen name="Update" component={Update} />
         </>
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />

@@ -1,12 +1,12 @@
-import { StyleSheet } from "react-native";
-import { newColors } from "./colors";
-import { constants } from "./constants";
+import { StyleSheet } from 'react-native';
+import { newColors } from './colors';
+import { constants } from './constants';
 
 export const GlobalStyles = StyleSheet.create({
     title:{
         fontSize: 24,
         fontWeight: '600',
-        fontFamily: 'Chillax'
+        fontFamily: 'Chillax',
     },
     subtitle:{
         fontSize: 16,
@@ -36,5 +36,8 @@ export const GlobalStyles = StyleSheet.create({
         borderBottomWidth: 1,
         paddingBottom: 10,
         borderRadius: constants.borderRadius,
-    }
+    },
+    padding20:{
+        padding: 20,
+    },
 });

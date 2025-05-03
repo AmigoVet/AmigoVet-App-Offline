@@ -8,7 +8,6 @@ import CustomInput from '../../../../components/customs/CustomImput';
 import CustomImagePicker from '../../../../components/customs/CustomImagePicker';
 import Separator from '../../../../components/Separator';
 import CustomButton from '../../../../components/customs/CustomButton';
-import CustomImage from '../../../../components/customs/CustomImage';
 import { newColors } from '../../../../styles/colors';
 import { GlobalStyles } from '../../../../styles/GlobalStyles';
 import { useAnimalStore } from '../../../../../lib/store/useAnimalStore';
@@ -27,7 +26,7 @@ interface ExtraSectionProps {
 const ExtraSection = ({ animal }: ExtraSectionProps) => {
   const modalizeRef = useRef<Modalize>(null);
   const { deleteAnimal, updateAnimalFavorite, updateAnimal, animals, loadAnimals } = useAnimalStore();
-  const { goBack } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { goBack , navigate} = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   // Find the current animal from the store for real-time updates
   const currentAnimal = animals.find(a => a.id === animal.id) || animal;
@@ -249,7 +248,7 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
           <MiniButton
             text="Editar datos del animal"
             icon="create-outline"
-            onPress={openModal}
+            onPress={() => navigate('Update', { animal: currentAnimal })}
           />
         </View>
 

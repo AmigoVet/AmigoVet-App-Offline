@@ -4,9 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import RNFS from 'react-native-fs';
 import GlobalContainer from '../../../components/GlobalContainer';
 import Header from '../../../components/Header';
-import { ScrollView } from 'react-native-gesture-handler';
 import CustomImagePicker from '../../../components/customs/CustomImagePicker';
-import { Especie, especiesRazasMap, generos, propositosPorEspecie, Animal, Raza } from '../../../../lib/interfaces/Animal';
+import { Especie, especiesRazasMap, generos, propositosPorEspecie, Animal } from '../../../../lib/interfaces/Animal';
 import CustomSelect from '../../../components/customs/CustomSelect';
 import CustomButton from '../../../components/customs/CustomButton';
 import Separator from '../../../components/Separator';
@@ -15,6 +14,8 @@ import { calculateOld } from '../../../../lib/functions/CalculateOld';
 import CustomInput from '../../../components/customs/CustomImput';
 import { useAuthStore } from '../../../../lib/store/authStore';
 import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
+import CustomScrollView from '../../../components/customs/CustomScrollView';
+import { GlobalStyles } from '../../../styles/GlobalStyles';
 
 // Extend Animal interface to include temporary form fields
 interface FormData extends Partial<Animal> {
@@ -133,6 +134,7 @@ const New = () => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       embarazada: false,
+      favorito: false,
     };
 
     try {
@@ -161,11 +163,7 @@ const New = () => {
         title="Agrega un Animal"
         onPress={() => Alert.alert('Debería mostrar info de cómo agregar un animal y cosas así')}
       />
-      <ScrollView
-        style={{ padding: 20 }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
+      <CustomScrollView style={GlobalStyles.padding20}>
         <CustomImagePicker
           onImageSelected={(uri) => handleChange('image', uri)}
         />
@@ -255,7 +253,7 @@ const New = () => {
 
         <CustomButton text="Guardar" onPress={handleSubmit} />
         <Separator height={200} />
-      </ScrollView>
+      </CustomScrollView>
     </GlobalContainer>
   );
 };
