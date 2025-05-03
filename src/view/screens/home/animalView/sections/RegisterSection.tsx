@@ -205,7 +205,7 @@ const RegisterSection = ({ registers: initialRegisters, animalId, animalName, ge
               <MiniButton
                 text=""
                 icon="trash-outline"
-                bg={newColors.rojo}
+                backgroundColor={newColors.rojo}
                 color={newColors.fondo_principal}
                 onPress={() => handleDeleteRegister(register.id)}
               />
@@ -228,12 +228,12 @@ const RegisterSection = ({ registers: initialRegisters, animalId, animalName, ge
           <MiniButton
             text="Cerrar"
             icon="close-outline"
-            bg={newColors.rojo}
+            backgroundColor={newColors.rojo}
             onPress={closeModal}
             color={newColors.fondo_principal}
           />
         </View>
-        <View style={{ padding: 20 }}>
+        <View style={GlobalStyles.padding20}>
           <CustomSelect
             label="Acción"
             value={accion}

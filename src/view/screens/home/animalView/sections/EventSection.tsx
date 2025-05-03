@@ -129,7 +129,7 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
               <MiniButton
                 text=""
                 icon="trash-outline"
-                bg={newColors.rojo}
+                backgroundColor={newColors.rojo}
                 color={newColors.fondo_principal}
                 onPress={() => handleDeleteEvent(event.id)}
               />
@@ -152,12 +152,12 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
           <MiniButton
             text="Cerrar"
             icon="close-outline"
-            bg={newColors.rojo}
+            backgroundColor={newColors.rojo}
             onPress={closeModal}
             color={newColors.fondo_principal}
           />
         </View>
-        <View style={{ padding: 20 }}>
+        <View style={GlobalStyles.padding20}>
           <CustomInput
             value={comentario}
             onChangeText={setComentario}

@@ -80,7 +80,8 @@ const GptRequest: React.FC<GptRequestProps> = ({ animal }) => {
     <>
       <View style={styles.container}>
         <CustomButton
-          text="Ask GPT"
+          backgroundColor={newColors.fondo_secundario}
+          text="Pregunta a GPT"
           onPress={() => modalRef.current?.open()}
         />
       </View>
@@ -184,7 +185,8 @@ const styles = StyleSheet.create({
   messageContainer: {
     flexGrow: 1,
     padding: 10,
-    maxHeight: 300,
+    maxHeight: 800,
+    minHeight: 300,
   },
   messageBubble: {
     padding: 10,
@@ -217,6 +219,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     borderTopWidth: 1,
+    gap: 10,
     borderTopColor: newColors.gris,
   },
 });

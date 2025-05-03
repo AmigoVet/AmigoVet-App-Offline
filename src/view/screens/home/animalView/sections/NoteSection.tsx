@@ -18,7 +18,7 @@ interface NotesProps {
   animalName?: string; // Opcional, ya que no se usa en la interfaz Notes
 }
 
-const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) => {
+const NoteSection = ({ notes: initialNotes, animalId }: NotesProps) => {
   const modalizeRef = useRef<Modalize>(null);
   const [nota, setNota] = useState('');
   const [editingNote, setEditingNote] = useState<Notes | null>(null);
@@ -125,7 +125,7 @@ const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) 
               <MiniButton
                 text=""
                 icon="trash-outline"
-                bg={newColors.rojo}
+                backgroundColor={newColors.rojo}
                 color={newColors.fondo_principal}
                 onPress={() => handleDeleteNote(note.id)}
               />
@@ -148,12 +148,12 @@ const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) 
           <MiniButton
             text="Cerrar"
             icon="close-outline"
-            bg={newColors.rojo}
+            backgroundColor={newColors.rojo}
             onPress={closeModal}
             color={newColors.fondo_principal}
           />
         </View>
-        <View style={{ padding: 20 }}>
+        <View style={GlobalStyles.padding20}>
           <CustomInput
             value={nota}
             onChangeText={setNota}

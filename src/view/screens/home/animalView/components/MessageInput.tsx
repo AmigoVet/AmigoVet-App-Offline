@@ -13,7 +13,6 @@ const MessageInput = ({ value, onChangeText, editable }: MessageInputProps) => {
   return (
     <TextInput
       placeholder="Que consulta tienes?..."
-      multiline
       value={value}
       onChangeText={onChangeText}
       style={styles.input}
@@ -29,6 +28,7 @@ const styles = StyleSheet.create({
     width: '80%',
     backgroundColor: newColors.fondo_principal,
     borderRadius: constants.borderRadius,
+    fontFamily: constants.FontText,
     padding: 10,
     borderWidth: 1,
     borderColor: newColors.verde,
