@@ -61,15 +61,13 @@ const HeaderHome = ({ userName, animals }: HeaderHomeProps) => {
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={centerFlatList ? styles.centeredFlatList : styles.defaultFlatList}
           renderItem={({ item }) => (
-            <View style={styles.animalContainer}>
-              <Pressable onPress={() => navigate('AnimalView', { animal: item })}>
+            <Pressable style={styles.animalContainer} onPress={() => navigate('AnimalView', { animal: item })}>
               <View style={styles.imageContainer}>
                 <Image source={{ uri: item.image }} style={styles.circle} />
               </View>
               <Text style={styles.text}>{item.nombre}</Text>
               <Text style={styles.text2}>{item.especie}</Text>
-              </Pressable>
-            </View>
+            </Pressable>
           )}
         />
       </View>
