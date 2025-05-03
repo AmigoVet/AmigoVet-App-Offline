@@ -239,6 +239,8 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
   //   }
   // };
 
+  //TODO: DEJAR DE JODER CON MODALES Y HACER PANTALLAS A PARTE PARA ESTOS DATOS
+
   return (
     <>
       <View style={styleSections.container}>
@@ -334,20 +336,15 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
                   setInputValue(uri);
                 }}
               />
-              {inputValue && (
-                <CustomImage
-                  source={inputValue}
-                  style={{ height: 100, marginTop: 10 }}
-                />
-              )}
             </View>
           )}
-          <Separator height={10} />
+          <Separator height={100} />
           <CustomButton
             text="Guardar"
             onPress={handleSave}
           />
         </View>
+
       </Modalize>
     </>
   );
