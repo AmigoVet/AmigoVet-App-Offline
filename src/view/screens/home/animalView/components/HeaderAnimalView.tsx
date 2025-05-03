@@ -21,19 +21,19 @@ interface HeaderAnimalViewProps {
   image3?: string;
 }
 
-const HeaderAnimalView = ({ 
-  title = "Datos del animal", 
-  id = "Sin identificador", 
-  image1, 
-  image2, 
-  image3 
+const HeaderAnimalView = ({
+  title = 'Datos del animal',
+  id = 'Sin identificador',
+  image1,
+  image2,
+  image3,
 }: HeaderAnimalViewProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [activeIndex, setActiveIndex] = useState(0);
-  
+
   // Reconstruct full URIs for images
   const reconstructUri = (image: string | undefined): string => {
-    if (!image) return '';
+    if (!image) {return '';}
     // If already a full URI, return as is
     if (image.startsWith('file://')) {
       console.log('[DEBUG] Image already a full URI:', image);
@@ -57,7 +57,7 @@ const HeaderAnimalView = ({
   );
 
   const renderDotIndicator = () => {
-    if (images.length <= 1) return null;
+    if (images.length <= 1) {return null;}
     return (
       <View style={styles.paginationContainer}>
         {images.map((_, index) => (
@@ -66,11 +66,11 @@ const HeaderAnimalView = ({
             style={[
               styles.dot,
               {
-                backgroundColor: index === activeIndex 
+                backgroundColor: index === activeIndex
                   ? newColors.verde_light
                   : newColors.fondo_secundario,
                 width: index === activeIndex ? 20 : 8,
-              }
+              },
             ]}
           />
         ))}
@@ -79,7 +79,7 @@ const HeaderAnimalView = ({
   };
 
   const viewabilityConfig = {
-    viewAreaCoveragePercentThreshold: 50
+    viewAreaCoveragePercentThreshold: 5,
   };
 
   const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
@@ -92,13 +92,12 @@ const HeaderAnimalView = ({
     <>
       <View style={styles.container}>
         <Pressable onPress={() => navigation.goBack()} style={styles.iconContainer}>
-          <Icon 
-            name="chevron-back-outline" 
-            size={25} 
-            color={newColors.fondo_principal} 
+          <Icon
+            name="chevron-back-outline"
+            size={25}
+            color={newColors.fondo_principal}
           />
         </Pressable>
-        
         <View style={styles.textContainer}>
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
           <Text style={styles.subtitle}>{id}</Text>
@@ -135,39 +134,39 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 100,
     flexDirection: 'row',
-    alignItems: 'flex-start', 
-    justifyContent: 'space-between', 
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
     backgroundColor: newColors.fondo_secundario,
     borderBottomLeftRadius: constants.borderRadius,
     borderBottomRightRadius: constants.borderRadius,
     zIndex: 10,
     paddingHorizontal: 10,
-    paddingTop: 10, 
-    gap: 20, 
+    paddingTop: 10,
+    gap: 20,
   },
   iconContainer: {
     width: 40,
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'flex-start', 
+    justifyContent: 'flex-start',
   },
   textContainer: {
-    flexShrink: 1, 
-    alignItems: 'center', 
+    flexShrink: 1,
+    alignItems: 'center',
   },
   title: {
     fontSize: 19,
     fontWeight: 'bold',
     color: newColors.fondo_principal,
     textAlign: 'center',
-    fontFamily: constants.FontTitle
+    fontFamily: constants.FontTitle,
   },
   subtitle: {
     fontSize: 12,
     fontWeight: '300',
     color: newColors.fondo_principal,
     textAlign: 'center',
-    fontFamily: constants.FontTitle
+    fontFamily: constants.FontTitle,
   },
   imageContainer: {
     zIndex: 10,
@@ -198,6 +197,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
+    marginBottom: 10,
   },
   dot: {
     height: 8,
