@@ -15,15 +15,26 @@ import RegisterSection from './sections/RegisterSection';
 import ExtraSection from './sections/ExtraSection';
 import { useState } from 'react';
 import GptRequest from './components/GptRequest';
+import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 type AnimalViewRouteProp = RouteProp<RootStackParamList, 'AnimalView'>;
 type TabSection = 'events' | 'notes' | 'registers' | 'extra';
 
 const AnimalView = () => {
-
   const route = useRoute<AnimalViewRouteProp>();
-  const { animal } = route.params;
+  const { animals } = useAnimalStore();
+  const [animal, setAnimal] = useState(route.params.animal);
   const [activeTab, setActiveTab] = useState<TabSection>('events');
+
+  // Fetch the latest animal data when the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      const currentAnimal = animals.find(a => a.id === route.params.animal.id) || route.params.animal;
+      setAnimal(currentAnimal);
+    }, [animals, route.params.animal])
+  );
 
   const TabButton = ({ title, section }: { title: string; section: TabSection }) => (
     <TouchableOpacity
@@ -55,11 +66,11 @@ const AnimalView = () => {
       case 'events':
         return <EventSection events={animal.events!} animalId={animal.id} animalName={animal.nombre} />;
       case 'notes':
-        return <NoteSection notes={animal.notes!} animalId={animal.id} animalName={animal.nombre}  />;
+        return <NoteSection notes={animal.notes!} animalId={animal.id} animalName={animal.nombre} />;
       case 'registers':
-        return <RegisterSection registers={animal.registers!} animalId={animal.id} animalName={animal.nombre} genero={animal.genero} embarazada={animal.embarazada}  />;
+        return <RegisterSection registers={animal.registers!} animalId={animal.id} animalName={animal.nombre} genero={animal.genero!} embarazada={animal.embarazada} />;
       case 'extra':
-        return <ExtraSection animal={animal}  />;
+        return <ExtraSection animal={animal} />;
       default:
         return null;
     }
@@ -67,7 +78,7 @@ const AnimalView = () => {
 
   return (
     <GlobalContainer style={{ backgroundColor: newColors.fondo_secundario }}>
-      <CustomScrollView >
+      <CustomScrollView>
         <HeaderAnimalView
           title={animal.nombre}
           id={animal.identificador}

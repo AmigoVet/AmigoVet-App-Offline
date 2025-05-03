@@ -101,6 +101,7 @@ const Update = () => {
       image2: await processImage(formData.image2),
       image3: await processImage(formData.image3),
       updated_at: new Date().toISOString(),
+      isChanged: true,
     };
 
     try {
