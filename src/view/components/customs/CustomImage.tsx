@@ -16,7 +16,7 @@ const CustomImage = ({ source, full, style }: CustomImageProps) => {
         style={[
           {
             width: full ? Dimensions.get('window').width : '100%',
-            height: full ? 250 : 100,
+            height: full ? 250 : '100%',
             backgroundColor: '#e0e0e0',
             justifyContent: 'center',
             alignItems: 'center',
@@ -39,7 +39,7 @@ const CustomImage = ({ source, full, style }: CustomImageProps) => {
       style={[
         {
           width: full ? Dimensions.get('window').width : '100%',
-          height: full ? 250 : 100,
+          height: full ? 250 : '100%',
           resizeMode: 'cover',
           borderTopLeftRadius: full ? 0 : constants.borderRadius,
           borderTopRightRadius: full ? 0 : constants.borderRadius,

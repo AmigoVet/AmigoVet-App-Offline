@@ -40,4 +40,11 @@ export const GlobalStyles = StyleSheet.create({
     padding20:{
         padding: 20,
     },
+
+    marginHorizontal20:{
+        marginHorizontal: 20,
+    },
+    fontWeight200: {
+        fontWeight: '200',
+    },
 });
