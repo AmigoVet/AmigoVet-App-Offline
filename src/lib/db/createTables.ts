@@ -66,16 +66,16 @@ const createRegisterTable = () => {
                 FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
             )`,
             [],
-            () => { 
-                console.log('[SUCCESS] Tabla Register creada exitosamente'); 
+            () => {
+                console.log('[SUCCESS] Tabla Register creada exitosamente');
                 verifyTableExists('Register');
             },
-            (_: Transaction, error: SQLError) => { 
+            (_: Transaction, error: SQLError) => {
                 console.error('[ERROR] Error al crear la tabla Register:', {
                     message: error.message,
                     code: error.code,
-                    sql: 'CREATE TABLE IF NOT EXISTS Register ...'
-                }); 
+                    sql: 'CREATE TABLE IF NOT EXISTS Register ...',
+                });
                 return false;
             }
         );
@@ -94,16 +94,16 @@ const createNotesTable = () => {
                 FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
             )`,
             [],
-            () => { 
-                console.log('[SUCCESS] Tabla Notas creada exitosamente'); 
+            () => {
+                console.log('[SUCCESS] Tabla Notas creada exitosamente');
                 verifyTableExists('Notas');
             },
-            (_: Transaction, error: SQLError) => { 
+            (_: Transaction, error: SQLError) => {
                 console.error('[ERROR] Error al crear la tabla Notas:', {
                     message: error.message,
                     code: error.code,
-                    sql: 'CREATE TABLE IF NOT EXISTS Notas ...'
-                }); 
+                    sql: 'CREATE TABLE IF NOT EXISTS Notas ...',
+                });
                 return false;
             }
         );
@@ -123,16 +123,16 @@ const createEventsTable = () => {
                 FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
             )`,
             [],
-            () => { 
-                console.log('[SUCCESS] Tabla Events creada exitosamente'); 
+            () => {
+                console.log('[SUCCESS] Tabla Events creada exitosamente');
                 verifyTableExists('Events');
             },
-            (_: Transaction, error: SQLError) => { 
+            (_: Transaction, error: SQLError) => {
                 console.error('[ERROR] Error al crear la tabla Events:', {
                     message: error.message,
                     code: error.code,
-                    sql: 'CREATE TABLE IF NOT EXISTS Events ...'
-                }); 
+                    sql: 'CREATE TABLE IF NOT EXISTS Events ...',
+                });
                 return false;
             }
         );
@@ -190,7 +190,7 @@ export const createChatsTable = () => {
                 console.error('[ERROR] Error al crear la tabla Chats:', {
                     message: error.message,
                     code: error.code,
-                    sql: 'CREATE TABLE IF NOT EXISTS Chats ...'
+                    sql: 'CREATE TABLE IF NOT EXISTS Chats ...',
                 });
                 return false;
             }
@@ -218,7 +218,7 @@ export const createMessagesTable = () => {
                 console.error('[ERROR] Error al crear la tabla Messages:', {
                     message: error.message,
                     code: error.code,
-                    sql: 'CREATE TABLE IF NOT EXISTS Messages ...'
+                    sql: 'CREATE TABLE IF NOT EXISTS Messages ...',
                 });
                 return false;
             }

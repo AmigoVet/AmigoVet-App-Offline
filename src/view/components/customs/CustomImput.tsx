@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, KeyboardTypeOptions, Pressable, Dimensions } from 'react-native';
+import { View, Text, TextInput, StyleSheet, KeyboardTypeOptions, Pressable } from 'react-native';
 import { newColors } from '../../styles/colors';
 import { constants } from '../../styles/constants';
-import Icon from '@react-native-vector-icons/ionicons';
 import CustomIonicIcon from './CustomIonicIcon';
 import { GlobalStyles } from '../../styles/GlobalStyles';
 
-const { width } = Dimensions.get('window');
 
 interface CustomInputProps {
   keyboardType?: KeyboardTypeOptions;
@@ -34,7 +32,6 @@ const CustomInput: React.FC<CustomInputProps> = ({
   onFocus = () => {},
   password = false,
   iconName, // Añadimos la prop al destructuring
-  keyboardType,
   required = false,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(!password);
@@ -55,7 +52,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
   return (
     <View style={styles.container}>
-      {label && 
+      {label &&
       <Text style={GlobalStyles.subtitle}>
         {label}
         {required && <Text style={{color: newColors.rojo}}>*</Text>}
@@ -67,7 +64,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
           placeholder={placeholder}
           value={value}
           onChangeText={onChangeText}
-          placeholderTextColor={newColors.fondo_secundario} 
+          placeholderTextColor={newColors.fondo_secundario}
           secureTextEntry={password && !isPasswordVisible}
           multiline={multiline}
           keyboardType={getKeyboardType()}
@@ -76,12 +73,12 @@ const CustomInput: React.FC<CustomInputProps> = ({
           autoCapitalize="none"
           autoCorrect={false}
           textAlignVertical="center"
-          
+
         />
         {/* Renderizado condicional del ícono */}
         {password || iconName ? (
           <Pressable
-            onPress={password ? togglePasswordVisibility : undefined} 
+            onPress={password ? togglePasswordVisibility : undefined}
             style={styles.icon}
           >
             <CustomIonicIcon
@@ -90,7 +87,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
                   ? isPasswordVisible
                     ? 'eye-outline'
                     : 'eye-off-outline'
-                  : iconName || 'alert-circle-outline' 
+                  : iconName || 'alert-circle-outline'
               }
               size={20}
               color={newColors.fondo_secundario}
@@ -121,7 +118,7 @@ const styles = StyleSheet.create({
     minHeight: 50,
     fontSize: 14,
     fontWeight: '400',
-    fontFamily: constants.FontText
+    fontFamily: constants.FontText,
   },
   multilineInput: {
     minHeight: 100,

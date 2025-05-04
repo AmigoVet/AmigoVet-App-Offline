@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   activeOption: {
-    backgroundColor: newColors.verde, 
+    backgroundColor: newColors.verde,
     borderRadius: constants.borderRadius,
   },
   text: {
@@ -83,15 +83,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   activeText: {
-    color: newColors.fondo_principal, 
+    color: newColors.fondo_principal,
     fontFamily: constants.FontTitle,
   },
   inactiveText: {
-    color: newColors.fondo_secundario, 
+    color: newColors.fondo_secundario,
     fontFamily: constants.FontText,
   },
   inactiveOption: {
-    backgroundColor: newColors.fondo_principal, 
+    backgroundColor: newColors.fondo_principal,
   },
 });
 

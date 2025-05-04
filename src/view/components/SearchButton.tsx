@@ -32,9 +32,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 5,
     paddingHorizontal: 10,
-    borderWidth: 2, 
-    borderColor: newColors.fondo_secundario, 
-    backgroundColor: newColors.fondo_principal, 
+    borderWidth: 2,
+    borderColor: newColors.fondo_secundario,
+    backgroundColor: newColors.fondo_principal,
     borderRadius: constants.borderRadius,
   },
 });

@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Dimensions,
   TouchableWithoutFeedback,
   ScrollView,
   Platform,
@@ -29,7 +28,6 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   onChange,
   required = false,
 }) => {
-  const { width } = Dimensions.get('window');
   const [isFocused, setIsFocused] = useState(false);
   const [inputText, setInputText] = useState(value);
   const [filteredOptions, setFilteredOptions] = useState<string[]>(options);
@@ -54,8 +52,8 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
         .sort((a, b) => {
           const aStartsWith = a.toLowerCase().startsWith(text.toLowerCase());
           const bStartsWith = b.toLowerCase().startsWith(text.toLowerCase());
-          if (aStartsWith && !bStartsWith) return -1;
-          if (!aStartsWith && bStartsWith) return 1;
+          if (aStartsWith && !bStartsWith) {return -1;}
+          if (!aStartsWith && bStartsWith) {return 1;}
           return a.localeCompare(b);
         });
       setFilteredOptions(filtered);
@@ -94,7 +92,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
   // Handle blur event
   const handleBlur = () => {
-    if (isSelecting) return;
+    if (isSelecting) {return;}
     setIsFocused(false);
     setIsDropdownOpen(false);
     const valid =

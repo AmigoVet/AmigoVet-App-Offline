@@ -4,7 +4,7 @@ import Svg, { Path } from 'react-native-svg';
 import { newColors } from '../../styles/colors';
 
 const CustomButtonTab = (props: any) => {
-    const { route, children, accessibilityState, onPress } = props;
+    const { children, accessibilityState, onPress } = props;
     const isIOS = Platform.OS === 'ios';
 
     if (accessibilityState.selected) {
@@ -27,9 +27,9 @@ const CustomButtonTab = (props: any) => {
                 </View>
 
                 {/* Active Button */}
-                <TouchableOpacity 
-                    activeOpacity={1} 
-                    onPress={onPress} 
+                <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={onPress}
                     style={[styles.activeBtn, isIOS && styles.activeBtnIOS]}
                 >
                     <Text>{children}</Text>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         left: 0,
         width: '100%',
         overflow: 'hidden',
-        zIndex: -1, 
+        zIndex: -1,
     },
     svgWrapperIOS: {
         height: 50, // Reducir la altura del contenedor SVG en iOS

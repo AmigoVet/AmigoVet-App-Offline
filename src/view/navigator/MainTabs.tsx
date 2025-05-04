@@ -20,7 +20,7 @@ const MainTabs = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarIcon: ({ color, size, focused }) => {
+        tabBarIcon: ({ color }) => {
           let iconName : any;
 
           if (route.name === 'Local') {

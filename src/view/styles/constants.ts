@@ -5,4 +5,4 @@ export const constants = {
     cantidadPosibleDePeticionesPorDia: 3,
     FontText: 'Synonym',
     FontTitle: 'Chillax',
-}
+};

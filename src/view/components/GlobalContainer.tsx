@@ -1,5 +1,5 @@
 import { View, StyleSheet, StatusBar, Platform, StyleProp, ViewStyle } from 'react-native';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { newColors } from '../styles/colors';
 
@@ -10,7 +10,6 @@ interface GlobalContainerProps {
 
 const GlobalContainer = ({ children, style }: GlobalContainerProps) => {
   const insets = useSafeAreaInsets();
-  
 
   return (
     <SafeAreaProvider>
@@ -20,7 +19,7 @@ const GlobalContainer = ({ children, style }: GlobalContainerProps) => {
           backgroundColor={newColors.fondo_secundario}
           barStyle="light-content"
         />
-        
+
         {/* En iOS, en lugar de usar SafeAreaView, manejamos manualmente los insets */}
         {Platform.OS === 'ios' ? (
           <View style={[styles.iosContainer, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     backgroundColor: newColors.fondo_principal, // El contenido tendrá fondo_principal
-  }
+  },
 });
 
 export default GlobalContainer;

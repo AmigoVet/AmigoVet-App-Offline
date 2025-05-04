@@ -1,6 +1,6 @@
-import { View, Text, StyleProp, ViewStyle } from 'react-native'
-import React from 'react'
-import { ScrollView } from 'react-native-gesture-handler'
+import { View, StyleProp, ViewStyle } from 'react-native';
+import React from 'react';
+import { ScrollView } from 'react-native-gesture-handler';
 import { newColors } from '../../styles/colors';
 
 interface CustomScrollViewProps {
@@ -11,9 +11,9 @@ interface CustomScrollViewProps {
 
 const CustomScrollView = ({children, scrollEnabled, style}: CustomScrollViewProps) => {
   return (
-    <ScrollView 
+    <ScrollView
         style={[style]}
-        contentContainerStyle={{ backgroundColor: newColors.fondo_secundario }} 
+        contentContainerStyle={{ backgroundColor: newColors.fondo_secundario }}
         scrollEnabled={scrollEnabled}
         showsVerticalScrollIndicator={false}
     >
@@ -21,7 +21,7 @@ const CustomScrollView = ({children, scrollEnabled, style}: CustomScrollViewProp
             {children}
         </View>
     </ScrollView>
-  )
-}
+  );
+};
 
-export default CustomScrollView
+export default CustomScrollView;

@@ -29,7 +29,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 
   const parseDate = (text: string): Date | null => {
     const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    if (!regex.test(text)) return null;
+    if (!regex.test(text)) {return null;}
 
     const [day, month, year] = text.split('/').map(Number);
     const date = new Date(year, month - 1, day);
@@ -40,8 +40,8 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
       date.getFullYear() === year
     ) {
       const now = new Date();
-      if (!allowFutureDates && date > now) return null;
-      if (!allowPastDates && date < now) return null;
+      if (!allowFutureDates && date > now) {return null;}
+      if (!allowPastDates && date < now) {return null;}
       return date;
     }
     return null;
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: constants.borderRadius
+    borderRadius: constants.borderRadius,
   },
   pickerContainer: {
     backgroundColor: newColors.fondo_principal,

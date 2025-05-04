@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import Icon from '@react-native-vector-icons/ionicons'
-import { newColors } from '../styles/colors'
+import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import Icon from '@react-native-vector-icons/ionicons';
+import { newColors } from '../styles/colors';
 
 const WithLove = () => {
   return (
@@ -10,8 +10,8 @@ const WithLove = () => {
         <Icon name="heart" size={20} color={newColors.verde} />
         <Text style={styles.minitext}> por Juan Mera</Text>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
       container: {
@@ -19,11 +19,11 @@ const styles = StyleSheet.create({
         padding: 20,
       },
       logoContainer: {
-        alignItems: "center", 
+        alignItems: 'center',
       },
       footer: {
-        alignItems: "center",
-        flexDirection: "row",
+        alignItems: 'center',
+        flexDirection: 'row',
       },
       minitext: {
         color: newColors.fondo_secundario,
@@ -33,4 +33,4 @@ const styles = StyleSheet.create({
       },
     });
 
-export default WithLove
+export default WithLove;
