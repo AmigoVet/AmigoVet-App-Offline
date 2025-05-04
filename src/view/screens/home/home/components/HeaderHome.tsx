@@ -29,18 +29,18 @@ const HeaderHome = ({ userName, animals }: HeaderHomeProps) => {
       {/* Contenedor del HeaderHome */}
       <View style={styles.container}>
         <View>
-          <LabelLogo width={140} height={140} fill={newColors.fondo_principal} style={{ marginTop: -50 }} />
+          <LabelLogo width={140} height={140} fill={newColors.fondo_principal} style={styles.marginTop50} />
           <Text style={styles.welcomeText}>Bienvenido {name}</Text>
         </View>
         <View style={styles.iconsContainer}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 5 }}>
+          <View style={styles.box}>
             <Pressable onPress={() => navigate('Busqueda')}>
               <Icon name="search-outline" size={25} color={newColors.fondo_principal} />
             </Pressable>
             <Pressable onPress={() => navigate('New')}>
               <Icon name="add-circle-outline" size={25} color={newColors.fondo_principal} />
             </Pressable>
-            <Pressable onPress={() => Alert.alert('Llegará pronto!!')}>
+            <Pressable onPress={() => navigate('AllChats')}>
               <Icon name="chatbubble-outline" size={25} color={newColors.fondo_principal} />
             </Pressable>
           </View>
@@ -55,8 +55,8 @@ const HeaderHome = ({ userName, animals }: HeaderHomeProps) => {
         <FlatList
           data={animals}
           horizontal
-          ListHeaderComponent={() => <View style={{ width: 20 }} />}
-          ListFooterComponent={() => <View style={{ width: 20 }} />}
+          ListHeaderComponent={() => <View style={styles.width20} />}
+          ListFooterComponent={() => <View style={styles.width20} />}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={centerFlatList ? styles.centeredFlatList : styles.defaultFlatList}
@@ -147,6 +147,17 @@ const createStyles = () =>
       paddingVertical: 2,
       borderRadius: constants.borderRadius,
       fontFamily: constants.FontText,
+    },
+
+    width20: {
+      width: 20,
+    },
+    marginTop50: {
+      marginTop: -50,
+    },
+    box: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
     },
   });
 

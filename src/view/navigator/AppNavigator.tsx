@@ -8,6 +8,8 @@ import AnimalView from '../screens/home/animalView/AnimalView';
 import Busqueda from '../screens/home/busqueda/Busqueda';
 import Calendar from '../screens/home/calendar/Calendar';
 import Update from '../screens/home/update/Update';
+import GptChat from '../screens/home/gptChat/GptChat';
+import AllChats from '../screens/home/allChats/AllChats';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -27,6 +29,8 @@ const AppNavigator = () => {
           <Stack.Screen name="Busqueda" component={Busqueda} />
           <Stack.Screen name="Calendar" component={Calendar} />
           <Stack.Screen name="Update" component={Update} />
+          <Stack.Screen name="GptChat" component={GptChat} />
+          <Stack.Screen name="AllChats" component={AllChats} />
         </>
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />

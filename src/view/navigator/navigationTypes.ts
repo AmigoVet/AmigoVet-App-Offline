@@ -1,4 +1,6 @@
 import { Animal } from '../../lib/interfaces/Animal';
+import { Chat } from '../../lib/interfaces/chats';
+
 export type MainTabsParamList = {
   Home: undefined;
   Feed: undefined;
@@ -16,10 +18,11 @@ export type AuthStackParamList = {
 export type RootStackParamList = {
   MainApp: undefined;
   Auth: undefined;
-
   AnimalView: { animal: Animal };
   Busqueda: undefined;
   New: undefined;
   Update: { animal: Animal };
   Calendar: undefined;
+  GptChat: { chatData: Chat };
+  AllChats: undefined;
 };

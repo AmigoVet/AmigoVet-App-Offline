@@ -6,6 +6,8 @@ export const createTables = () => {
     createRegisterTable();
     createNotesTable();
     createEventsTable();
+    createChatsTable();
+    createMessagesTable();
 };
 
 export const createAnimalTable = () => {
@@ -162,6 +164,62 @@ const verifyTableExists = (tableName: string) => {
             },
             (_: Transaction, error: SQLError) => {
                 console.error(`[ERROR] Error verificando existencia de ${tableName}:`, error);
+                return false;
+            }
+        );
+    });
+};
+
+export const createChatsTable = () => {
+    db.transaction((tx: Transaction) => {
+        tx.executeSql(
+            `CREATE TABLE IF NOT EXISTS Chats (
+                id TEXT PRIMARY KEY NOT NULL,
+                animalId TEXT NOT NULL,
+                title TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
+            )`,
+            [],
+            () => {
+                console.log('[SUCCESS] Tabla Chats creada exitosamente');
+                verifyTableExists('Chats');
+            },
+            (_: Transaction, error: SQLError) => {
+                console.error('[ERROR] Error al crear la tabla Chats:', {
+                    message: error.message,
+                    code: error.code,
+                    sql: 'CREATE TABLE IF NOT EXISTS Chats ...'
+                });
+                return false;
+            }
+        );
+    });
+};
+
+export const createMessagesTable = () => {
+    db.transaction((tx: Transaction) => {
+        tx.executeSql(
+            `CREATE TABLE IF NOT EXISTS Messages (
+                id TEXT PRIMARY KEY NOT NULL,
+                chatId TEXT NOT NULL,
+                content TEXT NOT NULL,
+                owner TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (chatId) REFERENCES Chats (id) ON DELETE CASCADE
+            )`,
+            [],
+            () => {
+                console.log('[SUCCESS] Tabla Messages creada exitosamente');
+                verifyTableExists('Messages');
+            },
+            (_: Transaction, error: SQLError) => {
+                console.error('[ERROR] Error al crear la tabla Messages:', {
+                    message: error.message,
+                    code: error.code,
+                    sql: 'CREATE TABLE IF NOT EXISTS Messages ...'
+                });
                 return false;
             }
         );
