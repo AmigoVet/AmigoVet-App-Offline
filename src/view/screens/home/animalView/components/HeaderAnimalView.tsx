@@ -36,12 +36,12 @@ const HeaderAnimalView = ({
     if (!image) {return '';}
     // If already a full URI, return as is
     if (image.startsWith('file://')) {
-      console.log('[DEBUG] Image already a full URI:', image);
+      // console.log('[DEBUG] Image already a full URI:', image);
       return image;
     }
     // Reconstruct URI from filename
     const fullUri = `file://${getStoragePath()}/animals/${image}`;
-    console.log('[DEBUG] Reconstructed URI:', fullUri);
+    // console.log('[DEBUG] Reconstructed URI:', fullUri);
     return fullUri;
   };
 

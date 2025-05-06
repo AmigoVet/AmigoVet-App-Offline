@@ -19,7 +19,7 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
 
   // Get the first two notes (or fewer if not enough exist)
   const firstTwoNotes = animal.notes && animal.notes.length > 0 ? animal.notes.slice(0, 2) : [];
-  console.log('First two notes:', firstTwoNotes);
+  // console.log('First two notes:', firstTwoNotes);
 
   return (
     <Pressable style={styles.box} onPress={() => navigate('AnimalView', { animal: animal })}>

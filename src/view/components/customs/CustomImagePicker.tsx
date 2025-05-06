@@ -100,7 +100,6 @@ const CustomImagePicker: React.FC<CustomImagePickerProps> = ({
 
       launchImageLibrary(options, async (response) => {
         if (response.didCancel) {
-          console.log('Usuario canceló la selección');
         } else if (response.errorCode) {
           console.error('Error en la galería:', response.errorCode, response.errorMessage);
           Alert.alert('Error', `No se pudo seleccionar la imagen: ${response.errorMessage}`);
@@ -146,7 +145,6 @@ const CustomImagePicker: React.FC<CustomImagePickerProps> = ({
 
       launchCamera(options, async (response) => {
         if (response.didCancel) {
-          console.log('Usuario canceló la cámara');
         } else if (response.errorCode) {
           console.error('Error en la cámara:', response.errorCode, response.errorMessage);
           Alert.alert('Error', `No se pudo tomar la foto: ${response.errorMessage}`);

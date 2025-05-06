@@ -8,7 +8,7 @@ interface NoticesHomeProps {
 
 const NoticesHome = ({notes}: NoticesHomeProps) => {
 
-    console.log('Notas:', notes)
+    // console.log('Notas:', notes)
     return (
         <View>
         <Text>NoticesHome</Text>

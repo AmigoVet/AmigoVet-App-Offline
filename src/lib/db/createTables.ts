@@ -237,12 +237,12 @@ const verifyTableExists = (db: SQLiteDatabase, tableName: string): void => {
       [tableName],
       (_: Transaction, { rows }: { rows: any }) => {
         if (rows.length > 0) {
-          console.log(`[INFO] La tabla ${tableName} existe en la base de datos`);
+          // console.log(`[INFO] La tabla ${tableName} existe en la base de datos`);
           tx.executeSql(
             `PRAGMA table_info(${tableName})`,
             [],
             (_: Transaction, { rows: tableInfo }: { rows: any }) => {
-              console.log(`[INFO] Estructura de la tabla ${tableName}:`, tableInfo.raw());
+              // console.log(`[INFO] Estructura de la tabla ${tableName}:`, tableInfo.raw());
             },
             (_: Transaction, error: SQLError) => {
               console.error(`[ERROR] No se pudo obtener la estructura de ${tableName}:`, error);
