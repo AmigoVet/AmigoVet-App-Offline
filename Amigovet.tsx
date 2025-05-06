@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './src/view/navigator/AppNavigator';
+import { createTables } from './src/lib/db/createTables';
 
 const AmigoVet = () => {
+  useEffect(() => {
+    const setupDatabase = async () => {
+      try {
+        await createTables();
+        console.log('Database setup completed');
+      } catch (error) {
+        console.error('Error setting up database:', error);
+      }
+    };
+    setupDatabase();
+  }, []);
+
+
   return (
     <NavigationContainer>
       <AppNavigator />

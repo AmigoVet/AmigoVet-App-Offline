@@ -1,9 +1,10 @@
-import { db } from '../db';
-import { SQLError } from 'react-native-sqlite-storage';
+import { getDatabase } from '../db';
+import { SQLiteDatabase, Transaction, SQLError } from 'react-native-sqlite-storage';
 
 export const updateAnimal = async (animalId: string, updates: { embarazada?: boolean; favorito?: boolean }): Promise<void> => {
+  const db: SQLiteDatabase = await getDatabase();
   return new Promise((resolve, reject: (error: SQLError | unknown) => void) => {
-    db.transaction((tx) => {
+    db.transaction((tx: Transaction) => {
       const fields: string[] = [];
       const values: (number | string)[] = [];
 

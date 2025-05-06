@@ -13,9 +13,11 @@ end
 node_require('react-native/scripts/react_native_pods.rb')
 node_require('react-native-permissions/scripts/setup.rb')
 
+# Especifica la plataforma mínima (puedes ajustar según tus necesidades, pero min_ios_version_supported es dinámico)
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
+# Configuración de frameworks (manteniendo tu lógica para USE_FRAMEWORKS)
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
@@ -25,11 +27,15 @@ end
 target 'AmigoVet' do
   config = use_native_modules!
 
+  # Configuración de React Native
   use_react_native!(
     :path => config[:reactNativePath],
-    # An absolute path to your application root.
+    # Ruta absoluta al directorio raíz de la aplicación
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+
+  # Agregar react-native-sqlite-storage explícitamente
+  pod 'react-native-sqlite-storage', :path => '../node_modules/react-native-sqlite-storage'
 
   # Configurar permisos necesarios
   setup_permissions([
@@ -38,11 +44,20 @@ target 'AmigoVet' do
     'PhotoLibraryAddOnly',  # Para guardar fotos en la galería
   ])
 
+  # Configuración post-install para React Native
   post_install do |installer|
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
+      :mac_catalyst_enabled => false
     )
+    # Opcional: Asegura que todas las dependencias usen la versión correcta de SQLite
+    installer.pods_project.targets.each do |target|
+      if target.name == 'react-native-sqlite-storage'
+        target.build_configurations.each do |config|
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+        end
+      end
+    end
   end
 end

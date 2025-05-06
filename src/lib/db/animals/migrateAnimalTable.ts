@@ -1,7 +1,8 @@
-import { Transaction, SQLError } from 'react-native-sqlite-storage';
-import { db } from '../db';
+import { Transaction, SQLError, SQLiteDatabase } from 'react-native-sqlite-storage';
+import { getDatabase } from '../db';
 
-export const migrateAnimalTable = () => {
+export const migrateAnimalTable = async (): Promise<boolean> => {
+  const db: SQLiteDatabase = await getDatabase();
   return new Promise((resolve, reject) => {
     db.transaction((tx: Transaction) => {
       // Check the current structure of the Animal table

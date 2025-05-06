@@ -1,18 +1,16 @@
 import { create } from 'zustand';
-import { Transaction, SQLError } from 'react-native-sqlite-storage';
-import { setDataAnimal } from '../db/animals';
+import { Transaction, SQLError, SQLiteDatabase } from 'react-native-sqlite-storage';
+import { setDataAnimal } from '../db/animals/setDataAnimal';
 import { setDataNote, getNotesByAnimalId, updateNote, deleteNote } from '../db/notes';
 import { setDataRegister, getRegistersByAnimalId, updateRegister, deleteRegister } from '../db/registers';
 import { setDataEvent, getEventsByAnimalId, updateEvent, deleteEvent } from '../db/events';
-import { db, getStoragePath } from '../db/db';
+import { getDatabase, getStoragePath } from '../db/db';
 import { Animal } from '../interfaces/Animal';
 import { Notes } from '../interfaces/Notes';
 import { Register } from '../interfaces/Register';
 import { Events } from '../interfaces/Events';
-import RNFS from 'react-native-fs';
+import * as RNFS from 'react-native-fs';
 import { updateAnimal } from '../db/animals/updateAnimal';
-
-
 
 interface AnimalStore {
   animals: Animal[];
@@ -54,6 +52,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   totalRegisters: 0,
 
   loadAnimals: async (page = 1, limit = 10, filters = {}) => {
+    const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
         let whereClause = '';
@@ -123,21 +122,23 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     }
                   }
 
-                  const image2Path = item.image2 && !item.image2.startsWith('file://') 
+                  let image2Path = item.image2 && !item.image2.startsWith('file://') 
                     ? `file://${getStoragePath()}/animals/${item.image2}` 
                     : item.image2 || '';
-                  const image3Path = item.image3 && !item.image3.startsWith('file://') 
+                  let image3Path = item.image3 && !item.image3.startsWith('file://') 
                     ? `file://${getStoragePath()}/animals/${item.image3}` 
                     : item.image3 || '';
 
                   if (image2Path && image2Path.startsWith('file://')) {
                     const fileExists = await RNFS.exists(image2Path.replace('file://', ''));
                     if (!fileExists) {
+                      image2Path = '';
                     }
                   }
                   if (image3Path && image3Path.startsWith('file://')) {
                     const fileExists = await RNFS.exists(image3Path.replace('file://', ''));
                     if (!fileExists) {
+                      image3Path = '';
                     }
                   }
 
@@ -166,6 +167,9 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     updated_at: item.updated_at,
                     embarazada: !!item.embarazada,
                     favorito: !!item.favorito,
+                    isPublic: !!item.isPublic,
+                    isRespalded: !!item.isRespalded,
+                    isChanged: !!item.isChanged,
                     notes,
                     registers,
                     events,
@@ -192,6 +196,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   },
 
   loadEvents: async (page = 1, limit = 10, filters = {}) => {
+    const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
         let whereClause = '';
@@ -257,6 +262,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   },
 
   loadNotes: async (page = 1, limit = 10, filters = {}) => {
+    const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
         let whereClause = '';
@@ -321,6 +327,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   },
 
   loadRegisters: async (page = 1, limit = 10, filters = {}) => {
+    const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
         let whereClause = '';
@@ -398,6 +405,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   },
 
   updateAnimal: async (updatedAnimal: Animal) => {
+    const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
         tx.executeSql(
@@ -405,7 +413,8 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             ownerId = ?, identificador = ?, nombre = ?, especie = ?, raza = ?,
             nacimiento = ?, genero = ?, peso = ?, color = ?, descripcion = ?,
             image = ?, image2 = ?, image3 = ?, proposito = ?, ubicacion = ?,
-            created_at = ?, updated_at = ?, embarazada = ?, favorito = ?
+            created_at = ?, updated_at = ?, embarazada = ?, favorito = ?,
+            isPublic = ?, isRespalded = ?, isChanged = ?
             WHERE id = ?`,
           [
             updatedAnimal.ownerId,
@@ -427,6 +436,9 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
             updatedAnimal.updated_at,
             updatedAnimal.embarazada ? 1 : 0,
             updatedAnimal.favorito ? 1 : 0,
+            updatedAnimal.isPublic ? 1 : 0,
+            updatedAnimal.isRespalded ? 1 : 0,
+            updatedAnimal.isChanged ? 1 : 0,
             updatedAnimal.id,
           ],
           () => {
@@ -450,6 +462,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   },
 
   deleteAnimal: async (id: string) => {
+    const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
         // Delete from Notas
