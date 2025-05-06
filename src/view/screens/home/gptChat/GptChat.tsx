@@ -1,19 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import { useChat } from '../../../../lib/hooks/useChat';
 import { newColors } from '../../../styles/colors';
 import { constants } from '../../../styles/constants';
 import MessageInput from '../animalView/components/MessageInput';
 import SendButton from '../animalView/components/SendButton';
-import { RootStackParamList } from '../../../navigator/navigationTypes';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { NavigationProp, RootStackParamList } from '../../../navigator/navigationTypes';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import GlobalContainer from '../../../components/GlobalContainer';
 import CustomScrollView from '../../../components/customs/CustomScrollView';
 import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
+import Header from '../../../components/Header';
 
 type GptChatRouteProp = RouteProp<RootStackParamList, 'GptChat'>;
 
 const GptChat: React.FC = () => {
+  const navigation = useNavigation<NavigationProp>();
   const route = useRoute<GptChatRouteProp>();
   const chatData = route.params?.chatData;
   const { animals } = useAnimalStore();
@@ -53,44 +55,50 @@ const GptChat: React.FC = () => {
 
   if (!animal || !chatId) {
     return (
-      <GlobalContainer style={styles.container}>
+      <GlobalContainer >
         <Text style={styles.errorText}>No animal or chat data available</Text>
       </GlobalContainer>
     );
   }
 
   return (
-    <GlobalContainer style={styles.container}>
-      <CustomScrollView>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Chat with {animal.nombre}</Text>
-        </View>
-
-        <ScrollView style={styles.messageContainer} ref={scrollViewRef}>
-          {messages.map((item) => (
-            <View
-              key={item.id}
-              style={[
-                styles.messageBubble,
-                item.owner === 'User'
-                  ? styles.userMessage
-                  : item.owner === 'IA'
-                  ? styles.gptMessage
-                  : styles.systemMessage,
-              ]}
-            >
-              <Text style={item.owner === 'User' ? styles.userText : styles.gptText}>
-                {item.content}
-              </Text>
-            </View>
-          ))}
-          {isLoading && (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color={newColors.fondo_secundario} />
-            </View>
-          )}
-        </ScrollView>
-
+    <GlobalContainer >
+      <Header title={chatData.title} iconOnPress="chevron-back-outline" onPress={() => navigation.goBack()} />
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 80}
+      >
+        <CustomScrollView style={styles.scrollViewContainer}>
+          <ScrollView
+            style={styles.messageContainer}
+            ref={scrollViewRef}
+            contentContainerStyle={styles.messageContentContainer}
+          >
+            {messages.map((item) => (
+              <View
+                key={item.id}
+                style={[
+                  styles.messageBubble,
+                  item.owner === 'User'
+                    ? styles.userMessage
+                    : item.owner === 'IA'
+                    ? styles.gptMessage
+                    : styles.systemMessage,
+                ]}
+              >
+                <Text style={item.owner === 'User' ? styles.userText : styles.gptText}>
+                  {item.content}
+                </Text>
+              </View>
+            ))}
+            {isLoading && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color={newColors.fondo_secundario} />
+              </View>
+            )}
+          </ScrollView>
+        </CustomScrollView>
         <View style={styles.footer}>
           <MessageInput
             value={message}
@@ -103,35 +111,25 @@ const GptChat: React.FC = () => {
             isLoading={isLoading}
           />
         </View>
-      </CustomScrollView>
+      </KeyboardAvoidingView>
     </GlobalContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  keyboardAvoidingContainer: {
     flex: 1,
-    backgroundColor: newColors.fondo_secundario,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: newColors.gris,
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: newColors.fondo_principal,
-    fontFamily: constants.FontText,
+  scrollViewContainer: {
+    flex: 1,
   },
   messageContainer: {
     flexGrow: 1,
     padding: 10,
-    maxHeight: 800,
-    minHeight: 300,
+  },
+  messageContentContainer: {
+    flexGrow: 1,
+    paddingBottom: 10,
   },
   messageBubble: {
     padding: 10,
@@ -154,18 +152,27 @@ const styles = StyleSheet.create({
   userText: {
     color: newColors.fondo_secundario,
     fontFamily: constants.FontText,
+    fontWeight: '600',
   },
   gptText: {
     color: newColors.fondo_principal,
     fontFamily: constants.FontText,
+    fontWeight: '500',
   },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    borderTopWidth: 1,
+    borderTopWidth: constants.borderWidth,
+    borderLeftWidth: constants.borderWidth,
+    borderRightWidth: constants.borderWidth,
     gap: 10,
-    borderTopColor: newColors.gris,
+    borderTopColor: newColors.fondo_secundario,
+    borderLeftColor: newColors.fondo_secundario,
+    borderRightColor: newColors.fondo_secundario,
+    borderRadius: constants.borderRadius,
+    borderEndEndRadius: 0,
+    borderEndStartRadius: 0,
   },
   loadingContainer: {
     padding: 10,

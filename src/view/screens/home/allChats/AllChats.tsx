@@ -1,17 +1,15 @@
 import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
 import { useChat } from '../../../../lib/hooks/useChat';
-import { RootStackParamList } from '../../../navigator/navigationTypes';
 import { newColors } from '../../../styles/colors';
 import { constants } from '../../../styles/constants';
 import GlobalContainer from '../../../components/GlobalContainer';
 import Header from '../../../components/Header';
 import ChatItem from './components/ChatItem';
 import { Chat } from '../../../../lib/interfaces/chats';
+import { NavigationProp } from '../../../navigator/navigationTypes';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const AllChats: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();

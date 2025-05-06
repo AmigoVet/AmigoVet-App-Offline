@@ -30,8 +30,9 @@ const styles = StyleSheet.create({
     borderRadius: constants.borderRadius,
     fontFamily: constants.FontText,
     padding: 10,
-    borderWidth: 1,
-    borderColor: newColors.verde,
+    borderWidth: constants.borderWidth,
+    borderColor: newColors.fondo_secundario,
+    fontSize: 14,
   },
 });
 

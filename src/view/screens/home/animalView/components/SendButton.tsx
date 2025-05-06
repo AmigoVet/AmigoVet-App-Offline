@@ -13,22 +13,20 @@ interface SendButtonProps {
 const SendButton = ({ onPress, disable, isLoading }: SendButtonProps) => {
   return (
     <Pressable style={styles.btn} onPress={onPress} disabled={disable}>
-      {!isLoading && <Icon name="send-outline" size={25} color="white" />}
-      {isLoading && <ActivityIndicator size="small" color="white" />}
+      {!isLoading && <Icon name="send-outline" size={25} color={newColors.fondo_principal} />}
+      {isLoading && <ActivityIndicator size="small" color={newColors.fondo_principal} />}
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   btn:{
+    backgroundColor: newColors.verde_light,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: newColors.verde,
     borderRadius: constants.borderRadius,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
     height: 50,
-    flexDirection: 'row',
+    minWidth: 60,
   },
 });
 

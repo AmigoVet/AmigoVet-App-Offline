@@ -1,3 +1,4 @@
+import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack';
 import { Animal } from '../../lib/interfaces/Animal';
 import { Chat } from '../../lib/interfaces/chats';
 
@@ -26,3 +27,6 @@ export type RootStackParamList = {
   GptChat: { chatData: Chat };
   AllChats: undefined;
 };
+
+export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
