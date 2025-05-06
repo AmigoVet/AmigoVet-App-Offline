@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, Alert, FlatList, Image } from 'react-native';
+import { View, Text, Pressable, StyleSheet, FlatList, Image } from 'react-native';
 import React from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
@@ -44,9 +44,6 @@ const HeaderHome = ({ userName, animals }: HeaderHomeProps) => {
               <Icon name="chatbubble-outline" size={25} color={newColors.fondo_principal} />
             </Pressable>
           </View>
-          <Pressable onPress={() => Alert.alert('Settings')}>
-            <Icon name="ellipsis-vertical" size={25} color={newColors.fondo_principal} />
-          </Pressable>
         </View>
       </View>
 
@@ -101,7 +98,6 @@ const createStyles = () =>
     },
     iconsContainer: {
       flexDirection: 'row',
-      gap: 10,
     },
     flatListContainer: {
       marginTop: -40, // Valor fijo para superponer siempre
@@ -158,6 +154,7 @@ const createStyles = () =>
     box: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      gap: 10,
     },
   });
 

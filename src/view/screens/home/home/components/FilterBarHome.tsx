@@ -117,6 +117,8 @@ const FilterBarHome: React.FC<FilterBarProps> = ({ onChange }) => {
         data={[{ id: '0', label: 'X', options: [] }, ...filters]}
         horizontal
         showsHorizontalScrollIndicator={false}
+        ListHeaderComponent={() => <View style={styles.width20} />}
+        ListFooterComponent={() => <View style={styles.width20} />}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) =>
           item.id === '0' ? (
@@ -168,7 +170,6 @@ const FilterBarHome: React.FC<FilterBarProps> = ({ onChange }) => {
 const styles = StyleSheet.create({
   container: {
     height: 80,
-    paddingHorizontal: 10,
   },
   listContainer: {
     alignItems: 'center',
@@ -240,6 +241,9 @@ const styles = StyleSheet.create({
     color: newColors.principal,
     fontSize: 16,
     fontWeight: '600',
+  },
+  width20: {
+    width: 20,
   },
 });
 
