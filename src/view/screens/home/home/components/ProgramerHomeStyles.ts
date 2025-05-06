@@ -1,6 +1,6 @@
-import { StyleSheet } from "react-native";
-import { newColors } from "../../../../styles/colors";
-import { constants } from "../../../../styles/constants";
+import { StyleSheet } from 'react-native';
+import { newColors } from '../../../../styles/colors';
+import { constants } from '../../../../styles/constants';
 
 export const ProgramerHomeStyles = StyleSheet.create({
     container: {
@@ -52,7 +52,7 @@ export const ProgramerHomeStyles = StyleSheet.create({
     shareButtonContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'flex-end'
+      justifyContent: 'flex-end',
     },
     shareButton: {
       color: newColors.gris_light,
@@ -162,8 +162,8 @@ export const ProgramerHomeStyles = StyleSheet.create({
     buttonText:{
       color: newColors.verde_light,
       fontSize: 14,
-      fontWeight: '200',
+      fontWeight: '600',
       textAlign: 'right',
-      fontFamily: constants.FontText
-    }
+      fontFamily: constants.FontText,
+    },
   });

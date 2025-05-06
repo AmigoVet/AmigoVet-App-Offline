@@ -1,5 +1,5 @@
 
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import React, { JSX } from 'react';
 
 import { useNavigation } from '@react-navigation/native';

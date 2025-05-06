@@ -1,14 +1,221 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import GlobalContainer from '../../../components/GlobalContainer'
-import Header from '../../../components/Header'
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
+import GlobalContainer from '../../../components/GlobalContainer';
+import Header from '../../../components/Header';
+import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
+import { Events } from '../../../../lib/interfaces/Events';
+import Separator from '../../../components/Separator';
+import { constants } from '../../../styles/constants';
+import { newColors } from '../../../styles/colors';
+import EventItem from './components/EventItem';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '../../../navigator/navigationTypes';
 
-const Calendar = () => {
+// Configurar el idioma del calendario en español
+LocaleConfig.locales.es = {
+  monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+  monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+  dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+  dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+  today: 'Hoy',
+};
+LocaleConfig.defaultLocale = 'es';
+
+const CalendarScreen = () => {
+  const navigation = useNavigation<NavigationProp>();
+  const { events, totalEvents, loadEvents } = useAnimalStore();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [selectedEvents, setSelectedEvents] = useState<Events[]>([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        await loadEvents(1, totalEvents || 100);
+        setError(null);
+      } catch (err: any) {
+        setError('Error al cargar los eventos: ' + (err.message || 'Desconocido'));
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvents();
+  }, [loadEvents, totalEvents]);
+
+  useEffect(() => {
+    const filteredEvents = events.filter(
+      (event) => new Date(event.fecha).toISOString().split('T')[0] === selectedDate
+    );
+    setSelectedEvents(filteredEvents);
+  }, [selectedDate, events]);
+
+  const markedDates = events.reduce((acc, event) => {
+    const date = new Date(event.fecha).toISOString().split('T')[0];
+    acc[date] = { marked: true, dotColor: newColors.verde_light };
+    return acc;
+  }, {} as { [key: string]: { marked: boolean; dotColor: string; selected?: boolean; selectedColor?: string; selectedTextColor?: string } });
+
+  markedDates[selectedDate] = {
+    ...markedDates[selectedDate],
+    selected: true,
+    selectedColor: newColors.verde_light,
+    selectedTextColor: newColors.fondo_principal,
+  };
+
   return (
     <GlobalContainer>
-        <Header title="Calendario" />
-    </GlobalContainer>
-  )
-}
+      <Header title="Calendario" iconOnPress="chevron-back-outline" onPress={() => {navigation.goBack();}} />
+      <Separator height={20} />
 
-export default Calendar
+      {loading ? (
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={newColors.verde_light} />
+          <Text>Cargando eventos...</Text>
+        </View>
+      ) : error ? (
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      ) : (
+        <>
+          <View style={styles.calendarContainer}>
+            <Text style={styles.filterText}>Todos</Text>
+            <Calendar
+              style={styles.calendar}
+              markedDates={markedDates}
+              onDayPress={(day) => setSelectedDate(day.dateString)}
+              theme={{
+                calendarBackground: newColors.fondo_principal,
+                textSectionTitleColor: newColors.fondo_secundario,
+                dayTextColor: newColors.fondo_secundario,
+                todayTextColor: newColors.verde_light,
+                textDisabledColor: newColors.gris_light,
+                monthTextColor: newColors.verde_light,
+                arrowColor: newColors.fondo_secundario,
+                textDayFontSize: 18,
+                textDayFontFamily: constants.FontText,
+                textDayFontWeight: '400',
+                textMonthFontSize: 20,
+                textMonthFontFamily: constants.FontTitle,
+                textMonthFontWeight: 'bold',
+                textDayHeaderFontSize: 16,
+                textDayHeaderFontFamily: constants.FontTitle,
+                textDayHeaderFontWeight: '600',
+              }}
+            />
+          </View>
+
+          <View style={styles.eventsContainer}>
+            <View style={styles.eventsHeader}>
+              <Text style={styles.eventsHeaderText}>
+                {new Date(selectedDate).toLocaleDateString('es-ES', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                })}
+              </Text>
+              <View style={styles.eventCount}>
+                <Text style={styles.eventCountText}>{selectedEvents.length}</Text>
+              </View>
+              <TouchableOpacity>
+                <Text style={styles.arrowDown}>▼</Text>
+              </TouchableOpacity>
+            </View>
+
+            {selectedEvents.length === 0 ? (
+              <Text style={styles.noEventsText}>No hay eventos para este día.</Text>
+            ) : (
+              <FlatList
+                data={selectedEvents}
+                renderItem={({ item }) => <EventItem item={item} />}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={styles.eventsList}
+              />
+            )}
+          </View>
+        </>
+      )}
+    </GlobalContainer>
+  );
+};
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: newColors.rojo,
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  calendarContainer: {
+    borderWidth: constants.borderWidth,
+    borderRadius: constants.borderRadius,
+    padding: 15,
+    marginHorizontal: 20,
+    marginBottom: 10,
+  },
+  filterText: {
+    fontSize: 14,
+    color: newColors.fondo_secundario,
+    marginBottom: 10,
+    fontWeight: '600',
+    fontFamily: constants.FontTitle,
+  },
+  calendar: {
+    borderRadius: constants.borderRadius,
+  },
+  eventsContainer: {
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 20,
+  },
+  eventsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    marginHorizontal: 15,
+  },
+  eventsHeaderText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: newColors.fondo_secundario,
+    fontFamily: constants.FontTitle,
+    textTransform: 'capitalize',
+  },
+  eventCount: {
+    backgroundColor: newColors.verde,
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  eventCountText: {
+    color: newColors.fondo_principal,
+    fontSize: 12,
+    fontWeight: '600',
+    fontFamily: constants.FontTitle,
+  },
+  arrowDown: {
+    fontSize: 16,
+    color: newColors.fondo_secundario,
+  },
+  eventsList: {
+    paddingBottom: 10,
+  },
+  noEventsText: {
+    fontSize: 18,
+    paddingTop: 40,
+    fontFamily: constants.FontText,
+    color: newColors.gris,
+    textAlign: 'center',
+    opacity: 0.7,
+  },
+});
+
+export default CalendarScreen;
