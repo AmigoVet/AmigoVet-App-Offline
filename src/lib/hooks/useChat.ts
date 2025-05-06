@@ -1,9 +1,10 @@
 import { useState, useCallback } from 'react';
-import { Transaction, SQLError } from 'react-native-sqlite-storage';
+import { Transaction, SQLError, SQLiteDatabase } from 'react-native-sqlite-storage';
 import { questionIA } from '../api/artificialInteligence';
-import { db } from '../db/db';
+import { getDatabase } from '../db/db';
 import { Animal } from '../interfaces/Animal';
 import { Chat, Message } from '../interfaces/chats';
+import { v4 as uuidv4 } from 'uuid';
 
 interface UseChatReturn {
   chats: Chat[];
@@ -25,6 +26,7 @@ export const useChat = (): UseChatReturn => {
   const createChat = useCallback(async (animalId: string, title: string, chatId: string) => {
     setIsLoading(true);
     const now = new Date().toISOString();
+    const db: SQLiteDatabase = await getDatabase();
 
     try {
       await new Promise<void>((resolve, reject) => {
@@ -34,7 +36,7 @@ export const useChat = (): UseChatReturn => {
             [chatId, animalId, title, now, now],
             () => resolve(),
             (_: Transaction, error: SQLError) => {
-              reject(error);
+              reject(new Error(`Failed to create chat: ${error.message}`));
               return false;
             }
           );
@@ -42,9 +44,9 @@ export const useChat = (): UseChatReturn => {
       });
 
       setChats((prev) => [...prev, { id: chatId, animalId, title, created_at: now, updated_at: now }]);
-    } catch (err) {
+    } catch (err: any) {
       setError('Error creating chat');
-      console.error('[ERROR] Error creating chat:', err);
+      console.error('[ERROR] Error creating chat:', err.message || err);
     } finally {
       setIsLoading(false);
     }
@@ -52,13 +54,15 @@ export const useChat = (): UseChatReturn => {
 
   const fetchChats = useCallback(async () => {
     setIsLoading(true);
+    const db: SQLiteDatabase = await getDatabase();
+
     try {
       const results = await new Promise<Chat[]>((resolve, reject) => {
         db.transaction((tx: Transaction) => {
           tx.executeSql(
             `SELECT * FROM Chats ORDER BY updated_at DESC`,
             [],
-            (_: Transaction, { rows }: { rows: any }) => {
+            (_: Transaction, { rows }) => {
               const chats: Chat[] = [];
               for (let i = 0; i < rows.length; i++) {
                 chats.push(rows.item(i));
@@ -66,16 +70,16 @@ export const useChat = (): UseChatReturn => {
               resolve(chats);
             },
             (_: Transaction, error: SQLError) => {
-              reject(error);
+              reject(new Error(`Failed to fetch chats: ${error.message}`));
               return false;
             }
           );
         });
       });
       setChats(results);
-    } catch (err) {
+    } catch (err: any) {
       setError('Error fetching chats');
-      console.error('[ERROR] Error fetching chats:', err);
+      console.error('[ERROR] Error fetching chats:', err.message || err);
     } finally {
       setIsLoading(false);
     }
@@ -83,13 +87,15 @@ export const useChat = (): UseChatReturn => {
 
   const fetchMessages = useCallback(async (chatId: string) => {
     setIsLoading(true);
+    const db: SQLiteDatabase = await getDatabase();
+
     try {
       const results = await new Promise<Message[]>((resolve, reject) => {
         db.transaction((tx: Transaction) => {
           tx.executeSql(
             `SELECT * FROM Messages WHERE chatId = ? ORDER BY created_at ASC`,
             [chatId],
-            (_: Transaction, { rows }: { rows: any }) => {
+            (_: Transaction, { rows }) => {
               const messages: Message[] = [];
               for (let i = 0; i < rows.length; i++) {
                 messages.push(rows.item(i));
@@ -97,16 +103,16 @@ export const useChat = (): UseChatReturn => {
               resolve(messages);
             },
             (_: Transaction, error: SQLError) => {
-              reject(error);
+              reject(new Error(`Failed to fetch messages: ${error.message}`));
               return false;
             }
           );
         });
       });
       setMessages(results);
-    } catch (err) {
+    } catch (err: any) {
       setError('Error fetching messages');
-      console.error('[ERROR] Error fetching messages:', err);
+      console.error('[ERROR] Error fetching messages:', err.message || err);
     } finally {
       setIsLoading(false);
     }
@@ -117,7 +123,7 @@ export const useChat = (): UseChatReturn => {
 
     setIsLoading(true);
     const now = new Date().toISOString();
-    const messageId = Math.random().toString(36).substr(2, 9);
+    const messageId = uuidv4();
     const userMessage: Message = {
       id: messageId,
       chatId,
@@ -125,6 +131,7 @@ export const useChat = (): UseChatReturn => {
       owner: 'User',
       created_at: now,
     };
+    const db: SQLiteDatabase = await getDatabase();
 
     try {
       // Save user message
@@ -135,7 +142,7 @@ export const useChat = (): UseChatReturn => {
             [messageId, chatId, content, 'User', now],
             () => resolve(),
             (_: Transaction, error: SQLError) => {
-              reject(error);
+              reject(new Error(`Failed to save user message: ${error.message}`));
               return false;
             }
           );
@@ -152,7 +159,7 @@ export const useChat = (): UseChatReturn => {
             [now, chatId],
             () => resolve(),
             (_: Transaction, error: SQLError) => {
-              reject(error);
+              reject(new Error(`Failed to update chat: ${error.message}`));
               return false;
             }
           );
@@ -167,7 +174,7 @@ export const useChat = (): UseChatReturn => {
         throw new Error('No response from AI');
       }
 
-      const aiMessageId = Math.random().toString(36).substr(2, 9);
+      const aiMessageId = uuidv4();
       const aiMessage: Message = {
         id: aiMessageId,
         chatId,
@@ -184,7 +191,7 @@ export const useChat = (): UseChatReturn => {
             [aiMessageId, chatId, aiContent, 'IA', aiMessage.created_at],
             () => resolve(),
             (_: Transaction, error: SQLError) => {
-              reject(error);
+              reject(new Error(`Failed to save AI message: ${error.message}`));
               return false;
             }
           );
@@ -192,11 +199,11 @@ export const useChat = (): UseChatReturn => {
       });
 
       setMessages((prev) => [...prev, aiMessage]);
-    } catch (err) {
+    } catch (err: any) {
       setError('Error sending message');
-      console.error('[ERROR] Error sending message:', err);
+      console.error('[ERROR] Error sending message:', err.message || err);
       const errorMessage: Message = {
-        id: Math.random().toString(36).substr(2, 9),
+        id: uuidv4(),
         chatId,
         content: 'Error processing your message',
         owner: 'System',

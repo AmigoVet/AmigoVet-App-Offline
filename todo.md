@@ -1,9 +1,3 @@
-## Arreglar los modales en el AnimalView
-- Que se deje de ejecutar el scrooll de la pantalla completa al ejecutar el modal
-- Que el modal se posicione bien sin importar la posicion del espectador
-- Arreglar que se tape el contenido al desplegar el teclado
-- El custom select no deja seleccionar correctamente las opciones
-- Hacer que se actualize el AnimalView cuando se actualizen datos automaticamente
 
 ## Envio de notificaciones para los eventos
 - Poner una hora para los eventos
@@ -14,7 +8,6 @@
 - Mostrar animales en adopcion
 - Opcion de publicar animales y despublicar
 - Sistema de mensajeria
-- 
 
 ## Pantalla de perfil
 - Vista de informacion personal

@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
 import { RootStackParamList } from '../../../../navigator/navigationTypes';
 import { Animal } from '../../../../../lib/interfaces/Animal';
-import { newColors } from '../../../../styles/colors';
 import { useChat } from '../../../../../lib/hooks/useChat';
+import { v4 as uuidv4 } from 'uuid';
 
 interface GptButtonProps {
   animal: Animal;
@@ -16,10 +16,8 @@ const GptButton = ({ animal }: GptButtonProps) => {
   const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { createChat } = useChat();
 
-  const generateChatId = () => Math.random().toString(36).substr(2, 9);
-
   const handleNewChat = async () => {
-    const chatId = generateChatId();
+    const chatId = uuidv4();
     const chatTitle = `Chat with ${animal.nombre}`;
     await createChat(animal.id, chatTitle, chatId);
     navigate('GptChat', {
@@ -36,11 +34,6 @@ const GptButton = ({ animal }: GptButtonProps) => {
   return (
     <View style={styles.container}>
       <CustomButton text="Request GPT" onPress={handleNewChat} />
-      <CustomButton
-        text="View All Chats"
-        onPress={() => navigate('AllChats')}
-        backgroundColor={newColors.fondo_principal}
-      />
     </View>
   );
 };
