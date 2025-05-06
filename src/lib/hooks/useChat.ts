@@ -15,6 +15,7 @@ interface UseChatReturn {
   fetchChats: () => Promise<void>;
   fetchMessages: (chatId: string) => Promise<void>;
   sendMessage: (chatId: string, animal: Animal, content: string) => Promise<void>;
+  deleteChat: (chatId: string) => Promise<void>;
 }
 
 export const useChat = (): UseChatReturn => {
@@ -249,6 +250,53 @@ export const useChat = (): UseChatReturn => {
     }
   }, []);
 
+  const deleteChat = useCallback(async (chatId: string) => {
+    setIsLoading(true);
+    const db: SQLiteDatabase = await getDatabase();
+
+    try {
+      // Delete messages associated with the chat
+      await new Promise<void>((resolve, reject) => {
+        db.transaction((tx: Transaction) => {
+          tx.executeSql(
+            `DELETE FROM Messages WHERE chatId = ?`,
+            [chatId],
+            () => resolve(),
+            (_: Transaction, error: SQLError) => {
+              reject(new Error(`Failed to delete messages: ${error.message}`));
+              return false;
+            }
+          );
+        });
+      });
+
+      // Delete the chat
+      await new Promise<void>((resolve, reject) => {
+        db.transaction((tx: Transaction) => {
+          tx.executeSql(
+            `DELETE FROM Chats WHERE id = ?`,
+            [chatId],
+            () => resolve(),
+            (_: Transaction, error: SQLError) => {
+              reject(new Error(`Failed to delete chat: ${error.message}`));
+              return false;
+            }
+          );
+        });
+      });
+
+      // Update state to remove the deleted chat and its messages
+      setChats((prev) => prev.filter((chat) => chat.id !== chatId));
+      setMessages((prev) => prev.filter((message) => message.chatId !== chatId));
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError('Error deleting chat');
+      console.error('[ERROR] Error deleting chat:', errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   return {
     chats,
     messages,
@@ -258,5 +306,6 @@ export const useChat = (): UseChatReturn => {
     fetchChats,
     fetchMessages,
     sendMessage,
+    deleteChat,
   };
 };
