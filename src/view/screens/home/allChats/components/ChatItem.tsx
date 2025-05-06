@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Pressable, Modal, Platform, ActionSheetIOS, TouchableWithoutFeedback, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
 import { useAnimalStore } from '../../../../../lib/store/useAnimalStore';
 import { useChat } from '../../../../../lib/hooks/useChat';
-import { RootStackParamList } from '../../../../navigator/navigationTypes';
+import { NavigationProp } from '../../../../navigator/navigationTypes';
 import { Chat } from '../../../../../lib/interfaces/chats';
 import { newColors } from '../../../../styles/colors';
 import { constants } from '../../../../styles/constants';
 import Icon from '@react-native-vector-icons/ionicons';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const ChatItem = ({ item }: { item: Chat }) => {
   const { animals } = useAnimalStore();

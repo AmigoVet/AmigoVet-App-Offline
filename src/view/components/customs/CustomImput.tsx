@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: newColors.fondo_secundario,
-    borderWidth: 2,
+    borderWidth: constants.borderWidth,
     borderRadius: constants.borderRadius / 1.5,
     paddingHorizontal: 10,
   },
