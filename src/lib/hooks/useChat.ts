@@ -60,12 +60,39 @@ export const useChat = (): UseChatReturn => {
       const results = await new Promise<Chat[]>((resolve, reject) => {
         db.transaction((tx: Transaction) => {
           tx.executeSql(
-            `SELECT * FROM Chats ORDER BY updated_at DESC`,
+            `
+            SELECT c.*, m.id AS messageId, m.content AS messageContent, m.owner AS messageOwner, m.created_at AS messageCreatedAt
+            FROM Chats c
+            LEFT JOIN Messages m ON c.id = m.chatId
+            AND m.created_at = (
+              SELECT MAX(created_at)
+              FROM Messages
+              WHERE chatId = c.id
+            )
+            ORDER BY c.updated_at DESC
+            `,
             [],
             (_: Transaction, { rows }) => {
               const chats: Chat[] = [];
               for (let i = 0; i < rows.length; i++) {
-                chats.push(rows.item(i));
+                const row = rows.item(i);
+                const chat: Chat = {
+                  id: row.id,
+                  animalId: row.animalId,
+                  title: row.title,
+                  created_at: row.created_at,
+                  updated_at: row.updated_at,
+                };
+                if (row.messageId) {
+                  chat.lastMessage = {
+                    id: row.messageId,
+                    chatId: row.id,
+                    content: row.messageContent,
+                    owner: row.messageOwner,
+                    created_at: row.messageCreatedAt,
+                  };
+                }
+                chats.push(chat);
               }
               resolve(chats);
             },

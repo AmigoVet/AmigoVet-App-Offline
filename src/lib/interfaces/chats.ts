@@ -4,6 +4,7 @@ export interface Chat {
     title: string;
     created_at: string;
     updated_at: string;
+    lastMessage?: Message;
 }
 
 export interface Message {
