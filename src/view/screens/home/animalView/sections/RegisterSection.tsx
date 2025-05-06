@@ -120,6 +120,7 @@ const RegisterSection = ({ registers: initialRegisters, animalId, animalName, ge
             comentario: `Parto estimado (${accion})`,
             fecha: partoDate.toISOString().split('T')[0],
             created_at: new Date().toISOString(),
+            notificationTime: undefined, // Dejar como undefined por ahora
           };
           await addEvent(partoEvent);
           await updateAnimalPregnancy(animalId, true);
@@ -144,6 +145,7 @@ const RegisterSection = ({ registers: initialRegisters, animalId, animalName, ge
               comentario: `${comentario} (Ciclo ${i + 1})`,
               fecha: cycleDates[i].toISOString().split('T')[0],
               created_at: new Date().toISOString(),
+              notificationTime: undefined, // Dejar como undefined por ahora
             };
             await addEvent(cycleEvent);
           }

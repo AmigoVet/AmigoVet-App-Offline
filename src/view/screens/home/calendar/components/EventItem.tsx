@@ -10,6 +10,7 @@ const EventItem = ({ item }: { item: Events }) => {
   const { animals } = useAnimalStore();
   const animal = animals.find((a) => a.id === item.animalId);
   const animalImage = animal?.image ?? 'https://example.com/default-image.png';
+  console.log('Evento desde el Calendar', item);
 
   return (
     <TouchableOpacity style={styles.eventItem}>
@@ -19,7 +20,7 @@ const EventItem = ({ item }: { item: Events }) => {
           <View style={styles.eventHeader}>
             <Text style={styles.eventTitle}>{animal?.nombre || 'Desconocido'}</Text>
             <Text style={styles.eventDate}>
-              {new Date(item.fecha).toLocaleDateString('es-ES')}
+              {item.notificationTime}
             </Text>
           </View>
           <Text style={styles.eventDescription}>{item.comentario || 'Sin comentario'}</Text>
@@ -66,7 +67,8 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   eventDate: {
-    fontSize: 12,
+    fontSize: 16,
+    fontWeight: 'bold',
     color: newColors.verde_light,
     fontFamily: constants.FontText,
     marginTop: 4,

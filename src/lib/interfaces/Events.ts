@@ -5,4 +5,5 @@ export interface Events {
     comentario: string;
     fecha: string;
     created_at: string;
+    notificationTime?: string;
 }

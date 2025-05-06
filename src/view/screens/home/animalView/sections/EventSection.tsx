@@ -23,8 +23,10 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
   const modalizeRef = useRef<Modalize>(null);
   const [comentario, setComentario] = useState('');
   const [fecha, setFecha] = useState<Date | null>(null);
+  const [notificationTime, setNotificationTime] = useState<string | null>(null); // Nueva variable de estado
   const [editingEvent, setEditingEvent] = useState<Events | null>(null);
   const { addEvent, updateEvent, deleteEvent, animals } = useAnimalStore();
+  console.log('Eventos desde el store', initialEvents);
 
   // Obtener los eventos del animal desde el store
   const animalEvents = animals.find((animal) => animal.id === animalId)?.events || initialEvents;
@@ -34,10 +36,12 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
       setEditingEvent(event);
       setComentario(event.comentario);
       setFecha(new Date(event.fecha));
+      setNotificationTime(event.notificationTime || null);
     } else {
       setEditingEvent(null);
       setComentario('');
       setFecha(null);
+      setNotificationTime(null);
     }
     modalizeRef.current?.open();
   };
@@ -46,6 +50,7 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
     modalizeRef.current?.close();
     setComentario('');
     setFecha(null);
+    setNotificationTime(null);
     setEditingEvent(null);
   };
 
@@ -70,6 +75,7 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
       comentario: comentario.trim(),
       fecha: fecha.toISOString().split('T')[0],
       created_at: new Date().toISOString(),
+      notificationTime: notificationTime || undefined, // Incluir notificationTime
     };
 
     try {
@@ -125,6 +131,11 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
               <TouchableOpacity style={styles.eventItem} onPress={() => openModal(event)}>
                 <Text style={styles.itemText}>{event.comentario}</Text>
                 <Text style={styles.itemDate}>{event.fecha}</Text>
+                {event.notificationTime && (
+                  <Text style={styles.notificationTime}>
+                    Notificación a las {event.notificationTime}
+                  </Text>
+                )}
               </TouchableOpacity>
               <MiniButton
                 text=""
@@ -172,6 +183,13 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
             allowFutureDates={true}
             allowPastDates={true}
           />
+          <CustomInput
+            value={notificationTime || ''}
+            onChangeText={setNotificationTime}
+            label="Hora de Notificación (HH:MM)"
+            placeholder="Ejemplo: 14:30"
+            keyboardType="numeric"
+          />
           <Separator height={20} />
           <CustomButton text={editingEvent ? 'Actualizar' : 'Guardar'} onPress={handleSaveEvent} />
         </View>
@@ -194,8 +212,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
-  deleteButton: {
-    marginLeft: 10,
+  notificationTime: {
+    fontSize: 12,
+    color: newColors.verde_light,
+    marginTop: 5,
   },
 });
 

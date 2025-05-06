@@ -1,7 +1,7 @@
 import { SQLiteDatabase, Transaction, SQLError } from 'react-native-sqlite-storage';
 import { getDatabase } from './db';
 
-// Función principal para crear todas las tablas
+// Función principal para crear todas las tablas y ejecutar migraciones
 export const createTables = async (): Promise<void> => {
   const db = await getDatabase();
   await createAnimalTable(db);
@@ -10,7 +10,7 @@ export const createTables = async (): Promise<void> => {
   await createEventsTable(db);
   await createChatsTable(db);
   await createMessagesTable(db);
-  console.log('All tables created successfully');
+  console.log('All tables created and migrated successfully');
 };
 
 // Crear tabla Animal
@@ -129,7 +129,7 @@ const createNotesTable = async (db: SQLiteDatabase): Promise<void> => {
   });
 };
 
-// Crear tabla Events
+// Crear tabla Events (actualizada con notificationTime)
 const createEventsTable = async (db: SQLiteDatabase): Promise<void> => {
   return new Promise((resolve, reject) => {
     db.transaction((tx: Transaction) => {
@@ -141,6 +141,7 @@ const createEventsTable = async (db: SQLiteDatabase): Promise<void> => {
           comentario TEXT NOT NULL,
           fecha TEXT NOT NULL,
           created_at TEXT NOT NULL,
+          notificationTime TEXT, -- Nueva columna
           FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
         )`,
         [],
@@ -162,6 +163,7 @@ const createEventsTable = async (db: SQLiteDatabase): Promise<void> => {
     });
   });
 };
+
 
 // Crear tabla Chats
 const createChatsTable = async (db: SQLiteDatabase): Promise<void> => {
@@ -237,12 +239,11 @@ const verifyTableExists = (db: SQLiteDatabase, tableName: string): void => {
       [tableName],
       (_: Transaction, { rows }: { rows: any }) => {
         if (rows.length > 0) {
-          // console.log(`[INFO] La tabla ${tableName} existe en la base de datos`);
           tx.executeSql(
             `PRAGMA table_info(${tableName})`,
             [],
             (_: Transaction, { rows: tableInfo }: { rows: any }) => {
-              // console.log(`[INFO] Estructura de la tabla ${tableName}:`, tableInfo.raw());
+              // Opcional: Mostrar estructura de la tabla
             },
             (_: Transaction, error: SQLError) => {
               console.error(`[ERROR] No se pudo obtener la estructura de ${tableName}:`, error);

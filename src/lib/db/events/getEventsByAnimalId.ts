@@ -20,6 +20,7 @@ export const getEventsByAnimalId = async (animalId: string, page: number = 1, li
               comentario: item.comentario,
               fecha: item.fecha,
               created_at: item.created_at,
+              notificationTime: item.notificationTime || '9:00',
             });
           }
           resolve(events);

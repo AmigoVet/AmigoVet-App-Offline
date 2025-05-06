@@ -8,8 +8,8 @@ export const setDataEvent = async (event: Events): Promise<void> => {
     db.transaction(
       (tx: Transaction) => {
         tx.executeSql(
-          `INSERT INTO Events (id, animalId, animalName, comentario, fecha, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
-          [event.id, event.animalId, event.animalName, event.comentario, event.fecha, event.created_at],
+          `INSERT INTO Events (id, animalId, animalName, comentario, fecha, created_at, notificationTime) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [event.id, event.animalId, event.animalName, event.comentario, event.fecha, event.created_at, event.notificationTime || null],
           () => {
             console.log('Evento insertado con éxito');
             resolve();
