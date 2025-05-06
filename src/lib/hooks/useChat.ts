@@ -44,9 +44,10 @@ export const useChat = (): UseChatReturn => {
       });
 
       setChats((prev) => [...prev, { id: chatId, animalId, title, created_at: now, updated_at: now }]);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError('Error creating chat');
-      console.error('[ERROR] Error creating chat:', err.message || err);
+      console.error('[ERROR] Error creating chat:', errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -104,9 +105,10 @@ export const useChat = (): UseChatReturn => {
         });
       });
       setChats(results);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError('Error fetching chats');
-      console.error('[ERROR] Error fetching chats:', err.message || err);
+      console.error('[ERROR] Error fetching chats:', errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -137,9 +139,10 @@ export const useChat = (): UseChatReturn => {
         });
       });
       setMessages(results);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError('Error fetching messages');
-      console.error('[ERROR] Error fetching messages:', err.message || err);
+      console.error('[ERROR] Error fetching messages:', errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -201,42 +204,46 @@ export const useChat = (): UseChatReturn => {
         throw new Error('No response from AI');
       }
 
-      const aiMessageId = uuidv4();
-      const aiMessage: Message = {
-        id: aiMessageId,
+      // Split AI response into paragraphs
+      const paragraphs = aiContent.split('\n').filter((p: string) => p.trim() !== '');
+      const aiMessages: Message[] = paragraphs.map((paragraph: string, index: number) => ({
+        id: uuidv4(),
         chatId,
-        content: aiContent,
+        content: paragraph.trim(),
         owner: 'IA',
-        created_at: new Date().toISOString(),
-      };
+        created_at: new Date(Date.now() + index).toISOString(), // Slight time offset for ordering
+      }));
 
-      // Save AI message
-      await new Promise<void>((resolve, reject) => {
-        db.transaction((tx: Transaction) => {
-          tx.executeSql(
-            `INSERT INTO Messages (id, chatId, content, owner, created_at) VALUES (?, ?, ?, ?, ?)`,
-            [aiMessageId, chatId, aiContent, 'IA', aiMessage.created_at],
-            () => resolve(),
-            (_: Transaction, error: SQLError) => {
-              reject(new Error(`Failed to save AI message: ${error.message}`));
-              return false;
-            }
-          );
+      // Save AI messages
+      for (const aiMessage of aiMessages) {
+        await new Promise<void>((resolve, reject) => {
+          db.transaction((tx: Transaction) => {
+            tx.executeSql(
+              `INSERT INTO Messages (id, chatId, content, owner, created_at) VALUES (?, ?, ?, ?, ?)`,
+              [aiMessage.id, aiMessage.chatId, aiMessage.content, aiMessage.owner, aiMessage.created_at],
+              () => resolve(),
+              (_: Transaction, error: SQLError) => {
+                reject(new Error(`Failed to save AI message: ${error.message}`));
+                return false;
+              }
+            );
+          });
         });
-      });
+      }
 
-      setMessages((prev) => [...prev, aiMessage]);
-    } catch (err: any) {
+      setMessages((prev) => [...prev, ...aiMessages]);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError('Error sending message');
-      console.error('[ERROR] Error sending message:', err.message || err);
-      const errorMessage: Message = {
+      console.error('[ERROR] Error sending message:', errorMessage);
+      const errorMessageObj: Message = {
         id: uuidv4(),
         chatId,
         content: 'Error processing your message',
         owner: 'System',
         created_at: new Date().toISOString(),
       };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessageObj]);
     } finally {
       setIsLoading(false);
     }

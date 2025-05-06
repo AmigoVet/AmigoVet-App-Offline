@@ -18,7 +18,7 @@ const GptButton = ({ animal }: GptButtonProps) => {
 
   const handleNewChat = async () => {
     const chatId = uuidv4();
-    const chatTitle = `Chat with ${animal.nombre}`;
+    const chatTitle = `Chat con ${animal.nombre}`;
     await createChat(animal.id, chatTitle, chatId);
     navigate('GptChat', {
       chatData: {
@@ -33,7 +33,7 @@ const GptButton = ({ animal }: GptButtonProps) => {
 
   return (
     <View style={styles.container}>
-      <CustomButton text="Request GPT" onPress={handleNewChat} />
+      <CustomButton text="Pregunta a una IA" onPress={handleNewChat} />
     </View>
   );
 };

@@ -55,13 +55,13 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   chatTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: newColors.fondo_secundario,
-    fontFamily: constants.FontText,
+    fontFamily: constants.FontTitle,
   },
   animalName: {
     fontSize: 14,
