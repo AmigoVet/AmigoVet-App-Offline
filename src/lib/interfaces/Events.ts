@@ -5,5 +5,14 @@ export interface Events {
     comentario: string;
     fecha: string;
     created_at: string;
-    notificationTime?: string;
+    horaDeseada: number;
+    minutosDeseado: number;
+    DiaDeseado: number;
+    MesDeseado: number;
+    AnioDeseado: number;
+    horaEvento: number;
+    minutosEvento: number;
+    DiaEvento: number;
+    MesEvento: number;
+    AnioEvento: number;
 }

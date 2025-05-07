@@ -7,8 +7,39 @@ export const updateEvent = async (event: Events): Promise<void> => {
   return new Promise((resolve, reject) => {
     db.transaction((tx: Transaction) => {
       tx.executeSql(
-        `UPDATE Events SET animalName = ?, comentario = ?, fecha = ?, created_at = ?, notificationTime = ? WHERE id = ?`,
-        [event.animalName, event.comentario, event.fecha, event.created_at, event.notificationTime || null, event.id],
+        `UPDATE Events SET
+          animalName = ?,
+          comentario = ?,
+          fecha = ?,
+          created_at = ?,
+          horaDeseada = ?,
+          minutosDeseado = ?,
+          DiaDeseado = ?,
+          MesDeseado = ?,
+          AnioDeseado = ?,
+          horaEvento = ?,
+          minutosEvento = ?,
+          DiaEvento = ?,
+          MesEvento = ?,
+          AnioEvento = ?
+        WHERE id = ?`,
+        [
+          event.animalName,
+          event.comentario,
+          event.fecha,
+          event.created_at,
+          event.horaDeseada,
+          event.minutosDeseado,
+          event.DiaDeseado,
+          event.MesDeseado,
+          event.AnioDeseado,
+          event.horaEvento,
+          event.minutosEvento,
+          event.DiaEvento,
+          event.MesEvento,
+          event.AnioEvento,
+          event.id,
+        ],
         () => {
           resolve();
         },

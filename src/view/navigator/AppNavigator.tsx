@@ -10,6 +10,7 @@ import Calendar from '../screens/home/calendar/Calendar';
 import Update from '../screens/home/update/Update';
 import GptChat from '../screens/home/gptChat/GptChat';
 import AllChats from '../screens/home/allChats/AllChats';
+import CreateEventForm from '../screens/home/forms/CreateEventForm';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -31,6 +32,7 @@ const AppNavigator = () => {
           <Stack.Screen name="Update" component={Update} />
           <Stack.Screen name="GptChat" component={GptChat} />
           <Stack.Screen name="AllChats" component={AllChats} />
+          <Stack.Screen name="CreateEventForm" component={CreateEventForm} />
         </>
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />

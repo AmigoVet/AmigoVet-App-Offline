@@ -26,6 +26,8 @@ export type RootStackParamList = {
   Calendar: undefined;
   GptChat: { chatData: Chat };
   AllChats: undefined;
+
+  CreateEventForm: {animalId: string; animalName: string};
 };
 
 export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;

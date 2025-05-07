@@ -19,3 +19,8 @@
 - Agregar razas de Ovinos
 - Agregar razas de Caprinos
 - Agregar razas de aviares
+
+# BUGS
+- Hay un bug en calendario y eventos en el cual esta un dia corrido
+Es decir, en el calendario yo selecciono jueves 8 pero me muestra los eventos del Miercoles 7
+

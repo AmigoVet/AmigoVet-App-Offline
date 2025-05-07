@@ -3,14 +3,17 @@ import { getDatabase } from './db';
 
 // Función principal para crear todas las tablas y ejecutar migraciones
 export const createTables = async (): Promise<void> => {
+  console.log('[DEBUG] Starting createTables');
   const db = await getDatabase();
+  // await dropAllTables(db); // Uncomment for one-time full reset
   await createAnimalTable(db);
   await createRegisterTable(db);
   await createNotesTable(db);
   await createEventsTable(db);
   await createChatsTable(db);
   await createMessagesTable(db);
-  console.log('All tables created and migrated successfully');
+  await logTableSchemas(db);
+  console.log('[SUCCESS] All tables created and migrated successfully');
 };
 
 // Crear tabla Animal
@@ -46,7 +49,6 @@ const createAnimalTable = async (db: SQLiteDatabase): Promise<void> => {
         [],
         () => {
           console.log('[SUCCESS] Tabla Animal creada exitosamente');
-          verifyTableExists(db, 'Animal');
           resolve();
         },
         (_: Transaction, error: SQLError) => {
@@ -79,7 +81,6 @@ const createRegisterTable = async (db: SQLiteDatabase): Promise<void> => {
         [],
         () => {
           console.log('[SUCCESS] Tabla Register creada exitosamente');
-          verifyTableExists(db, 'Register');
           resolve();
         },
         (_: Transaction, error: SQLError) => {
@@ -112,7 +113,6 @@ const createNotesTable = async (db: SQLiteDatabase): Promise<void> => {
         [],
         () => {
           console.log('[SUCCESS] Tabla Notas creada exitosamente');
-          verifyTableExists(db, 'Notas');
           resolve();
         },
         (_: Transaction, error: SQLError) => {
@@ -129,7 +129,7 @@ const createNotesTable = async (db: SQLiteDatabase): Promise<void> => {
   });
 };
 
-// Crear tabla Events (actualizada con notificationTime)
+// Crear tabla Events
 const createEventsTable = async (db: SQLiteDatabase): Promise<void> => {
   return new Promise((resolve, reject) => {
     db.transaction((tx: Transaction) => {
@@ -141,13 +141,21 @@ const createEventsTable = async (db: SQLiteDatabase): Promise<void> => {
           comentario TEXT NOT NULL,
           fecha TEXT NOT NULL,
           created_at TEXT NOT NULL,
-          notificationTime TEXT, -- Nueva columna
+          horaDeseada INTEGER,
+          minutosDeseado INTEGER,
+          DiaDeseado INTEGER,
+          MesDeseado INTEGER,
+          AnioDeseado INTEGER,
+          horaEvento INTEGER,
+          minutosEvento INTEGER,
+          DiaEvento INTEGER,
+          MesEvento INTEGER,
+          AnioEvento INTEGER,
           FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
         )`,
         [],
         () => {
           console.log('[SUCCESS] Tabla Events creada exitosamente');
-          verifyTableExists(db, 'Events');
           resolve();
         },
         (_: Transaction, error: SQLError) => {
@@ -163,7 +171,6 @@ const createEventsTable = async (db: SQLiteDatabase): Promise<void> => {
     });
   });
 };
-
 
 // Crear tabla Chats
 const createChatsTable = async (db: SQLiteDatabase): Promise<void> => {
@@ -181,7 +188,6 @@ const createChatsTable = async (db: SQLiteDatabase): Promise<void> => {
         [],
         () => {
           console.log('[SUCCESS] Tabla Chats creada exitosamente');
-          verifyTableExists(db, 'Chats');
           resolve();
         },
         (_: Transaction, error: SQLError) => {
@@ -214,7 +220,6 @@ const createMessagesTable = async (db: SQLiteDatabase): Promise<void> => {
         [],
         () => {
           console.log('[SUCCESS] Tabla Messages creada exitosamente');
-          verifyTableExists(db, 'Messages');
           resolve();
         },
         (_: Transaction, error: SQLError) => {
@@ -239,24 +244,71 @@ const verifyTableExists = (db: SQLiteDatabase, tableName: string): void => {
       [tableName],
       (_: Transaction, { rows }: { rows: any }) => {
         if (rows.length > 0) {
-          tx.executeSql(
-            `PRAGMA table_info(${tableName})`,
-            [],
-            (_: Transaction, { rows: tableInfo }: { rows: any }) => {
-              // Opcional: Mostrar estructura de la tabla
-            },
-            (_: Transaction, error: SQLError) => {
-              console.error(`[ERROR] No se pudo obtener la estructura de ${tableName}:`, error);
-              return false;
-            }
-          );
+          console.log(`[INFO] Table ${tableName} exists`);
         } else {
-          console.warn(`[WARN] La tabla ${tableName} no se encontró`);
+          console.warn(`[WARN] Table ${tableName} does not exist`);
         }
       },
       (_: Transaction, error: SQLError) => {
-        console.error(`[ERROR] Error verificando existencia de ${tableName}:`, error);
+        console.error(`[ERROR] Error checking existence of ${tableName}:`, error);
         return false;
+      }
+    );
+  });
+};
+
+// Mostrar columnas de todas las tablas
+const logTableSchemas = async (db: SQLiteDatabase): Promise<void> => {
+  console.log('[DEBUG] Logging schemas for all tables');
+  const tables = ['Animal', 'Register', 'Notas', 'Events', 'Chats', 'Messages'];
+  for (const table of tables) {
+    await new Promise<void>((resolve, reject) => {
+      db.transaction(
+        (tx: Transaction) => {
+          tx.executeSql(
+            `PRAGMA table_info(${table})`,
+            [],
+            (_: Transaction, { rows }: { rows: any }) => {
+              const columns = Array.from(rows._array).map((col: any) => col.name);
+              console.log(`[INFO] Columns in ${table}:`, columns);
+              resolve();
+            },
+            (_: Transaction, error: SQLError) => {
+              console.error(`[ERROR] Failed to log schema for ${table}:`, error);
+              reject(error);
+              return false;
+            }
+          );
+        },
+        (error: SQLError) => {
+          console.error(`[ERROR] Transaction error while logging schema for ${table}:`, error);
+          reject(error);
+        }
+      );
+    });
+  }
+};
+
+// Temporary function to drop all tables (uncomment in createTables if needed)
+const dropAllTables = async (db: SQLiteDatabase): Promise<void> => {
+  console.log('[DEBUG] Dropping all tables');
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx: Transaction) => {
+        tx.executeSql('DROP TABLE IF EXISTS Events', [], () => console.log('[INFO] Dropped Events table'), (_, err) => { console.error('[ERROR] Drop Events:', err); return false; });
+        tx.executeSql('DROP TABLE IF EXISTS Animal', [], () => console.log('[INFO] Dropped Animal table'), (_, err) => { console.error('[ERROR] Drop Animal:', err); return false; });
+        tx.executeSql('DROP TABLE IF EXISTS Register', [], () => console.log('[INFO] Dropped Register table'), (_, err) => { console.error('[ERROR] Drop Register:', err); return false; });
+        tx.executeSql('DROP TABLE IF EXISTS Notas', [], () => console.log('[INFO] Dropped Notas table'), (_, err) => { console.error('[ERROR] Drop Notas:', err); return false; });
+        tx.executeSql('DROP TABLE IF EXISTS Chats', [], () => console.log('[INFO] Dropped Chats table'), (_, err) => { console.error('[ERROR] Drop Chats:', err); return false; });
+        tx.executeSql('DROP TABLE IF EXISTS Messages', [], () => console.log('[INFO] Dropped Messages table'), (_, err) => { console.error('[ERROR] Drop Messages:', err); return false; });
+      },
+      (err) => {
+        console.error('[ERROR] Drop all tables failed:', err);
+        reject(err);
+      },
+      () => {
+        console.log('[SUCCESS] All tables dropped');
+        resolve();
       }
     );
   });

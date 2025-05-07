@@ -20,7 +20,16 @@ export const getEventsByAnimalId = async (animalId: string, page: number = 1, li
               comentario: item.comentario,
               fecha: item.fecha,
               created_at: item.created_at,
-              notificationTime: item.notificationTime || '9:00',
+              horaDeseada: item.horaDeseada || 9,
+              minutosDeseado: item.minutosDeseado || 0,
+              DiaDeseado: item.DiaDeseado,
+              MesDeseado: item.MesDeseado,
+              AnioDeseado: item.AnioDeseado,
+              horaEvento: item.horaEvento || 9,
+              minutosEvento: item.minutosEvento || 0,
+              DiaEvento: item.DiaEvento,
+              MesEvento: item.MesEvento,
+              AnioEvento: item.AnioEvento,
             });
           }
           resolve(events);
