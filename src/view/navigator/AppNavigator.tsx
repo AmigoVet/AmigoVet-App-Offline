@@ -10,7 +10,7 @@ import Calendar from '../screens/home/calendar/Calendar';
 import Update from '../screens/home/update/Update';
 import GptChat from '../screens/home/gptChat/GptChat';
 import AllChats from '../screens/home/allChats/AllChats';
-import CreateEventForm from '../screens/home/forms/CreateEventForm';
+import CreateEventForm from '../screens/home/forms/events/CreateEventForm';
 
 const Stack = createStackNavigator<RootStackParamList>();
 

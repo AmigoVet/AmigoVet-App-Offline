@@ -4,20 +4,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import notifee, { AndroidImportance, TimestampTrigger, TriggerType } from '@notifee/react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { Events } from '../../../../lib/interfaces/Events';
-import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
-import CustomButton from '../../../components/customs/CustomButton';
-import CustomInput from '../../../components/customs/CustomImput';
-import Separator from '../../../components/Separator';
-import { GlobalStyles } from '../../../styles/GlobalStyles';
-import CustomScrollView from '../../../components/customs/CustomScrollView';
+import { Events } from '../../../../../lib/interfaces/Events';
+import { useAnimalStore } from '../../../../../lib/store/useAnimalStore';
+import CustomButton from '../../../../components/customs/CustomButton';
+import CustomInput from '../../../../components/customs/CustomImput';
+import Separator from '../../../../components/Separator';
+import { GlobalStyles } from '../../../../styles/GlobalStyles';
+import CustomScrollView from '../../../../components/customs/CustomScrollView';
 import { RouteProp } from '@react-navigation/native';
-import { NavigationProp, RootStackParamList } from '../../../navigator/navigationTypes';
-import GlobalContainer from '../../../components/GlobalContainer';
-import Header from '../../../components/Header';
-import { newColors } from '../../../styles/colors';
-import { constants } from '../../../styles/constants';
+import { NavigationProp, RootStackParamList } from '../../../../navigator/navigationTypes';
+import GlobalContainer from '../../../../components/GlobalContainer';
+import Header from '../../../../components/Header';
+import { newColors } from '../../../../styles/colors';
+import { constants } from '../../../../styles/constants';
 import Icon from '@react-native-vector-icons/ionicons';
+import { textNotification } from './textNotification';
 
 type CreateEventFormRouteProp = RouteProp<RootStackParamList, 'CreateEventForm'>;
 
@@ -120,17 +121,28 @@ const CreateEventForm: React.FC = () => {
         timestamp: notificationDate.getTime(),
       };
 
+      const triggerDayEvent: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: eventDate.getTime(),
+      };
+
       await notifee.createTriggerNotification(
         {
           id: eventData.id,
           title: `Recordatorio de ${eventData.animalName}`,
-          body: `Recuerda tu ${eventData.comentario.toLowerCase()} para el ${eventDate.toLocaleDateString('es-ES', {
-            month: 'long',
-            day: 'numeric',
-          })} a las ${eventDate.toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}`,
+          body: textNotification({
+            yearNotification: String(notificationDate.getFullYear()),
+            monthNotification: String(notificationDate.getMonth() + 1),
+            dayNotification: String(notificationDate.getDate()),
+            hourNotification: String(notificationDate.getHours()),
+            minuteNotification: String(notificationDate.getMinutes()),
+            yearEvent: String(eventDate.getFullYear()),
+            monthEvent: String(eventDate.getMonth() + 1),
+            dayEvent: String(eventDate.getDate()),
+            hourEvent: String(eventData.horaEvento),
+            minuteEvent: String(eventData.minutosEvento),
+            description: eventData.comentario,
+          }),
           android: {
             channelId: 'default',
             importance: AndroidImportance.HIGH,
@@ -144,6 +156,22 @@ const CreateEventForm: React.FC = () => {
         },
         trigger
       );
+
+      await notifee.createTriggerNotification({
+        id: eventData.id + 'event',
+        title: `Evento de ${eventData.animalName}`,
+        body: `La ${eventData.comentario} de ${eventData.animalName} es ahora!!`,
+        android: {
+          channelId: 'default',
+          importance: AndroidImportance.HIGH,
+          pressAction: {
+            id: 'default',
+          },
+        },
+        ios: {
+          sound: 'default',
+        },
+      }, triggerDayEvent);
 
       Alert.alert('Éxito', 'Evento creado');
       navigation.goBack();
@@ -320,6 +348,26 @@ const styles = StyleSheet.create({
   },
   animalNameBold: {
     fontWeight: 'bold',
+  },
+  notificationPreview: {
+    marginTop: 20,
+    padding: 10,
+    borderWidth: constants.borderWidth,
+    borderColor: newColors.fondo_secundario,
+    borderRadius: constants.borderRadius,
+    backgroundColor: newColors.fondo_principal,
+  },
+  notificationPreviewTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: newColors.fondo_secundario,
+    fontFamily: constants.FontTitle,
+    marginBottom: 5,
+  },
+  notificationPreviewText: {
+    fontSize: 14,
+    color: newColors.fondo_secundario,
+    fontFamily: constants.FontText,
   },
 });
 
