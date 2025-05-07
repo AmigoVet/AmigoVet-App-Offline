@@ -5,6 +5,7 @@ export interface Events {
     comentario: string;
     fecha: string;
     created_at: string;
+
     horaDeseada: number;
     minutosDeseado: number;
     DiaDeseado: number;

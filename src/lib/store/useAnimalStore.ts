@@ -239,7 +239,16 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     comentario: item.comentario,
                     fecha: item.fecha,
                     created_at: item.created_at,
-                    notificationTime: item.notificationTime,
+                    horaDeseada: item.horaDeseada,
+                    minutosDeseado: item.minutosDeseado,
+                    DiaDeseado: item.DiaDeseado,
+                    MesDeseado: item.MesDeseado,
+                    AnioDeseado: item.AnioDeseado,
+                    horaEvento: item.horaEvento,
+                    minutosEvento: item.minutosEvento,
+                    DiaEvento: item.DiaEvento,
+                    MesEvento: item.MesEvento,
+                    AnioEvento: item.AnioEvento,
                   });
                 }
                 set({ events, totalEvents });

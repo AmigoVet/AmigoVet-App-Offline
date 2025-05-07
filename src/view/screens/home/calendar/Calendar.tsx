@@ -65,9 +65,14 @@ const CalendarScreen = () => {
     selectedTextColor: newColors.fondo_principal,
   };
 
+  // Fix date display by ensuring correct timezone handling
+  const displayDate = new Date(selectedDate);
+  // Adjust for local timezone to avoid off-by-one day issue
+  displayDate.setMinutes(displayDate.getMinutes() + displayDate.getTimezoneOffset());
+
   return (
     <GlobalContainer>
-      <Header title="Calendario" iconOnPress="chevron-back-outline" onPress={() => {navigation.goBack();}} />
+      <Header title="Calendario" iconOnPress="chevron-back-outline" onPress={() => navigation.goBack()} />
       <Separator height={20} />
 
       {loading ? (
@@ -108,13 +113,14 @@ const CalendarScreen = () => {
             />
           </View>
 
-          <View style={styles.eventsContainer}>
+          <View style={[styles.eventsContainer]}>
             <View style={styles.eventsHeader}>
               <Text style={styles.eventsHeaderText}>
-                {new Date(selectedDate).toLocaleDateString('es-ES', {
+                {displayDate.toLocaleDateString('es-ES', {
                   weekday: 'long',
                   day: 'numeric',
                   month: 'long',
+                  year: 'numeric',
                 })}
               </Text>
               <View style={styles.eventCount}>
@@ -133,6 +139,7 @@ const CalendarScreen = () => {
                 renderItem={({ item }) => <EventItem item={item} />}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.eventsList}
+                nestedScrollEnabled={true}
               />
             )}
           </View>
@@ -173,7 +180,8 @@ const styles = StyleSheet.create({
   eventsContainer: {
     borderRadius: 15,
     padding: 15,
-    marginBottom: 20,
+    paddingBottom: 0,
+    flex: 1,
   },
   eventsHeader: {
     flexDirection: 'row',
@@ -206,7 +214,8 @@ const styles = StyleSheet.create({
     color: newColors.fondo_secundario,
   },
   eventsList: {
-    paddingBottom: 10,
+    paddingBottom: 20,
+    flexGrow: 1,
   },
   noEventsText: {
     fontSize: 18,

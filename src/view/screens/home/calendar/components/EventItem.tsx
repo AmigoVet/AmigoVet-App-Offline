@@ -12,6 +12,11 @@ const EventItem = ({ item }: { item: Events }) => {
   const animalImage = animal?.image ?? 'https://example.com/default-image.png';
   console.log('Evento desde el Calendar', item);
 
+  // Format event and notification times with checks for undefined
+  const eventTime =
+    item.horaEvento !== undefined && item.minutosEvento !== undefined
+      ? `${item.horaEvento}:${item.minutosEvento.toString().padStart(2, '0')}`
+      : 'N/A';
   return (
     <TouchableOpacity style={styles.eventItem}>
       <View style={styles.eventContent}>
@@ -19,10 +24,10 @@ const EventItem = ({ item }: { item: Events }) => {
         <View style={styles.textContainer}>
           <View style={styles.eventHeader}>
             <Text style={styles.eventTitle}>{animal?.nombre || 'Desconocido'}</Text>
-            <Text style={styles.eventDate}>
-              {item.notificationTime}
-            </Text>
           </View>
+          <Text style={styles.eventDate}>
+              Evento a las {eventTime}
+          </Text>
           <Text style={styles.eventDescription}>{item.comentario || 'Sin comentario'}</Text>
         </View>
         <TouchableOpacity style={styles.notificationIcon}>
@@ -51,7 +56,6 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'flex-start',
   },
   eventTitle: {
     fontSize: 16,
@@ -63,12 +67,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: newColors.fondo_secundario,
     fontFamily: constants.FontText,
-    marginTop: 4,
     opacity: 0.8,
   },
   eventDate: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '600',
     color: newColors.verde_light,
     fontFamily: constants.FontText,
     marginTop: 4,

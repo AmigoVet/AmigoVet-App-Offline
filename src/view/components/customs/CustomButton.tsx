@@ -6,12 +6,13 @@ import Icon from '@react-native-vector-icons/ionicons';
 
 interface CustomButtonProps {
   text: string;
-  icon?: any;
+  icon?: string;
   onPress: () => void;
   disabled?: boolean;
   loading?: boolean;
   backgroundColor?: string;
   textColor?: string;
+  width?: string | number;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -22,6 +23,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   loading = false,
   backgroundColor = newColors.verde_light,
   textColor = 'white',
+  width = '80%',
 }) => {
   const buttonBackgroundColor = disabled ? newColors.verde : backgroundColor;
   const contentColor = disabled ? newColors.fondo_principal : textColor;
@@ -30,7 +32,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     <Pressable
       style={({ pressed }) => [
         styles.container,
-        { backgroundColor: buttonBackgroundColor },
+        { backgroundColor: buttonBackgroundColor, width },
         pressed && !disabled && !loading && styles.pressedContainer,
       ]}
       onPress={onPress}
@@ -55,7 +57,6 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    width: '80%',
     borderRadius: constants.borderRadius / 2,
     alignItems: 'center',
     justifyContent: 'center',
