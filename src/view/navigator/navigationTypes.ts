@@ -1,6 +1,7 @@
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack';
 import { Animal } from '../../lib/interfaces/Animal';
 import { Chat } from '../../lib/interfaces/chats';
+import { Register } from '../../lib/interfaces/Register';
 
 export type MainTabsParamList = {
   Home: undefined;
@@ -26,9 +27,8 @@ export type RootStackParamList = {
   Calendar: undefined;
   GptChat: { chatData: Chat };
   AllChats: undefined;
-
-  CreateEventForm: {animalId: string; animalName: string};
+  CreateEventForm: { animalId: string; animalName: string };
+  CreateRegisterForm: { animal: Animal; register?: Register };
 };
 
 export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-

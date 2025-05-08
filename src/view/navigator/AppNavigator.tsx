@@ -11,6 +11,7 @@ import Update from '../screens/home/update/Update';
 import GptChat from '../screens/home/gptChat/GptChat';
 import AllChats from '../screens/home/allChats/AllChats';
 import CreateEventForm from '../screens/home/forms/events/CreateEventForm';
+import CreateRegisterForm from '../screens/home/forms/registers/CreateRegisterForm';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -33,6 +34,7 @@ const AppNavigator = () => {
           <Stack.Screen name="GptChat" component={GptChat} />
           <Stack.Screen name="AllChats" component={AllChats} />
           <Stack.Screen name="CreateEventForm" component={CreateEventForm} />
+          <Stack.Screen name="CreateRegisterForm" component={CreateRegisterForm} />
         </>
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />

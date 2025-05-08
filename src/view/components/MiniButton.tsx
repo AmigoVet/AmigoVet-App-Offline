@@ -30,6 +30,7 @@ const MiniButton: React.FC<ButtonIconProps> = ({
     justifyContent: 'center',
     flexDirection: 'row',
     width: 'auto',
+    marginVertical: 5,
   };
 
   return (

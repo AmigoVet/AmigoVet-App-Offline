@@ -68,7 +68,7 @@ const AnimalView = () => {
       case 'notes':
         return <NoteSection notes={animal.notes!} animalId={animal.id} animalName={animal.nombre} />;
       case 'registers':
-        return <RegisterSection registers={animal.registers!} animalId={animal.id} animalName={animal.nombre} genero={animal.genero!} embarazada={animal.embarazada} />;
+        return <RegisterSection animal={animal}/>;
       case 'extra':
         return <ExtraSection animal={animal} />;
       default:

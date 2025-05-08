@@ -160,7 +160,7 @@ const CreateEventForm: React.FC = () => {
       await notifee.createTriggerNotification({
         id: eventData.id + 'event',
         title: `Evento de ${eventData.animalName}`,
-        body: `La ${eventData.comentario} de ${eventData.animalName} es ahora!!`,
+        body: `${eventData.comentario} de ${eventData.animalName} es ahora!!`,
         android: {
           channelId: 'default',
           importance: AndroidImportance.HIGH,

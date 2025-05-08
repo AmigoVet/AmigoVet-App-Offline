@@ -1,6 +1,5 @@
 
 ## Envio de notificaciones para los eventos
-- Hacer que se envie una notificacion la fecha y dia del evento
 - Que pueda programar mas recordatorios
 - Arreglarlo para que funcione desde los registros
 
