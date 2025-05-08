@@ -18,7 +18,8 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
   const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   // Get the first two notes (or fewer if not enough exist)
-  const firstTwoNotes = animal.notes && animal.notes.length > 0 ? animal.notes.slice(0, 2) : [];
+  const howManyNotes = animal.embarazada ? 1 : 2;
+  const firstTwoNotes = animal.notes && animal.notes.length > 0 ? animal.notes.slice(0, howManyNotes) : [];
   // console.log('First two notes:', firstTwoNotes);
 
   return (
@@ -38,7 +39,15 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
           <Icon name="location-outline" size={20} color={newColors.principal} />
           <Text style={[styles.text, GlobalStyles.fontWeight200]}>{animal.ubicacion || '-'}</Text>
         </View>
-
+        {animal.embarazada && (
+        <>
+        <View style={styles.separator} />
+        <View style={styles.preñesStateContainer}>
+          <Icon name="paw-outline" size={14} color={newColors.principal} />
+          <Text style={styles.preñesState}>En estado de preñez</Text>
+        </View>
+        </>
+        )}
         <View style={styles.separator} />
 
         <View>
@@ -57,9 +66,7 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
             <Text style={styles.emptyNotes}>Sin notas relevantes</Text>
           )}
         </View>
-        <View>
-          {animal.embarazada && <Text style={styles.text}>En estado de preñez</Text>}
-        </View>
+
       </View>
     </Pressable>
   );
@@ -125,6 +132,17 @@ const styles = StyleSheet.create({
   },
   noteContainer: {
     marginBottom: 5,
+  },
+  preñesState: {
+    fontSize: 14,
+    textAlign: 'left',
+    fontWeight: '600',
+    color: newColors.fondo_principal,
+    fontFamily: constants.FontText,
+  },
+  preñesStateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
