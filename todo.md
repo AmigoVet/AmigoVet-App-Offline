@@ -20,5 +20,8 @@
 - Agregar razas de aviares
 
 # BUGS
+-  Asegurarse de que se envie la notificacion antes de cada evento y no una sola ves
+
+
 
 
