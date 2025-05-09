@@ -15,7 +15,8 @@ interface RegistersProps {
 const RegisterSection = ({ animal }: RegistersProps) => {
   const navigation = useNavigation<NavigationProp>();
   const {deleteRegister, animals } = useAnimalStore();
-
+  const animalId = animal!.id;
+  const animalName = animal!.nombre;
   // Guard clause for undefined animal
   if (!animal || !animal.id) {
     return (
@@ -56,7 +57,13 @@ const RegisterSection = ({ animal }: RegistersProps) => {
       <View style={styleSections.container}>
         <View style={styleSections.header}>
           <Text style={styleSections.title}>Registros</Text>
-          <MiniButton text="Agregar" icon="add-outline" onPress={() => navigation.navigate('CreateRegisterForm', {animal})} />
+          <View style={styleSections.buttonsContainer}>
+            <MiniButton text="Agregar" icon="add-outline" onPress={() => navigation.navigate('CreateRegisterForm', {animal})} />
+            <MiniButton
+              text="Ver todos"
+              icon="book-outline"
+              onPress={() => navigation.navigate('AllRegisters', {animalId, animalName})} />
+          </View>
         </View>
         {animalRegisters.length === 0 ? (
           <Text style={styleSections.noDataText}>No hay registros</Text>

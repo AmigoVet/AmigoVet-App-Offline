@@ -122,11 +122,11 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     }
                   }
 
-                  let image2Path = item.image2 && !item.image2.startsWith('file://') 
-                    ? `file://${getStoragePath()}/animals/${item.image2}` 
+                  let image2Path = item.image2 && !item.image2.startsWith('file://')
+                    ? `file://${getStoragePath()}/animals/${item.image2}`
                     : item.image2 || '';
-                  let image3Path = item.image3 && !item.image3.startsWith('file://') 
-                    ? `file://${getStoragePath()}/animals/${item.image3}` 
+                  let image3Path = item.image3 && !item.image3.startsWith('file://')
+                    ? `file://${getStoragePath()}/animals/${item.image3}`
                     : item.image3 || '';
 
                   if (image2Path && image2Path.startsWith('file://')) {
@@ -347,17 +347,21 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
         let whereClause = '';
         const filterParams: (string | number)[] = [];
         const filterConditions: string[] = [];
-        let orderBy = 'created_at DESC';
+        let orderBy = 'fecha DESC'; // Cambiado de 'created_at' a 'fecha'
 
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
           filterParams.push(String(filters.animalId));
         }
+        if (filters.comentario) {
+          filterConditions.push('comentario LIKE ?');
+          filterParams.push(String(filters.comentario));
+        }
         if (filters.Reciente === true) {
-          orderBy = 'created_at DESC';
+          orderBy = 'fecha DESC'; // Cambiado de 'created_at' a 'fecha'
         }
         if (filters.Antiguo === true) {
-          orderBy = 'created_at ASC';
+          orderBy = 'fecha ASC'; // Cambiado de 'created_at' a 'fecha'
         }
 
         if (filterConditions.length > 0) {
@@ -389,18 +393,21 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                 resolve();
               },
               (_, error: SQLError) => {
-                console.error('[ERROR] Error al cargar registros:', error.message || error);
+                console.error('[loadRegisters] Error al cargar registros:', error.message || error);
                 reject(error);
                 return false;
               }
             );
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al contar registros:', error.message || error);
+            console.error('[loadRegisters] Error al contar registros:', error.message || error);
             reject(error);
             return false;
           }
         );
+      }, (error) => {
+        console.error('[loadRegisters] Error en la transacción:', error);
+        reject(error);
       });
     });
   },
