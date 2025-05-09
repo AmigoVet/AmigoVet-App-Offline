@@ -11,15 +11,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { useAnimalStore } from '../../../../../lib/store/useAnimalStore';
 import Separator from '../../../../components/Separator';
 import CustomInput from '../../../../components/customs/CustomImput';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '../../../../navigator/navigationTypes';
 
 interface NotesProps {
   notes: Notes[];
   animalId: string;
-  animalName?: string; // Opcional, ya que no se usa en la interfaz Notes
+  animalName: string; // Opcional, ya que no se usa en la interfaz Notes
 }
 
-const NoteSection = ({ notes: initialNotes, animalId }: NotesProps) => {
+const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) => {
   const modalizeRef = useRef<Modalize>(null);
+  const {navigate} = useNavigation<NavigationProp>();
   const [nota, setNota] = useState('');
   const [editingNote, setEditingNote] = useState<Notes | null>(null);
   const { addNote, updateNote, deleteNote, animals } = useAnimalStore();
@@ -105,7 +108,11 @@ const NoteSection = ({ notes: initialNotes, animalId }: NotesProps) => {
       <View style={styleSections.container}>
         <View style={styleSections.header}>
           <Text style={styleSections.title}>Notas</Text>
+          <View style={styleSections.buttonsContainer}>
           <MiniButton text="Agregar" icon="add-outline" onPress={() => openModal()} />
+          <MiniButton text="Ver todos" icon="book-outline" onPress={() => navigate('AllNotes', {animalId, animalName})} />
+          </View>
+
         </View>
         {animalNotes.length === 0 ? (
           <Text style={styleSections.noDataText}>No hay notas</Text>
