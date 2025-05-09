@@ -70,7 +70,10 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
       <View style={styleSections.container}>
         <View style={styleSections.header}>
           <Text style={styleSections.title}>Eventos</Text>
+          <View style={styleSections.buttonsContainer}>
           <MiniButton text="Agregar" icon="add-outline" onPress={() => navigation.navigate('CreateEventForm', { animalId, animalName })} />
+          <MiniButton text="Ver todos" icon="book-outline" onPress={() => navigation.navigate('AllEvents', { animalId, animalName })} />
+          </View>
         </View>
         {animalEvents.length === 0 ? (
           <Text style={styleSections.noDataText}>No hay eventos</Text>

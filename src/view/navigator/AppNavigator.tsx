@@ -12,6 +12,9 @@ import GptChat from '../screens/home/gptChat/GptChat';
 import AllChats from '../screens/home/allChats/AllChats';
 import CreateEventForm from '../screens/home/forms/events/CreateEventForm';
 import CreateRegisterForm from '../screens/home/forms/registers/CreateRegisterForm';
+import AllEvents from '../screens/home/forms/events/AllEvents';
+import AllNotes from '../screens/home/forms/notes/AllNotes';
+import AllRegisters from '../screens/home/forms/registers/AllRegisters';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -35,6 +38,9 @@ const AppNavigator = () => {
           <Stack.Screen name="AllChats" component={AllChats} />
           <Stack.Screen name="CreateEventForm" component={CreateEventForm} />
           <Stack.Screen name="CreateRegisterForm" component={CreateRegisterForm} />
+          <Stack.Screen name="AllEvents" component={AllEvents} />
+          <Stack.Screen name="AllRegisters" component={AllRegisters} />
+          <Stack.Screen name="AllNotes" component={AllNotes} />
         </>
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />

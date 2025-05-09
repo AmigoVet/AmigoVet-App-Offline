@@ -1,6 +1,6 @@
-import { StyleSheet } from "react-native";
-import { newColors } from "../../../../styles/colors";
-import { constants } from "../../../../styles/constants";
+import { StyleSheet } from 'react-native';
+import { newColors } from '../../../../styles/colors';
+import { constants } from '../../../../styles/constants';
 
 export const styleSections = StyleSheet.create({
 container: {
@@ -32,14 +32,14 @@ title: {
   borderColor: newColors.fondo_principal,
   alignSelf: 'center',
   marginBottom: 10,
-  fontFamily: constants.FontTitle
+  fontFamily: constants.FontTitle,
 },
 noDataText: {
   fontSize: 14,
   color: newColors.fondo_principal,
   textAlign: 'center',
   marginTop: 10,
-  fontFamily: constants.FontText
+  fontFamily: constants.FontText,
 },
 itemContainer: {
   width: '90%',
@@ -48,4 +48,8 @@ itemContainer: {
   backgroundColor: newColors.fondo_principal,
   borderRadius: 5,
 },
-})
+buttonsContainer: {
+  flexDirection: 'row',
+  gap: 5,
+},
+});

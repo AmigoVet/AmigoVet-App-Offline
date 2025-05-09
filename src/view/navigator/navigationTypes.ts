@@ -29,6 +29,10 @@ export type RootStackParamList = {
   AllChats: undefined;
   CreateEventForm: { animalId: string; animalName: string };
   CreateRegisterForm: { animal: Animal; register?: Register };
+
+  AllEvents: {animalId: string; animalName: string};
+  AllNotes: {animalId: string; animalName: string};
+  AllRegisters: {animalId: string; animalName: string};
 };
 
 export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
