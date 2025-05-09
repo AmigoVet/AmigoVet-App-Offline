@@ -202,11 +202,15 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
         let whereClause = '';
         const filterParams: (string | number)[] = [];
         const filterConditions: string[] = [];
-        let orderBy = 'created_at DESC';
+        let orderBy = 'fecha DESC';
 
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
           filterParams.push(String(filters.animalId));
+        }
+        if (filters.comentario) {
+          filterConditions.push('comentario LIKE ?');
+          filterParams.push(String(filters.comentario));
         }
         if (filters.Reciente === true) {
           orderBy = 'created_at DESC';
