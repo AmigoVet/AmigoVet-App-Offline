@@ -142,9 +142,9 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     }
                   }
 
-                  const notes = await getNotesByAnimalId(item.id, 1, 10);
-                  const registers = await getRegistersByAnimalId(item.id, 1, 10);
-                  const events = await getEventsByAnimalId(item.id, 1, 10);
+                  const notes = await getNotesByAnimalId(item.id, 1, 5);
+                  const registers = await getRegistersByAnimalId(item.id, 1, 5);
+                  const events = await getEventsByAnimalId(item.id, 1, 5);
 
                   animals.push({
                     id: item.id,

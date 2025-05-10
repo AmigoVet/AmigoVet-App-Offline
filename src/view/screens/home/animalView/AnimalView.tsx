@@ -100,7 +100,6 @@ const AnimalView = () => {
         {/* Active Section */}
         {renderActiveSection()}
 
-        <Separator height={100} bg={newColors.fondo_secundario} />
       </CustomScrollView>
     </GlobalContainer>
   );

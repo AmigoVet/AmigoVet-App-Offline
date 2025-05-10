@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { Notes } from '../../../../../lib/interfaces/Notes';
 import { newColors } from '../../../../styles/colors';
@@ -13,6 +13,7 @@ import Separator from '../../../../components/Separator';
 import CustomInput from '../../../../components/customs/CustomImput';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '../../../../navigator/navigationTypes';
+import NoteSectionCard from '../cards/NoteSectionCard';
 
 interface NotesProps {
   notes: Notes[];
@@ -25,7 +26,7 @@ const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) 
   const {navigate} = useNavigation<NavigationProp>();
   const [nota, setNota] = useState('');
   const [editingNote, setEditingNote] = useState<Notes | null>(null);
-  const { addNote, updateNote, deleteNote, animals } = useAnimalStore();
+  const { addNote, updateNote, animals } = useAnimalStore();
 
   // Obtener las notas del animal desde el store
   const animalNotes = animals.find((animal) => animal.id === animalId)?.notes || initialNotes;
@@ -79,30 +80,6 @@ const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) 
       console.error('Error al guardar nota:', error);
     }
   };
-
-  const handleDeleteNote = (noteId: string) => {
-    Alert.alert(
-      'Confirmar eliminación',
-      '¿Estás seguro de que deseas eliminar esta nota?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await deleteNote(noteId);
-              Alert.alert('Éxito', 'Nota eliminada correctamente.');
-            } catch (error: any) {
-              Alert.alert('Error', `No se pudo eliminar la nota: ${error.message || 'Error desconocido'}`);
-              console.error('Error al eliminar nota:', error);
-            }
-          },
-        },
-      ]
-    );
-  };
-
   return (
     <>
       <View style={styleSections.container}>
@@ -118,25 +95,7 @@ const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) 
           <Text style={styleSections.noDataText}>No hay notas</Text>
         ) : (
           animalNotes.map((note) => (
-            <View key={note.id} style={styleSections.itemContainer}>
-              <TouchableOpacity style={styles.itemContainer} onPress={() => openModal(note)}>
-                <Text style={styles.itemText}>{note.nota}</Text>
-                <Text style={styles.itemDate}>
-                  {new Date(note.fecha).toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  })}
-                </Text>
-              </TouchableOpacity>
-              <MiniButton
-                text=""
-                icon="trash-outline"
-                backgroundColor={newColors.rojo}
-                color={newColors.fondo_principal}
-                onPress={() => handleDeleteNote(note.id)}
-              />
-            </View>
+            <NoteSectionCard note={note} />
           ))
         )}
       </View>
@@ -175,24 +134,5 @@ const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) 
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  itemContainer: {
-    flex: 1,
-    padding: 10,
-  },
-  itemText: {
-    fontSize: 14,
-    color: newColors.fondo_secundario,
-  },
-  itemDate: {
-    fontSize: 12,
-    color: newColors.fondo_secundario,
-    marginTop: 5,
-  },
-  deleteButton: {
-    marginLeft: 10,
-  },
-});
 
 export default NoteSection;

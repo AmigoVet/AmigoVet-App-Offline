@@ -9,6 +9,8 @@ container: {
   justifyContent: 'flex-start',
   backgroundColor: newColors.fondo_secundario,
   paddingVertical: 10,
+  minHeight: 500,
+  paddingBottom: 100,
 },
 header: {
   width: '100%',

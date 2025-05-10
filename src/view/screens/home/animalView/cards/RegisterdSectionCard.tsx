@@ -1,46 +1,23 @@
+import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
-import { Text, StyleSheet, View, Alert } from 'react-native';
+import { Register } from '../../../../../lib/interfaces/Register';
 import { format, parse } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Register } from '../../../lib/interfaces/Register';
-import { useAnimalStore } from '../../../lib/store/useAnimalStore';
-import { newColors } from '../../styles/colors';
-import { constants } from '../../styles/constants';
-import MiniButton from '../MiniButton';
 
+import { newColors } from '../../../../styles/colors';
+import { constants } from '../../../../styles/constants';
 
-interface RegisterCardProps {
-  register: Register;
+interface RegisterSectionCardProps {
+    register: Register;
 }
 
-const RegisterCard = ({ register }: RegisterCardProps) => {
-  // Parse the fecha field (assumed format: YYYY-MM-DD)
+const RegisterdSectionCard = ({register}:  RegisterSectionCardProps) => {
+
   const registerDate = parse(register.fecha, 'yyyy-MM-dd', new Date());
-  const { deleteRegister } = useAnimalStore();
 
   // Format date in natural language (e.g., "Martes, 19 de octubre")
   const formattedDate = format(registerDate, "EEEE, d 'de' MMMM", { locale: es });
 
-  const handleDelete = () => {
-    Alert.alert(
-      'Confirmar eliminación',
-      '¿Estás seguro de eliminar este registro?',
-      [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: () => {
-            deleteRegister(register.id);
-          },
-        },
-      ],
-      { cancelable: true }
-    );
-  };
 
   return (
     <View style={styles.card}>
@@ -53,18 +30,11 @@ const RegisterCard = ({ register }: RegisterCardProps) => {
       <Text style={styles.date}>
         Fecha del registro: <Text style={styles.dateInfo}>{formattedDate}</Text>
       </Text>
-      <View style={styles.miniButtonContainer}>
-        <MiniButton
-          icon="trash-outline"
-          text="Eliminar"
-          onPress={handleDelete}
-          backgroundColor={newColors.rojo}
-          color={newColors.fondo_principal}
-        />
-      </View>
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   card: {
@@ -74,13 +44,14 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingHorizontal: 30,
-    borderColor: newColors.fondo_secundario,
+    borderColor: newColors.fondo_principal,
   },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
     paddingVertical: 5,
     fontFamily: constants.FontTitle,
+    color: newColors.fondo_principal,
   },
   header: {
     flexDirection: 'row',
@@ -89,27 +60,27 @@ const styles = StyleSheet.create({
   },
   action: {
     fontSize: 14,
-    color: newColors.fondo_secundario,
+    color: newColors.fondo_principal,
     marginBottom: 4,
     fontFamily: constants.FontTitle,
     fontWeight: '600',
   },
   actionInfo: {
     fontSize: 14,
-    color: newColors.fondo_secundario,
+    color: newColors.fondo_principal,
     fontFamily: constants.FontTitle,
     fontWeight: '400',
   },
   date: {
     fontSize: 14,
-    color: newColors.fondo_secundario,
+    color: newColors.fondo_principal,
     marginBottom: 4,
     fontFamily: constants.FontTitle,
     fontWeight: '600',
   },
   dateInfo: {
     fontSize: 14,
-    color: newColors.fondo_secundario,
+    color: newColors.fondo_principal,
     marginBottom: 4,
     fontFamily: constants.FontTitle,
     fontWeight: '400',
@@ -119,4 +90,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterCard;
+
+export default RegisterdSectionCard;
