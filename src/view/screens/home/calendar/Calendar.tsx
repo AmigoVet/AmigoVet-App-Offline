@@ -11,6 +11,8 @@ import { newColors } from '../../../styles/colors';
 import EventItem from './components/EventItem';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '../../../navigator/navigationTypes';
+import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 // Configurar el idioma del calendario en español
 LocaleConfig.locales.es = {
@@ -46,15 +48,25 @@ const CalendarScreen = () => {
   }, [loadEvents, totalEvents]);
 
   useEffect(() => {
-    const filteredEvents = events.filter(
-      (event) => new Date(event.fecha).toISOString().split('T')[0] === selectedDate
-    );
+    const filteredEvents = events.filter(event => {
+      try {
+        const eventDate = parseISO(event.dateEvent);
+        return format(eventDate, 'yyyy-MM-dd') === selectedDate;
+      } catch {
+        return false;
+      }
+    });
     setSelectedEvents(filteredEvents);
   }, [selectedDate, events]);
 
   const markedDates = events.reduce((acc, event) => {
-    const date = new Date(event.fecha).toISOString().split('T')[0];
-    acc[date] = { marked: true, dotColor: newColors.verde_light };
+    try {
+      const eventDate = parseISO(event.dateEvent);
+      const date = format(eventDate, 'yyyy-MM-dd');
+      acc[date] = { marked: true, dotColor: newColors.verde_light };
+    } catch {
+      console.warn(`Invalid dateEvent for event ${event.id}: ${event.dateEvent}`);
+    }
     return acc;
   }, {} as { [key: string]: { marked: boolean; dotColor: string; selected?: boolean; selectedColor?: string; selectedTextColor?: string } });
 
@@ -65,10 +77,7 @@ const CalendarScreen = () => {
     selectedTextColor: newColors.fondo_principal,
   };
 
-  // Fix date display by ensuring correct timezone handling
-  const displayDate = new Date(selectedDate);
-  // Adjust for local timezone to avoid off-by-one day issue
-  displayDate.setMinutes(displayDate.getMinutes() + displayDate.getTimezoneOffset());
+  const displayDate = parseISO(selectedDate);
 
   return (
     <GlobalContainer>
@@ -113,15 +122,10 @@ const CalendarScreen = () => {
             />
           </View>
 
-          <View style={[styles.eventsContainer]}>
+          <View style={styles.eventsContainer}>
             <View style={styles.eventsHeader}>
               <Text style={styles.eventsHeaderText}>
-                {displayDate.toLocaleDateString('es-ES', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
+                {format(displayDate, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
               </Text>
               <View style={styles.eventCount}>
                 <Text style={styles.eventCountText}>{selectedEvents.length}</Text>
@@ -136,7 +140,9 @@ const CalendarScreen = () => {
             ) : (
               <FlatList
                 data={selectedEvents}
-                renderItem={({ item }) => <EventItem item={item} />}
+                renderItem={({ item }) => (
+                  <EventItem item={item}/>
+                )}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.eventsList}
                 nestedScrollEnabled={true}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, View, Alert } from 'react-native';
-import { Events } from '../../../lib/interfaces/Events';
-import { format, parse, isBefore } from 'date-fns';
+import { Events, sendNotifi } from '../../../lib/interfaces/Events';
+import { format, parseISO, isBefore } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { constants } from '../../styles/constants';
 import { newColors } from '../../styles/colors';
@@ -13,25 +13,39 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event }: EventCardProps) => {
-  // Parse the fecha field (assumed format: YYYY-MM-DD)
-  const eventDate = parse(event.fecha, 'yyyy-MM-dd', new Date());
   const { deleteEvent } = useAnimalStore();
 
-  // Format date in natural language (e.g., "Martes, 19 de octubre")
-  const formattedDate = format(eventDate, "EEEE, d 'de' MMMM", { locale: es });
-
-  // Determine if the event has passed
-  let eventDateTime = eventDate;
-  if (event.horaEvento && event.minutosEvento !== undefined) {
-    eventDateTime = new Date(
-      eventDate.getFullYear(),
-      eventDate.getMonth(),
-      eventDate.getDate(),
-      event.horaEvento,
-      event.minutosEvento
+  let eventDateTime: Date;
+  try {
+    eventDateTime = parseISO(event.dateEvent);
+  } catch (error) {
+    console.warn(`Invalid dateEvent for event ${event.id}: ${event.dateEvent}`);
+    return (
+      <View style={styles.card}>
+        <Text style={styles.title}>{event.comentario}</Text>
+        <Text style={styles.error}>Fecha inválida</Text>
+      </View>
     );
   }
+
+  const formattedDate = format(eventDateTime, "EEEE, d 'de' MMMM", { locale: es });
+  const formattedTime = format(eventDateTime, 'HH:mm', { locale: es });
+
   const hasPassed = isBefore(eventDateTime, new Date());
+
+  const sendNotifiDisplayMap: { [key in sendNotifi]: string } = {
+    '1d': 'un día',
+    '2d': '2 días',
+    '3d': '3 días',
+    '4d': '4 días',
+    '5d': '5 días',
+    '1w': 'una semana',
+    '2w': '2 semanas',
+  };
+
+  const notificationText = event.sendNotifi
+    ? `Se te notificará en ${sendNotifiDisplayMap[event.sendNotifi]}`
+    : 'Sin notificación programada';
 
   const handleDelete = () => {
     Alert.alert(
@@ -65,13 +79,20 @@ const EventCard = ({ event }: EventCardProps) => {
       <Text style={styles.date}>
         Fecha del evento: <Text style={styles.dateInfo}>{formattedDate}</Text>
       </Text>
-      {event.horaEvento && (
-        <Text style={styles.time}>
-          Hora Evento: {event.horaEvento}:{event.minutosEvento.toString().padStart(2, '0')}
-        </Text>
-      )}
+      <Text style={styles.time}>
+        Hora: <Text style={styles.dateInfo}>{formattedTime}</Text>
+      </Text>
+      <Text style={styles.notification}>
+        {notificationText}
+      </Text>
       <View style={styles.miniButtonContainer}>
-      <MiniButton icon="trash-outline" text="Eliminar" onPress={handleDelete} backgroundColor={newColors.rojo} color={newColors.fondo_principal} />
+        <MiniButton
+          icon="trash-outline"
+          text="Eliminar"
+          onPress={handleDelete}
+          backgroundColor={newColors.rojo}
+          color={newColors.fondo_principal}
+        />
       </View>
     </View>
   );
@@ -92,6 +113,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingVertical: 5,
     fontFamily: constants.FontTitle,
+    color: newColors.fondo_secundario,
   },
   header: {
     flexDirection: 'row',
@@ -114,8 +136,17 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 14,
-    color: '#666',
+    color: newColors.fondo_secundario,
     marginBottom: 4,
+    fontFamily: constants.FontTitle,
+    fontWeight: '600',
+  },
+  notification: {
+    fontSize: 13,
+    color: newColors.fondo_secundario,
+    marginBottom: 4,
+    fontFamily: constants.FontText,
+    fontStyle: 'italic',
   },
   status: {
     fontSize: 14,
@@ -137,6 +168,12 @@ const styles = StyleSheet.create({
   },
   miniButtonContainer: {
     maxWidth: '40%',
+  },
+  error: {
+    fontSize: 14,
+    color: newColors.rojo,
+    marginBottom: 4,
+    fontFamily: constants.FontTitle,
   },
 });
 

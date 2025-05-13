@@ -115,6 +115,10 @@ export const ProgramerHomeStyles = StyleSheet.create({
     notification: {
       padding: 12,
       borderRadius: constants.borderRadius,
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
+      flex: 1,
     },
     activeNotification: {
       backgroundColor: newColors.verde_light,
@@ -131,6 +135,7 @@ export const ProgramerHomeStyles = StyleSheet.create({
       marginBottom: 4,
       fontWeight: 'bold',
       fontFamily: constants.FontText,
+      textAlign: 'center',
     },
     activeText: {
       color: newColors.fondo_secundario,
