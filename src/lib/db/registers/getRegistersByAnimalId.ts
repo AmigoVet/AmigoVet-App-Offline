@@ -2,7 +2,7 @@ import { Register } from '../../interfaces/Register';
 import { getDatabase } from '../db';
 import { SQLiteDatabase, Transaction, SQLError } from 'react-native-sqlite-storage';
 
-export const getRegistersByAnimalId = async (animalId: string, page: number = 1, limit: number = 10): Promise<Register[]> => {
+export const getRegistersByAnimalId = async (animalId: string, page: number = 1, limit: number = 5): Promise<Register[]> => {
   const db: SQLiteDatabase = await getDatabase();
   return new Promise((resolve, reject) => {
     db.transaction((tx: Transaction) => {

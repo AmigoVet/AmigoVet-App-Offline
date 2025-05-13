@@ -8,7 +8,6 @@ import ExtraDataAnimalView from './components/ExtraDataAnimalView';
 import EventSection from './sections/EventSection';
 import NoteSection from './sections/NoteSection';
 import { newColors } from '../../../styles/colors';
-import Separator from '../../../components/Separator';
 import { constants } from '../../../styles/constants';
 import CustomScrollView from '../../../components/customs/CustomScrollView';
 import RegisterSection from './sections/RegisterSection';

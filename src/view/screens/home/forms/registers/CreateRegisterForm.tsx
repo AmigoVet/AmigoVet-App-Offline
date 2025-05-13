@@ -14,15 +14,15 @@ import Header from '../../../../components/Header';
 import { newColors } from '../../../../styles/colors';
 import { constants } from '../../../../styles/constants';
 import DatePickerSection from './DatePickerSection';
-import { NOTIFICATION_OFFSETS } from './notificationOptions';
-import { validateRegisterInputs, createPartoEvent, createTreatmentCycleEvents } from './registerEvents';
-import { useNotificationChannel } from './useNotificationChannel';
+import { validateRegisterInputs } from './registerEvents';
 import { v4 as uuidv4 } from 'uuid';
 import CustomInput from '../../../../components/customs/CustomImput';
 import MiniButton from '../../../../components/MiniButton';
-import { textNotificationRegister } from './textNotification';
 import { calculatePartoDate } from '../../../../../lib/functions/calculatePartoDate';
 import { Especie } from '../../../../../lib/interfaces/Animal';
+import { sendNotifi } from '../../../../../lib/interfaces/Events';
+import { notificationUtils } from '../../../../../lib/utils/notifi/notificationUtils';
+import { calculateNotificationDate } from '../../../../../lib/utils/notifi/calculateNotificacionDate';
 
 type CreateRegisterFormRouteProp = RouteProp<RootStackParamList, 'CreateRegisterForm'>;
 
@@ -32,15 +32,24 @@ interface FormData {
   frecuencia: string;
   repeticiones: string;
   registerDate: Date;
-  notificationOffset: { label: string; value: string };
+  notificationOffset: sendNotifi;
 }
+
+const NOTIFICATION_OFFSETS: { label: string; value: sendNotifi }[] = [
+  { label: '1 día antes', value: '1d' },
+  { label: '2 días antes', value: '2d' },
+  { label: '3 días antes', value: '3d' },
+  { label: '4 días antes', value: '4d' },
+  { label: '5 días antes', value: '5d' },
+  { label: '1 semana antes', value: '1w' },
+  { label: '2 semanas antes', value: '2w' },
+];
 
 const CreateRegisterForm: React.FC = () => {
   const route = useRoute<CreateRegisterFormRouteProp>();
   const navigation = useNavigation<NavigationProp>();
   const { animal } = route.params || {};
   const { addRegister, addEvent, deleteEvent, updateAnimalPregnancy, animals } = useAnimalStore();
-  const { channelReady } = useNotificationChannel('default', 'Default Channel');
 
   const [formData, setFormData] = useState<FormData>({
     comentario: '',
@@ -48,11 +57,10 @@ const CreateRegisterForm: React.FC = () => {
     frecuencia: '1',
     repeticiones: '1',
     registerDate: new Date(),
-    notificationOffset: NOTIFICATION_OFFSETS[0], // Default: 1 hour before
+    notificationOffset: '1d',
   });
   const [isSaving, setIsSaving] = useState(false);
 
-  // Opciones de acción según género y estado de embarazo
   const acciones = useMemo(
     () =>
       animal?.genero === 'Hembra'
@@ -63,40 +71,6 @@ const CreateRegisterForm: React.FC = () => {
     [animal?.genero, animal?.embarazada]
   );
 
-  // Calculate notification date based on offset and action
-  const notificationDate = useMemo(() => {
-    let baseDate = formData.registerDate; // Default: use register date
-
-    // For pregnancy-related actions, use the estimated parto date
-    if (formData.accion === 'Embarazo' || formData.accion === 'Inseminación') {
-      if (animal?.especie) {
-        baseDate = calculatePartoDate(formData.registerDate, animal.especie as Especie);
-      } else {
-        console.warn('Especie no definida, usando gestación por defecto (280 días)');
-        baseDate = calculatePartoDate(formData.registerDate, 'Bovino'); // Fallback
-      }
-    }
-
-    const date = new Date(baseDate);
-    switch (formData.notificationOffset.value) {
-      case '1h':
-        date.setHours(date.getHours() - 1);
-        break;
-      case '1d':
-        date.setDate(date.getDate() - 1);
-        break;
-      case '2d':
-        date.setDate(date.getDate() - 2);
-        break;
-      case '1w':
-        date.setDate(date.getDate() - 7);
-        break;
-    }
-    console.log('Notification Date:', date.toISOString()); // Log para depuración
-    return date;
-  }, [formData.registerDate, formData.notificationOffset, formData.accion, animal?.especie]);
-
-  // Guard clause for missing animal
   if (!animal) {
     return (
       <GlobalContainer>
@@ -112,17 +86,12 @@ const CreateRegisterForm: React.FC = () => {
     );
   }
 
-  // Set default accion if not set
   if (!formData.accion && acciones.length > 0) {
     setFormData((prev) => ({ ...prev, accion: acciones[0] }));
   }
 
-  const handleSaveRegister = async () => {
-    if (!channelReady) {
-      Alert.alert('Error', 'El canal de notificaciones no está listo.');
-      return;
-    }
 
+  const handleSaveRegister = async () => {
     const validationError = validateRegisterInputs({
       comentario: formData.comentario,
       accion: formData.accion,
@@ -151,15 +120,26 @@ const CreateRegisterForm: React.FC = () => {
       await addRegister(registerData);
 
       if (formData.accion === 'Embarazo' || formData.accion === 'Inseminación') {
-        const result = await createPartoEvent({
-          animal,
-          registerDate: formData.registerDate,
-          notificationDate,
-          accion: formData.accion,
-          addEvent,
-          updateAnimalPregnancy,
-        });
-        notificationsSkipped = result.notificationsSkipped;
+        const partoDate = calculatePartoDate(formData.registerDate, animal.especie as Especie);
+        const notifiDate = calculateNotificationDate(partoDate, formData.notificationOffset);
+        if (notifiDate.getTime() <= new Date().getTime()) {
+          notificationsSkipped = true;
+        } else {
+          const eventData = {
+            id: uuidv4(),
+            animalId: animal.id,
+            animalName: animal.nombre,
+            comentario: `Parto estimado de ${animal.nombre}`,
+            dateEvent: partoDate.toISOString(),
+            dateNotifi: notifiDate.toISOString(),
+            sendNotifi: formData.notificationOffset,
+            created_at: new Date().toISOString(),
+          };
+          const result = await notificationUtils.scheduleEventNotifications(eventData);
+          await addEvent(eventData);
+          notificationsSkipped = !result.success;
+        }
+        await updateAnimalPregnancy(animal.id, true);
       } else if (formData.accion === 'Aborto') {
         const events = animals.find((a) => a.id === animal.id)?.events || [];
         const partoEvent = events.find((event) => event.comentario.includes('Parto estimado'));
@@ -168,16 +148,30 @@ const CreateRegisterForm: React.FC = () => {
         }
         await updateAnimalPregnancy(animal.id, false);
       } else if (formData.accion === 'Tratamiento') {
-        const result = await createTreatmentCycleEvents({
-          animal,
-          registerDate: formData.registerDate,
-          notificationDate,
-          comentario: formData.comentario,
-          frecuencia: parseInt(formData.frecuencia, 10),
-          repeticiones: parseInt(formData.repeticiones, 10),
-          addEvent,
-        });
-        notificationsSkipped = result.notificationsSkipped;
+        const frecuencia = parseInt(formData.frecuencia, 10);
+        const repeticiones = parseInt(formData.repeticiones, 10);
+        for (let i = 0; i < repeticiones; i++) {
+          const cycleDate = new Date(formData.registerDate);
+          cycleDate.setDate(cycleDate.getDate() + i * frecuencia);
+          const cycleNotifiDate = calculateNotificationDate(cycleDate, formData.notificationOffset);
+          if (cycleNotifiDate.getTime() <= new Date().getTime()) {
+            notificationsSkipped = true;
+            continue;
+          }
+          const eventData = {
+            id: uuidv4(),
+            animalId: animal.id,
+            animalName: animal.nombre,
+            comentario: `${formData.comentario} (Ciclo ${i + 1})`,
+            dateEvent: cycleDate.toISOString(),
+            dateNotifi: cycleNotifiDate.toISOString(),
+            sendNotifi: formData.notificationOffset,
+            created_at: new Date().toISOString(),
+          };
+          const result = await notificationUtils.scheduleEventNotifications(eventData);
+          await addEvent(eventData);
+          if (!result.success) {notificationsSkipped = true;}
+        }
       }
 
       Alert.alert(
@@ -261,68 +255,32 @@ const CreateRegisterForm: React.FC = () => {
           label="Fecha del Registro"
         />
         <Separator height={20} />
-        <Text style={styles.label}>Cuando deseas que se notifique?</Text>
+        <Text style={styles.label}>¿Cuándo deseas que se notifique?</Text>
         <View style={styles.buttonContainer}>
-          {NOTIFICATION_OFFSETS.map((offset) => (
-            <MiniButton
-              key={offset.value}
-              text={offset.label}
-              onPress={() => updateFormData({ notificationOffset: offset })}
-              backgroundColor={
-                formData.notificationOffset.value === offset.value
-                  ? newColors.verde_light
-                  : newColors.fondo_secundario
-              }
-              color={
-                formData.notificationOffset.value === offset.value ? 'white' : newColors.fondo_principal
-              }
-              icon=""
-            />
-          ))}
+          {NOTIFICATION_OFFSETS.map((offset) => {
+            const notifiDate = calculateNotificationDate(formData.registerDate, offset.value);
+            const isValid = notifiDate.getTime() > new Date().getTime();
+            return (
+              <MiniButton
+                key={offset.value}
+                text={offset.label}
+                onPress={() => isValid && updateFormData({ notificationOffset: offset.value })}
+                backgroundColor={
+                  formData.notificationOffset === offset.value && isValid
+                    ? newColors.verde_light
+                    : newColors.fondo_secundario
+                }
+                color={
+                  formData.notificationOffset === offset.value && isValid
+                    ? 'white'
+                    : newColors.fondo_principal
+                }
+                icon=""
+                disabled={!isValid}
+              />
+            );
+          })}
         </View>
-        {notificationDate && formData.comentario && animal.nombre && (
-          <>
-            <Separator height={20} />
-            <View style={styles.notificationPreview}>
-              <Text style={styles.notificationPreviewTitle}>Vista previa de la notificación:</Text>
-              <Text style={styles.notificationPreviewText}>
-                {textNotificationRegister({
-                  yearNotification: String(notificationDate.getFullYear()),
-                  monthNotification: String(notificationDate.getMonth() + 1),
-                  dayNotification: String(notificationDate.getDate()),
-                  hourNotification: String(notificationDate.getHours()),
-                  minuteNotification: String(notificationDate.getMinutes()),
-                  yearEvent: String(
-                    (formData.accion === 'Embarazo' || formData.accion === 'Inseminación')
-                      ? calculatePartoDate(formData.registerDate, animal.especie as Especie).getFullYear()
-                      : formData.registerDate.getFullYear()
-                  ),
-                  monthEvent: String(
-                    (formData.accion === 'Embarazo' || formData.accion === 'Inseminación')
-                      ? calculatePartoDate(formData.registerDate, animal.especie as Especie).getMonth() + 1
-                      : formData.registerDate.getMonth() + 1
-                  ),
-                  dayEvent: String(
-                    (formData.accion === 'Embarazo' || formData.accion === 'Inseminación')
-                      ? calculatePartoDate(formData.registerDate, animal.especie as Especie).getDate()
-                      : formData.registerDate.getDate()
-                  ),
-                  hourEvent: String(
-                    (formData.accion === 'Embarazo' || formData.accion === 'Inseminación')
-                      ? calculatePartoDate(formData.registerDate, animal.especie as Especie).getHours()
-                      : formData.registerDate.getHours()
-                  ),
-                  minuteEvent: String(
-                    (formData.accion === 'Embarazo' || formData.accion === 'Inseminación')
-                      ? calculatePartoDate(formData.registerDate, animal.especie as Especie).getMinutes()
-                      : formData.registerDate.getMinutes()
-                  ),
-                  description: formData.accion + ' de ' + animal.nombre,
-                })}
-              </Text>
-            </View>
-          </>
-        )}
         <Separator height={20} />
         <CustomButton
           text="Guardar Registro"
@@ -349,26 +307,6 @@ const styles = StyleSheet.create({
   animalNameBold: {
     fontWeight: 'bold',
   },
-  notificationPreview: {
-    marginTop: 20,
-    padding: 10,
-    borderWidth: constants.borderWidth,
-    borderColor: newColors.fondo_secundario,
-    borderRadius: constants.borderRadius,
-    backgroundColor: newColors.fondo_principal,
-  },
-  notificationPreviewTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: newColors.fondo_secundario,
-    fontFamily: constants.FontTitle,
-    marginBottom: 5,
-  },
-  notificationPreviewText: {
-    fontSize: 14,
-    color: newColors.fondo_secundario,
-    fontFamily: constants.FontText,
-  },
   errorText: {
     fontSize: 16,
     color: newColors.rojo,
@@ -384,18 +322,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-  },
-  notificationButton: {
-    width: '48%',
-    marginVertical: 5,
-    paddingVertical: 8,
-    borderRadius: constants.borderRadius / 2,
-  },
-  actionButton: {
-    width: '30%',
-    marginVertical: 5,
-    paddingVertical: 8,
-    borderRadius: constants.borderRadius / 2,
   },
 });
 
