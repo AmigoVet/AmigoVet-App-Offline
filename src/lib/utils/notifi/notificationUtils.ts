@@ -1,10 +1,9 @@
 import notifee, { AndroidImportance, TimestampTrigger, TriggerType } from '@notifee/react-native';
-import { NotificationData, Events } from '../../interfaces/Events';
+import { Events, NotificationData, sendNotifi } from '../../interfaces/Events';
 
 export const notificationUtils = {
   createScheduledNotification: async (notificationData: NotificationData) => {
     try {
-      // Validate timestamp is in the future
       const now = new Date().getTime();
       if (notificationData.timestamp <= now) {
         console.warn(`Skipping notification ${notificationData.id}: timestamp ${new Date(notificationData.timestamp).toISOString()} is in the past`);
@@ -44,13 +43,23 @@ export const notificationUtils = {
       const now = new Date().getTime();
       let notificationsScheduled = false;
 
+      const sendNotifiDisplayMap: { [key in sendNotifi]: string } = {
+        '1d': 'un día',
+        '2d': '2 días',
+        '3d': '3 días',
+        '4d': '4 días',
+        '5d': '5 días',
+        '1w': 'una semana',
+        '2w': '2 semanas',
+      };
+
       // Main notification (dateNotifi)
       const dateNotifi = new Date(event.dateNotifi);
       if (dateNotifi.getTime() > now) {
         const mainNotification: NotificationData = {
           id: event.id,
           title: `Recordatorio: ${event.animalName}`,
-          body: event.comentario,
+          body: `${event.comentario} será en ${sendNotifiDisplayMap[event.sendNotifi]}.`,
           timestamp: dateNotifi.getTime(),
           androidChannelId: 'events',
           iosSound: 'default',
@@ -73,7 +82,7 @@ export const notificationUtils = {
         const reminderNotification: NotificationData = {
           id: `${event.id}_reminder`,
           title: `Evento Próximo: ${event.animalName}`,
-          body: `El evento "${event.comentario}" es en 2 horas.`,
+          body: `${event.comentario} será en 2 horas.`,
           timestamp: twoHoursBefore.getTime(),
           androidChannelId: 'events',
           iosSound: 'default',
