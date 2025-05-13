@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './src/view/navigator/AppNavigator';
 import { createTables } from './src/lib/db/createTables';
+import notifee from '@notifee/react-native';
 
 const AmigoVet = () => {
   useEffect(() => {
+    notifee.setBadgeCount(0).then(() => console.log('Badge count removed'));
     const setupDatabase = async () => {
       try {
         await createTables();
