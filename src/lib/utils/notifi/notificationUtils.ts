@@ -1,5 +1,35 @@
-import notifee, { AndroidImportance, TimestampTrigger, TriggerType } from '@notifee/react-native';
-import { Events, NotificationData, sendNotifi } from '../../interfaces/Events';
+import notifee, { AndroidImportance, TimestampTrigger, TriggerType, EventType } from '@notifee/react-native';
+import { NotificationData, Events, sendNotifi } from '../../interfaces/Events';
+
+// Initialize badge count handling for background events
+notifee.onBackgroundEvent(async ({ type, detail }) => {
+  const { notification, pressAction } = detail;
+
+  if (!notification?.id) {return;}
+
+  // Increment badge count when notification is delivered
+  if (type === EventType.DELIVERED) {
+    try {
+      await notifee.incrementBadgeCount();
+      const count = await notifee.getBadgeCount();
+      console.log(`Badge count incremented to ${count} for notification ${notification.id}`);
+    } catch (error) {
+      console.error('Error incrementing badge count in background:', error);
+    }
+  }
+
+  // Handle "Mark as read" action
+  if (type === EventType.ACTION_PRESS && pressAction?.id === 'mark-as-read') {
+    try {
+      await notifee.decrementBadgeCount();
+      await notifee.cancelNotification(notification.id);
+      const count = await notifee.getBadgeCount();
+      console.log(`Badge count decremented to ${count} for notification ${notification.id}`);
+    } catch (error) {
+      console.error('Error handling mark-as-read action in background:', error);
+    }
+  }
+});
 
 export const notificationUtils = {
   createScheduledNotification: async (notificationData: NotificationData) => {
@@ -31,6 +61,12 @@ export const notificationUtils = {
         },
         trigger
       );
+
+      // Increment badge count immediately after scheduling (for foreground)
+      await notifee.incrementBadgeCount();
+      const count = await notifee.getBadgeCount();
+      console.log(`Badge count incremented to ${count} for notification ${notificationData.id}`);
+
       return { success: true, id: notificationData.id };
     } catch (error) {
       console.error('Error creating notification:', error);
@@ -124,6 +160,11 @@ export const notificationUtils = {
     try {
       await notifee.cancelNotification(eventId);
       await notifee.cancelNotification(`${eventId}_reminder`);
+      const count = await notifee.getBadgeCount();
+      if (count > 0) {
+        await notifee.decrementBadgeCount(2); // Decrement for main and reminder
+        console.log(`Badge count decremented by 2 to ${await notifee.getBadgeCount()}`);
+      }
       return { success: true };
     } catch (error) {
       console.error('Error deleting notifications:', error);
@@ -141,3 +182,33 @@ export const notificationUtils = {
     }
   },
 };
+
+// Handle foreground events
+notifee.onForegroundEvent(async ({ type, detail }) => {
+  const { notification, pressAction } = detail;
+
+  if (!notification?.id) {return;}
+
+  // Increment badge count when notification is delivered
+  if (type === EventType.DELIVERED) {
+    try {
+      await notifee.incrementBadgeCount();
+      const count = await notifee.getBadgeCount();
+      console.log(`Badge count incremented to ${count} for notification ${notification.id}`);
+    } catch (error) {
+      console.error('Error incrementing badge count in foreground:', error);
+    }
+  }
+
+  // Handle "Mark as read" action
+  if (type === EventType.ACTION_PRESS && pressAction?.id === 'mark-as-read') {
+    try {
+      await notifee.decrementBadgeCount();
+      await notifee.cancelNotification(notification.id);
+      const count = await notifee.getBadgeCount();
+      console.log(`Badge count decremented to ${count} for notification ${notification.id}`);
+    } catch (error) {
+      console.error('Error handling mark-as-read action in foreground:', error);
+    }
+  }
+});
