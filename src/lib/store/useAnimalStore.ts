@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+/* eslint-disable @typescript-eslint/no-shadow */
 import { create } from 'zustand';
 import { Transaction, SQLError, SQLiteDatabase } from 'react-native-sqlite-storage';
 import { setDataAnimal } from '../db/animals/setDataAnimal';
@@ -8,9 +10,10 @@ import { getDatabase, getStoragePath } from '../db/db';
 import { Animal } from '../interfaces/Animal';
 import { Notes } from '../interfaces/Notes';
 import { Register } from '../interfaces/Register';
-import { Events } from '../interfaces/Events';
+import { Events, sendNotifi } from '../interfaces/Events';
 import * as RNFS from 'react-native-fs';
 import { updateAnimal } from '../db/animals/updateAnimal';
+import { notificationUtils } from '../utils/notifi/notificationUtils'; // Adjusted path
 
 interface AnimalStore {
   animals: Animal[];
@@ -34,14 +37,46 @@ interface AnimalStore {
   addRegister: (register: Register) => Promise<void>;
   updateRegister: (register: Register) => Promise<void>;
   deleteRegister: (id: string) => Promise<void>;
-  addEvent: (event: Events) => Promise<void>;
-  updateEvent: (event: Events) => Promise<void>;
+  addEvent: (event: Omit<Events, 'dateNotifi' | 'created_at'>) => Promise<void>;
+  updateEvent: (event: Omit<Events, 'created_at'> & { created_at?: string }) => Promise<void>;
   deleteEvent: (id: string) => Promise<void>;
   updateAnimalPregnancy: (animalId: string, embarazada: boolean) => Promise<void>;
   updateAnimalFavorite: (animalId: string, favorito: boolean) => Promise<void>;
 }
 
-export const useAnimalStore = create<AnimalStore>((set) => ({
+const calculateNotificationDate = (dateEvent: Date, sendNotifi: sendNotifi): Date => {
+  const notifiDate = new Date(dateEvent);
+
+  switch (sendNotifi) {
+    case '1d':
+      notifiDate.setDate(dateEvent.getDate() - 1);
+      break;
+    case '2d':
+      notifiDate.setDate(dateEvent.getDate() - 2);
+      break;
+    case '3d':
+      notifiDate.setDate(dateEvent.getDate() - 3);
+      break;
+    case '4d':
+      notifiDate.setDate(dateEvent.getDate() - 4);
+      break;
+    case '5d':
+      notifiDate.setDate(dateEvent.getDate() - 5);
+      break;
+    case '1w':
+      notifiDate.setDate(dateEvent.getDate() - 7);
+      break;
+    case '2w':
+      notifiDate.setDate(dateEvent.getDate() - 14);
+      break;
+    default:
+      throw new Error('Invalid sendNotifi value');
+  }
+
+  return notifiDate;
+};
+
+export const useAnimalStore = create<AnimalStore>((set, get) => ({
   animals: [],
   totalAnimals: 0,
   events: [],
@@ -202,7 +237,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
         let whereClause = '';
         const filterParams: (string | number)[] = [];
         const filterConditions: string[] = [];
-        let orderBy = 'fecha DESC';
+        let orderBy = 'dateEvent DESC';
 
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
@@ -241,18 +276,10 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                     animalId: item.animalId,
                     animalName: item.animalName,
                     comentario: item.comentario,
-                    fecha: item.fecha,
                     created_at: item.created_at,
-                    horaDeseada: item.horaDeseada,
-                    minutosDeseado: item.minutosDeseado,
-                    DiaDeseado: item.DiaDeseado,
-                    MesDeseado: item.MesDeseado,
-                    AnioDeseado: item.AnioDeseado,
-                    horaEvento: item.horaEvento,
-                    minutosEvento: item.minutosEvento,
-                    DiaEvento: item.DiaEvento,
-                    MesEvento: item.MesEvento,
-                    AnioEvento: item.AnioEvento,
+                    dateEvent: item.dateEvent,
+                    dateNotifi: item.dateNotifi,
+                    sendNotifi: item.sendNotifi,
                   });
                 }
                 set({ events, totalEvents });
@@ -347,7 +374,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
         let whereClause = '';
         const filterParams: (string | number)[] = [];
         const filterConditions: string[] = [];
-        let orderBy = 'fecha DESC'; // Cambiado de 'created_at' a 'fecha'
+        let orderBy = 'fecha DESC';
 
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
@@ -358,10 +385,10 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
           filterParams.push(String(filters.comentario));
         }
         if (filters.Reciente === true) {
-          orderBy = 'fecha DESC'; // Cambiado de 'created_at' a 'fecha'
+          orderBy = 'fecha DESC';
         }
         if (filters.Antiguo === true) {
-          orderBy = 'fecha ASC'; // Cambiado de 'created_at' a 'fecha'
+          orderBy = 'fecha ASC';
         }
 
         if (filterConditions.length > 0) {
@@ -486,22 +513,18 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
-        // Delete from Notas
         tx.executeSql(
           `DELETE FROM Notas WHERE animalId = ?`,
           [id],
           () => {
-            // Delete from Register
             tx.executeSql(
               `DELETE FROM Register WHERE animalId = ?`,
               [id],
               () => {
-                // Delete from Events
                 tx.executeSql(
                   `DELETE FROM Events WHERE animalId = ?`,
                   [id],
                   () => {
-                    // Delete from Animal
                     tx.executeSql(
                       `DELETE FROM Animal WHERE id = ?`,
                       [id],
@@ -514,7 +537,7 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
                           registers: state.registers.filter((reg) => reg.animalId !== id),
                           totalRegisters: state.totalRegisters - state.registers.filter((reg) => reg.animalId === id).length,
                           events: state.events.filter((evt) => evt.animalId !== id),
-                          totalEvents: state.totalEvents - state.events.filter((evt) => evt.animalId === id).length
+                          totalEvents: state.totalEvents - state.events.filter((evt) => evt.animalId === id).length,
                         }));
                         resolve();
                       },
@@ -695,16 +718,31 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     }
   },
 
-  addEvent: async (event: Events) => {
+  addEvent: async (event: Omit<Events, 'dateNotifi' | 'created_at'>) => {
     try {
-      await setDataEvent(event);
+      const dateEvent = new Date(event.dateEvent);
+      const dateNotifi = calculateNotificationDate(dateEvent, event.sendNotifi);
+
+      const fullEvent: Events = {
+        ...event,
+        created_at: new Date().toISOString(),
+        dateNotifi: dateNotifi.toISOString(),
+      };
+
+      await setDataEvent(fullEvent);
+
+      const notifiResult = await notificationUtils.scheduleEventNotifications(fullEvent);
+      if (!notifiResult.success) {
+        throw new Error('Failed to schedule notifications');
+      }
+
       set((state) => ({
         animals: state.animals.map((animal) =>
           animal.id === event.animalId
-            ? { ...animal, events: [event, ...(animal.events || []).slice(0, 9)] }
+            ? { ...animal, events: [fullEvent, ...(animal.events || []).slice(0, 9)] }
             : animal
         ),
-        events: [event, ...state.events.slice(0, 9)],
+        events: [fullEvent, ...state.events.slice(0, 9)],
         totalEvents: state.totalEvents + 1,
       }));
     } catch (error: any) {
@@ -713,22 +751,40 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
     }
   },
 
-  updateEvent: async (updatedEvent: Events) => {
+  updateEvent: async (event: Omit<Events, 'created_at'> & { created_at?: string }) => {
     try {
-      await updateEvent(updatedEvent);
+      const dateEvent = new Date(event.dateEvent);
+      const dateNotifi = calculateNotificationDate(dateEvent, event.sendNotifi);
+
+      const existingEvent = get().events.find((evt) => evt.id === event.id);
+      const createdAt = event.created_at || existingEvent?.created_at || new Date().toISOString();
+
+      const fullEvent: Events = {
+        ...event,
+        created_at: createdAt,
+        dateNotifi: dateNotifi.toISOString(),
+      };
+
+      await updateEvent(fullEvent);
+
+      const notifiResult = await notificationUtils.editScheduledNotifications(fullEvent);
+      if (!notifiResult.success) {
+        throw new Error('Failed to edit notifications');
+      }
+
       set((state) => ({
         animals: state.animals.map((animal) =>
-          animal.id === updatedEvent.animalId
+          animal.id === event.animalId
             ? {
                 ...animal,
                 events: animal.events?.map((evt) =>
-                  evt.id === updatedEvent.id ? updatedEvent : evt
+                  evt.id === event.id ? fullEvent : evt
                 ),
               }
             : animal
         ),
         events: state.events.map((evt) =>
-          evt.id === updatedEvent.id ? updatedEvent : evt
+          evt.id === event.id ? fullEvent : evt
         ),
       }));
     } catch (error) {
@@ -740,6 +796,12 @@ export const useAnimalStore = create<AnimalStore>((set) => ({
   deleteEvent: async (id: string) => {
     try {
       await deleteEvent(id);
+
+      const notifiResult = await notificationUtils.deleteScheduledNotifications(id);
+      if (!notifiResult.success) {
+        throw new Error('Failed to delete notifications');
+      }
+
       set((state) => ({
         animals: state.animals.map((animal) => ({
           ...animal,

@@ -139,18 +139,10 @@ const createEventsTable = async (db: SQLiteDatabase): Promise<void> => {
           animalId TEXT NOT NULL,
           animalName TEXT NOT NULL,
           comentario TEXT NOT NULL,
-          fecha TEXT NOT NULL,
           created_at TEXT NOT NULL,
-          horaDeseada INTEGER,
-          minutosDeseado INTEGER,
-          DiaDeseado INTEGER,
-          MesDeseado INTEGER,
-          AnioDeseado INTEGER,
-          horaEvento INTEGER,
-          minutosEvento INTEGER,
-          DiaEvento INTEGER,
-          MesEvento INTEGER,
-          AnioEvento INTEGER,
+          dateEvent TEXT NOT NULL,
+          dateNotifi TEXT NOT NULL,
+          sendNotifi TEXT NOT NULL,
           FOREIGN KEY (animalId) REFERENCES Animal (id) ON DELETE CASCADE
         )`,
         [],
@@ -162,7 +154,6 @@ const createEventsTable = async (db: SQLiteDatabase): Promise<void> => {
           console.error('[ERROR] Error al crear la tabla Events:', {
             message: error.message,
             code: error.code,
-            sql: 'CREATE TABLE IF NOT EXISTS Events ...',
           });
           reject(error);
           return false;

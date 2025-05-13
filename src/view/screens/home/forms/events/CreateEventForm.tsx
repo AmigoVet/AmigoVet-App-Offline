@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Text, Alert, StyleSheet, View } from 'react-native';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import notifee, { AndroidImportance, TimestampTrigger, TriggerType } from '@notifee/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { Events } from '../../../../../lib/interfaces/Events';
+import { Events, sendNotifi as typeSendNotifi } from '../../../../../lib/interfaces/Events';
 import { useAnimalStore } from '../../../../../lib/store/useAnimalStore';
 import CustomButton from '../../../../components/customs/CustomButton';
 import CustomInput from '../../../../components/customs/CustomImput';
+import CustomSelect from '../../../../components/customs/CustomSelect';
 import Separator from '../../../../components/Separator';
 import { GlobalStyles } from '../../../../styles/GlobalStyles';
 import CustomScrollView from '../../../../components/customs/CustomScrollView';
@@ -18,9 +19,10 @@ import Header from '../../../../components/Header';
 import { newColors } from '../../../../styles/colors';
 import { constants } from '../../../../styles/constants';
 import Icon from '@react-native-vector-icons/ionicons';
-import { textNotification } from './textNotification';
+import { calculateNotificationDate } from '../../../../../lib/utils/notifi/calculateNotificacionDate';
 
 type CreateEventFormRouteProp = RouteProp<RootStackParamList, 'CreateEventForm'>;
+
 
 const CreateEventForm: React.FC = () => {
   const route = useRoute<CreateEventFormRouteProp>();
@@ -29,9 +31,8 @@ const CreateEventForm: React.FC = () => {
 
   const [comentario, setComentario] = useState('');
   const [eventDate, setEventDate] = useState<Date | null>(null);
-  const [notificationDate, setNotificationDate] = useState<Date | null>(null);
+  const [sendNotifi, setSendNotifi] = useState<typeSendNotifi | ''>('');
   const [isEventPickerVisible, setEventPickerVisible] = useState(false);
-  const [isNotificationPickerVisible, setNotificationPickerVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { addEvent } = useAnimalStore();
 
@@ -41,8 +42,8 @@ const CreateEventForm: React.FC = () => {
       try {
         await notifee.requestPermission();
         await notifee.createChannel({
-          id: 'default',
-          name: 'Default Channel',
+          id: 'events',
+          name: 'Event Notifications',
           importance: AndroidImportance.HIGH,
         });
       } catch (error) {
@@ -56,34 +57,31 @@ const CreateEventForm: React.FC = () => {
   const onEventDateConfirm = (date: Date) => {
     setEventPickerVisible(false);
     setEventDate(date);
+    // Reset sendNotifi if it’s no longer valid for the new date
+    if (sendNotifi && date) {
+      const notifiDate = calculateNotificationDate(date, sendNotifi);
+      if (notifiDate.getTime() <= new Date().getTime()) {
+        setSendNotifi('');
+      }
+    }
   };
 
   const onEventDateCancel = () => {
     setEventPickerVisible(false);
   };
 
-  // Handle notification date/time picker changes
-  const onNotificationDateConfirm = (date: Date) => {
-    setNotificationPickerVisible(false);
-    setNotificationDate(date);
-  };
-
-  const onNotificationDateCancel = () => {
-    setNotificationPickerVisible(false);
-  };
-
-  // Save event and schedule notification
+  // Save event
   const handleSaveEvent = async () => {
     if (!comentario.trim()) {
       Alert.alert('Error', 'El comentario no puede estar vacío.');
       return;
     }
     if (!eventDate) {
-      Alert.alert('Error', 'Por favor, selecciona una fecha para el evento.');
+      Alert.alert('Error', 'Por favor, selecciona una fecha y hora para el evento.');
       return;
     }
-    if (!notificationDate) {
-      Alert.alert('Error', 'Por favor, selecciona una fecha para la notificación.');
+    if (!sendNotifi) {
+      Alert.alert('Error', 'Por favor, selecciona un período de notificación válido.');
       return;
     }
     if (!animalId || !animalName) {
@@ -92,88 +90,18 @@ const CreateEventForm: React.FC = () => {
     }
 
     setIsSaving(true);
-    const eventData: Events = {
+    const eventData: Omit<Events, 'dateNotifi' | 'created_at'> = {
       id: uuidv4(),
       animalId,
       animalName,
       comentario: comentario.trim(),
-      fecha: eventDate.toISOString().split('T')[0],
-      created_at: new Date().toISOString(),
-      horaDeseada: notificationDate.getHours(),
-      minutosDeseado: notificationDate.getMinutes(),
-      DiaDeseado: notificationDate.getDate(),
-      MesDeseado: notificationDate.getMonth() + 1, // Months are 0-based in JS
-      AnioDeseado: notificationDate.getFullYear(),
-      horaEvento: eventDate.getHours(),
-      minutosEvento: eventDate.getMinutes(),
-      DiaEvento: eventDate.getDate(),
-      MesEvento: eventDate.getMonth() + 1,
-      AnioEvento: eventDate.getFullYear(),
+      dateEvent: eventDate.toISOString(),
+      sendNotifi,
     };
 
     try {
-      // Save to database
       await addEvent(eventData);
-
-      // Schedule notification
-      const trigger: TimestampTrigger = {
-        type: TriggerType.TIMESTAMP,
-        timestamp: notificationDate.getTime(),
-      };
-
-      const triggerDayEvent: TimestampTrigger = {
-        type: TriggerType.TIMESTAMP,
-        timestamp: eventDate.getTime(),
-      };
-
-      await notifee.createTriggerNotification(
-        {
-          id: eventData.id,
-          title: `Recordatorio de ${eventData.animalName}`,
-          body: textNotification({
-            yearNotification: String(notificationDate.getFullYear()),
-            monthNotification: String(notificationDate.getMonth() + 1),
-            dayNotification: String(notificationDate.getDate()),
-            hourNotification: String(notificationDate.getHours()),
-            minuteNotification: String(notificationDate.getMinutes()),
-            yearEvent: String(eventDate.getFullYear()),
-            monthEvent: String(eventDate.getMonth() + 1),
-            dayEvent: String(eventDate.getDate()),
-            hourEvent: String(eventData.horaEvento),
-            minuteEvent: String(eventData.minutosEvento),
-            description: eventData.comentario,
-          }),
-          android: {
-            channelId: 'default',
-            importance: AndroidImportance.HIGH,
-            pressAction: {
-              id: 'default',
-            },
-          },
-          ios: {
-            sound: 'default',
-          },
-        },
-        trigger
-      );
-
-      await notifee.createTriggerNotification({
-        id: eventData.id + 'event',
-        title: `Evento de ${eventData.animalName}`,
-        body: `${eventData.comentario} de ${eventData.animalName} es ahora!!`,
-        android: {
-          channelId: 'default',
-          importance: AndroidImportance.HIGH,
-          pressAction: {
-            id: 'default',
-          },
-        },
-        ios: {
-          sound: 'default',
-        },
-      }, triggerDayEvent);
-
-      Alert.alert('Éxito', 'Evento creado');
+      Alert.alert('Éxito', 'Evento creado correctamente.');
       navigation.goBack();
     } catch (error: any) {
       Alert.alert('Error', `No se pudo guardar el evento: ${error.message || 'Error desconocido'}`);
@@ -181,6 +109,49 @@ const CreateEventForm: React.FC = () => {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  // Options for sendNotifi (for CustomSelect)
+  const allSendNotifiOptions = [
+    { label: '1 día antes', value: '1d' },
+    { label: '2 días antes', value: '2d' },
+    { label: '3 días antes', value: '3d' },
+    { label: '4 días antes', value: '4d' },
+    { label: '5 días antes', value: '5d' },
+    { label: '1 semana antes', value: '1w' },
+    { label: '2 semanas antes', value: '2w' },
+  ];
+
+  // Filter sendNotifi options based on eventDate
+  const sendNotifiOptions = eventDate
+    ? allSendNotifiOptions
+        .filter(({ value }) => {
+          const notifiDate = calculateNotificationDate(eventDate, value as typeSendNotifi);
+          return notifiDate.getTime() > new Date().getTime();
+        })
+        .map(({ label }) => label)
+    : allSendNotifiOptions.map(({ label }) => label);
+
+  // Map display labels to sendNotifi values
+  const sendNotifiValueMap: { [key: string]: typeSendNotifi } = {
+    '1 día antes': '1d',
+    '2 días antes': '2d',
+    '3 días antes': '3d',
+    '4 días antes': '4d',
+    '5 días antes': '5d',
+    '1 semana antes': '1w',
+    '2 semanas antes': '2w',
+  };
+
+  // Reverse map for displaying the selected value
+  const sendNotifiDisplayMap: { [key in typeSendNotifi]: string } = {
+    '1d': '1 día antes',
+    '2d': '2 días antes',
+    '3d': '3 días antes',
+    '4d': '4 días antes',
+    '5d': '5 días antes',
+    '1w': '1 semana antes',
+    '2w': '2 semanas antes',
   };
 
   return (
@@ -230,7 +201,7 @@ const CreateEventForm: React.FC = () => {
             </View>
           )}
           <CustomButton
-            text="Seleccionar Fecha del Evento"
+            text="Seleccionar Fecha y Hora del Evento"
             icon="calendar-outline"
             onPress={() => setEventPickerVisible(true)}
             width="100%"
@@ -246,55 +217,20 @@ const CreateEventForm: React.FC = () => {
             locale="es-ES"
             confirmTextIOS="Confirmar"
             cancelTextIOS="Cancelar"
+            minimumDate={new Date()}
           />
         </View>
 
         <Separator height={20} />
 
-        {/* Notification Date Picker Section */}
+        {/* Notification Period Select Section */}
         <View style={styles.miniContainer}>
-          {notificationDate && (
-            <View style={styles.dataContainer}>
-              <Text style={styles.text}>
-                <Icon name="calendar-outline" size={20} color={newColors.fondo_secundario} />
-                {' Fecha: '}
-                <Text style={styles.textDate}>
-                  {notificationDate.toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </Text>
-              </Text>
-              <Text style={styles.text}>
-                <Icon name="time-outline" size={20} color={newColors.fondo_secundario} />
-                {' Hora: '}
-                <Text style={styles.textDate}>
-                  {notificationDate.toLocaleTimeString('es-ES', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </Text>
-              </Text>
-            </View>
-          )}
-          <CustomButton
-            text="Seleccionar Fecha de Notificación"
-            icon="notifications-outline"
-            onPress={() => setNotificationPickerVisible(true)}
-            width="100%"
-            backgroundColor={newColors.verde_light}
-            textColor="white"
-          />
-          <DateTimePickerModal
-            isVisible={isNotificationPickerVisible}
-            mode="datetime"
-            date={notificationDate || new Date()}
-            onConfirm={onNotificationDateConfirm}
-            onCancel={onNotificationDateCancel}
-            locale="es-ES"
-            confirmTextIOS="Confirmar"
-            cancelTextIOS="Cancelar"
+          <CustomSelect
+            label="Notificar"
+            value={sendNotifi ? sendNotifiDisplayMap[sendNotifi] : ''}
+            options={sendNotifiOptions}
+            onChange={(text) => setSendNotifi(text ? sendNotifiValueMap[text] : '')}
+            required
           />
         </View>
 
@@ -309,7 +245,7 @@ const CreateEventForm: React.FC = () => {
           textColor="white"
           width="100%"
         />
-        <Separator height={200} />
+        <Separator height={300} />
       </CustomScrollView>
     </GlobalContainer>
   );
@@ -348,26 +284,6 @@ const styles = StyleSheet.create({
   },
   animalNameBold: {
     fontWeight: 'bold',
-  },
-  notificationPreview: {
-    marginTop: 20,
-    padding: 10,
-    borderWidth: constants.borderWidth,
-    borderColor: newColors.fondo_secundario,
-    borderRadius: constants.borderRadius,
-    backgroundColor: newColors.fondo_principal,
-  },
-  notificationPreviewTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: newColors.fondo_secundario,
-    fontFamily: constants.FontTitle,
-    marginBottom: 5,
-  },
-  notificationPreviewText: {
-    fontSize: 14,
-    color: newColors.fondo_secundario,
-    fontFamily: constants.FontText,
   },
 });
 

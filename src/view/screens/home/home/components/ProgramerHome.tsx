@@ -134,14 +134,10 @@ const ProgramerHome: React.FC<ProgramerHomeProps> = ({ events = [] }) => {
     <View style={{alignItems: 'center', width: '100%', justifyContent: 'center'}}>
       <View style={ProgramerHomeStyles.container}>
         <View style={ProgramerHomeStyles.header}>
-          <View style={[ProgramerHomeStyles.iconContainer, ProgramerHomeStyles.space]}>
+          {/* <View style={[ProgramerHomeStyles.iconContainer, ProgramerHomeStyles.space]}>
             <Icon name="calendar-outline" size={26} color={newColors.verde_light} />
-          </View>
+          </View> */}
           <Text style={[ProgramerHomeStyles.title, ProgramerHomeStyles.space]}>Programador</Text>
-          <View style={[ProgramerHomeStyles.shareButtonContainer, ProgramerHomeStyles.space]}>
-            <Text style={ProgramerHomeStyles.shareButton}>compartir</Text>
-            <Icon name="add-outline" size={24} color={newColors.gris_light} />
-          </View>
         </View>
         
         <View style={ProgramerHomeStyles.content}>

@@ -1,19 +1,21 @@
 export interface Events {
-    id: string;
-    animalId: string;
-    animalName: string;
-    comentario: string;
-    fecha: string;
-    created_at: string;
+  id: string;
+  animalId: string;
+  animalName: string;
+  comentario: string;
+  created_at: string;
+  dateEvent: string;
+  dateNotifi: string;
+  sendNotifi: sendNotifi;
+}
 
-    horaDeseada: number;
-    minutosDeseado: number;
-    DiaDeseado: number;
-    MesDeseado: number;
-    AnioDeseado: number;
-    horaEvento: number;
-    minutosEvento: number;
-    DiaEvento: number;
-    MesEvento: number;
-    AnioEvento: number;
+export type sendNotifi = '1d' | '2d' | '3d' | '4d' | '5d' | '1w' | '2w';
+
+export interface NotificationData {
+  id: string;
+  title: string;
+  body: string;
+  timestamp: number;
+  androidChannelId?: string;
+  iosSound?: string;
 }
