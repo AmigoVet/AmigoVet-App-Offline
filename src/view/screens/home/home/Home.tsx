@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Alert, FlatList, Text, View, StyleSheet } from 'react-native';
 import GlobalContainer from '../../../components/GlobalContainer';
 import CustomScrollView from '../../../components/customs/CustomScrollView';
 import HeaderHome from './components/HeaderHome';
@@ -10,19 +10,16 @@ import ProgramerHome from './components/ProgramerHome';
 import { newColors } from '../../../styles/colors';
 import Separator from '../../../components/Separator';
 import PrivateAnimalCard from '../local/components/PrivateAnimalCard';
+import { supabase } from '../../../../supabaseClient';
 
 const Home = () => {
   const { user } = useAuthStore();
-  const {
-    animals,
-    events,
-    loadAnimals,
-    loadEvents,
-    loadNotes,
-    loadRegisters,
-  } = useAnimalStore();
+  const { animals, events, loadAnimals, loadEvents, loadNotes, loadRegisters } = useAnimalStore();
   const limit = 10;
 
+  // Test Supabase connection
+
+  // Existing data loading
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -33,12 +30,12 @@ const Home = () => {
           loadRegisters(1, limit, { Reciente: true }),
         ]);
       } catch (error) {
-        console.error('[ERROR] Error al cargar datos:', error);
-        Alert.alert('Error', 'No se pudieron cargar los datos. Inténtalo de nuevo.');
+        console.error('[ERROR] Error loading data:', error);
+        Alert.alert('Error', 'Failed to load data. Please try again.');
       }
     };
     loadData();
-  }, [ loadAnimals, loadEvents, loadNotes, loadRegisters]);
+  }, [loadAnimals, loadEvents, loadNotes, loadRegisters]);
 
   const favoriteAnimals = animals.filter((animal) => animal.favorito);
 
@@ -48,29 +45,23 @@ const Home = () => {
         <HeaderHome userName={user?.fullName ?? 'Usuario'} animals={animals} />
         {animals.length === 0 ? (
           <View>
-            <Text style={{ fontSize: 16, color: '#888', textAlign: 'center', marginTop: 60 }}>
-              No tienes animales registrados.
-            </Text>
+            <Text style={styles.noAnimalsText}>No tienes animales registrados.</Text>
           </View>
-          ) : <Separator height={0} />}
+        ) : (
+          <Separator height={0} />
+        )}
         <FilterBarHome onChange={() => {}} />
-
         <ProgramerHome events={events} />
-
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: newColors.fondo_principal, margin: 0 }}>
-          Animales Favoritos
-        </Text>
+        <Text style={styles.favoriteTitle}>Animales Favoritos</Text>
         {favoriteAnimals.length === 0 ? (
-          <Text style={{ fontSize: 16, color: '#888', textAlign: 'center', marginBottom: 10 }}>
-            No tienes animales favoritos.
-          </Text>
+          <Text style={styles.noFavoritesText}>No tienes animales favoritos.</Text>
         ) : (
           <FlatList
             data={favoriteAnimals}
             renderItem={({ item }) => <PrivateAnimalCard animal={item} />}
             keyExtractor={(item) => item.id}
             scrollEnabled={false}
-            style={{ marginBottom: 10 }}
+            style={styles.flatList}
           />
         )}
         <Separator height={50} />
@@ -78,5 +69,29 @@ const Home = () => {
     </GlobalContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  noAnimalsText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 60,
+  },
+  favoriteTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: newColors.fondo_principal,
+    margin: 0,
+  },
+  noFavoritesText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  flatList: {
+    marginBottom: 10,
+  },
+});
 
 export default Home;
