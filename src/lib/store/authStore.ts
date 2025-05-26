@@ -25,6 +25,7 @@ export interface AuthState {
     confirmPassword: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -161,6 +162,22 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ user: null, loading: false });
     } catch (error: any) {
       set({ error: [error.message || 'Logout failed'], loading: false });
+      throw error;
+    }
+  },
+
+  resetPassword: async (email: string) => {
+    set({ loading: true, error: null });
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'your-app://reset-password', // Replace with your app's deep link or web URL
+      });
+      if (error) {
+        throw error;
+      }
+      set({ loading: false });
+    } catch (error: any) {
+      set({ error: [error.message || 'Failed to send password reset email'], loading: false });
       throw error;
     }
   },
