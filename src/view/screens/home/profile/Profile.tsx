@@ -26,7 +26,7 @@ const Profile = () => {
             <Text style={styles.label}>ID Completo:</Text>
             <Text style={styles.value}>{user.id}</Text>
             <Text style={styles.label}>Nombre Completo:</Text>
-            <Text style={styles.value}>{user.fullName}</Text>
+            <Text style={styles.value}>{user.name}</Text>
             <Text style={styles.label}>Correo Electrónico:</Text>
             <Text style={styles.value}>{user.email}</Text>
             <Text style={styles.label}>Teléfono:</Text>

@@ -10,7 +10,6 @@ import ProgramerHome from './components/ProgramerHome';
 import { newColors } from '../../../styles/colors';
 import Separator from '../../../components/Separator';
 import PrivateAnimalCard from '../local/components/PrivateAnimalCard';
-import { supabase } from '../../../../supabaseClient';
 
 const Home = () => {
   const { user } = useAuthStore();
@@ -42,7 +41,7 @@ const Home = () => {
   return (
     <GlobalContainer style={{ backgroundColor: newColors.fondo_secundario }}>
       <CustomScrollView>
-        <HeaderHome userName={user?.fullName ?? 'Usuario'} animals={animals} />
+        <HeaderHome userName={user!.name ?? 'Usuario'} animals={animals} />
         {animals.length === 0 ? (
           <View>
             <Text style={styles.noAnimalsText}>No tienes animales registrados.</Text>

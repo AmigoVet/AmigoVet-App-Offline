@@ -19,11 +19,11 @@ import AllRegisters from '../screens/home/forms/registers/AllRegisters';
 const Stack = createStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
-  const { user, initializeAuth } = useAuthStore();
+  const { user, loadUser } = useAuthStore();
 
   useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
+    loadUser();
+  }, [loadUser]);
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>

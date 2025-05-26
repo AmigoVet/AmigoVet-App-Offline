@@ -7,35 +7,11 @@ import CustomButton from '../../components/customs/CustomButton';
 import GlobalContainer from '../../components/GlobalContainer';
 import { newColors } from '../../styles/colors';
 import Separator from '../../components/Separator';
-import { supabase } from '../../../supabaseClient';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Welcome'>;
 
 const Welcome = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
-  useEffect(() => {
-    const testSupabaseConnection = async () => {
-      try {
-        if (!supabase) {
-          console.error('[ERROR] Supabase client is not initialized');
-          Alert.alert('Error', 'Supabase client is not initialized.');
-          return;
-        }
-        const { data, error } = await supabase.from('todos').select('*').limit(1);
-        if (error) {
-          console.error('[ERROR] Supabase connection error:', error.message);
-          Alert.alert('Error', `Failed to connect to Supabase: ${error.message}`);
-          return;
-        }
-        console.log('[SUCCESS] Supabase connection successful:', data);
-        Alert.alert('Success', 'Connected to Supabase successfully.');
-      } catch (err) {
-        console.error('[ERROR] Exception in Supabase connection:', err);
-        Alert.alert('Error', 'An unexpected error occurred while connecting to Supabase.');
-      }
-    };
-    testSupabaseConnection();
-  }, []);
 
   return (
     <GlobalContainer style={styles.contentContainer}>
