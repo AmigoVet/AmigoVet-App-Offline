@@ -17,6 +17,7 @@ interface AuthState {
 const API_BASE_URL = 'https://amigovet-monolitic.zeabur.app/auth';
 
 export const useAuthStore = create<AuthState>((set) => ({
+  // Inicio con supabase
   user: null,
   token: null,
   refreshToken: null,
