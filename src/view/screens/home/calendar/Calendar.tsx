@@ -41,7 +41,7 @@ const CalendarScreen = () => {
       try {
         setLoading(true);
         // 1. Cargar los animales del usuario
-        await loadAnimals(1, totalEvents || 100, user.id);
+        await loadAnimals(1, 10, user.id);
         // 2. Obtener los IDs de los animales
         const animalsIds = animals.map((animal) => animal.id);
         // 3. Cargar los eventos filtrados por animalsIds

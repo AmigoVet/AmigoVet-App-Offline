@@ -53,7 +53,7 @@ const New = () => {
 
   // Load animals when the component mounts
   useEffect(() => {
-    loadAnimals().catch((error) => {
+    loadAnimals(1, 10, user!.id).catch((error) => {
       console.error('[ERROR] Error al cargar animales:', error);
       Alert.alert('Error', 'No se pudieron cargar los animales');
     });

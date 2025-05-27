@@ -17,30 +17,42 @@ const Home = () => {
   const { animals, events, loadAnimals, loadEvents, loadNotes, loadRegisters } = useAnimalStore();
   const limit = 10;
 
-  // Test Supabase connection
-
-  // Existing data loading
+  // Cargar datos iniciales
   useEffect(() => {
     const loadData = async () => {
+      if (!user?.id) {return;}
+
       try {
         // 1. Cargar los animales
-        await loadAnimals(1, limit, user!.id);
-        const animalsIds = animals.map((animal: Animal) => animal.id);
+        await loadAnimals(1, limit, user.id);
+        // 2. Obtener el estado actualizado de animals desde el store
+        const updatedAnimals = useAnimalStore.getState().animals;
+        console.log('Animals after load:', updatedAnimals);
+
+        // 3. Generar animalsIds
+        const animalsIds = updatedAnimals.map((animal: Animal) => animal.id);
+        console.log('animalsIds:', animalsIds);
+
+        // 4. Cargar eventos, notas y registros si hay animales
         if (animalsIds.length > 0) {
           await Promise.all([
-            loadEvents(1, limit, { Reciente: true }, animalsIds),
+            loadEvents(1, 20, {}, animalsIds),
             loadNotes(1, limit, { Reciente: true }, animalsIds),
             loadRegisters(1, limit, { Reciente: true }, animalsIds),
           ]);
+          // 5. Obtener el estado actualizado de events
+          const updatedEvents = useAnimalStore.getState().events;
+          console.log('Events after load:', updatedEvents);
+        } else {
+          console.log('No animals found, skipping events, notes, and registers load');
+          useAnimalStore.getState();
         }
       } catch (error) {
         console.error('[ERROR] Error al cargar datos:', error);
       }
     };
 
-    if (user?.id) {
-      loadData();
-    }
+    loadData();
   }, [loadAnimals, loadEvents, loadNotes, loadRegisters, user]);
 
   const favoriteAnimals = animals.filter((animal) => animal.favorito);
@@ -48,7 +60,7 @@ const Home = () => {
   return (
     <GlobalContainer style={{ backgroundColor: newColors.fondo_secundario }}>
       <CustomScrollView>
-        <HeaderHome userName={user!.name ?? 'Usuario'} animals={animals} />
+        <HeaderHome userName={user?.name ?? 'Usuario'} animals={animals} />
         {animals.length === 0 ? (
           <View>
             <Text style={styles.noAnimalsText}>No tienes animales registrados.</Text>
