@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+/* eslint-disable @typescript-eslint/no-shadow */
 import { useState, useCallback } from 'react';
 import { Transaction, SQLError, SQLiteDatabase } from 'react-native-sqlite-storage';
 import { questionIA } from '../api/artificialInteligence';
@@ -150,27 +152,74 @@ export const useChat = (): UseChatReturn => {
   }, []);
 
   const sendMessage = useCallback(async (chatId: string, animal: Animal, content: string) => {
-    if (!content.trim()) return;
+    if (!content.trim()) {return;}
 
     setIsLoading(true);
-    const now = new Date().toISOString();
+    const now = new Date();
     const messageId = uuidv4();
     const userMessage: Message = {
       id: messageId,
       chatId,
       content,
       owner: 'User',
-      created_at: now,
+      created_at: now.toISOString(),
     };
     const db: SQLiteDatabase = await getDatabase();
 
     try {
+      // Check daily message limit
+      const DAILY_MESSAGE_LIMIT = 5;
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
+
+      const messageCount = await new Promise<number>((resolve, reject) => {
+        db.transaction((tx: Transaction) => {
+          tx.executeSql(
+            `SELECT COUNT(*) as count FROM Messages WHERE owner = 'User' AND created_at >= ? AND created_at < ?`,
+            [startOfDay, endOfDay],
+            (_: Transaction, { rows }) => {
+              resolve(rows.item(0).count);
+            },
+            (_: Transaction, error: SQLError) => {
+              reject(new Error(`Failed to count messages: ${error.message}`));
+              return false;
+            }
+          );
+        });
+      });
+
+      if (messageCount >= DAILY_MESSAGE_LIMIT) {
+        // Insert system message indicating limit reached
+        const limitMessage: Message = {
+          id: uuidv4(),
+          chatId,
+          content: 'Ups, Parece que has superado el limite de 5 mensajes por hoy, Por favor espera hasta mañana o mejora tu plan!',
+          owner: 'System',
+          created_at: now.toISOString(),
+        };
+        await new Promise<void>((resolve, reject) => {
+          db.transaction((tx: Transaction) => {
+            tx.executeSql(
+              `INSERT INTO Messages (id, chatId, content, owner, created_at) VALUES (?, ?, ?, ?, ?)`,
+              [limitMessage.id, limitMessage.chatId, limitMessage.content, limitMessage.owner, limitMessage.created_at],
+              () => resolve(),
+              (_: Transaction, error: SQLError) => {
+                reject(new Error(`Failed to save system message: ${error.message}`));
+                return false;
+              }
+            );
+          });
+        });
+        setMessages((prev) => [...prev, limitMessage]);
+        return; // Exit without sending the message
+      }
+
       // Save user message
       await new Promise<void>((resolve, reject) => {
         db.transaction((tx: Transaction) => {
           tx.executeSql(
             `INSERT INTO Messages (id, chatId, content, owner, created_at) VALUES (?, ?, ?, ?, ?)`,
-            [messageId, chatId, content, 'User', now],
+            [messageId, chatId, content, 'User', now.toISOString()],
             () => resolve(),
             (_: Transaction, error: SQLError) => {
               reject(new Error(`Failed to save user message: ${error.message}`));
@@ -187,7 +236,7 @@ export const useChat = (): UseChatReturn => {
         db.transaction((tx: Transaction) => {
           tx.executeSql(
             `UPDATE Chats SET updated_at = ? WHERE id = ?`,
-            [now, chatId],
+            [now.toISOString(), chatId],
             () => resolve(),
             (_: Transaction, error: SQLError) => {
               reject(new Error(`Failed to update chat: ${error.message}`));
