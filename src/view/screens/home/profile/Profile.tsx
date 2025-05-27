@@ -6,7 +6,7 @@ import GlobalContainer from '../../../components/GlobalContainer';
 import { newColors } from '../../../styles/colors';
 
 const Profile = () => {
-  const { user, logout } = useAuthStore();
+  const { user, logout, resetPassword } = useAuthStore();
 
   const handleLogout = async () => {
     try {
@@ -14,6 +14,22 @@ const Profile = () => {
       Alert.alert('Sesión cerrada', 'Has cerrado sesión correctamente.');
     } catch (error: any) {
       Alert.alert('Error', 'No se pudo cerrar sesión. Intenta de nuevo.');
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!user?.email) {
+      Alert.alert('Error', 'No se encontró un correo electrónico para este usuario.');
+      return;
+    }
+    try {
+      await resetPassword(user.email);
+      Alert.alert(
+        'Correo enviado',
+        'Se ha enviado un enlace para restablecer tu contraseña a tu correo electrónico.'
+      );
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'No se pudo enviar el enlace de restablecimiento.');
     }
   };
 
@@ -26,17 +42,23 @@ const Profile = () => {
             <Text style={styles.label}>ID Completo:</Text>
             <Text style={styles.value}>{user.id}</Text>
             <Text style={styles.label}>Nombre Completo:</Text>
-            <Text style={styles.value}>{user.fullName}</Text>
+            <Text style={styles.value}>{user.name}</Text>
             <Text style={styles.label}>Correo Electrónico:</Text>
             <Text style={styles.value}>{user.email}</Text>
             <Text style={styles.label}>Teléfono:</Text>
-            <Text style={styles.value}>{user.phone}</Text>
+            <Text style={styles.value}>{user.phone || 'No disponible'}</Text>
             <Text style={styles.label}>Rol:</Text>
-            <Text style={styles.value}>{user.role}</Text>
+            <Text style={styles.value}>{user.role || 'No especificado'}</Text>
           </View>
         ) : (
           <Text style={styles.noUserText}>No se encontraron datos del usuario.</Text>
         )}
+        <CustomButton
+          text="Restablecer Contraseña"
+          onPress={handleResetPassword}
+          textColor={newColors.fondo_principal}
+          backgroundColor={newColors.verde_light}
+        />
         <CustomButton
           text="Cerrar Sesión"
           onPress={handleLogout}
@@ -86,8 +108,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 20,
   },
-  logoutButton: {
-    marginTop: 20,
+  resetButton: {
+    marginBottom: 10,
   },
 });
 

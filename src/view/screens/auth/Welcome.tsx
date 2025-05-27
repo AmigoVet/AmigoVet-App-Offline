@@ -1,5 +1,5 @@
-import React from 'react';
-import {  Text, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import {  Text, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AuthStackParamList } from '../../navigator/navigationTypes';
@@ -12,7 +12,6 @@ type WelcomeScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Welc
 
 const Welcome = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
-
 
   return (
     <GlobalContainer style={styles.contentContainer}>

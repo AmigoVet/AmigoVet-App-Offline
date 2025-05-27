@@ -10,7 +10,7 @@ export const ProgramerHomeStyles = StyleSheet.create({
       paddingVertical: 6,
       paddingHorizontal: 16,
     },
-    containerExtra:{
+    containerExtra: {
       marginTop: 10,
       borderRadius: constants.borderRadius / 1.5,
       width: '97%',
@@ -18,7 +18,7 @@ export const ProgramerHomeStyles = StyleSheet.create({
       borderWidth: 2,
       borderColor: newColors.fondo_secundario,
     },
-    containerExtraText:{
+    containerExtraText: {
       color: newColors.fondo_secundario,
       fontSize: 19,
       fontWeight: 'bold',
@@ -28,7 +28,7 @@ export const ProgramerHomeStyles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
     },
-    space:{
+    space: {
       width: '33%',
     },
     iconContainer: {
@@ -117,8 +117,9 @@ export const ProgramerHomeStyles = StyleSheet.create({
       borderRadius: constants.borderRadius,
       alignItems: 'center',
       justifyContent: 'center',
-      textAlign: 'center',
+      flexDirection: 'column',
       flex: 1,
+      width: '100%',
     },
     activeNotification: {
       backgroundColor: newColors.verde_light,
@@ -132,16 +133,17 @@ export const ProgramerHomeStyles = StyleSheet.create({
     },
     notificationText: {
       fontSize: 14,
-      marginBottom: 4,
       fontWeight: 'bold',
       fontFamily: constants.FontText,
       textAlign: 'center',
     },
     activeText: {
       color: newColors.fondo_secundario,
+      textAlign: 'center',
     },
     inactiveText: {
       color: newColors.principal,
+      textAlign: 'center',
     },
     timeText: {
       fontSize: 12,
@@ -151,6 +153,7 @@ export const ProgramerHomeStyles = StyleSheet.create({
       borderRadius: constants.borderRadius,
       backgroundColor: newColors.verde_light,
       alignItems: 'center',
+      justifyContent: 'center',
     },
     eventDot: {
       width: 6,
@@ -159,16 +162,16 @@ export const ProgramerHomeStyles = StyleSheet.create({
       borderRadius: 3,
       marginTop: 2,
     },
-    button:{
+    button: {
       height: 40,
       justifyContent: 'center',
       width: '100%',
     },
-    buttonText:{
+    buttonText: {
       color: newColors.verde_light,
       fontSize: 14,
       fontWeight: '600',
       textAlign: 'right',
       fontFamily: constants.FontText,
     },
-  });
+});

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Alert, Text, View, Pressable, ScrollView } from 'react-native';
+import { StyleSheet, Alert, Text, View, ScrollView } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import FooterLogin from './sections/FooterLogin';
@@ -11,6 +11,7 @@ import WithLove from '../../../components/WithLove';
 import { AuthStackParamList } from '../../../navigator/navigationTypes';
 import { newColors } from '../../../styles/colors';
 import HeaderLogin from './sections/HeaderLogin';
+import Separator from '../../../components/Separator';
 
 type LoginScreenNavigationProp = NavigationProp<AuthStackParamList, 'Login'>;
 
@@ -73,6 +74,7 @@ const Login = () => {
           <View style={{ height: 2, width: '100%', backgroundColor: newColors.fondo_secundario, marginVertical: 10 }} />
           <WithLove />
         </View>
+        <Separator height={100} />
         <FooterLogin />
       </ScrollView>
     </GlobalContainer>
