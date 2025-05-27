@@ -8,9 +8,11 @@ import SearchButton from '../../../components/SearchButton';
 import FilterBar from './components/FilterBar';
 import Header from '../../../components/Header';
 import { newColors } from '../../../styles/colors';
+import { useAuthStore } from '../../../../lib/store/authStore';
 
 const Local = () => {
   const { animals, totalAnimals, loadAnimals } = useAnimalStore();
+  const { user } = useAuthStore();
   const [filters, setFilters] = useState<Record<string, string | number | boolean | undefined>>({});
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
@@ -18,25 +20,25 @@ const Local = () => {
   const handleFilterChange = useCallback((filterValues: Record<string, string | number | boolean | undefined>) => {
     setFilters(filterValues);
     setCurrentPage(1);
-    loadAnimals(1, limit, filterValues).catch((error) => {
+    loadAnimals(1, limit, user!.id ,filterValues).catch((error) => {
       console.error('[ERROR] Error al cargar animales:', error);
     });
-  }, [loadAnimals, limit]);
+  }, [loadAnimals, limit, user]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= Math.ceil(totalAnimals / limit)) {
       setCurrentPage(newPage);
-      loadAnimals(newPage, limit, filters).catch((error) => {
+      loadAnimals(newPage, limit, user!.id,filters).catch((error) => {
         console.error('[ERROR] Error al cargar animales:', error);
       });
     }
   };
 
   useEffect(() => {
-    loadAnimals(1, limit, filters).catch((error) => {
+    loadAnimals(1, limit, user!.id,filters).catch((error) => {
       console.error('[ERROR] Error al cargar animales:', error);
     });
-  }, []); // Run only on mount
+  }, [user, filters, limit, loadAnimals]); // Run only on mount
 
   return (
     <GlobalContainer>

@@ -4,6 +4,7 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import GlobalContainer from '../../../components/GlobalContainer';
 import Header from '../../../components/Header';
 import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
+import { useAuthStore } from '../../../../lib/store/authStore';
 import { Events } from '../../../../lib/interfaces/Events';
 import Separator from '../../../components/Separator';
 import { constants } from '../../../styles/constants';
@@ -26,7 +27,8 @@ LocaleConfig.defaultLocale = 'es';
 
 const CalendarScreen = () => {
   const navigation = useNavigation<NavigationProp>();
-  const { events, totalEvents, loadEvents } = useAnimalStore();
+  const { user } = useAuthStore();
+  const { animals, events, totalEvents, loadAnimals, loadEvents } = useAnimalStore();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
@@ -34,9 +36,16 @@ const CalendarScreen = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
+      if (!user?.id) {return;}
+
       try {
         setLoading(true);
-        await loadEvents(1, totalEvents || 100);
+        // 1. Cargar los animales del usuario
+        await loadAnimals(1, totalEvents || 100, user.id);
+        // 2. Obtener los IDs de los animales
+        const animalsIds = animals.map((animal) => animal.id);
+        // 3. Cargar los eventos filtrados por animalsIds
+        await loadEvents(1, totalEvents || 100, {}, animalsIds);
         setError(null);
       } catch (err: any) {
         setError('Error al cargar los eventos: ' + (err.message || 'Desconocido'));
@@ -45,7 +54,8 @@ const CalendarScreen = () => {
       }
     };
     fetchEvents();
-  }, [loadEvents, totalEvents]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadAnimals, loadEvents, totalEvents, user]);
 
   useEffect(() => {
     const filteredEvents = events.filter(event => {
@@ -140,9 +150,7 @@ const CalendarScreen = () => {
             ) : (
               <FlatList
                 data={selectedEvents}
-                renderItem={({ item }) => (
-                  <EventItem item={item}/>
-                )}
+                renderItem={({ item }) => <EventItem item={item} />}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.eventsList}
                 nestedScrollEnabled={true}

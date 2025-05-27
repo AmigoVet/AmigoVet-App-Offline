@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Alert, FlatList, Text, View, StyleSheet } from 'react-native';
+import { FlatList, Text, View, StyleSheet } from 'react-native';
 import GlobalContainer from '../../../components/GlobalContainer';
 import CustomScrollView from '../../../components/customs/CustomScrollView';
 import HeaderHome from './components/HeaderHome';
@@ -10,6 +10,7 @@ import ProgramerHome from './components/ProgramerHome';
 import { newColors } from '../../../styles/colors';
 import Separator from '../../../components/Separator';
 import PrivateAnimalCard from '../local/components/PrivateAnimalCard';
+import { Animal } from '../../../../lib/interfaces/Animal';
 
 const Home = () => {
   const { user } = useAuthStore();
@@ -22,19 +23,25 @@ const Home = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        await Promise.all([
-          loadAnimals(1, limit),
-          loadEvents(1, limit, { Reciente: true }),
-          loadNotes(1, limit, { Reciente: true }),
-          loadRegisters(1, limit, { Reciente: true }),
-        ]);
+        // 1. Cargar los animales
+        await loadAnimals(1, limit, user!.id);
+        const animalsIds = animals.map((animal: Animal) => animal.id);
+        if (animalsIds.length > 0) {
+          await Promise.all([
+            loadEvents(1, limit, { Reciente: true }, animalsIds),
+            loadNotes(1, limit, { Reciente: true }, animalsIds),
+            loadRegisters(1, limit, { Reciente: true }, animalsIds),
+          ]);
+        }
       } catch (error) {
-        console.error('[ERROR] Error loading data:', error);
-        Alert.alert('Error', 'Failed to load data. Please try again.');
+        console.error('[ERROR] Error al cargar datos:', error);
       }
     };
-    loadData();
-  }, [loadAnimals, loadEvents, loadNotes, loadRegisters]);
+
+    if (user?.id) {
+      loadData();
+    }
+  }, [loadAnimals, loadEvents, loadNotes, loadRegisters, user]);
 
   const favoriteAnimals = animals.filter((animal) => animal.favorito);
 

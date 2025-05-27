@@ -24,10 +24,10 @@ interface AnimalStore {
   totalNotes: number;
   registers: Register[];
   totalRegisters: number;
-  loadAnimals: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
-  loadEvents: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
-  loadNotes: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
-  loadRegisters: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
+  loadAnimals: (page?: number, limit?: number, ownerId?: string, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
+  loadEvents: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>, animalsIds?: string[]) => Promise<void>;
+  loadNotes: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>,  animalsIds?: string[]) => Promise<void>;
+  loadRegisters: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>,  animalsIds?: string[]) => Promise<void>;
   addAnimal: (animal: Animal) => Promise<void>;
   updateAnimal: (animal: Animal) => Promise<void>;
   deleteAnimal: (id: string) => Promise<void>;
@@ -86,7 +86,7 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
   registers: [],
   totalRegisters: 0,
 
-  loadAnimals: async (page = 1, limit = 10, filters = {}) => {
+  loadAnimals: async (page = 1, limit = 10, ownerId, filters = {}) => {
     const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
       db.transaction((tx: Transaction) => {
@@ -95,6 +95,10 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
         const filterConditions: string[] = [];
         let orderBy = 'created_at DESC';
 
+        if (ownerId) {
+          filterConditions.push('ownerId = ?');
+          filterParams.push(ownerId);
+        }
         if (filters.Género) {
           filterConditions.push('genero = ?');
           filterParams.push(String(filters.Género));
@@ -230,22 +234,35 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
     });
   },
 
-  loadEvents: async (page = 1, limit = 10, filters = {}) => {
+  loadEvents: async (page = 1, limit = 10, filters = {}, animalsIds: string[] = []) => {
     const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
+      // Si animalsIds está vacío, devolver un array vacío
+      if (!animalsIds || animalsIds.length === 0) {
+        set({ events: [], totalEvents: 0 });
+        resolve();
+        return;
+      }
+
       db.transaction((tx: Transaction) => {
         let whereClause = '';
         const filterParams: (string | number)[] = [];
         const filterConditions: string[] = [];
         let orderBy = 'dateEvent DESC';
 
+        // Filtro obligatorio por animalsIds
+        const placeholders = animalsIds.map(() => '?').join(', ');
+        filterConditions.push(`animalId IN (${placeholders})`);
+        filterParams.push(...animalsIds);
+
+        // Filtros adicionales
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
           filterParams.push(String(filters.animalId));
         }
         if (filters.comentario) {
           filterConditions.push('comentario LIKE ?');
-          filterParams.push(String(filters.comentario));
+          filterParams.push(`%${String(filters.comentario)}%`);
         }
         if (filters.Reciente === true) {
           orderBy = 'created_at DESC';
@@ -279,7 +296,7 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
                     created_at: item.created_at,
                     dateEvent: item.dateEvent,
                     dateNotifi: item.dateNotifi,
-                    sendNotifi: item.sendNotifi,
+                    sendNotifi: item.sendNotifi as sendNotifi,
                   });
                 }
                 set({ events, totalEvents });
@@ -302,15 +319,28 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
     });
   },
 
-  loadNotes: async (page = 1, limit = 10, filters = {}) => {
+  loadNotes: async (page = 1, limit = 10, filters = {}, animalsIds: string[] = []) => {
     const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
+      // Si animalsIds está vacío, devolver un array vacío
+      if (!animalsIds || animalsIds.length === 0) {
+        set({ notes: [], totalNotes: 0 });
+        resolve();
+        return;
+      }
+
       db.transaction((tx: Transaction) => {
         let whereClause = '';
         const filterParams: (string | number)[] = [];
         const filterConditions: string[] = [];
         let orderBy = 'created_at DESC';
 
+        // Filtro obligatorio por animalsIds
+        const placeholders = animalsIds.map(() => '?').join(', ');
+        filterConditions.push(`animalId IN (${placeholders})`);
+        filterParams.push(...animalsIds);
+
+        // Filtros adicionales
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
           filterParams.push(String(filters.animalId));
@@ -367,22 +397,34 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
     });
   },
 
-  loadRegisters: async (page = 1, limit = 10, filters = {}) => {
+  loadRegisters: async (page = 1, limit = 10, filters = {}, animalsIds: string[] = []) => {
     const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
+      // Si animalsIds está vacío, devolver un array vacío
+      if (!animalsIds || animalsIds.length === 0) {
+        set({ registers: [], totalRegisters: 0 });
+        resolve();
+        return;
+      }
       db.transaction((tx: Transaction) => {
         let whereClause = '';
         const filterParams: (string | number)[] = [];
         const filterConditions: string[] = [];
         let orderBy = 'fecha DESC';
 
+        // Filtro obligatorio por animalsIds
+        const placeholders = animalsIds.map(() => '?').join(', ');
+        filterConditions.push(`animalId IN (${placeholders})`);
+        filterParams.push(...animalsIds);
+
+        // Filtros adicionales
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
           filterParams.push(String(filters.animalId));
         }
         if (filters.comentario) {
           filterConditions.push('comentario LIKE ?');
-          filterParams.push(String(filters.comentario));
+          filterParams.push(`%${String(filters.comentario)}%`);
         }
         if (filters.Reciente === true) {
           orderBy = 'fecha DESC';

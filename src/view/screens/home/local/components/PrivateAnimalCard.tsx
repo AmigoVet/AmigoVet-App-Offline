@@ -37,7 +37,7 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
         </View>
         <View style={styles.box2}>
           <Icon name="location-outline" size={20} color={newColors.principal} />
-          <Text style={[styles.text, GlobalStyles.fontWeight200]}>{animal.ubicacion || '-'}</Text>
+          <Text style={[styles.text, GlobalStyles.fontWeight200]}>{animal.ownerId || '-'}</Text>
         </View>
         {animal.embarazada && (
         <>

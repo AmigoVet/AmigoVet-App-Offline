@@ -14,9 +14,11 @@ import { Register } from '../../../../lib/interfaces/Register';
 import { Events } from '../../../../lib/interfaces/Events';
 import { newColors } from '../../../styles/colors';
 import { constants } from '../../../styles/constants';
+import { useAuthStore } from '../../../../lib/store/authStore';
 
 const Busqueda = () => {
   const navigation = useNavigation<NavigationProp>();
+  const {user} = useAuthStore();
   const { animals, loadAnimals } = useAnimalStore();
   const [inputText, setInputText] = useState('');
   const [searchText, setSearchText] = useState('');
@@ -58,7 +60,7 @@ const Busqueda = () => {
       setIsLoading(true);
       setHasSearched(true);
       try {
-        await loadAnimals(1, 100); // Load up to 100 animals
+        await loadAnimals(1, 100, user!.id); // Load up to 100 animals
       } catch (error) {
         console.error('[ERROR] Failed to load animals:', error);
       } finally {
@@ -67,7 +69,7 @@ const Busqueda = () => {
     };
 
     fetchAnimals();
-  }, [searchText, loadAnimals]);
+  }, [searchText, loadAnimals, user]);
 
   // Filter animals based on debounced search text
   useEffect(() => {
@@ -136,7 +138,7 @@ const Busqueda = () => {
       // Check events
       if (
         animal.events?.some((event: Events) =>
-          [event.comentario, event.fecha, event.created_at, event.animalName].some((field) =>
+          [event.comentario, event.created_at, event.animalName].some((field) =>
             field?.toLowerCase().includes(lowerSearchText)
           )
         )
