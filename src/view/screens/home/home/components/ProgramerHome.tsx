@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
 import { format, isSameDay, parseISO, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Events, sendNotifi } from '../../../../../lib/interfaces/Events';
+import { Events } from '../../../../../lib/interfaces/Events';
 import { RootStackParamList } from '../../../../navigator/navigationTypes';
 import { newColors } from '../../../../styles/colors';
 import { ProgramerHomeStyles } from './ProgramerHomeStyles';
@@ -99,38 +99,17 @@ const ProgramerHome: React.FC<ProgramerHomeProps> = ({ events = [] }) => {
     }
   };
 
-  const formatDate = (dateString: string): string => {
-    try {
-      const date = parseISO(dateString);
-      return format(date, "d 'de' MMMM 'de' yyyy", { locale: es });
-    } catch {
-      return 'Fecha inválida';
-    }
-  };
 
   const formatMessage = (event: Events): JSX.Element => {
-    const sendNotifiDisplayMap: { [key in sendNotifi]: string } = {
-      '1d': 'un día',
-      '2d': '2 días',
-      '3d': '3 días',
-      '4d': '4 días',
-      '5d': '5 días',
-      '1w': 'una semana',
-      '2w': '2 semanas',
-    };
-
-    const notificationText = event.sendNotifi
-      ? `Se te notificará en ${sendNotifiDisplayMap[event.sendNotifi]}`
-      : 'Sin notificación programada';
 
     return isToday(event.dateEvent) ? (
-      <Text>
+      <Text style={ProgramerHomeStyles.notificationText}>
         {event.comentario} de <Text style={{ color: newColors.principal }}>{event.animalName}</Text> es hoy!{' '}
       </Text>
     ) : (
-      <Text>
+      <Text style={ProgramerHomeStyles.notificationText}>
         {event.comentario} de <Text style={{ color: newColors.verde_light }}>{event.animalName}</Text> será el{' '}
-        {formatDate(event.dateEvent)}. <Text style={{ color: newColors.fondo_secundario }}>{notificationText}</Text>
+        {format(parseISO(event.dateEvent), "d 'de' MMMM 'de' yyyy 'a las' h:mm a", { locale: es })}
       </Text>
     );
   };
@@ -184,7 +163,7 @@ const ProgramerHome: React.FC<ProgramerHomeProps> = ({ events = [] }) => {
           </View>
         </View>
 
-        {nextEvent && (
+        {nextEvent ? (
           <View
             style={[
               ProgramerHomeStyles.notification,
@@ -194,6 +173,18 @@ const ProgramerHome: React.FC<ProgramerHomeProps> = ({ events = [] }) => {
           >
             <Text style={[ProgramerHomeStyles.notificationText, ProgramerHomeStyles.inactiveText]}>
               {formatMessage(nextEvent)}
+            </Text>
+          </View>
+        ) : (
+          <View
+            style={[
+              ProgramerHomeStyles.notification,
+              ProgramerHomeStyles.inactiveNotification,
+              ProgramerHomeStyles.outsideNotification,
+            ]}
+          >
+            <Text style={[ProgramerHomeStyles.notificationText, ProgramerHomeStyles.inactiveText]}>
+              Sin eventos próximos
             </Text>
           </View>
         )}
