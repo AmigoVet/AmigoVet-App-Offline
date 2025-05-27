@@ -12,6 +12,7 @@ import Home from '../screens/home/home/Home';
 import Feed from '../screens/home/feed/Feed';
 import Local from '../screens/home/local/Local';
 import { Platform } from 'react-native';
+import { DrawerProfileNavigator } from './DrawerProfileNavigator';
 
 const Tab = createBottomTabNavigator<MainTabsParamList>();
 
@@ -83,7 +84,7 @@ const MainTabs = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={Profile}
+        component={DrawerProfileNavigator}
         options={{
           tabBarButton: (props) => <CustomButtonTab route="Perfil" {...props} />,
         }}
