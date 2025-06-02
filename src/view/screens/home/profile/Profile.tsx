@@ -7,6 +7,8 @@ import Header from '../../../components/Header';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { DrawerParamList } from '../../../navigator/navigationTypes';
+import { constant } from 'lodash';
+import { constants } from '../../../styles/constants';
 
 type ProfileScreenNavigationProp = DrawerNavigationProp<DrawerParamList>;
 
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontFamily: 'Chillax-Extralight',
+    fontFamily: constants.FontTitle,
     color: newColors.fondo_secundario,
     textAlign: 'center',
     marginBottom: 20,
@@ -61,19 +63,19 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontFamily: 'Chillax-Extralight',
+    fontFamily: constants.FontTitle,
     color: newColors.fondo_secundario,
     marginTop: 10,
   },
   value: {
     fontSize: 16,
-    fontFamily: 'Chillax-Extralight',
+    fontFamily: constants.FontText,
     color: newColors.fondo_secundario,
     marginBottom: 5,
   },
   noUserText: {
     fontSize: 16,
-    fontFamily: 'Chillax-Extralight',
+    fontFamily: constants.FontText,
     color: newColors.rojo || '#ff0000',
     textAlign: 'center',
     marginVertical: 20,

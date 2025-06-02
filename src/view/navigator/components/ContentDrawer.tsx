@@ -65,7 +65,7 @@ const ContentDrawer = (props: DrawerContentComponentProps) => {
           text="Restablecer Contraseña"
           onPress={handleResetPassword}
           backgroundColor={newColors.verde_light}
-          color={newColors.fondo_principal}
+          color={newColors.fondo_secundario}
         />
         <MiniButton
           icon="log-out-outline"
