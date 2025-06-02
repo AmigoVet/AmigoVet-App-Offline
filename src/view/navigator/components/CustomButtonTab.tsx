@@ -2,12 +2,29 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native
 import React from 'react';
 import Svg, { Path } from 'react-native-svg';
 import { newColors } from '../../styles/colors';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-const CustomButtonTab = (props: any) => {
-    const { children, accessibilityState, onPress } = props;
+interface CustomButtonTabProps {
+    children: React.ReactNode;
+    onPress?: () => void;
+    route: string; // El nombre de la ruta que pasas desde MainTabs
+}
+
+const CustomButtonTab = (props: CustomButtonTabProps) => {
+    const { children, onPress, route: routeName } = props;
+    const currentRoute = useRoute();
+    const navigation = useNavigation();
     const isIOS = Platform.OS === 'ios';
+    
+    // Obtener el estado del navegador para saber qué tab está activo
+    const state = navigation.getState();
+    const activeTabIndex = state!.index;
+    const activeRouteName = state!.routes[activeTabIndex].name;
+    
+    // Determinar si este tab está activo comparando nombres de ruta
+    const isSelected = activeRouteName === getRouteNameFromCustomName(routeName);
 
-    if (accessibilityState.selected) {
+    if (isSelected) {
         return (
             <View style={styles.btnWrapper}>
                 {/* SVG Divider */}
@@ -32,17 +49,29 @@ const CustomButtonTab = (props: any) => {
                     onPress={onPress}
                     style={[styles.activeBtn, isIOS && styles.activeBtnIOS]}
                 >
-                    <Text>{children}</Text>
+                    <Text style={styles.activeText}>{children}</Text>
                 </TouchableOpacity>
             </View>
         );
     } else {
         return (
             <TouchableOpacity activeOpacity={1} onPress={onPress} style={styles.inactiveBtn}>
-                <Text>{children}</Text>
+                <Text style={styles.inactiveText}>{children}</Text>
             </TouchableOpacity>
         );
     }
+};
+
+// Función helper para mapear los nombres personalizados a los nombres reales de las rutas
+const getRouteNameFromCustomName = (customName: string): string => {
+    const routeMap: { [key: string]: string } = {
+        'Inicio': 'Home',
+        'Local': 'Local',
+        'Agregar': 'New',
+        'Web': 'Feed',
+        'Perfil': 'Profile'
+    };
+    return routeMap[customName] || customName;
 };
 
 export default CustomButtonTab;
@@ -63,7 +92,7 @@ const styles = StyleSheet.create({
         zIndex: -1,
     },
     svgWrapperIOS: {
-        height: 50, // Reducir la altura del contenedor SVG en iOS
+        height: 50,
         bottom: 0,
     },
     svgBackground: {
@@ -71,7 +100,7 @@ const styles = StyleSheet.create({
         height: 65,
     },
     svgBackgroundIOS: {
-        height: 50, // Reducir la altura del SVG en iOS
+        height: 50,
     },
     activeBtn: {
         position: 'absolute',
@@ -85,7 +114,7 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     activeBtnIOS: {
-        top: -28, // Colocar el botón mucho más arriba en iOS
+        top: -28,
     },
     inactiveBtn: {
         flex: 1,
@@ -93,5 +122,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'column',
         backgroundColor: newColors.fondo_secundario,
+    },
+    activeText: {
+        color: newColors.fondo_secundario,
+        fontWeight: 'bold',
+    },
+    inactiveText: {
+        color: newColors.principal,
     },
 });
