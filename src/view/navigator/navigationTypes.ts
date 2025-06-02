@@ -35,4 +35,10 @@ export type RootStackParamList = {
   AllRegisters: {animalId: string; animalName: string};
 };
 
+export type DrawerParamList = {
+  Profile: undefined;
+  Idioma: undefined;
+  About: undefined;
+};
+
 export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;

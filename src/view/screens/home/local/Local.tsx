@@ -9,6 +9,7 @@ import FilterBar from './components/FilterBar';
 import Header from '../../../components/Header';
 import { newColors } from '../../../styles/colors';
 import { useAuthStore } from '../../../../lib/store/authStore';
+import CustomScrollView from '../../../components/customs/CustomScrollView';
 
 const Local = () => {
   const { animals, totalAnimals, loadAnimals } = useAnimalStore();

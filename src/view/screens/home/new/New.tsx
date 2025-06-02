@@ -158,7 +158,7 @@ const New = () => {
       : [];
 
   return (
-    <GlobalContainer>
+    <GlobalContainer >
       <Header
         title="Agrega un Animal"
         onPress={() => Alert.alert('Debería mostrar info de cómo agregar un animal y cosas así')}

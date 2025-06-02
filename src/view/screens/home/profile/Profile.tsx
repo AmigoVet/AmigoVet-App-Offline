@@ -1,40 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useAuthStore } from '../../../../lib/store/authStore';
-import CustomButton from '../../../components/customs/CustomButton';
 import GlobalContainer from '../../../components/GlobalContainer';
 import { newColors } from '../../../styles/colors';
+import Header from '../../../components/Header';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { DrawerParamList } from '../../../navigator/navigationTypes';
+
+type ProfileScreenNavigationProp = DrawerNavigationProp<DrawerParamList>;
 
 const Profile = () => {
-  const { user, logout, resetPassword } = useAuthStore();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      Alert.alert('Sesión cerrada', 'Has cerrado sesión correctamente.');
-    } catch (error: any) {
-      Alert.alert('Error', 'No se pudo cerrar sesión. Intenta de nuevo.');
-    }
-  };
-
-  const handleResetPassword = async () => {
-    if (!user?.email) {
-      Alert.alert('Error', 'No se encontró un correo electrónico para este usuario.');
-      return;
-    }
-    try {
-      await resetPassword(user.email);
-      Alert.alert(
-        'Correo enviado',
-        'Se ha enviado un enlace para restablecer tu contraseña a tu correo electrónico.'
-      );
-    } catch (error: any) {
-      Alert.alert('Error', error.message || 'No se pudo enviar el enlace de restablecimiento.');
-    }
-  };
+  const { user } = useAuthStore();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
 
   return (
     <GlobalContainer>
+      <Header title="Perfil" onPress={() => navigation.toggleDrawer()} iconOnPress="menu-outline" />
       <View style={styles.container}>
         <Text style={styles.title}>Perfil de Usuario</Text>
         {user ? (
@@ -53,18 +35,6 @@ const Profile = () => {
         ) : (
           <Text style={styles.noUserText}>No se encontraron datos del usuario.</Text>
         )}
-        <CustomButton
-          text="Restablecer Contraseña"
-          onPress={handleResetPassword}
-          textColor={newColors.fondo_principal}
-          backgroundColor={newColors.verde_light}
-        />
-        <CustomButton
-          text="Cerrar Sesión"
-          onPress={handleLogout}
-          textColor={newColors.fondo_principal}
-          backgroundColor={newColors.rojo || '#ff0000'}
-        />
       </View>
     </GlobalContainer>
   );
@@ -107,9 +77,6 @@ const styles = StyleSheet.create({
     color: newColors.rojo || '#ff0000',
     textAlign: 'center',
     marginVertical: 20,
-  },
-  resetButton: {
-    marginBottom: 10,
   },
 });
 
