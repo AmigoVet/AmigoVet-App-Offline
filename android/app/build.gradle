@@ -78,9 +78,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.amigovet"
+    namespace "com.AmigoVet"
     defaultConfig {
-        applicationId "com.amigovet"
+        applicationId "com.AmigoVet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3

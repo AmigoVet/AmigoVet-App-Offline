@@ -1,4 +1,4 @@
-package com.amigovet
+package com.AmigoVet
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
