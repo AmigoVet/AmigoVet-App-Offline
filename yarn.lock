@@ -6736,6 +6736,11 @@ react-is@^19.0.0, react-is@^19.1.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.1.0.tgz#805bce321546b7e14c084989c77022351bbdd11b"
   integrity sha512-Oe56aUPnkHyyDxxkvqtd7KkdQP5uIUfHxd5XTb3wE9d/kRnZLmKbDB0GWk919tdQ+mxxPtG6EAs6RMT6i1qtHg==
 
+react-native-advanced-checkbox@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-advanced-checkbox/-/react-native-advanced-checkbox-2.0.6.tgz#85157e313d6b4bf9eb6bd379abf075d2d541cc75"
+  integrity sha512-ATf8Eg3Ph9sQbmCQLbqCWZFWy7mgH6eeMX4h4laRgqsYMl0IInqUKbN18DnEyGYFs/XBD6VAeRZJFUprYRtcBg==
+
 react-native-calendars@^1.1312.0:
   version "1.1312.1"
   resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.1312.1.tgz#2ba2815b7e3bc31fc99a8a32a5069b37e4032f1a"
@@ -6751,6 +6756,11 @@ react-native-calendars@^1.1312.0:
     xdate "^0.8.0"
   optionalDependencies:
     moment "^2.29.4"
+
+react-native-checkbox-reanimated@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-checkbox-reanimated/-/react-native-checkbox-reanimated-0.1.2.tgz#071f7ce2cc2d4f8de18070ed5ec24968216ee010"
+  integrity sha512-BqP566wD89cfedGEJ9Sfo1EGTvOFChR5JYr39F3KsI9vnqYua5i6BTSpVLEFe8ClOq01VpM8Ohhp7PFDXUK7pA==
 
 react-native-dotenv@^3.4.11:
   version "3.4.11"

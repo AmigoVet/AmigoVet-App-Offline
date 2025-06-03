@@ -25,7 +25,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   textColor = 'white',
   width = '80%',
 }) => {
-  const buttonBackgroundColor = disabled ? newColors.verde : backgroundColor;
+  const buttonBackgroundColor = disabled ? newColors.gris : backgroundColor;
   const contentColor = disabled ? newColors.fondo_principal : textColor;
 
   return (

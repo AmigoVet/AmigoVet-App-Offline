@@ -32,6 +32,11 @@ const Login = () => {
     }
   };
 
+  // Función para validar si los campos están completos
+  const validateForm = () => {
+    return email.trim() !== '' && password.trim() !== '';
+  };
+
   return (
     <GlobalContainer>
       <ScrollView>
@@ -62,7 +67,7 @@ const Login = () => {
             text="Iniciar sesión"
             onPress={handleLogin}
             textColor={newColors.fondo_secundario}
-            disabled={loading}
+            disabled={loading || !validateForm()} // Deshabilitar si loading es true o el formulario no es válido
           />
           <Text style={[styles.text, styles.centeredText]}>¿No tienes una cuenta? Regístrate</Text>
           <CustomButton
