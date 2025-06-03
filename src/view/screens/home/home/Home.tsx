@@ -62,7 +62,7 @@ const Home = () => {
       <CustomScrollView>
         <HeaderHome userName={user?.name ?? 'Usuario'} animals={animals} />
         {animals.length === 0 ? (
-          <View>
+          <View style={{minHeight: 100, marginTop: 50}}>
             <Text style={styles.noAnimalsText}>No tienes animales registrados.</Text>
           </View>
         ) : (
