@@ -104,7 +104,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#888',
     textAlign: 'center',
-    marginBottom: 10,
+    minHeight: 200,
+    marginBottom: 100,
   },
   flatList: {
     marginBottom: 10,
