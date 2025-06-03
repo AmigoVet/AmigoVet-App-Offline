@@ -26,15 +26,14 @@ const AllNotes = () => {
   const totalPages = Math.ceil(totalNotes / limit);
 
   useEffect(() => {
-    loadNotes(page, limit, {
-      animalId,
-      comentario: searchQuery ? `%${searchQuery}%` : undefined,
-    });
+    if (animalId) {
+      loadNotes(page, limit, { comentario: searchQuery ? `%${searchQuery}%` : undefined }, [animalId]);
+    }
   }, [page, searchQuery, animalId, loadNotes]);
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
-    setPage(1); // Reset to first page when searching
+    setPage(1);
   };
 
   const renderNote = ({ item }: { item: Notes }) => (

@@ -20,37 +20,25 @@ const AllRegisters = () => {
   const { animalId, animalName } = route.params || {};
   const { registers, totalRegisters, loadRegisters } = useAnimalStore();
 
-
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const limit = 7;
   const totalPages = Math.ceil(totalRegisters / limit);
 
   useEffect(() => {
-    const fetchRegisters = async () => {
-      if (!animalId) {
-        console.error('[AllRegisters] animalId is undefined');
-        return;
-      }
-
-      try {
-        console.log('[AllRegisters] Loading registers with:', { page, limit, animalId, searchQuery });
-        await loadRegisters(page, limit, {
-          animalId: animalId,
-          comentario: searchQuery ? `%${searchQuery}%` : undefined,
-        });
-        console.log('[AllRegisters] Loaded registers:', registers.length, 'Total:', totalRegisters);
-      } catch (error) {
-        console.error('[AllRegisters] Error loading registers:', error);
-      }
-    };
-
-    fetchRegisters();
+    if (animalId) {
+      loadRegisters(
+        page,
+        limit,
+        { comentario: searchQuery ? `%${searchQuery}%` : undefined },
+        [animalId]
+      );
+    }
   }, [page, searchQuery, animalId, loadRegisters]);
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
-    setPage(1); // Reset to first page when searching
+    setPage(1);
   };
 
   const renderRegister = ({ item }: { item: Register }) => (

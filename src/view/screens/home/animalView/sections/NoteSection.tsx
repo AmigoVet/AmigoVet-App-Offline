@@ -18,17 +18,16 @@ import NoteSectionCard from '../cards/NoteSectionCard';
 interface NotesProps {
   notes: Notes[];
   animalId: string;
-  animalName: string; // Opcional, ya que no se usa en la interfaz Notes
+  animalName: string;
 }
 
 const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) => {
   const modalizeRef = useRef<Modalize>(null);
-  const {navigate} = useNavigation<NavigationProp>();
+  const { navigate } = useNavigation<NavigationProp>();
   const [nota, setNota] = useState('');
   const [editingNote, setEditingNote] = useState<Notes | null>(null);
   const { addNote, updateNote, animals } = useAnimalStore();
 
-  // Obtener las notas del animal desde el store
   const animalNotes = animals.find((animal) => animal.id === animalId)?.notes || initialNotes;
 
   const openModal = (note?: Notes) => {
@@ -62,7 +61,7 @@ const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) 
       id: editingNote ? editingNote.id : uuidv4(),
       animalId,
       nota: nota.trim(),
-      fecha: new Date().toISOString().split('T')[0], // Fecha actual
+      fecha: new Date().toISOString().split('T')[0],
       created_at: new Date().toISOString(),
     };
 
@@ -80,22 +79,26 @@ const NoteSection = ({ notes: initialNotes, animalId, animalName }: NotesProps) 
       console.error('Error al guardar nota:', error);
     }
   };
+
   return (
     <>
       <View style={styleSections.container}>
         <View style={styleSections.header}>
           <Text style={styleSections.title}>Notas</Text>
           <View style={styleSections.buttonsContainer}>
-          <MiniButton text="Agregar" icon="add-outline" onPress={() => openModal()} />
-          <MiniButton text="Ver todos" icon="book-outline" onPress={() => navigate('AllNotes', {animalId, animalName})} />
+            <MiniButton text="Agregar" icon="add-outline" onPress={() => openModal()} />
+            <MiniButton
+              text="Ver todos"
+              icon="book-outline"
+              onPress={() => navigate('AllNotes', { animalId, animalName })}
+            />
           </View>
-
         </View>
         {animalNotes.length === 0 ? (
           <Text style={styleSections.noDataText}>No hay notas</Text>
         ) : (
           animalNotes.map((note) => (
-            <NoteSectionCard note={note} />
+            <NoteSectionCard key={note.id} note={note} />
           ))
         )}
       </View>

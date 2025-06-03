@@ -17,6 +17,7 @@ const RegisterSection = ({ animal }: RegistersProps) => {
   const { animals } = useAnimalStore();
   const animalId = animal!.id;
   const animalName = animal!.nombre;
+
   // Guard clause for undefined animal
   if (!animal || !animal.id) {
     return (
@@ -29,31 +30,32 @@ const RegisterSection = ({ animal }: RegistersProps) => {
   // Obtener los registros del animal desde el store or props
   const animalRegisters = animals.find((a) => a.id === animal.id)?.registers || animal.registers || [];
 
-
   return (
-    <>
-      <View style={styleSections.container}>
-        <View style={styleSections.header}>
-          <Text style={styleSections.title}>Registros</Text>
-          <View style={styleSections.buttonsContainer}>
-            <MiniButton text="Agregar" icon="add-outline" onPress={() => navigation.navigate('CreateRegisterForm', {animal})} />
-            <MiniButton
-              text="Ver todos"
-              icon="book-outline"
-              onPress={() => navigation.navigate('AllRegisters', {animalId, animalName})} />
-          </View>
+    <View style={styleSections.container}>
+      <View style={styleSections.header}>
+        <Text style={styleSections.title}>Registros</Text>
+        <View style={styleSections.buttonsContainer}>
+          <MiniButton
+            text="Agregar"
+            icon="add-outline"
+            onPress={() => navigation.navigate('CreateRegisterForm', { animal })}
+          />
+          <MiniButton
+            text="Ver todos"
+            icon="book-outline"
+            onPress={() => navigation.navigate('AllRegisters', { animalId, animalName })}
+          />
         </View>
-        {animalRegisters.length === 0 ? (
-          <Text style={styleSections.noDataText}>No hay registros</Text>
-        ) : (
-          animalRegisters.map((register) => (
-            <RegisterdSectionCard register={register} />
-          ))
-        )}
       </View>
-    </>
+      {animalRegisters.length === 0 ? (
+        <Text style={styleSections.noDataText}>No hay registros</Text>
+      ) : (
+        animalRegisters.map((register) => (
+          <RegisterdSectionCard key={register.id} register={register} />
+        ))
+      )}
+    </View>
   );
 };
-
 
 export default RegisterSection;
