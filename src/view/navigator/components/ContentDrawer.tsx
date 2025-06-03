@@ -9,15 +9,20 @@ import { useAuthStore } from '../../../lib/store/authStore';
 import { newColors } from '../../styles/colors';
 import { constants } from '../../styles/constants';
 import MiniButton from '../../components/MiniButton';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../navigationTypes';
 
 const ContentDrawer = (props: DrawerContentComponentProps) => {
   const { user, logout, resetPassword } = useAuthStore();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleLogout = async () => {
     try {
       await logout();
       Alert.alert('Sesión cerrada', 'Has cerrado sesión correctamente.');
       props.navigation.closeDrawer();
+      // Navegar al stack Auth y luego a la pantalla Welcome
+      navigation.navigate('Auth');
     } catch (error: any) {
       Alert.alert('Error', 'No se pudo cerrar sesión. Intenta de nuevo.');
     }
