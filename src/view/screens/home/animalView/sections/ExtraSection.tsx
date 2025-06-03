@@ -179,6 +179,8 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
     }
   };
 
+  // TODO: Depurar este codigo, borrar cosas inecesarias, no me acuerdo que hace este codigo xd
+
   // const syncAnimalToCloud = async () => {
   //   try {
   //     let updatedAnimal = { ...currentAnimal };
@@ -238,7 +240,6 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
   //   }
   // };
 
-  //TODO: DEJAR DE JODER CON MODALES Y HACER PANTALLAS A PARTE PARA ESTOS DATOS
 
   return (
     <>
@@ -269,7 +270,6 @@ const ExtraSection = ({ animal }: ExtraSectionProps) => {
             color={newColors.fondo_principal}
           />
           <Separator height={20} />
-            {/* TODO: Hacer que funcione correctamente la actualizacion(Actualmente solo puede crearse pero no se actualizan los datos, trata de crearlos) */}
           <MiniButton
             text={currentAnimal.isRespalded ? 'Información Respaldada' : 'Respaldar Información'}
             icon={currentAnimal.isRespalded ? 'checkmark-outline' : 'cloud-upload-outline'}

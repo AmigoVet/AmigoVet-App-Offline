@@ -1,7 +1,4 @@
 
-## Envio de notificaciones para los eventos
-- Que pueda programar mas recordatorios
-- Arreglarlo para que funcione desde los registros
 
 ## Crear un feed para la info  
 - Mostrar animales en adopcion
@@ -20,8 +17,13 @@
 - Agregar razas de aviares
 
 # BUGS
--  Asegurarse de que se envie la notificacion antes de cada evento y no una sola ves
+- Mejorar el funcionamiento de los CustomSelect
+- Arreglar el funcionamiento del chat con gpt
 
-
-
+# Features
+- Posibilidad de modificar el idioma de la app
+- Calculadora de peso ideal
+- Calculadora de alimento diario
+- Calculadora de dosis de purgante
+- Respaldo en la nube
 
