@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, Linking } from 'react-native';
 import {
   DrawerContentScrollView,
   DrawerItemList,
@@ -11,6 +11,7 @@ import { constants } from '../../styles/constants';
 import MiniButton from '../../components/MiniButton';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigationTypes';
+import WithLove from '../../components/WithLove';
 
 const ContentDrawer = (props: DrawerContentComponentProps) => {
   const { user, logout, resetPassword } = useAuthStore();
@@ -26,6 +27,12 @@ const ContentDrawer = (props: DrawerContentComponentProps) => {
     } catch (error: any) {
       Alert.alert('Error', 'No se pudo cerrar sesión. Intenta de nuevo.');
     }
+  };
+
+  const handleLinkSubmit = () => {
+    Linking.openURL('https://www.amigovet.app/').catch(() =>
+      Alert.alert('Error', 'No se pudo abrir el enlace.')
+    );
   };
 
   const handleResetPassword = async () => {
@@ -80,6 +87,11 @@ const ContentDrawer = (props: DrawerContentComponentProps) => {
           color={newColors.fondo_principal}
         />
       </View>
+      <Text style={styles.linkText} onPress={handleLinkSubmit}>Visita nuestra web</Text>
+      <View style={{alignItems: 'center', marginTop: 20}}>
+        <WithLove />
+
+      </View>
     </DrawerContentScrollView>
   );
 };
@@ -124,6 +136,14 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginTop: 10,
+  },
+  linkText: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: newColors.fondo_secundario,
+    fontFamily: constants.FontText,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
   },
 });
 

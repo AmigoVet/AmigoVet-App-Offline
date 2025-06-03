@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 import Icon from '@react-native-vector-icons/ionicons';
 import { newColors } from '../styles/colors';
+import { constants } from '../styles/constants';
 
 const WithLove = () => {
   return (
@@ -27,9 +28,9 @@ const styles = StyleSheet.create({
       },
       minitext: {
         color: newColors.fondo_secundario,
-        fontSize: 10,
+        fontSize: 14,
         textAlign: 'center',
-        fontFamily: 'Chillax-Light',
+        fontFamily: constants.FontText,
       },
     });
 
