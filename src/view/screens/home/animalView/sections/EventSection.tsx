@@ -17,7 +17,6 @@ interface EventSectionProps {
 
 const EventSection = ({ events: initialEvents, animalId, animalName }: EventSectionProps) => {
   const navigation = useNavigation<NavigationProp>();
-
   const { animals } = useAnimalStore();
 
   // Configurar el canal de notificaciones
@@ -41,24 +40,30 @@ const EventSection = ({ events: initialEvents, animalId, animalName }: EventSect
   const animalEvents = animals.find((animal) => animal.id === animalId)?.events || initialEvents;
 
   return (
-    <>
-      <View style={styleSections.container}>
-        <View style={styleSections.header}>
-          <Text style={styleSections.title}>Eventos</Text>
-          <View style={styleSections.buttonsContainer}>
-          <MiniButton text="Agregar" icon="add-outline" onPress={() => navigation.navigate('CreateEventForm', { animalId, animalName })} />
-          <MiniButton text="Ver todos" icon="book-outline" onPress={() => navigation.navigate('AllEvents', { animalId, animalName })} />
-          </View>
+    <View style={styleSections.container}>
+      <View style={styleSections.header}>
+        <Text style={styleSections.title}>Eventos</Text>
+        <View style={styleSections.buttonsContainer}>
+          <MiniButton
+            text="Agregar"
+            icon="add-outline"
+            onPress={() => navigation.navigate('CreateEventForm', { animalId, animalName })}
+          />
+          <MiniButton
+            text="Ver todos"
+            icon="book-outline"
+            onPress={() => navigation.navigate('AllEvents', { animalId, animalName })}
+          />
         </View>
-        {animalEvents.length === 0 ? (
-          <Text style={styleSections.noDataText}>No hay eventos</Text>
-        ) : (
-          animalEvents.map((event) => (
-            <EventSectionCard event={event} />
-          ))
-        )}
       </View>
-    </>
+      {animalEvents.length === 0 ? (
+        <Text style={styleSections.noDataText}>No hay eventos</Text>
+      ) : (
+        animalEvents.map((event) => (
+          <EventSectionCard key={event.id} event={event} />
+        ))
+      )}
+    </View>
   );
 };
 

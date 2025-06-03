@@ -26,11 +26,17 @@ const AllEvents = () => {
   const totalPages = Math.ceil(totalEvents / limit);
 
   useEffect(() => {
-    loadEvents(page, limit, {
-      animalId,
-      comentario: searchQuery ? `%${searchQuery}%` : undefined,
-    });
-  }, [page, searchQuery, animalId, loadEvents]); // Added loadEvents to dependencies
+    if (animalId) {
+      loadEvents(
+        page,
+        limit,
+        {
+          comentario: searchQuery ? `%${searchQuery}%` : undefined,
+        },
+        [animalId] // Pass animalId as an array to animalsIds
+      );
+    }
+  }, [page, searchQuery, animalId, loadEvents]);
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
@@ -47,24 +53,20 @@ const AllEvents = () => {
         icon=""
         text="Anterior"
         disabled={page === 1}
-        onPress={() => {setPage(page - 1);}}
+        onPress={() => setPage(page - 1)}
       />
-
       {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNum) => (
         <TouchableOpacity
           key={pageNum}
           onPress={() => setPage(pageNum)}
-          style={[
-            styles.pageNumber,
-            pageNum === page && styles.activePageNumber,
-          ]}
+          style={[styles.pageNumber, pageNum === page && styles.activePageNumber]}
         >
           <Text style={styles.paginationText}>{pageNum}</Text>
         </TouchableOpacity>
       ))}
       <MiniButton
         disabled={page === totalPages}
-        onPress={() => {setPage(page + 1);}}
+        onPress={() => setPage(page + 1)}
         text="Siguiente"
         icon=""
       />
@@ -84,7 +86,6 @@ const AllEvents = () => {
         onChangeText={handleSearch}
         iconName="search-outline"
       />
-
       {events.length === 0 ? (
         <Text style={styles.noEventsText}>No hay eventos disponibles</Text>
       ) : (
@@ -125,16 +126,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-  },
-  paginationButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
-  disabledButton: {
-    backgroundColor: '#ccc',
   },
   pageNumber: {
     paddingVertical: 8,

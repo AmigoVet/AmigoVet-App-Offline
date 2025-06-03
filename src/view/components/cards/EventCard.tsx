@@ -72,7 +72,12 @@ const EventCard = ({ event }: EventCardProps) => {
     <View style={styles.card}>
       <View style={styles.header}>
         <Text style={styles.title}>{event.comentario}</Text>
-        <Text style={[styles.status, hasPassed ? styles.passed : styles.upcoming]}>
+        <Text
+          style={[
+            styles.status,
+            hasPassed ? styles.passed : styles.upcoming,
+          ]}
+        >
           {hasPassed ? 'Evento pasado' : 'Evento próximo'}
         </Text>
       </View>
@@ -82,9 +87,9 @@ const EventCard = ({ event }: EventCardProps) => {
       <Text style={styles.time}>
         Hora: <Text style={styles.dateInfo}>{formattedTime}</Text>
       </Text>
-      <Text style={styles.notification}>
-        {notificationText}
-      </Text>
+      {!hasPassed && (
+        <Text style={styles.notification}>{notificationText}</Text>
+      )}
       <View style={styles.miniButtonContainer}>
         <MiniButton
           icon="trash-outline"

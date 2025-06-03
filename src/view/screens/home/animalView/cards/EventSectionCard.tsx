@@ -49,23 +49,28 @@ const EventSectionCard = ({ event }: EventSectionCardProps) => {
     : 'Sin notificación programada';
 
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{event.comentario}</Text>
-        <Text style={[styles.status, hasPassed ? styles.passed : styles.upcoming]}>
-          {hasPassed ? 'Evento pasado' : 'Evento próximo'}
-        </Text>
-      </View>
-      <Text style={styles.date}>
-        Fecha del evento: <Text style={styles.dateInfo}>{formattedDate}</Text>
-      </Text>
-      <Text style={styles.time}>
-        Hora: <Text style={styles.dateInfo}>{formattedTime}</Text>
-      </Text>
-      <Text style={styles.notification}>
-        {notificationText}
+  <View style={styles.card}>
+    <View style={styles.header}>
+      <Text style={styles.title}>{event.comentario}</Text>
+      <Text
+        style={[
+          styles.status,
+          hasPassed ? styles.passed : styles.upcoming,
+        ]}
+      >
+        {hasPassed ? 'Evento pasado' : 'Evento próximo'}
       </Text>
     </View>
+    <Text style={styles.date}>
+      Fecha del evento: <Text style={styles.dateInfo}>{formattedDate}</Text>
+    </Text>
+    <Text style={styles.time}>
+      Hora: <Text style={styles.dateInfo}>{formattedTime}</Text>
+    </Text>
+    {!hasPassed && (
+      <Text style={styles.notification}>{notificationText}</Text>
+    )}
+  </View>
   );
 };
 
