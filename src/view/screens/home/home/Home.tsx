@@ -5,12 +5,12 @@ import CustomScrollView from '../../../components/customs/CustomScrollView';
 import HeaderHome from './components/HeaderHome';
 import { useAuthStore } from '../../../../lib/store/authStore';
 import { useAnimalStore } from '../../../../lib/store/useAnimalStore';
-import FilterBarHome from './components/FilterBarHome';
 import ProgramerHome from './components/ProgramerHome';
 import { newColors } from '../../../styles/colors';
 import Separator from '../../../components/Separator';
 import PrivateAnimalCard from '../local/components/PrivateAnimalCard';
 import { Animal } from '../../../../lib/interfaces/Animal';
+import ListToolsHome from './components/ListToolsHome';
 
 const Home = () => {
   const { user } = useAuthStore();
@@ -68,7 +68,7 @@ const Home = () => {
         ) : (
           <Separator height={0} />
         )}
-        <FilterBarHome onChange={() => {}} />
+        <ListToolsHome />
         <ProgramerHome events={events} />
         <Text style={styles.favoriteTitle}>Animales Favoritos</Text>
         {favoriteAnimals.length === 0 ? (

@@ -15,6 +15,9 @@ import CreateRegisterForm from '../screens/home/forms/registers/CreateRegisterFo
 import AllEvents from '../screens/home/forms/events/AllEvents';
 import AllNotes from '../screens/home/forms/notes/AllNotes';
 import AllRegisters from '../screens/home/forms/registers/AllRegisters';
+import CalculateAppropriateWeight from '../screens/tools/calculateAppropriateWeight/CalculateAppropriateWeight';
+import CalculateFoodPerDay from '../screens/tools/calculateFoodPerDay/CalculateFoodPerDay';
+import CalculatePurgativeDose from '../screens/tools/calculatePurgativeDose/CalculatePurgativeDose';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -41,6 +44,9 @@ const AppNavigator = () => {
           <Stack.Screen name="AllEvents" component={AllEvents} />
           <Stack.Screen name="AllRegisters" component={AllRegisters} />
           <Stack.Screen name="AllNotes" component={AllNotes} />
+          <Stack.Screen name="CalculateAppropriateWeight" component={CalculateAppropriateWeight} />
+          <Stack.Screen name="CalculateFoodPerDay" component={CalculateFoodPerDay} />
+          <Stack.Screen name="CalculatePurgativeDose" component={CalculatePurgativeDose} />
         </>
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />

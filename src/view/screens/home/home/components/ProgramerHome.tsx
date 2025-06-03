@@ -189,7 +189,7 @@ const ProgramerHome: React.FC<ProgramerHomeProps> = ({ events = [] }) => {
           </View>
         )}
         <Pressable onPress={() => navigate('Calendar')} style={ProgramerHomeStyles.button}>
-          <Text style={ProgramerHomeStyles.buttonText}>Ver más...</Text>
+          <Text style={ProgramerHomeStyles.buttonText}>Ver todos...</Text>
         </Pressable>
       </View>
       <View style={ProgramerHomeStyles.containerExtra}>

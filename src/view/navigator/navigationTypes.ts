@@ -33,6 +33,11 @@ export type RootStackParamList = {
   AllEvents: {animalId: string; animalName: string};
   AllNotes: {animalId: string; animalName: string};
   AllRegisters: {animalId: string; animalName: string};
+
+  // tools
+  CalculateAppropriateWeight: undefined;
+  CalculateFoodPerDay: undefined;
+  CalculatePurgativeDose: undefined;
 };
 
 export type DrawerParamList = {
