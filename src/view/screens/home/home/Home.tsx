@@ -82,7 +82,6 @@ const Home = () => {
             style={styles.flatList}
           />
         )}
-        <Separator height={50} />
       </CustomScrollView>
     </GlobalContainer>
   );

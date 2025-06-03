@@ -29,9 +29,8 @@ export interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  // Inicio con supabase
   user: null,
-  loading: false,
+  loading: true, // Cambiado a true para mostrar Loading desde el inicio
   error: null,
 
   setUser: async (user: User | null) => {
@@ -41,9 +40,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       } else {
         await AsyncStorage.removeItem('user');
       }
-      set({ user, error: null });
+      set({ user, error: null, loading: false });
     } catch (error: any) {
-      set({ error: [error.message || 'Failed to set user'] });
+      set({ error: [error.message || 'Failed to set user'], loading: false });
     }
   },
 
@@ -60,7 +59,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           id: session.user.id,
           name: session.user.user_metadata.full_name || '',
           email: session.user.email || '',
-          phone: undefined, // Not stored in auth.users
+          phone: undefined,
         };
 
         await AsyncStorage.setItem('user', JSON.stringify(user));
@@ -76,9 +75,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   clearUser: async () => {
     try {
       await AsyncStorage.removeItem('user');
-      set({ user: null, error: null });
+      set({ user: null, error: null, loading: false });
     } catch (error: any) {
-      set({ error: [error.message || 'Failed to clear user'] });
+      set({ error: [error.message || 'Failed to clear user'], loading: false });
     }
   },
 
@@ -102,7 +101,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         id: data.user.id,
         name: data.user.user_metadata.full_name || '',
         email: data.user.email || '',
-        phone: undefined, // Not stored in auth.users
+        phone: undefined,
       };
 
       await AsyncStorage.setItem('user', JSON.stringify(user));
@@ -140,7 +139,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         id: data.user.id,
         name: data.user.user_metadata.full_name || name,
         email: data.user.email || email,
-        phone: undefined, // Not stored in auth.users
+        phone: undefined,
       };
 
       await AsyncStorage.setItem('user', JSON.stringify(user));
@@ -171,7 +170,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null });
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'your-app://reset-password', // Replace with your app's deep link or web URL
+        redirectTo: 'your-app://reset-password',
       });
       if (error) {
         throw error;

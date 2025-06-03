@@ -18,11 +18,12 @@ import AllRegisters from '../screens/home/forms/registers/AllRegisters';
 import CalculateAppropriateWeight from '../screens/tools/calculateAppropriateWeight/CalculateAppropriateWeight';
 import CalculateFoodPerDay from '../screens/tools/calculateFoodPerDay/CalculateFoodPerDay';
 import CalculatePurgativeDose from '../screens/tools/calculatePurgativeDose/CalculatePurgativeDose';
+import Loading from '../screens/settings/loading/Loading';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
-  const { user, loadUser } = useAuthStore();
+  const { user, loading, loadUser } = useAuthStore();
 
   useEffect(() => {
     loadUser();
@@ -30,7 +31,9 @@ const AppNavigator = () => {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {user ? (
+      {loading ? (
+        <Stack.Screen name="Loading" component={Loading} />
+      ) : user ? (
         <>
           <Stack.Screen name="MainApp" component={MainTabs} />
           <Stack.Screen name="AnimalView" component={AnimalView} />
