@@ -13,6 +13,9 @@ import { Register } from '../interfaces/Register';
 import { Events, sendNotifi } from '../interfaces/Events';
 import { updateAnimal } from '../db/animals/updateAnimal';
 import { notificationUtils } from '../utils/notifi/notificationUtils';
+import { deleteImage, getImagesByAnimalId, setDataImage } from '../db/images/Images';
+import { deleteWeight, getWeightsByAnimalId, setDataWeight } from '../db/weights/weights';
+import { calculateNotificationDate } from '../utils/calculateNotificationDate';
 
 interface AnimalStore {
   animals: Animal[];
@@ -86,169 +89,8 @@ interface AnimalStore {
 // TODO: Separar las funciones en archvivos diferentes
 // TODO: Ver como minimizar el codigo de este archivo de otra manera
 
-const calculateNotificationDate = (dateEvent: Date, sendNotifi: sendNotifi): Date => {
-  const notifiDate = new Date(dateEvent);
 
-  switch (sendNotifi) {
-    case '1d':
-      notifiDate.setDate(dateEvent.getDate() - 1);
-      break;
-    case '2d':
-      notifiDate.setDate(dateEvent.getDate() - 2);
-      break;
-    case '3d':
-      notifiDate.setDate(dateEvent.getDate() - 3);
-      break;
-    case '4d':
-      notifiDate.setDate(dateEvent.getDate() - 4);
-      break;
-    case '5d':
-      notifiDate.setDate(dateEvent.getDate() - 5);
-      break;
-    case '1w':
-      notifiDate.setDate(dateEvent.getDate() - 7);
-      break;
-    case '2w':
-      notifiDate.setDate(dateEvent.getDate() - 14);
-      break;
-    default:
-      throw new Error('Invalid sendNotifi value');
-  }
 
-  return notifiDate;
-};
-
-const getImagesByAnimalId = async (animalId: string, page: number = 1, limit: number = 5): Promise<ImagesTable[]> => {
-  const db: SQLiteDatabase = await getDatabase();
-  return new Promise((resolve, reject) => {
-    db.transaction((tx: Transaction) => {
-      tx.executeSql(
-        `SELECT * FROM Images WHERE animalId = ? ORDER BY fecha DESC LIMIT ? OFFSET ?`,
-        [animalId, limit, (page - 1) * limit],
-        (_, { rows }) => {
-          const images: ImagesTable[] = [];
-          for (let i = 0; i < rows.length; i++) {
-            const item = rows.item(i);
-            images.push({
-              id: item.id,
-              animalId: item.animalId,
-              fecha: item.fecha,
-              url: item.url,
-            });
-          }
-          resolve(images);
-        },
-        (_, error: SQLError) => {
-          console.error('[ERROR] Error al obtener imágenes:', error.message);
-          reject(error);
-          return false;
-        }
-      );
-    });
-  });
-};
-
-const getWeightsByAnimalId = async (animalId: string, page: number = 1, limit: number = 5): Promise<WeightsTable[]> => {
-  const db: SQLiteDatabase = await getDatabase();
-  return new Promise((resolve, reject) => {
-    db.transaction((tx: Transaction) => {
-      tx.executeSql(
-        `SELECT * FROM Weights WHERE animalId = ? ORDER BY fecha DESC LIMIT ? OFFSET ?`,
-        [animalId, limit, (page - 1) * limit],
-        (_, { rows }) => {
-          const weights: WeightsTable[] = [];
-          for (let i = 0; i < rows.length; i++) {
-            const item = rows.item(i);
-            weights.push({
-              id: item.id,
-              animalId: item.animalId,
-              fecha: item.fecha,
-              peso: item.peso,
-            });
-          }
-          resolve(weights);
-        },
-        (_, error: SQLError) => {
-          console.error('[ERROR] Error al obtener pesos:', error.message);
-          reject(error);
-          return false;
-        }
-      );
-    });
-  });
-};
-
-const setDataImage = async (image: ImagesTable): Promise<void> => {
-  const db: SQLiteDatabase = await getDatabase();
-  return new Promise((resolve, reject) => {
-    db.transaction((tx: Transaction) => {
-      tx.executeSql(
-        `INSERT INTO Images (id, animalId, fecha, url) VALUES (?, ?, ?, ?)`,
-        [image.id, image.animalId, image.fecha, image.url],
-        () => resolve(),
-        (_, error: SQLError) => {
-          console.error('[ERROR] Error al agregar imagen:', error.message);
-          reject(error);
-          return false;
-        }
-      );
-    });
-  });
-};
-
-const deleteImage = async (id: string): Promise<void> => {
-  const db: SQLiteDatabase = await getDatabase();
-  return new Promise((resolve, reject) => {
-    db.transaction((tx: Transaction) => {
-      tx.executeSql(
-        `DELETE FROM Images WHERE id = ?`,
-        [id],
-        () => resolve(),
-        (_, error: SQLError) => {
-          console.error('[ERROR] Error al eliminar imagen:', error.message);
-          reject(error);
-          return false;
-        }
-      );
-    });
-  });
-};
-
-const setDataWeight = async (weight: WeightsTable): Promise<void> => {
-  const db: SQLiteDatabase = await getDatabase();
-  return new Promise((resolve, reject) => {
-    db.transaction((tx: Transaction) => {
-      tx.executeSql(
-        `INSERT INTO Weights (id, animalId, fecha, peso) VALUES (?, ?, ?, ?)`,
-        [weight.id, weight.animalId, weight.fecha, weight.peso],
-        () => resolve(),
-        (_, error: SQLError) => {
-          console.error('[ERROR] Error al agregar peso:', error.message);
-          reject(error);
-          return false;
-        }
-      );
-    });
-  });
-};
-
-const deleteWeight = async (id: string): Promise<void> => {
-  const db: SQLiteDatabase = await getDatabase();
-  return new Promise((resolve, reject) => {
-    db.transaction((tx: Transaction) => {
-      tx.executeSql(
-        `DELETE FROM Weights WHERE id = ?`,
-        [id],
-        () => resolve(),
-        (_, error: SQLError) => {
-          console.error('[ERROR] Error al eliminar peso:', error.message);
-          reject(error);
-          return false;
-        }
-      );
-    });
-  });
-};
 
 export const useAnimalStore = create<AnimalStore>((set, get) => ({
   animals: [],
