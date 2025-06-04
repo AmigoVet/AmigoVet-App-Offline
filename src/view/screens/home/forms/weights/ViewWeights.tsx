@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, StyleSheet, View, Text, Alert } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NavigationProp, RootStackParamList } from '../../../../navigator/navigationTypes';
@@ -14,11 +14,17 @@ import { useAnimalStore } from '../../../../../lib/store/useAnimalStore';
 type ViewWeightsRouteProp = RouteProp<RootStackParamList, 'ViewWeights'>;
 
 const ViewWeights = () => {
-  const { weights, animalName } = useRoute<ViewWeightsRouteProp>().params;
+  const { weights: initialWeights, animalName } = useRoute<ViewWeightsRouteProp>().params;
   const { goBack } = useNavigation<NavigationProp>();
   const { deleteWeight } = useAnimalStore();
+  const [weights, setWeights] = useState<WeightsTable[]>(initialWeights);
 
   const handleDeleteWeight = (weight: WeightsTable) => {
+    if (weights.length === 1) {
+      Alert.alert('No se puede eliminar', 'No puedes eliminar el último registro de peso.');
+      return;
+    }
+
     Alert.alert(
       'Confirmar eliminación',
       '¿Estás seguro de que quieres eliminar este peso? Esta acción no se puede deshacer.',
@@ -30,6 +36,7 @@ const ViewWeights = () => {
           onPress: async () => {
             try {
               await deleteWeight(weight.id);
+              setWeights(weights.filter((w) => w.id !== weight.id));
               Alert.alert('Éxito', 'Peso eliminado correctamente');
             } catch (error: any) {
               console.error('[ERROR] Error al eliminar peso:', error.message);
@@ -95,7 +102,7 @@ const WeightCard = ({ weight, onDelete }: { weight: WeightsTable; onDelete: () =
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
   },
   weightCard: {
     marginVertical: 10,

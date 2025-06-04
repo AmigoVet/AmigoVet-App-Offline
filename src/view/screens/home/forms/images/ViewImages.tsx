@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, StyleSheet, View, Text, Alert } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NavigationProp, RootStackParamList } from '../../../../navigator/navigationTypes';
@@ -16,11 +16,17 @@ import { useAnimalStore } from '../../../../../lib/store/useAnimalStore';
 type ViewImagesRouteProp = RouteProp<RootStackParamList, 'ViewImages'>;
 
 const ViewImages = () => {
-  const { images, animalName } = useRoute<ViewImagesRouteProp>().params;
+  const { images: initialImages, animalName } = useRoute<ViewImagesRouteProp>().params;
   const { goBack } = useNavigation<NavigationProp>();
   const { deleteImage } = useAnimalStore();
+  const [images, setImages] = useState<ImagesTable[]>(initialImages);
 
   const handleDeleteImage = (image: ImagesTable) => {
+    if (images.length === 1) {
+      Alert.alert('No se puede eliminar', 'No puedes eliminar la última imagen registrada.');
+      return;
+    }
+
     Alert.alert(
       'Confirmar eliminación',
       '¿Estás seguro de que quieres eliminar esta imagen? Esta acción no se puede deshacer.',
@@ -40,6 +46,9 @@ const ViewImages = () => {
 
               // Delete the image from the database
               await deleteImage(image.id);
+
+              // Update local state to remove the image from view
+              setImages(images.filter((img) => img.id !== image.id));
 
               Alert.alert('Éxito', 'Imagen eliminada correctamente');
             } catch (error: any) {
@@ -67,6 +76,9 @@ const ViewImages = () => {
           renderItem={({ item }: { item: ImagesTable }) => (
             <ImageCard image={item} onDelete={() => handleDeleteImage(item)} />
           )}
+          ListEmptyComponent={
+            <Text style={styles.noDataText}>No hay imágenes registradas</Text>
+          }
         />
       </View>
     </GlobalContainer>
@@ -127,6 +139,13 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 250,
+  },
+  noDataText: {
+    fontSize: 14,
+    color: newColors.fondo_principal,
+    textAlign: 'center',
+    marginTop: 20,
+    fontFamily: constants.FontText,
   },
 });
 
