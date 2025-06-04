@@ -1,15 +1,13 @@
 import { View, Text, Pressable, StyleSheet, FlatList, Image } from 'react-native';
 import React from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-
 import LabelLogo from '../../../../assets/svgs/LabelLogo';
 import { simplificateName } from '../../../../../lib/functions/simplificateName';
 import Icon from '@react-native-vector-icons/ionicons';
 import { newColors } from '../../../../styles/colors';
 import { RootStackParamList } from '../../../../navigator/navigationTypes';
 import { constants } from '../../../../styles/constants';
-import { Animal } from '../../../../../lib/interfaces/Animal';
-
+import { Animal, ImagesTable } from '../../../../../lib/interfaces/Animal';
 
 interface HeaderHomeProps {
   userName: string;
@@ -22,7 +20,18 @@ const HeaderHome = ({ userName, animals }: HeaderHomeProps) => {
 
   // Determinar si centrar el contenido del FlatList
   const centerFlatList = animals.length <= 3;
-  const styles = createStyles(); // Eliminamos parámetros dinámicos
+  const styles = createStyles();
+
+  // Get the latest image URL for an animal
+  const getLatestImageUrl = (images: ImagesTable[] | undefined): string => {
+    if (!images || images.length === 0) {
+      return ''; // Fallback to empty string (CustomImage should handle this)
+    }
+    const latestImage = images.reduce((latest, current) =>
+      new Date(current.fecha) > new Date(latest.fecha) ? current : latest
+    );
+    return latestImage.url;
+  };
 
   return (
     <View style={styles.rootContainer}>
@@ -55,12 +64,12 @@ const HeaderHome = ({ userName, animals }: HeaderHomeProps) => {
           ListHeaderComponent={() => <View style={styles.width20} />}
           ListFooterComponent={() => <View style={styles.width20} />}
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item) => item.id} // Use unique animal ID
           contentContainerStyle={centerFlatList ? styles.centeredFlatList : styles.defaultFlatList}
           renderItem={({ item }) => (
             <Pressable style={styles.animalContainer} onPress={() => navigate('AnimalView', { animal: item })}>
               <View style={styles.imageContainer}>
-                <Image source={{ uri: item.image }} style={styles.circle} />
+                <Image source={{ uri: getLatestImageUrl(item.images) }} style={styles.circle} />
               </View>
               <Text style={styles.text}>{item.nombre}</Text>
               <Text style={styles.text2}>{item.especie}</Text>
@@ -71,6 +80,7 @@ const HeaderHome = ({ userName, animals }: HeaderHomeProps) => {
     </View>
   );
 };
+
 
 const createStyles = () =>
   StyleSheet.create({

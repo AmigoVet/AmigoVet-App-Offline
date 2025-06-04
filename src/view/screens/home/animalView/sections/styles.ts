@@ -25,7 +25,7 @@ content:{
   alignItems: 'flex-start',
   paddingVertical: 10,
   paddingHorizontal: 20,
-},
+  },
 title: {
   fontSize: 16,
   fontWeight: 'bold',
@@ -54,4 +54,9 @@ buttonsContainer: {
   flexDirection: 'row',
   gap: 5,
 },
+tableContainer: {
+  width: '100%',
+  padding: 10,
+
+}
 });

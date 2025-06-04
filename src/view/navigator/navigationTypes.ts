@@ -1,5 +1,5 @@
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack';
-import { Animal } from '../../lib/interfaces/Animal';
+import { Animal, ImagesTable, WeightsTable } from '../../lib/interfaces/Animal';
 import { Chat } from '../../lib/interfaces/chats';
 import { Register } from '../../lib/interfaces/Register';
 
@@ -39,6 +39,11 @@ export type RootStackParamList = {
   CalculateAppropriateWeight: undefined;
   CalculateFoodPerDay: undefined;
   CalculatePurgativeDose: undefined;
+
+  AddImage: { animalId: string; animalName: string };
+  ViewImages: { animalId: string; animalName: string; images: ImagesTable[] };
+  AddWeight: { animalId: string; animalName: string };
+  ViewWeights: { animalId: string; animalName: string; weights: WeightsTable[] };
 };
 
 export type DrawerParamList = {

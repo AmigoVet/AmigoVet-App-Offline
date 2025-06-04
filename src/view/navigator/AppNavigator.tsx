@@ -19,6 +19,10 @@ import CalculateAppropriateWeight from '../screens/tools/calculateAppropriateWei
 import CalculateFoodPerDay from '../screens/tools/calculateFoodPerDay/CalculateFoodPerDay';
 import CalculatePurgativeDose from '../screens/tools/calculatePurgativeDose/CalculatePurgativeDose';
 import Loading from '../screens/settings/loading/Loading';
+import AddImage from '../screens/home/forms/images/AddImage';
+import ViewImages from '../screens/home/forms/images/ViewImages';
+import AddWeight from '../screens/home/forms/weights/AddWeight';
+import ViewWeights from '../screens/home/forms/weights/ViewWeights';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -50,6 +54,10 @@ const AppNavigator = () => {
           <Stack.Screen name="CalculateAppropriateWeight" component={CalculateAppropriateWeight} />
           <Stack.Screen name="CalculateFoodPerDay" component={CalculateFoodPerDay} />
           <Stack.Screen name="CalculatePurgativeDose" component={CalculatePurgativeDose} />
+          <Stack.Screen name="AddImage" component={AddImage} />
+          <Stack.Screen name="ViewImages" component={ViewImages} />
+          <Stack.Screen name="AddWeight" component={AddWeight} />
+          <Stack.Screen name="ViewWeights" component={ViewWeights} />
         </>
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />
