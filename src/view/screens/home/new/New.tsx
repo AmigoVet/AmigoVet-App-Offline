@@ -5,7 +5,7 @@ import RNFS from 'react-native-fs';
 import GlobalContainer from '../../../components/GlobalContainer';
 import Header from '../../../components/Header';
 import CustomImagePicker from '../../../components/customs/CustomImagePicker';
-import { Especie, especiesRazasMap, generos, propositosPorEspecie, Animal } from '../../../../lib/interfaces/Animal';
+import { Especie, especiesRazasMap, generos, propositosPorEspecie, Animal, ImagesTable, WeightsTable, Genero, Raza } from '../../../../lib/interfaces/Animal';
 import CustomSelect from '../../../components/customs/CustomSelect';
 import CustomButton from '../../../components/customs/CustomButton';
 import Separator from '../../../components/Separator';
@@ -21,6 +21,8 @@ import { GlobalStyles } from '../../../styles/GlobalStyles';
 interface FormData extends Partial<Animal> {
   edad?: string;
   fechaNacimiento?: Date | null;
+  imageUri?: string; // Temporary field for image URI
+  peso?: string; // Temporary field for weight
 }
 
 // Define initial form data
@@ -37,7 +39,7 @@ const initialFormData: FormData = {
   proposito: '',
   ubicacion: '',
   descripcion: '',
-  image: '',
+  imageUri: '',
   ownerId: '',
   id: '',
   created_at: '',
@@ -47,20 +49,22 @@ const initialFormData: FormData = {
 
 const New = () => {
   const { user } = useAuthStore();
-  const { addAnimal, loadAnimals } = useAnimalStore();
+  const { addAnimal, addImage, addWeight, loadAnimals } = useAnimalStore();
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
 
   // Load animals when the component mounts
   useEffect(() => {
-    loadAnimals(1, 10, user!.id).catch((error) => {
-      console.error('[ERROR] Error al cargar animales:', error);
-      Alert.alert('Error', 'No se pudieron cargar los animales');
-    });
-  }, [loadAnimals]);
+    if (user?.id) {
+      loadAnimals(1, 10, user.id).catch((error) => {
+        console.error('[ERROR] Error al cargar animales:', error);
+        Alert.alert('Error', 'No se pudieron cargar los animales');
+      });
+    }
+  }, [loadAnimals, user]);
 
   // Generic handler for updating form fields
-  const handleChange = async (field: keyof FormData, value: string | Date | null) => {
+  const handleChange = (field: keyof FormData, value: string | Date | null | Especie | Raza | Genero) => {
     setFormData((prev) => {
       const newFormData = { ...prev, [field]: value };
 
@@ -92,7 +96,6 @@ const New = () => {
       !formData.raza ||
       !formData.proposito ||
       !formData.genero ||
-      !formData.peso ||
       !formData.color ||
       !formData.ubicacion
     ) {
@@ -105,45 +108,89 @@ const New = () => {
       return;
     }
 
-    // Extraer solo el nombre del archivo de la URI
-    let imageFileName = '';
-    if (formData.image) {
-      const exists = await RNFS.exists(formData.image.replace('file://', ''));
-      if (exists) {
-        imageFileName = formData.image.split('/').pop() || '';
+    const animalId = uuidv4();
+    const now = new Date().toISOString();
+
+    // Handle image file
+    let imageUrl = '';
+    if (formData.imageUri) {
+      try {
+        // Ensure the source file exists
+        const sourcePath = formData.imageUri.replace('file://', '');
+        const exists = await RNFS.exists(sourcePath);
+        if (!exists) {
+          throw new Error('La imagen seleccionada no existe');
+        }
+
+        // Create the animals directory
+        const animalsDir = `${RNFS.DocumentDirectoryPath}/animals`;
+        await RNFS.mkdir(animalsDir);
+
+        // Move the image to the animals directory
+        const fileName = `${animalId}_${Date.now()}.jpg`;
+        const destPath = `${animalsDir}/${fileName}`;
+        await RNFS.moveFile(sourcePath, destPath);
+        imageUrl = `file://${destPath}`;
+      } catch (error: any) {
+        console.error('[ERROR] Error al mover la imagen:', error.message);
+        Alert.alert('Error', `No se pudo procesar la imagen: ${error.message}`);
+        return;
       }
     }
 
     const animalData: Animal = {
       ownerId: user.id,
-      id: uuidv4(),
+      id: animalId,
       identificador: formData.identificador || '',
-      nombre: formData.nombre || '',
+      nombre: formData.nombre,
       especie: formData.especie,
       raza: formData.raza,
       nacimiento: formData.nacimiento,
       genero: formData.genero,
-      peso: formData.peso || '',
-      color: formData.color || '',
+      color: formData.color,
       descripcion: formData.descripcion || '',
-      image: imageFileName, // Guardar solo el nombre del archivo
-      image2: '',
-      image3: '',
-      proposito: formData.proposito || '',
-      ubicacion: formData.ubicacion || '',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      proposito: formData.proposito,
+      ubicacion: formData.ubicacion,
+      created_at: now,
+      updated_at: now,
       embarazada: false,
       favorito: false,
+      isPublic: false,
+      isRespalded: false,
+      isChanged: false,
     };
 
     try {
+      // Add the animal
       await addAnimal(animalData);
+
+      // Add image to Images table if provided
+      if (imageUrl) {
+        const imageData: ImagesTable = {
+          id: uuidv4(),
+          animalId: animalId,
+          fecha: now,
+          url: imageUrl,
+        };
+        await addImage(imageData);
+      }
+
+      // Add weight to Weights table if provided
+      if (formData.peso) {
+        const weightData: WeightsTable = {
+          id: uuidv4(),
+          animalId: animalId,
+          fecha: now,
+          peso: formData.peso,
+        };
+        await addWeight(weightData);
+      }
+
       Alert.alert('Éxito', 'Animal guardado correctamente');
       setFormData(initialFormData);
-    } catch (error) {
-      console.error('[ERROR] Error al guardar animal:', error);
-      Alert.alert('Error', 'No se pudo guardar el animal');
+    } catch (error: any) {
+      console.error('[ERROR] Error al guardar animal:', error.message);
+      Alert.alert('Error', `No se pudo guardar el animal: ${error.message || 'Error desconocido'}`);
     }
   };
 
@@ -158,14 +205,14 @@ const New = () => {
       : [];
 
   return (
-    <GlobalContainer >
+    <GlobalContainer>
       <Header
         title="Agrega un Animal"
         onPress={() => Alert.alert('Debería mostrar info de cómo agregar un animal y cosas así')}
       />
       <CustomScrollView style={GlobalStyles.padding20}>
         <CustomImagePicker
-          onImageSelected={(uri) => handleChange('image', uri)}
+          onImageSelected={(uri) => handleChange('imageUri', uri)}
         />
 
         <CustomInput
@@ -187,8 +234,8 @@ const New = () => {
           required
           label="Especie"
           value={formData.especie || ''}
-          options={Object.keys(especiesRazasMap)}
-          onChange={(value) => handleChange('especie', value)}
+          options={Object.keys(especiesRazasMap) as Especie[]}
+          onChange={(value) => handleChange('especie', value as Especie)}
         />
 
         <CustomSelect
@@ -196,7 +243,7 @@ const New = () => {
           label="Raza"
           value={formData.raza || ''}
           options={razasDisponibles}
-          onChange={(value) => handleChange('raza', value)}
+          onChange={(value) => handleChange('raza', value as Raza)}
         />
 
         <CustomSelect
@@ -212,7 +259,7 @@ const New = () => {
           label="Género"
           value={formData.genero || ''}
           options={generos}
-          onChange={(value) => handleChange('genero', value)}
+          onChange={(value) => handleChange('genero', value as Genero)}
         />
 
         <CustomDatePicker
@@ -222,13 +269,13 @@ const New = () => {
         />
 
         <CustomInput
-          required
           label="Peso"
           value={formData.peso || ''}
           onChangeText={(value) => handleChange('peso', value)}
           placeholder="Peso en kg"
           type="number"
         />
+
         <CustomInput
           required
           label="Color"
@@ -236,6 +283,7 @@ const New = () => {
           onChangeText={(value) => handleChange('color', value)}
           placeholder="Color del animal"
         />
+
         <CustomInput
           required
           label="Ubicación"
@@ -243,6 +291,7 @@ const New = () => {
           onChangeText={(value) => handleChange('ubicacion', value)}
           placeholder="Ubicación del animal"
         />
+
         <CustomInput
           label="Descripción"
           value={formData.descripcion || ''}

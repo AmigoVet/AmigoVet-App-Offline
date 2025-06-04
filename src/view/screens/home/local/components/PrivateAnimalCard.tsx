@@ -17,15 +17,21 @@ interface PrivateAnimalCardProps {
 const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
   const { navigate } = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  // Get the most recent image (if any)
+  const latestImage = animal.images && animal.images.length > 0
+    ? animal.images.reduce((latest, current) => 
+        new Date(current.fecha) > new Date(latest.fecha) ? current : latest
+      ).url
+    : undefined;
+
   // Get the first two notes (or fewer if not enough exist)
   const howManyNotes = animal.embarazada ? 1 : 2;
   const firstTwoNotes = animal.notes && animal.notes.length > 0 ? animal.notes.slice(0, howManyNotes) : [];
-  // console.log('First two notes:', firstTwoNotes);
 
   return (
-    <Pressable style={styles.box} onPress={() => navigate('AnimalView', { animal: animal })}>
+    <Pressable style={styles.box} onPress={() => navigate('AnimalView', { animal })}>
       <View style={styles.imageContainer}>
-        <CustomImage source={animal.image} />
+        <CustomImage source={latestImage || ''} />
       </View>
       <View style={styles.textContainer}>
         <View style={styles.box1}>
@@ -40,16 +46,15 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
           <Text style={[styles.text, GlobalStyles.fontWeight200]}>{animal.ubicacion || '-'}</Text>
         </View>
         {animal.embarazada && (
-        <>
-        <View style={styles.separator} />
-        <View style={styles.preñesStateContainer}>
-          <Icon name="paw-outline" size={14} color={newColors.principal} />
-          <Text style={styles.preñesState}>En estado de preñez</Text>
-        </View>
-        </>
+          <>
+            <View style={styles.separator} />
+            <View style={styles.preñesStateContainer}>
+              <Icon name="paw-outline" size={14} color={newColors.principal} />
+              <Text style={styles.preñesState}>En estado de preñez</Text>
+            </View>
+          </>
         )}
         <View style={styles.separator} />
-
         <View>
           {firstTwoNotes.length > 0 ? (
             firstTwoNotes.map((note, index) => (
@@ -66,7 +71,6 @@ const PrivateAnimalCard: React.FC<PrivateAnimalCardProps> = ({ animal }) => {
             <Text style={styles.emptyNotes}>Sin notas relevantes</Text>
           )}
         </View>
-
       </View>
     </Pressable>
   );

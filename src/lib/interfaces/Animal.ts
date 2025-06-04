@@ -11,12 +11,8 @@ export interface Animal {
     raza: Raza | undefined;
     nacimiento?: string;
     genero: Genero | undefined;
-    peso: string;
     color: string;
     descripcion: string;
-    image: string;
-    image2?: string;
-    image3?: string;
     proposito: string;
     ubicacion: string;
     created_at: string;
@@ -26,6 +22,8 @@ export interface Animal {
     notes?: Notes[];
     registers?: Register[];
     events?: Events[];
+    images?: ImagesTable[];
+    pesos?: WeightsTable[];
 
     isPublic?: boolean;
     isRespalded?: boolean;
@@ -35,6 +33,21 @@ export interface Animal {
 export interface AnimalWithNotes extends Animal {
     notes: Notes[];
 }
+
+export interface ImagesTable {
+    id: string;
+    animalId: string;
+    fecha: string;
+    url: string;
+}
+
+export interface WeightsTable {
+    id: string;
+    animalId: string;
+    fecha: string;
+    peso: string;
+}
+
 
 export type Image = string;
 export type PropositosDomesticos = 'Mascota' | 'Cuidados' | 'Animal de compañía';

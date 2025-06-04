@@ -6,14 +6,13 @@ import { setDataAnimal } from '../db/animals/setDataAnimal';
 import { setDataNote, getNotesByAnimalId, updateNote, deleteNote } from '../db/notes';
 import { setDataRegister, getRegistersByAnimalId, updateRegister, deleteRegister } from '../db/registers';
 import { setDataEvent, getEventsByAnimalId, updateEvent, deleteEvent } from '../db/events';
-import { getDatabase, getStoragePath } from '../db/db';
-import { Animal } from '../interfaces/Animal';
+import { getDatabase } from '../db/db';
+import { Animal, ImagesTable, WeightsTable } from '../interfaces/Animal';
 import { Notes } from '../interfaces/Notes';
 import { Register } from '../interfaces/Register';
 import { Events, sendNotifi } from '../interfaces/Events';
-import * as RNFS from 'react-native-fs';
 import { updateAnimal } from '../db/animals/updateAnimal';
-import { notificationUtils } from '../utils/notifi/notificationUtils'; // Adjusted path
+import { notificationUtils } from '../utils/notifi/notificationUtils';
 
 interface AnimalStore {
   animals: Animal[];
@@ -24,10 +23,46 @@ interface AnimalStore {
   totalNotes: number;
   registers: Register[];
   totalRegisters: number;
-  loadAnimals: (page?: number, limit?: number, ownerId?: string, filters?: Record<string, string | number | boolean | undefined>) => Promise<void>;
-  loadEvents: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>, animalsIds?: string[]) => Promise<void>;
-  loadNotes: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>,  animalsIds?: string[]) => Promise<void>;
-  loadRegisters: (page?: number, limit?: number, filters?: Record<string, string | number | boolean | undefined>,  animalsIds?: string[]) => Promise<void>;
+  images: ImagesTable[];
+  totalImages: number;
+  weights: WeightsTable[];
+  totalWeights: number;
+  loadAnimals: (
+    page?: number,
+    limit?: number,
+    ownerId?: string,
+    filters?: Record<string, string | number | boolean | undefined>
+  ) => Promise<void>;
+  loadEvents: (
+    page?: number,
+    limit?: number,
+    filters?: Record<string, string | number | boolean | undefined>,
+    animalsIds?: string[]
+  ) => Promise<void>;
+  loadNotes: (
+    page?: number,
+    limit?: number,
+    filters?: Record<string, string | number | boolean | undefined>,
+    animalsIds?: string[]
+  ) => Promise<void>;
+  loadRegisters: (
+    page?: number,
+    limit?: number,
+    filters?: Record<string, string | number | boolean | undefined>,
+    animalsIds?: string[]
+  ) => Promise<void>;
+  loadImages: (
+    page?: number,
+    limit?: number,
+    filters?: Record<string, string | number | boolean | undefined>,
+    animalsIds?: string[]
+  ) => Promise<void>;
+  loadWeights: (
+    page?: number,
+    limit?: number,
+    filters?: Record<string, string | number | boolean | undefined>,
+    animalsIds?: string[]
+  ) => Promise<void>;
   addAnimal: (animal: Animal) => Promise<void>;
   updateAnimal: (animal: Animal) => Promise<void>;
   deleteAnimal: (id: string) => Promise<void>;
@@ -40,9 +75,16 @@ interface AnimalStore {
   addEvent: (event: Omit<Events, 'dateNotifi' | 'created_at'>) => Promise<void>;
   updateEvent: (event: Omit<Events, 'created_at'> & { created_at?: string }) => Promise<void>;
   deleteEvent: (id: string) => Promise<void>;
+  addImage: (image: ImagesTable) => Promise<void>;
+  deleteImage: (id: string) => Promise<void>;
+  addWeight: (weight: WeightsTable) => Promise<void>;
+  deleteWeight: (id: string) => Promise<void>;
   updateAnimalPregnancy: (animalId: string, embarazada: boolean) => Promise<void>;
   updateAnimalFavorite: (animalId: string, favorito: boolean) => Promise<void>;
 }
+
+// TODO: Separar las funciones en archvivos diferentes
+// TODO: Ver como minimizar el codigo de este archivo de otra manera
 
 const calculateNotificationDate = (dateEvent: Date, sendNotifi: sendNotifi): Date => {
   const notifiDate = new Date(dateEvent);
@@ -76,6 +118,138 @@ const calculateNotificationDate = (dateEvent: Date, sendNotifi: sendNotifi): Dat
   return notifiDate;
 };
 
+const getImagesByAnimalId = async (animalId: string, page: number = 1, limit: number = 5): Promise<ImagesTable[]> => {
+  const db: SQLiteDatabase = await getDatabase();
+  return new Promise((resolve, reject) => {
+    db.transaction((tx: Transaction) => {
+      tx.executeSql(
+        `SELECT * FROM Images WHERE animalId = ? ORDER BY fecha DESC LIMIT ? OFFSET ?`,
+        [animalId, limit, (page - 1) * limit],
+        (_, { rows }) => {
+          const images: ImagesTable[] = [];
+          for (let i = 0; i < rows.length; i++) {
+            const item = rows.item(i);
+            images.push({
+              id: item.id,
+              animalId: item.animalId,
+              fecha: item.fecha,
+              url: item.url,
+            });
+          }
+          resolve(images);
+        },
+        (_, error: SQLError) => {
+          console.error('[ERROR] Error al obtener imágenes:', error.message);
+          reject(error);
+          return false;
+        }
+      );
+    });
+  });
+};
+
+const getWeightsByAnimalId = async (animalId: string, page: number = 1, limit: number = 5): Promise<WeightsTable[]> => {
+  const db: SQLiteDatabase = await getDatabase();
+  return new Promise((resolve, reject) => {
+    db.transaction((tx: Transaction) => {
+      tx.executeSql(
+        `SELECT * FROM Weights WHERE animalId = ? ORDER BY fecha DESC LIMIT ? OFFSET ?`,
+        [animalId, limit, (page - 1) * limit],
+        (_, { rows }) => {
+          const weights: WeightsTable[] = [];
+          for (let i = 0; i < rows.length; i++) {
+            const item = rows.item(i);
+            weights.push({
+              id: item.id,
+              animalId: item.animalId,
+              fecha: item.fecha,
+              peso: item.peso,
+            });
+          }
+          resolve(weights);
+        },
+        (_, error: SQLError) => {
+          console.error('[ERROR] Error al obtener pesos:', error.message);
+          reject(error);
+          return false;
+        }
+      );
+    });
+  });
+};
+
+const setDataImage = async (image: ImagesTable): Promise<void> => {
+  const db: SQLiteDatabase = await getDatabase();
+  return new Promise((resolve, reject) => {
+    db.transaction((tx: Transaction) => {
+      tx.executeSql(
+        `INSERT INTO Images (id, animalId, fecha, url) VALUES (?, ?, ?, ?)`,
+        [image.id, image.animalId, image.fecha, image.url],
+        () => resolve(),
+        (_, error: SQLError) => {
+          console.error('[ERROR] Error al agregar imagen:', error.message);
+          reject(error);
+          return false;
+        }
+      );
+    });
+  });
+};
+
+const deleteImage = async (id: string): Promise<void> => {
+  const db: SQLiteDatabase = await getDatabase();
+  return new Promise((resolve, reject) => {
+    db.transaction((tx: Transaction) => {
+      tx.executeSql(
+        `DELETE FROM Images WHERE id = ?`,
+        [id],
+        () => resolve(),
+        (_, error: SQLError) => {
+          console.error('[ERROR] Error al eliminar imagen:', error.message);
+          reject(error);
+          return false;
+        }
+      );
+    });
+  });
+};
+
+const setDataWeight = async (weight: WeightsTable): Promise<void> => {
+  const db: SQLiteDatabase = await getDatabase();
+  return new Promise((resolve, reject) => {
+    db.transaction((tx: Transaction) => {
+      tx.executeSql(
+        `INSERT INTO Weights (id, animalId, fecha, peso) VALUES (?, ?, ?, ?)`,
+        [weight.id, weight.animalId, weight.fecha, weight.peso],
+        () => resolve(),
+        (_, error: SQLError) => {
+          console.error('[ERROR] Error al agregar peso:', error.message);
+          reject(error);
+          return false;
+        }
+      );
+    });
+  });
+};
+
+const deleteWeight = async (id: string): Promise<void> => {
+  const db: SQLiteDatabase = await getDatabase();
+  return new Promise((resolve, reject) => {
+    db.transaction((tx: Transaction) => {
+      tx.executeSql(
+        `DELETE FROM Weights WHERE id = ?`,
+        [id],
+        () => resolve(),
+        (_, error: SQLError) => {
+          console.error('[ERROR] Error al eliminar peso:', error.message);
+          reject(error);
+          return false;
+        }
+      );
+    });
+  });
+};
+
 export const useAnimalStore = create<AnimalStore>((set, get) => ({
   animals: [],
   totalAnimals: 0,
@@ -85,6 +259,10 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
   totalNotes: 0,
   registers: [],
   totalRegisters: 0,
+  images: [],
+  totalImages: 0,
+  weights: [],
+  totalWeights: 0,
 
   loadAnimals: async (page = 1, limit = 10, ownerId, filters = {}) => {
     const db: SQLiteDatabase = await getDatabase();
@@ -148,42 +326,11 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
                 const animals: Animal[] = [];
                 for (let i = 0; i < rows.length; i++) {
                   const item = rows.item(i);
-
-                  let imagePath = item.image || '';
-                  if (imagePath && !imagePath.startsWith('file://')) {
-                    imagePath = `file://${getStoragePath()}/animals/${item.image}`;
-                  }
-
-                  if (imagePath) {
-                    const fileExists = await RNFS.exists(imagePath.replace('file://', ''));
-                    if (!fileExists) {
-                      imagePath = '';
-                    }
-                  }
-
-                  let image2Path = item.image2 && !item.image2.startsWith('file://')
-                    ? `file://${getStoragePath()}/animals/${item.image2}`
-                    : item.image2 || '';
-                  let image3Path = item.image3 && !item.image3.startsWith('file://')
-                    ? `file://${getStoragePath()}/animals/${item.image3}`
-                    : item.image3 || '';
-
-                  if (image2Path && image2Path.startsWith('file://')) {
-                    const fileExists = await RNFS.exists(image2Path.replace('file://', ''));
-                    if (!fileExists) {
-                      image2Path = '';
-                    }
-                  }
-                  if (image3Path && image3Path.startsWith('file://')) {
-                    const fileExists = await RNFS.exists(image3Path.replace('file://', ''));
-                    if (!fileExists) {
-                      image3Path = '';
-                    }
-                  }
-
                   const notes = await getNotesByAnimalId(item.id, 1, 5);
                   const registers = await getRegistersByAnimalId(item.id, 1, 5);
                   const events = await getEventsByAnimalId(item.id, 1, 5);
+                  const images = await getImagesByAnimalId(item.id, 1, 5);
+                  const pesos = await getWeightsByAnimalId(item.id, 1, 5);
 
                   animals.push({
                     id: item.id,
@@ -194,12 +341,8 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
                     raza: item.raza,
                     nacimiento: item.nacimiento,
                     genero: item.genero,
-                    peso: item.peso,
                     color: item.color,
                     descripcion: item.descripcion,
-                    image: imagePath,
-                    image2: image2Path,
-                    image3: image3Path,
                     proposito: item.proposito,
                     ubicacion: item.ubicacion,
                     created_at: item.created_at,
@@ -212,20 +355,22 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
                     notes,
                     registers,
                     events,
+                    images,
+                    pesos,
                   });
                 }
                 set({ animals, totalAnimals });
                 resolve();
               },
               (_, error: SQLError) => {
-                console.error('[ERROR] Error al cargar animales:', error.message || error);
+                console.error('[ERROR] Error al cargar animales:', error.message);
                 reject(error);
                 return false;
               }
             );
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al contar animales:', error.message || error);
+            console.error('[ERROR] Error al contar animales:', error.message);
             reject(error);
             return false;
           }
@@ -237,7 +382,6 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
   loadEvents: async (page = 1, limit = 10, filters = {}, animalsIds: string[] = []) => {
     const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
-      // Si animalsIds está vacío, devolver un array vacío
       if (!animalsIds || animalsIds.length === 0) {
         set({ events: [], totalEvents: 0 });
         resolve();
@@ -250,12 +394,10 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
         const filterConditions: string[] = [];
         let orderBy = 'dateEvent DESC';
 
-        // Filtro obligatorio por animalsIds
         const placeholders = animalsIds.map(() => '?').join(', ');
         filterConditions.push(`animalId IN (${placeholders})`);
         filterParams.push(...animalsIds);
 
-        // Filtros adicionales
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
           filterParams.push(String(filters.animalId));
@@ -303,14 +445,14 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
                 resolve();
               },
               (_, error: SQLError) => {
-                console.error('[ERROR] Error al cargar eventos:', error.message || error);
+                console.error('[ERROR] Error al cargar eventos:', error.message);
                 reject(error);
                 return false;
               }
             );
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al contar eventos:', error.message || error);
+            console.error('[ERROR] Error al contar eventos:', error.message);
             reject(error);
             return false;
           }
@@ -322,7 +464,6 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
   loadNotes: async (page = 1, limit = 10, filters = {}, animalsIds: string[] = []) => {
     const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
-      // Si animalsIds está vacío, devolver un array vacío
       if (!animalsIds || animalsIds.length === 0) {
         set({ notes: [], totalNotes: 0 });
         resolve();
@@ -335,12 +476,10 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
         const filterConditions: string[] = [];
         let orderBy = 'created_at DESC';
 
-        // Filtro obligatorio por animalsIds
         const placeholders = animalsIds.map(() => '?').join(', ');
         filterConditions.push(`animalId IN (${placeholders})`);
         filterParams.push(...animalsIds);
 
-        // Filtros adicionales
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
           filterParams.push(String(filters.animalId));
@@ -381,14 +520,14 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
                 resolve();
               },
               (_, error: SQLError) => {
-                console.error('[ERROR] Error al cargar notas:', error.message || error);
+                console.error('[ERROR] Error al cargar notas:', error.message);
                 reject(error);
                 return false;
               }
             );
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al contar notas:', error.message || error);
+            console.error('[ERROR] Error al contar notas:', error.message);
             reject(error);
             return false;
           }
@@ -400,7 +539,6 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
   loadRegisters: async (page = 1, limit = 10, filters = {}, animalsIds: string[] = []) => {
     const db: SQLiteDatabase = await getDatabase();
     return new Promise((resolve, reject) => {
-      // Si animalsIds está vacío, devolver un array vacío
       if (!animalsIds || animalsIds.length === 0) {
         set({ registers: [], totalRegisters: 0 });
         resolve();
@@ -412,12 +550,10 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
         const filterConditions: string[] = [];
         let orderBy = 'fecha DESC';
 
-        // Filtro obligatorio por animalsIds
         const placeholders = animalsIds.map(() => '?').join(', ');
         filterConditions.push(`animalId IN (${placeholders})`);
         filterParams.push(...animalsIds);
 
-        // Filtros adicionales
         if (filters.animalId) {
           filterConditions.push('animalId = ?');
           filterParams.push(String(filters.animalId));
@@ -462,21 +598,169 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
                 resolve();
               },
               (_, error: SQLError) => {
-                console.error('[loadRegisters] Error al cargar registros:', error.message || error);
+                console.error('[ERROR] Error al cargar registros:', error.message);
                 reject(error);
                 return false;
               }
             );
           },
           (_, error: SQLError) => {
-            console.error('[loadRegisters] Error al contar registros:', error.message || error);
+            console.error('[ERROR] Error al contar registros:', error.message);
             reject(error);
             return false;
           }
         );
       }, (error) => {
-        console.error('[loadRegisters] Error en la transacción:', error);
+        console.error('[ERROR] Error en la transacción:', error.message);
         reject(error);
+      });
+    });
+  },
+
+  loadImages: async (page = 1, limit = 10, filters = {}, animalsIds: string[] = []) => {
+    const db: SQLiteDatabase = await getDatabase();
+    return new Promise((resolve, reject) => {
+      if (!animalsIds || animalsIds.length === 0) {
+        set({ images: [], totalImages: 0 });
+        resolve();
+        return;
+      }
+
+      db.transaction((tx: Transaction) => {
+        let whereClause = '';
+        const filterParams: (string | number)[] = [];
+        const filterConditions: string[] = [];
+        let orderBy = 'fecha DESC';
+
+        const placeholders = animalsIds.map(() => '?').join(', ');
+        filterConditions.push(`animalId IN (${placeholders})`);
+        filterParams.push(...animalsIds);
+
+        if (filters.animalId) {
+          filterConditions.push('animalId = ?');
+          filterParams.push(String(filters.animalId));
+        }
+        if (filters.Reciente === true) {
+          orderBy = 'fecha DESC';
+        }
+        if (filters.Antiguo === true) {
+          orderBy = 'fecha ASC';
+        }
+
+        if (filterConditions.length > 0) {
+          whereClause = `WHERE ${filterConditions.join(' AND ')}`;
+        }
+
+        tx.executeSql(
+          `SELECT COUNT(*) as count FROM Images ${whereClause}`,
+          filterParams,
+          (_, { rows }) => {
+            const totalImages = rows.item(0).count;
+
+            tx.executeSql(
+              `SELECT * FROM Images ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+              [...filterParams, limit, (page - 1) * limit],
+              (_, { rows }) => {
+                const images: ImagesTable[] = [];
+                for (let i = 0; i < rows.length; i++) {
+                  const item = rows.item(i);
+                  images.push({
+                    id: item.id,
+                    animalId: item.animalId,
+                    fecha: item.fecha,
+                    url: item.url,
+                  });
+                }
+                set({ images, totalImages });
+                resolve();
+              },
+              (_, error: SQLError) => {
+                console.error('[ERROR] Error al cargar imágenes:', error.message);
+                reject(error);
+                return false;
+              }
+            );
+          },
+          (_, error: SQLError) => {
+            console.error('[ERROR] Error al contar imágenes:', error.message);
+            reject(error);
+            return false;
+          }
+        );
+      });
+    });
+  },
+
+  loadWeights: async (page = 1, limit = 10, filters = {}, animalsIds: string[] = []) => {
+    const db: SQLiteDatabase = await getDatabase();
+    return new Promise((resolve, reject) => {
+      if (!animalsIds || animalsIds.length === 0) {
+        set({ weights: [], totalWeights: 0 });
+        resolve();
+        return;
+      }
+
+      db.transaction((tx: Transaction) => {
+        let whereClause = '';
+        const filterParams: (string | number)[] = [];
+        const filterConditions: string[] = [];
+        let orderBy = 'fecha DESC';
+
+        const placeholders = animalsIds.map(() => '?').join(', ');
+        filterConditions.push(`animalId IN (${placeholders})`);
+        filterParams.push(...animalsIds);
+
+        if (filters.animalId) {
+          filterConditions.push('animalId = ?');
+          filterParams.push(String(filters.animalId));
+        }
+        if (filters.Reciente === true) {
+          orderBy = 'fecha DESC';
+        }
+        if (filters.Antiguo === true) {
+          orderBy = 'fecha ASC';
+        }
+
+        if (filterConditions.length > 0) {
+          whereClause = `WHERE ${filterConditions.join(' AND ')}`;
+        }
+
+        tx.executeSql(
+          `SELECT COUNT(*) as count FROM Weights ${whereClause}`,
+          filterParams,
+          (_, { rows }) => {
+            const totalWeights = rows.item(0).count;
+
+            tx.executeSql(
+              `SELECT * FROM Weights ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+              [...filterParams, limit, (page - 1) * limit],
+              (_, { rows }) => {
+                const weights: WeightsTable[] = [];
+                for (let i = 0; i < rows.length; i++) {
+                  const item = rows.item(i);
+                  weights.push({
+                    id: item.id,
+                    animalId: item.animalId,
+                    fecha: item.fecha,
+                    peso: item.peso,
+                  });
+                }
+                set({ weights, totalWeights });
+                resolve();
+              },
+              (_, error: SQLError) => {
+                console.error('[ERROR] Error al cargar pesos:', error.message);
+                reject(error);
+                return false;
+              }
+            );
+          },
+          (_, error: SQLError) => {
+            console.error('[ERROR] Error al contar pesos:', error.message);
+            reject(error);
+            return false;
+          }
+        );
       });
     });
   },
@@ -485,7 +769,7 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
     try {
       await setDataAnimal(animal);
       set((state) => ({
-        animals: [{ ...animal, notes: [], registers: [], events: [] }, ...state.animals.slice(0, 9)],
+        animals: [{ ...animal, notes: [], registers: [], events: [], images: [], pesos: [] }, ...state.animals.slice(0, 9)],
         totalAnimals: state.totalAnimals + 1,
       }));
     } catch (error) {
@@ -501,10 +785,9 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
         tx.executeSql(
           `UPDATE Animal SET
             ownerId = ?, identificador = ?, nombre = ?, especie = ?, raza = ?,
-            nacimiento = ?, genero = ?, peso = ?, color = ?, descripcion = ?,
-            image = ?, image2 = ?, image3 = ?, proposito = ?, ubicacion = ?,
-            created_at = ?, updated_at = ?, embarazada = ?, favorito = ?,
-            isPublic = ?, isRespalded = ?, isChanged = ?
+            nacimiento = ?, genero = ?, color = ?, descripcion = ?,
+            proposito = ?, ubicacion = ?, created_at = ?, updated_at = ?,
+            embarazada = ?, favorito = ?, isPublic = ?, isRespalded = ?, isChanged = ?
             WHERE id = ?`,
           [
             updatedAnimal.ownerId,
@@ -514,12 +797,8 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
             updatedAnimal.raza,
             updatedAnimal.nacimiento,
             updatedAnimal.genero,
-            updatedAnimal.peso,
             updatedAnimal.color,
             updatedAnimal.descripcion,
-            updatedAnimal.image,
-            updatedAnimal.image2,
-            updatedAnimal.image3,
             updatedAnimal.proposito,
             updatedAnimal.ubicacion,
             updatedAnimal.created_at,
@@ -535,14 +814,21 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
             set((state) => ({
               animals: state.animals.map((animal) =>
                 animal.id === updatedAnimal.id
-                  ? { ...updatedAnimal, notes: animal.notes, registers: animal.registers, events: animal.events }
+                  ? {
+                      ...updatedAnimal,
+                      notes: animal.notes,
+                      registers: animal.registers,
+                      events: animal.events,
+                      images: animal.images,
+                      pesos: animal.pesos,
+                    }
                   : animal
               ),
             }));
             resolve();
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al actualizar animal:', error.message || error);
+            console.error('[ERROR] Error al actualizar animal:', error.message);
             reject(error);
             return false;
           }
@@ -568,44 +854,70 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
                   [id],
                   () => {
                     tx.executeSql(
-                      `DELETE FROM Animal WHERE id = ?`,
+                      `DELETE FROM Images WHERE animalId = ?`,
                       [id],
                       () => {
-                        set((state) => ({
-                          animals: state.animals.filter((animal) => animal.id !== id),
-                          totalAnimals: state.totalAnimals - 1,
-                          notes: state.notes.filter((note) => note.animalId !== id),
-                          totalNotes: state.totalNotes - state.notes.filter((note) => note.animalId === id).length,
-                          registers: state.registers.filter((reg) => reg.animalId !== id),
-                          totalRegisters: state.totalRegisters - state.registers.filter((reg) => reg.animalId === id).length,
-                          events: state.events.filter((evt) => evt.animalId !== id),
-                          totalEvents: state.totalEvents - state.events.filter((evt) => evt.animalId === id).length,
-                        }));
-                        resolve();
+                        tx.executeSql(
+                          `DELETE FROM Weights WHERE animalId = ?`,
+                          [id],
+                          () => {
+                            tx.executeSql(
+                              `DELETE FROM Animal WHERE id = ?`,
+                              [id],
+                              () => {
+                                set((state) => ({
+                                  animals: state.animals.filter((animal) => animal.id !== id),
+                                  totalAnimals: state.totalAnimals - 1,
+                                  notes: state.notes.filter((note) => note.animalId !== id),
+                                  totalNotes: state.totalNotes - state.notes.filter((note) => note.animalId === id).length,
+                                  registers: state.registers.filter((reg) => reg.animalId !== id),
+                                  totalRegisters: state.totalRegisters - state.registers.filter((reg) => reg.animalId === id).length,
+                                  events: state.events.filter((evt) => evt.animalId !== id),
+                                  totalEvents: state.totalEvents - state.events.filter((evt) => evt.animalId === id).length,
+                                  images: state.images.filter((img) => img.animalId !== id),
+                                  totalImages: state.totalImages - state.images.filter((img) => img.animalId === id).length,
+                                  weights: state.weights.filter((wt) => wt.animalId !== id),
+                                  totalWeights: state.totalWeights - state.weights.filter((wt) => wt.animalId === id).length,
+                                }));
+                                resolve();
+                              },
+                              (_, error: SQLError) => {
+                                console.error('[ERROR] Error al eliminar animal:', error.message);
+                                reject(error);
+                                return false;
+                              }
+                            );
+                          },
+                          (_, error: SQLError) => {
+                            console.error('[ERROR] Error al eliminar pesos:', error.message);
+                            reject(error);
+                            return false;
+                          }
+                        );
                       },
                       (_, error: SQLError) => {
-                        console.error('[ERROR] Error al eliminar animal:', error.message || error);
+                        console.error('[ERROR] Error al eliminar imágenes:', error.message);
                         reject(error);
                         return false;
                       }
                     );
                   },
                   (_, error: SQLError) => {
-                    console.error('[ERROR] Error al eliminar eventos:', error.message || error);
+                    console.error('[ERROR] Error al eliminar eventos:', error.message);
                     reject(error);
                     return false;
                   }
                 );
               },
               (_, error: SQLError) => {
-                console.error('[ERROR] Error al eliminar registros:', error.message || error);
+                console.error('[ERROR] Error al eliminar registros:', error.message);
                 reject(error);
                 return false;
               }
             );
           },
           (_, error: SQLError) => {
-            console.error('[ERROR] Error al eliminar notas:', error.message || error);
+            console.error('[ERROR] Error al eliminar notas:', error.message);
             reject(error);
             return false;
           }
@@ -788,7 +1100,7 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
         totalEvents: state.totalEvents + 1,
       }));
     } catch (error: any) {
-      console.error('[ERROR] Error al agregar evento:', error.message || error);
+      console.error('[ERROR] Error al agregar evento:', error.message);
       throw new Error(`No se pudo agregar el evento: ${error.message || 'Error desconocido'}`);
     }
   },
@@ -854,6 +1166,76 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
       }));
     } catch (error) {
       console.error('[ERROR] Error al eliminar evento:', error);
+      throw error;
+    }
+  },
+
+  addImage: async (image: ImagesTable) => {
+    try {
+      await setDataImage(image);
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === image.animalId
+            ? { ...animal, images: [image, ...(animal.images || []).slice(0, 9)] }
+            : animal
+        ),
+        images: [image, ...state.images.slice(0, 9)],
+        totalImages: state.totalImages + 1,
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al agregar imagen:', error);
+      throw error;
+    }
+  },
+
+  deleteImage: async (id: string) => {
+    try {
+      await deleteImage(id);
+      set((state) => ({
+        animals: state.animals.map((animal) => ({
+          ...animal,
+          images: animal.images?.filter((img) => img.id !== id),
+        })),
+        images: state.images.filter((img) => img.id !== id),
+        totalImages: state.totalImages - 1,
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al eliminar imagen:', error);
+      throw error;
+    }
+  },
+
+  addWeight: async (weight: WeightsTable) => {
+    try {
+      await setDataWeight(weight);
+      set((state) => ({
+        animals: state.animals.map((animal) =>
+          animal.id === weight.animalId
+            ? { ...animal, pesos: [weight, ...(animal.pesos || []).slice(0, 9)] }
+            : animal
+        ),
+        weights: [weight, ...state.weights.slice(0, 9)],
+        totalWeights: state.totalWeights + 1,
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al agregar peso:', error);
+      throw error;
+    }
+  },
+
+  deleteWeight: async (id: string) => {
+    try {
+      await deleteWeight(id);
+      set((state) => ({
+        animals: state.animals.map((animal) => ({
+          ...animal,
+          pesos: animal.pesos?.filter((wt) => wt.id !== id),
+        })),
+        weights: state.weights.filter((wt) => wt.id !== id),
+        totalWeights: state.totalWeights - 1,
+      }));
+    } catch (error) {
+      console.error('[ERROR] Error al eliminar peso:', error);
       throw error;
     }
   },

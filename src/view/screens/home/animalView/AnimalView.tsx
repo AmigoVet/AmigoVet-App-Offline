@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-unstable-nested-components */
 import { View, Text, TouchableOpacity } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../../navigator/navigationTypes';
@@ -25,7 +27,6 @@ const AnimalView = () => {
   const route = useRoute<AnimalViewRouteProp>();
   const { animals } = useAnimalStore();
   const [animal, setAnimal] = useState(route.params.animal);
-  const [activeTab, setActiveTab] = useState<TabSection>('events');
 
   // Fetch the latest animal data when the screen is focused
   useFocusEffect(
@@ -34,6 +35,15 @@ const AnimalView = () => {
       setAnimal(currentAnimal);
     }, [animals, route.params.animal])
   );
+
+  // Get the latest weight
+  const latestWeight = animal.pesos && animal.pesos.length > 0
+    ? animal.pesos.reduce((latest, current) =>
+        new Date(current.fecha) > new Date(latest.fecha) ? current : latest
+      ).peso
+    : undefined;
+
+  const [activeTab, setActiveTab] = useState<TabSection>('events');
 
   const TabButton = ({ title, section }: { title: string; section: TabSection }) => (
     <TouchableOpacity
@@ -63,11 +73,11 @@ const AnimalView = () => {
   const renderActiveSection = () => {
     switch (activeTab) {
       case 'events':
-        return <EventSection events={animal.events!} animalId={animal.id} animalName={animal.nombre} />;
+        return <EventSection events={animal.events || []} animalId={animal.id} animalName={animal.nombre} />;
       case 'notes':
-        return <NoteSection notes={animal.notes!} animalId={animal.id} animalName={animal.nombre} />;
+        return <NoteSection notes={animal.notes || []} animalId={animal.id} animalName={animal.nombre} />;
       case 'registers':
-        return <RegisterSection animal={animal}/>;
+        return <RegisterSection animal={animal} />;
       case 'extra':
         return <ExtraSection animal={animal} />;
       default:
@@ -80,12 +90,10 @@ const AnimalView = () => {
       <CustomScrollView>
         <HeaderAnimalView
           title={animal.nombre}
-          id={animal.identificador}
-          image1={animal.image}
-          image2={animal.image2}
-          image3={animal.image3}
+          id={animal.identificador || 'Sin identificador'}
+          images={animal.images}
         />
-        <BasicDataAnimalView animal={animal} />
+        <BasicDataAnimalView animal={{ ...animal, peso: latestWeight }} />
         <ExtraDataAnimalView description={animal.descripcion} ubicacion={animal.ubicacion} />
         <GptButton animal={animal} />
         {/* Tab Navigation */}
@@ -98,7 +106,6 @@ const AnimalView = () => {
 
         {/* Active Section */}
         {renderActiveSection()}
-
       </CustomScrollView>
     </GlobalContainer>
   );

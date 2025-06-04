@@ -7,7 +7,7 @@ import { RootStackParamList } from '../../../../navigator/navigationTypes';
 import { newColors } from '../../../../styles/colors';
 import { constants } from '../../../../styles/constants';
 import Icon from '@react-native-vector-icons/ionicons';
-import { getStoragePath } from '../../../../../lib/db/db';
+import { ImagesTable } from '../../../../../lib/interfaces/Animal';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ITEM_WIDTH = SCREEN_WIDTH * 0.95;
@@ -16,51 +16,33 @@ const ITEM_HEIGHT = 250;
 interface HeaderAnimalViewProps {
   title: string;
   id: string;
-  image1: string;
-  image2?: string;
-  image3?: string;
+  images: ImagesTable[] | undefined;
 }
 
 const HeaderAnimalView = ({
   title = 'Datos del animal',
   id = 'Sin identificador',
-  image1,
-  image2,
-  image3,
+  images = [],
 }: HeaderAnimalViewProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Reconstruct full URIs for images
-  const reconstructUri = (image: string | undefined): string => {
-    if (!image) {return '';}
-    // If already a full URI, return as is
-    if (image.startsWith('file://')) {
-      // console.log('[DEBUG] Image already a full URI:', image);
-      return image;
-    }
-    // Reconstruct URI from filename
-    const fullUri = `file://${getStoragePath()}/animals/${image}`;
-    // console.log('[DEBUG] Reconstructed URI:', fullUri);
-    return fullUri;
-  };
+  // Sort images by fecha (most recent first)
+  const sortedImages = images.length > 0
+    ? [...images].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+    : [];
 
-  // Process images, ensuring valid URIs
-  const images = [image1, image2, image3]
-    .map(reconstructUri)
-    .filter((img): img is string => Boolean(img));
-
-  const renderItem = ({ item }: { item: string }) => (
+  const renderItem = ({ item }: { item: ImagesTable }) => (
     <View style={styles.imageWrapper}>
-      <CustomImage source={item} style={styles.image} />
+      <CustomImage source={item.url} style={styles.image} />
     </View>
   );
 
   const renderDotIndicator = () => {
-    if (images.length <= 1) {return null;}
+    if (sortedImages.length <= 1) { return null; }
     return (
       <View style={styles.paginationContainer}>
-        {images.map((_, index) => (
+        {sortedImages.map((_, index) => (
           <View
             key={index}
             style={[
@@ -102,16 +84,15 @@ const HeaderAnimalView = ({
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
           <Text style={styles.subtitle}>{id}</Text>
         </View>
-
         <View style={styles.iconContainer}>
           <Iconlogo fill={newColors.fondo_principal} height={40} width={40} />
         </View>
       </View>
 
-      {images.length > 0 && (
+      {sortedImages.length > 0 ? (
         <View style={styles.imageContainer}>
           <FlatList
-            data={images}
+            data={sortedImages}
             renderItem={renderItem}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -119,10 +100,16 @@ const HeaderAnimalView = ({
             decelerationRate="fast"
             viewabilityConfig={viewabilityConfig}
             onViewableItemsChanged={onViewableItemsChanged}
-            keyExtractor={(_, index) => index.toString()}
+            keyExtractor={(item) => item.id}
             contentContainerStyle={styles.flatListContent}
           />
           {renderDotIndicator()}
+        </View>
+      ) : (
+        <View style={styles.imageContainer}>
+          <View style={styles.imageWrapper}>
+            <CustomImage source="" style={styles.image} />
+          </View>
         </View>
       )}
     </>
