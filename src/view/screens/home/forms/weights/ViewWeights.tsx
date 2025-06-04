@@ -10,6 +10,7 @@ import { constants } from '../../../../styles/constants';
 import MiniButton from '../../../../components/MiniButton';
 import { WeightsTable } from '../../../../../lib/interfaces/Animal';
 import { useAnimalStore } from '../../../../../lib/store/useAnimalStore';
+import GraficWeights from './GraficWeights';
 
 type ViewWeightsRouteProp = RouteProp<RootStackParamList, 'ViewWeights'>;
 
@@ -56,8 +57,17 @@ const ViewWeights = () => {
         onPress={goBack}
       />
       <View style={styles.container}>
+        {/* Componente de gráfico separado */}
+
+        <Separator height={20} />
+
+        {/* Lista de pesos */}
         <FlatList
-          ListHeaderComponent={<Separator height={20} />}
+          ListHeaderComponent={
+          <>
+          <GraficWeights weights={weights} />
+          </>
+          }
           data={weights}
           keyExtractor={(item) => item.id}
           renderItem={({ item }: { item: WeightsTable }) => (
@@ -73,7 +83,6 @@ const ViewWeights = () => {
 };
 
 const WeightCard = ({ weight, onDelete }: { weight: WeightsTable; onDelete: () => void }) => {
-  // Format date to a readable format (e.g., "DD/MM/YYYY HH:mm")
   const formattedDate = new Date(weight.fecha).toLocaleString('es-ES', {
     day: '2-digit',
     month: '2-digit',
@@ -105,7 +114,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   weightCard: {
-    marginVertical: 10,
     borderRadius: constants.borderRadius,
     paddingVertical: 10,
     paddingHorizontal: 25,
